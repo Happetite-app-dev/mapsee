@@ -1,0 +1,46 @@
+{
+  "expo": {
+    "name": "mapsee220703_1",
+    "slug": "mapsee220703_1",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyA2FBudItIm0cVgwNOsuc8D9BKk0HUeUTs"
+        }
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#FFFFFF"
+      },
+      "android": {
+        "permissions":["ACCESS_COARSE_LOCATION","ACCESS_FINE_LOCATION","ACCESS_BACKGROUND_LOCATION"]
+      },
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyA2FBudItIm0cVgwNOsuc8D9BKk0HUeUTs"
+        }
+      }
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    }
+  }
+}
