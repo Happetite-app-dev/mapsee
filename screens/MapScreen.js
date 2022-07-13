@@ -19,7 +19,7 @@ const MapScreen=({changeShowTabBar}) => {
   const mapRef = React.createRef();
   const [origin, setOrigin] = useState({latitude: 0, longitude: 0, latitudeDelta: 0.0016, longitudeDelta: 0.0012});   //현재 스크린에 나타나는 map의 중앙 좌표값
   const [current, setCurrent] = useState({latitude: 0, longitude: 0});                  //내 위치 좌표
-  const [target, setTarget] = useState({address: '', lctn:{latitude: 0, longitude:0}}); //검색 target의 좌표
+  const [target, setTarget] = useState({name: '', address: '', lctn:{latitude: 0, longitude:0}}); //검색 target의 좌표
   const [targetShown, setTargetShown] = useState(false);
   const [isShowBottomSheet, setIsShowBottomSheet] = useState(false);
 
@@ -27,26 +27,27 @@ const MapScreen=({changeShowTabBar}) => {
     getLocationPermission();
   },[])
 
-  const targetingFromAddress = (address) => {
+  const targetingFromAddress = (address, name) => {
     Geocoder.from(address)
         .then(json => {
             var location = json.results[0].geometry.location;
             const lat = location.lat;
             const lng = location.lng;
             setOrigin({latitude: lat, longitude: lng, latitudeDelta: 0.0016, longitudeDelta: 0.0012});
-            setTarget({address: address, lctn:{latitude: lat, longitude:lng}});
+            setTarget({name: name, address: address, lctn:{latitude: lat, longitude:lng}});
             setTargetShown(true);
         })
         .catch(error => console.warn(error));
   }
 
-  const targetingFromLocation = (lctn) => {
+  const targetingFromLocation = (lctn, name) => {
     Geocoder.from(lctn)
         .then(json => {
-            var addressComponent  = json.results[0].address_components[0];
+            var addressComponent  = json.results[0].formatted_address;
             setOrigin({latitude: lctn.latitude, longitude: lctn.longitude, latitudeDelta: 0.0016, longitudeDelta: 0.0012});
-            setTarget({address: addressComponent, lctn:{latitude: lctn.latitude, longitude:lctn.longitude}});
+            setTarget({name: name, address: addressComponent, lctn:{latitude: lctn.latitude, longitude:lctn.longitude}});
             setTargetShown(true);
+            console.log()
         })
         .catch(error => console.warn(error));
   }
@@ -57,7 +58,7 @@ const MapScreen=({changeShowTabBar}) => {
         placeholder='Search'
         onPress={(data, details = null) => {
           //changeShowTabBar();      --> firebase와 연결하며 고민할 부분
-          targetingFromAddress(data.description);
+          targetingFromAddress(data.description, data.structured_formatting.main_text);
         }}
         query={{
           key: 'AIzaSyA2FBudItIm0cVgwNOsuc8D9BKk0HUeUTs',
@@ -109,10 +110,11 @@ const MapScreen=({changeShowTabBar}) => {
             }
         }}
         onPoiClick={({nativeEvent})=>{
-          targetingFromLocation(nativeEvent.coordinate);
+          targetingFromLocation(nativeEvent.coordinate, nativeEvent.name.split("\n")[0]);
         }}
-        onPress={()=>{
-          setTargetShown(false);
+        onPress={({nativeEvent})=>{
+          if(nativeEvent.action=="marker-press"){setTargetShown(true);}
+          else{setTargetShown(false);}
         }}
       >
         <GooglePlacesInput />
@@ -184,7 +186,7 @@ const MapScreen=({changeShowTabBar}) => {
 
         </View>
       </MapView>
-      <PlaceInfoBottomSheet isShow={targetShown} targetInfo={target.address}/>
+      <PlaceInfoBottomSheet isShow={targetShown} targetName={target.name} targetAddress={target.address}/>
     </SafeAreaView>
   );
 }

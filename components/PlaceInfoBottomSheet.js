@@ -3,7 +3,7 @@ import { Animated, Text, View, TouchableOpacity, Button, Image } from 'react-nat
 import { ScrollView } from 'react-native-gesture-handler';
 const mapScreenBottomSheetExampleImage = require('../assets/image/mapScreenBottomSheetExample.png')
 
-const BottomSheet = ({animation, onCancel, targetInfo}) => {
+const BottomSheet = ({animation, onCancel, targetName, targetAddress}) => {
   return (
     <Animated.View style={{
       width: "100%",
@@ -27,8 +27,9 @@ const BottomSheet = ({animation, onCancel, targetInfo}) => {
     }}
     >
       <View style={{position: 'absolute', top:50, left:20, width: 180, height: 160}}>
-        <Text style={{position:'absolute', top: 20, fontSize: 35}}>성수갓뎀</Text>
-        <Text style={{position:'absolute', top: 80, fontSize: 20}}>서울시 성동구 뚝섬동</Text>
+        <Text style={{position:'absolute', top: 20, fontSize: 20}}>{targetName}</Text>
+        <Text style={{position:'absolute', top: 80, fontSize: 15}}>{targetAddress}</Text>
+
       </View>
       <View style={{position: 'absolute', top:55, left:215, width: 150, height: 150}}>
         <Image source={mapScreenBottomSheetExampleImage} style={{width: 150, height:150}}/>
@@ -37,7 +38,7 @@ const BottomSheet = ({animation, onCancel, targetInfo}) => {
   )
 }
 
-const PlaceInfoBottomSheet = ({isShow, targetInfo}) => {
+const PlaceInfoBottomSheet = ({isShow, targetName, targetAddress}) => {
   const [animationValue, setAnimationValue] = useState(-1000);
   const showAnimation = useRef(new Animated.Value(animationValue)).current;
   useEffect(()=>{toggleAnimation();}, [isShow]);
@@ -73,7 +74,8 @@ const PlaceInfoBottomSheet = ({isShow, targetInfo}) => {
         toggleAnimation()
       }} 
       animation={showAnimation}
-      targetInfo={targetInfo}
+      targetName={targetName}
+      targetAddress={targetAddress}
     />
     </View>
     
