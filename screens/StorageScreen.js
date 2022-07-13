@@ -1,15 +1,14 @@
 import { StatusBar } from 'expo-status-bar';
+import { useState } from 'react';
 import { StyleSheet, Text, View, SafeAreaView } from 'react-native';
 import { Button } from 'react-native';
+import PlaceInfoBottomSheet from '../components/PlaceInfoBottomSheet';
 
-const StorageScreen = ({navigation}) => {
+const StorageScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <Text>Storage Screen</Text>
-      <Button
-        title="Click Here"
-        onPress={() => alert('Button Clicked')}
-      />
+      <PlaceInfoBottomSheet/>
     </SafeAreaView>
   );
 }

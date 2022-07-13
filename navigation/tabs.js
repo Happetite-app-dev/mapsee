@@ -3,6 +3,7 @@ import StorageScreen from "../screens/StorageScreen";
 import MypageScreen from '../screens/MypageScreen';
 import MapScreen from '../screens/MapScreen';
 import { StyleSheet, Text, View, Image, TouchableHighlight } from "react-native";
+import { useState } from "react";
 
 const Tab = createBottomTabNavigator();
 
@@ -16,6 +17,7 @@ const CustomTabBarButton = ({children, onPress}) => (
             height:80,
             borderRadius: 40,
             backgroundColor: 'skyblue',
+            zIndex:1,
             ...styles.shadow
         }}
         underlayColor='blue'
@@ -26,6 +28,16 @@ const CustomTabBarButton = ({children, onPress}) => (
 );
 
 const Tabs = () => {
+    const [showTabBar, setShowTabBar] = useState(1);
+    const changeShowTabBar = () => {
+        if(showTabBar===1){setShowTabBar(0)}
+        else{setShowTabBar(1)} 
+    }    
+
+    const MapScreen2 = () => {
+        return <MapScreen changeShowTabBar={changeShowTabBar}/>
+    }
+
     return(
         <Tab.Navigator
             initialRouteName="Map"
@@ -41,8 +53,11 @@ const Tabs = () => {
                     backgroundColor: '#ffffff',
                     borderRadius: 15,
                     height: 90,
+                    opacity: 100,
+                    zIndex:1,
+                    display: (showTabBar===1)? 'flex' : 'none',
                     ...styles.shadow
-                }       
+                }  
             }}
         >   
             <Tab.Screen name="Storage" component={StorageScreen} options={{
@@ -55,10 +70,11 @@ const Tabs = () => {
                                 width: 37,
                                 height: 37,
                                 tintColor: focused? 'black' : 'grey',
+                                zIndex:1,
                             }}
                         />
                         <Text
-                            style={{color: focused ? 'black' : 'grey', fontSize: 12}}
+                            style={{color: focused ? 'black' : 'grey', fontSize: 12,zIndex:1,}}
                         >
                         보관함
                         </Text>
@@ -66,7 +82,7 @@ const Tabs = () => {
                     </View>
                 )
             }}/>
-            <Tab.Screen name="Map" component={MapScreen} 
+            <Tab.Screen name="Map" component={MapScreen2} 
                 options={{
                     tabBarIcon: ({focused}) => (
                         <Image
@@ -76,6 +92,7 @@ const Tabs = () => {
                                 width: 40,
                                 height: 40,
                                 tintColor: '#fff',
+                                zIndex:1,
                             }}
                         />
                     ),
@@ -94,10 +111,11 @@ const Tabs = () => {
                                 width:37,
                                 height: 37,
                                 tintColor: focused? 'black' : 'grey',
+                                zIndex:1,
                             }}
                         />
                         <Text
-                            style={{color: focused ? 'black' : 'grey', fontSize: 12}}
+                            style={{color: focused ? 'black' : 'grey', fontSize: 12, zIndex:1}}
                         >
                         나
                         </Text>
