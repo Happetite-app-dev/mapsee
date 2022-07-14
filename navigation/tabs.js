@@ -35,7 +35,7 @@ const Tabs = () => {
     }    
 
     const MapScreen2 = () => {
-        return <MapScreen changeShowTabBar={changeShowTabBar}/>
+        return <MapScreen changeShowTabBar={changeShowTabBar} />
     }
 
     return(

@@ -8,18 +8,18 @@ import Geocoder from 'react-native-geocoding';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { TouchableOpacity } from 'react-native';
 import PlaceInfoBottomSheet from '../components/PlaceInfoBottomSheet';
-const findCurrentLocationImage = require('../assets/image/findCurrentLocation.png');
+const findCurrentLocationImage = require('../assets/image/findCurrentLocation.png');                             
 const currentLocationImage = require('../assets/image/currentLocation.png');
 const targetLocationImage = require('../assets/image/targetLocation.png')
 
 //address: 지번 주소, lctn: lat과 lng으로 이루어진 좌표 주소
 
-const MapScreen=({changeShowTabBar}) => {
+const MapScreen=(changeShowTabBar) => {
   Geocoder.init("AIzaSyA2FBudItIm0cVgwNOsuc8D9BKk0HUeUTs", {language : "kor"}); 
   const mapRef = React.createRef();
   const [origin, setOrigin] = useState({latitude: 0, longitude: 0, latitudeDelta: 0.0016, longitudeDelta: 0.0012});   //현재 스크린에 나타나는 map의 중앙 좌표값
   const [current, setCurrent] = useState({latitude: 0, longitude: 0});                  //내 위치 좌표
-  const [target, setTarget] = useState({name: '', address: '', lctn:{latitude: 0, longitude:0}}); //검색 target의 좌표
+  const [target, setTarget] = useState({name: '', address: '', id: '', lctn:{latitude: 0, longitude:0}}); //검색 target의 좌표
   const [targetShown, setTargetShown] = useState(false);
   const [isShowBottomSheet, setIsShowBottomSheet] = useState(false);
 
@@ -34,7 +34,7 @@ const MapScreen=({changeShowTabBar}) => {
             const lat = location.lat;
             const lng = location.lng;
             setOrigin({latitude: lat, longitude: lng, latitudeDelta: 0.0016, longitudeDelta: 0.0012});
-            setTarget({name: name, address: address, lctn:{latitude: lat, longitude:lng}});
+            setTarget({name: name, address: address, id: json.results[0].place_id ,lctn:{latitude: lat, longitude:lng}});
             setTargetShown(true);
         })
         .catch(error => console.warn(error));
@@ -45,9 +45,8 @@ const MapScreen=({changeShowTabBar}) => {
         .then(json => {
             var addressComponent  = json.results[0].formatted_address;
             setOrigin({latitude: lctn.latitude, longitude: lctn.longitude, latitudeDelta: 0.0016, longitudeDelta: 0.0012});
-            setTarget({name: name, address: addressComponent, lctn:{latitude: lctn.latitude, longitude:lctn.longitude}});
+            setTarget({name: name, address: addressComponent, id: json.results[0].place_id, lctn:{latitude: lctn.latitude, longitude:lctn.longitude}});
             setTargetShown(true);
-            console.log()
         })
         .catch(error => console.warn(error));
   }
@@ -109,11 +108,11 @@ const MapScreen=({changeShowTabBar}) => {
               setOrigin({latitude: region.latitude, longitude: region.longitude, latitudeDelta: region.latitudeDelta, longitudeDelta: region.longitudeDelta});
             }
         }}
-        onPoiClick={({nativeEvent})=>{
-          targetingFromLocation(nativeEvent.coordinate, nativeEvent.name.split("\n")[0]);
+        onPoiClick={(data)=>{
+          targetingFromLocation(data.nativeEvent.coordinate, data.nativeEvent.name.split("\n")[0]);
         }}
         onPress={({nativeEvent})=>{
-          if(nativeEvent.action=="marker-press"){setTargetShown(true);}
+          if((nativeEvent.action==="marker-press") && (nativeEvent.coordinate.latitude===target.lctn.latitude) && (nativeEvent.coordinate.longitude===target.lctn.longitude)){setTargetShown(true);}
           else{setTargetShown(false);}
         }}
       >
@@ -186,7 +185,7 @@ const MapScreen=({changeShowTabBar}) => {
 
         </View>
       </MapView>
-      <PlaceInfoBottomSheet isShow={targetShown} targetName={target.name} targetAddress={target.address}/>
+      <PlaceInfoBottomSheet isShow={targetShown} targetName={target.name} targetAddress={target.address} targetId={target.id}/>
     </SafeAreaView>
   );
 }
