@@ -3,7 +3,7 @@ import { Animated, Text, View, TouchableHighlight, Button, Image } from 'react-n
 import { ScrollView } from 'react-native-gesture-handler';
 const mapScreenBottomSheetExampleImage = require('../assets/image/mapScreenBottomSheetExample.png')
 const LocationplusIcon = require('../assets/icons/locationplus.png')
-
+const CreateNoteImage = require('../assets/image/CreateNote.png')
 const BottomSheetScreen = ({onDisplay, onCancel, animationVal, targetName, targetAddress}) => {
   if(animationVal<0){
     return(                                                 //bottomsheet가 전체 화면을 덮기 전
@@ -30,19 +30,17 @@ const BottomSheetScreen = ({onDisplay, onCancel, animationVal, targetName, targe
         <TouchableHighlight
             style={{
                 position: 'absolute',
-                bottom: 130,
-                justifyContent: 'center',
-                alignSelf: 'center',
+                bottom: 100,
+                right: 10,
                 alignItems: 'center',
-                width:80,
-                height:80,
-                borderRadius: 40,
-                backgroundColor: 'skyblue',
+                width:48,
+                height:48,
+                borderRadius: 24,
                 zIndex:1,
             }}
             underlayColor='blue'
         >
-          <Image source={LocationplusIcon} resizeMode='contain' style={{width: 40, height: 40, tintColor: '#fff', zIndex:1}} />
+          <Image source={CreateNoteImage} resizeMode='contain' />
         </TouchableHighlight>
       </View>
     )
