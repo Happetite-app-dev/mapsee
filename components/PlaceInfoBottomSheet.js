@@ -4,7 +4,8 @@ import { ScrollView } from 'react-native-gesture-handler';
 const mapScreenBottomSheetExampleImage = require('../assets/image/mapScreenBottomSheetExample.png')
 const LocationplusIcon = require('../assets/icons/locationplus.png')
 const CreateNoteImage = require('../assets/image/CreateNote.png')
-const BottomSheetScreen = ({onDisplay, onCancel, animationVal, targetName, targetAddress, gotoScreen}) => {
+const BottomSheetScreen = ({onDisplay, onCancel, animationVal, targetName, targetAddress, navigation}) => {
+  const gotoEditScreen = () => {return(navigation.push("EditScreen", {placeName: targetName}))}
   if(animationVal<0){
     return(                                                 //bottomsheet가 전체 화면을 덮기 전
       <View style={{position:'absolute', width: '100%', height: '100%'}}>
@@ -25,7 +26,7 @@ const BottomSheetScreen = ({onDisplay, onCancel, animationVal, targetName, targe
               bottom: 23,
             }}
             underlayColor='blue'
-            onPress={()=>gotoScreen("EditScreen",{})}
+            onPress={gotoEditScreen}
           >
             <Image source={CreateNoteImage} resizeMode='contain' />
           </TouchableHighlight>
@@ -54,7 +55,7 @@ const BottomSheetScreen = ({onDisplay, onCancel, animationVal, targetName, targe
                 zIndex:1,
             }}
             underlayColor='blue'
-            onPress={()=>gotoScreen("EditScreen",{})}
+            onPress={gotoEditScreen}
         >
           <Image source={CreateNoteImage} resizeMode='contain' />
         </TouchableHighlight>
@@ -63,7 +64,7 @@ const BottomSheetScreen = ({onDisplay, onCancel, animationVal, targetName, targe
   }
 }
 
-const BottomSheet = ({onRemove, onDisplay, onCancel, setIsShow, animation, animationVal, targetName, targetAddress, gotoScreen, navigation}) => {
+const BottomSheet = ({onRemove, onDisplay, onCancel, setIsShow, animation, animationVal, targetName, targetAddress, navigation}) => {
   return(
     <View style={{width: '100%', height: '100%'}}>
     <View style={{width:'100%', height: '76%'}} onTouchEndCapture={()=>{setIsShow(false); onRemove(); navigation.navigate('Tabs')}}/>
@@ -90,14 +91,14 @@ const BottomSheet = ({onRemove, onDisplay, onCancel, setIsShow, animation, anima
     }}
     >
       <BottomSheetScreen onRemove={()=>onRemove()} onDisplay={()=>onDisplay()} onCancel={()=>onCancel()} 
-        animationVal={animationVal} targetName={targetName} targetAddress={targetAddress} gotoScreen={(a,b)=>gotoScreen(a,b)}/>  
+        animationVal={animationVal} targetName={targetName} targetAddress={targetAddress} navigation={navigation}/>  
     </Animated.View>
     </View>
   )
 }
 
 const PlaceInfoBottomSheet = ({route, navigation}) => {
-  const {setIsShow, targetName, targetAddress, targetId, gotoScreen} = route.params;
+  const {setIsShow, targetName, targetAddress, targetId} = route.params;
   const [animationValue, setAnimationValue] = useState(-1000);
   const showAnimation = useRef(new Animated.Value(animationValue)).current;
   useEffect(()=>{toggleAnimation3()}, []);
@@ -144,7 +145,6 @@ const PlaceInfoBottomSheet = ({route, navigation}) => {
       animationVal={animationValue}
       targetName={targetName}
       targetAddress={targetAddress}
-      gotoScreen={(a,b)=>gotoScreen(a,b)}
       navigation={navigation}
     />  
   )

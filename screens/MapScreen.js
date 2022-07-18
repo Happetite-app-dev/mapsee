@@ -14,7 +14,7 @@ const targetLocationImage = require('../assets/image/targetLocation.png')
 
 //address: 지번 주소, lctn: lat과 lng으로 이루어진 좌표 주소
 
-const MapScreen=({gotoScreen}) => {
+const MapScreen=({stackNavigation}) => {
 
   Geocoder.init("AIzaSyA2FBudItIm0cVgwNOsuc8D9BKk0HUeUTs", {language : "kor"}); 
   const mapRef = React.createRef();
@@ -30,7 +30,7 @@ const MapScreen=({gotoScreen}) => {
 
   useEffect(()=>{
     if(targetShown){
-      gotoScreen("PlaceInfoBottomSheetScreen", {setIsShow: s=>setTargetShown(s), targetName: target.name, targetAddress: target.address, targetId: target.id, gotoScreen: (a,b)=>gotoScreen(a,b)})
+      stackNavigation.navigate("PlaceInfoBottomSheetScreen", {setIsShow: s=>setTargetShown(s), targetName: target.name, targetAddress: target.address, targetId: target.id})
     }
   }, [targetShown])
 

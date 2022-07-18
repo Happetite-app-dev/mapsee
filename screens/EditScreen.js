@@ -1,4 +1,4 @@
-import {View, Text, StyleSheet, ScrollView, TextInput, Button, Image } from 'react-native';
+import {View, Text, StyleSheet, ScrollView, TextInput, Button, Image, SafeAreaView } from 'react-native';
 import React,{useState} from 'react';
 import ImgPicker from '../components/ImgPicker';
 import DatePicker from '../components/DatePicker';
@@ -11,10 +11,14 @@ const RecordFolderImage = require('../assets/image/RecordFolder.png');
 const RecordFolderNameImage = require('../assets/image/RecordFolderName.png');
 const RecordTextImage = require('../assets/image/RecordText.png');
 const RecordPhotoImage = require('../assets/image/RecordPhoto.png');
-
+const goBackImage = require('../assets/image/goBack.png')
 
 const EditScreen = ({navigation, route}) => {
-    const [place,setPlace]=useState('');
+    const {placeName} = route.params;
+
+    const [title, setTitle] = useState('');
+
+    const [place,setPlace]=useState(placeName);
 
     const [date, setDate] = useState(new Date());
     const [showDatePicker, setShowDatePicker] = useState(false);
@@ -27,14 +31,26 @@ const EditScreen = ({navigation, route}) => {
     const [text, setText]=useState('');
 
     return(
-        <View style={{zIndex: 10}}>
+        <SafeAreaView style={{width: '100%', height: '100%', position:'absolute'}}>
+        <View style={{height:'8%', width:'100%', flexDirection: 'row', alignItems:'center'}}>
+            <TouchableOpacity style={{left: 7, width:20, height:30, justifyContent:'center'}} onPress={()=>navigation.pop()}>
+                <Image source={goBackImage}/>
+            </TouchableOpacity>
+            <TextInput
+                style={{fontSize:17, fontWeight:'bold', top:7, left:1,...styles.textInput}}
+                onChangeText={tle=>setTitle(tle)}
+                value={title}
+                placeholder='제목'  
+                placeholderTextColor='grey'
+            />
+        </View>
         <ScrollView style={{height: '90%', width: '100%'}} showsVerticalScrollIndicator={false}>
             <View onTouchEndCapture={()=>{showFolderBottomSheet && setShowFolderBottomSheet(false)}} style={{height:50,...styles.item}}>
                 <Image source={RecordLocationImage}/>
                 <TextInput
-                    style={styles.textInput}
+                    style={{fontSize:15 ,...styles.textInput}}
                     onChangeText={plc=>setPlace(plc)}
-                    value={place}    
+                    value={place}  
                 />
             </View>
             <View onTouchEndCapture={()=>{showFolderBottomSheet && setShowFolderBottomSheet(false)}} style={{width: 350, height: showDatePicker? 266 : 50, ...styles.item}}>
@@ -75,7 +91,7 @@ const EditScreen = ({navigation, route}) => {
             </View>
         </ScrollView>
         <FolderBottomSheet show={showFolderBottomSheet} setShow={s=>{setShowFolderBottomSheet(s)}}/>
-        </View>
+        </SafeAreaView>
     )
 }
 

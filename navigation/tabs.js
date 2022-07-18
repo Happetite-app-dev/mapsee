@@ -29,7 +29,7 @@ const CustomTabBarButton = ({children, onPress}) => (
 
 const Tabs = ({navigation}) => {
     const MapScreen2 = () => {
-        return <MapScreen gotoScreen={(a,b)=>navigation.navigate(a,b)}/>
+        return <MapScreen stackNavigation={navigation}/>
     }
 
     return(

@@ -13,8 +13,8 @@ const App = () => {
     <NavigationContainer>
       <Stack.Navigator initialRouteName='Tabs'>
         <Stack.Screen name="Tabs" component={Tabs} options={{ headerShown: false }}/>
-        <Stack.Screen name="PlaceInfoBottomSheetScreen" component={PlaceInfoBottomSheetScreen} options={{headerShown: false, presentation:'transparentModal', contentStyle:{backgroundColor:'transparent', backfaceVisibility: 'hidden'}}}/>
-        <Stack.Screen name="EditScreen" component={EditScreen} />
+        <Stack.Screen name="PlaceInfoBottomSheetScreen" component={PlaceInfoBottomSheetScreen} options={{headerShown: false, presentation: 'containedTransparentModal',contentStyle:{backgroundColor:'transparent'}}} />
+        <Stack.Screen name="EditScreen" component={EditScreen} options={{headerShown: false, presentation: 'containedModal'}}/>
       </Stack.Navigator>
     </NavigationContainer>
   )

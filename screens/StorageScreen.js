@@ -8,7 +8,7 @@ import EditScreen from './EditScreen';
 const StorageScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
-      <EditScreen/>
+      <Text>안녕</Text>
     </SafeAreaView>
   );
 }
