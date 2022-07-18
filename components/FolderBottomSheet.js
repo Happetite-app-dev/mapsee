@@ -1,12 +1,13 @@
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import { Animated, Text, View, TouchableOpacity, Button } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 
-const FolderBottomSheet = () => {
+const FolderBottomSheet = ({show, setShow}) => {
   const [animationValue, setAnimationValue] = useState(-1000);
+  useEffect(()=>toggleAnimation(),[show])
   const showAnimation = useRef(new Animated.Value(animationValue)).current
   const toggleAnimation = () => {
-    const val = animationValue==0 ? -1000 : 0;
+    const val = show ? 0 : -1000;
     Animated.timing(showAnimation, {
       useNativeDriver: false,
       toValue: val,
@@ -15,44 +16,31 @@ const FolderBottomSheet = () => {
     setAnimationValue(val);
   }
   return (
-    // <>
-    //   <View
-    //     onTouchEndCapture = {()=>{
-    //       if(animationValue===0){
-    //         toggleAnimation();
-    //       } else{
-    //         alert("a");
-    //       }
-    //     }}
-    //     style={{flex:1, zIndex: 1, alignItems: 'center', justifyContent:'center'}}>
-    //     <Text>ddd</Text>
-    //   </View>
-    //   <BottomSheet onCancel={()=>{
-    //     toggleAnimation()
-    //   }} animation={showAnimation}/>
-    // </>
     <Animated.View style={{
         width: "100%",
         backgroundColor:"#fff",
         borderTopLeftRadius: 30,
-        borderBottomRightRadius: 30,
+        borderTopRightRadius: 30,
         padding: 20,
         position: 'absolute',
         zIndex: 3,
         alignItems: 'center',
         justifyContent: 'center',
-        maxHeight: 300,
+        height: 630,
         shadowOffset: {
           width: 0,
           height: 12,
         },
+        alignSelf:'center',
         shadowOpacity: 0.58, 
         shadowRadius: 16.00,
         bottom: showAnimation,
         elevation: 24,
       }}>
         <ScrollView showsHorizontalScrollIndicator={false} style={{width: "100%"}}>
-          <TouchableOpacity>
+        <TouchableOpacity onPress={()=>{
+            setShow(false);
+          }}>
             <View style={{
               backgroundColor: "grey",
               alignItems: 'center',
@@ -64,7 +52,9 @@ const FolderBottomSheet = () => {
               <Text style={{fontSize: 16, fontWeight: "bold"}}>Menu1</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={()=>{
+            setShow(false);
+          }}>
             <View style={{
               backgroundColor: "grey",
               alignItems: 'center',
@@ -76,7 +66,9 @@ const FolderBottomSheet = () => {
               <Text style={{fontSize: 16, fontWeight: "bold"}}>Menu2</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={()=>{
+            setShow(false);
+          }}>
             <View style={{
               backgroundColor: "grey",
               alignItems: 'center',
@@ -89,7 +81,7 @@ const FolderBottomSheet = () => {
             </View>
           </TouchableOpacity>
           <TouchableOpacity onPress={()=>{
-            toggleAnimation();
+            setShow(false);
           }}>
             <View style={{
               backgroundColor: "grey",
