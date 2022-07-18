@@ -27,15 +27,9 @@ const CustomTabBarButton = ({children, onPress}) => (
     </TouchableHighlight>
 );
 
-const Tabs = () => {
-    const [showTabBar, setShowTabBar] = useState(1);
-    const changeShowTabBar = () => {
-        if(showTabBar===1){setShowTabBar(0)}
-        else{setShowTabBar(1)} 
-    }    
-
+const Tabs = ({navigation}) => {
     const MapScreen2 = () => {
-        return <MapScreen changeShowTabBar={changeShowTabBar} />
+        return <MapScreen gotoScreen={(a,b)=>navigation.navigate(a,b)}/>
     }
 
     return(
@@ -55,7 +49,6 @@ const Tabs = () => {
                     height: 90,
                     opacity: 100,
                     zIndex:1,
-                    display: (showTabBar===1)? 'flex' : 'none',
                     ...styles.shadow
                 }  
             }}

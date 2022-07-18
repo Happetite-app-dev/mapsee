@@ -13,7 +13,7 @@ const RecordTextImage = require('../assets/image/RecordText.png');
 const RecordPhotoImage = require('../assets/image/RecordPhoto.png');
 
 
-const EditScreen = (props) => {
+const EditScreen = ({navigation, route}) => {
     const [place,setPlace]=useState('');
 
     const [date, setDate] = useState(new Date());
@@ -27,7 +27,7 @@ const EditScreen = (props) => {
     const [text, setText]=useState('');
 
     return(
-        <View>
+        <View style={{zIndex: 10}}>
         <ScrollView style={{height: '90%', width: '100%'}} showsVerticalScrollIndicator={false}>
             <View onTouchEndCapture={()=>{showFolderBottomSheet && setShowFolderBottomSheet(false)}} style={{height:50,...styles.item}}>
                 <Image source={RecordLocationImage}/>
