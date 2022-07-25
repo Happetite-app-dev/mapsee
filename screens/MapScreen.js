@@ -117,10 +117,10 @@ const MapScreen=({stackNavigation}) => {
         onPoiClick={(data)=>{
           targetingFromLocation(data.nativeEvent.coordinate, data.nativeEvent.name.split("\n")[0]);
         }}
-        // onPress={({nativeEvent})=>{
-        //   if((nativeEvent.action==="marker-press") && (nativeEvent.coordinate.latitude===target.lctn.latitude) && (nativeEvent.coordinate.longitude===target.lctn.longitude)){setTargetShown(true);}
-        //   else{setTargetShown(false);}
-        // }}
+        onPress={({nativeEvent})=>{
+          if((nativeEvent.action==="marker-press") && (nativeEvent.coordinate.latitude===target.lctn.latitude) && (nativeEvent.coordinate.longitude===target.lctn.longitude)){setTargetShown(true);}
+          else{setTargetShown(false);}
+        }}
       >
         <GooglePlacesInput />
         <Marker coordinate={current}>

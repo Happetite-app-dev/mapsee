@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import { Animated, Text, View, TouchableOpacity, Button } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 
-const FolderBottomSheet = ({show, setShow}) => {
+const FolderBottomSheet = ({show, setShow, setFolderName}) => {
   const [animationValue, setAnimationValue] = useState(-1000);
   useEffect(()=>toggleAnimation(),[show])
   const showAnimation = useRef(new Animated.Value(animationValue)).current
@@ -39,6 +39,7 @@ const FolderBottomSheet = ({show, setShow}) => {
       }}>
         <ScrollView showsHorizontalScrollIndicator={false} style={{width: "100%"}}>
         <TouchableOpacity onPress={()=>{
+            setFolderName('Menu1');
             setShow(false);
           }}>
             <View style={{
@@ -53,6 +54,7 @@ const FolderBottomSheet = ({show, setShow}) => {
             </View>
           </TouchableOpacity>
           <TouchableOpacity onPress={()=>{
+            setFolderName('Menu2');
             setShow(false);
           }}>
             <View style={{
@@ -67,6 +69,7 @@ const FolderBottomSheet = ({show, setShow}) => {
             </View>
           </TouchableOpacity>
           <TouchableOpacity onPress={()=>{
+            setFolderName('Menu3');
             setShow(false);
           }}>
             <View style={{
@@ -81,6 +84,7 @@ const FolderBottomSheet = ({show, setShow}) => {
             </View>
           </TouchableOpacity>
           <TouchableOpacity onPress={()=>{
+            setFolderName('Menu4');
             setShow(false);
           }}>
             <View style={{
