@@ -30,7 +30,7 @@ const MapScreen=({stackNavigation}) => {
 
   useEffect(()=>{
     if(targetShown){
-      stackNavigation.navigate("PlaceInfoBottomSheetScreen", {setIsShow: s=>setTargetShown(s), targetName: target.name, targetAddress: target.address, targetId: target.id})
+      stackNavigation.navigate("PlaceInfoBottomSheetScreen", {setIsShow: s=>setTargetShown(s), targetName: target.name, targetAddress: target.address, targetId: target.id, targetLctn: target.lctn})
     }
   }, [targetShown])
 

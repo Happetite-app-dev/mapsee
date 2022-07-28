@@ -4,8 +4,8 @@ import { ScrollView } from 'react-native-gesture-handler';
 const mapScreenBottomSheetExampleImage = require('../assets/image/mapScreenBottomSheetExample.png')
 const LocationplusIcon = require('../assets/icons/locationplus.png')
 const CreateNoteImage = require('../assets/image/CreateNote.png')
-const BottomSheetScreen = ({onDisplay, onCancel, animationVal, targetName, targetAddress, navigation}) => {
-  const gotoEditScreen = () => {return(navigation.push("EditScreen", {placeName: targetName}))}
+const BottomSheetScreen = ({onDisplay, onCancel, animationVal, targetName, targetAddress, targetId, targetLctn, navigation}) => {
+  const gotoEditScreen = () => {return(navigation.push("EditScreen", {placeName: targetName, placeID: targetId, address:targetAddress, lctn: targetLctn}))}
   if(animationVal<0){
     return(                                                 //bottomsheet가 전체 화면을 덮기 전
       <View style={{position:'absolute', width: '100%', height: '100%'}}>
@@ -64,7 +64,7 @@ const BottomSheetScreen = ({onDisplay, onCancel, animationVal, targetName, targe
   }
 }
 
-const BottomSheet = ({onRemove, onDisplay, onCancel, setIsShow, animation, animationVal, targetName, targetAddress, navigation}) => {
+const BottomSheet = ({onRemove, onDisplay, onCancel, setIsShow, animation, animationVal, targetName, targetAddress, targetId, targetLctn, navigation}) => {
   return(
     <View style={{width: '100%', height: '100%'}}>
     <View style={{width:'100%', height: '76%'}} onTouchEndCapture={()=>{setIsShow(false); onRemove(); navigation.navigate('Tabs')}}/>
@@ -91,14 +91,14 @@ const BottomSheet = ({onRemove, onDisplay, onCancel, setIsShow, animation, anima
     }}
     >
       <BottomSheetScreen onRemove={()=>onRemove()} onDisplay={()=>onDisplay()} onCancel={()=>onCancel()} 
-        animationVal={animationVal} targetName={targetName} targetAddress={targetAddress} navigation={navigation}/>  
+        animationVal={animationVal} targetName={targetName} targetAddress={targetAddress} targetId={targetId} targetLctn={targetLctn} navigation={navigation}/>  
     </Animated.View>
     </View>
   )
 }
 
 const PlaceInfoBottomSheet = ({route, navigation}) => {
-  const {setIsShow, targetName, targetAddress, targetId} = route.params;
+  const {setIsShow, targetName, targetAddress, targetId, targetLctn} = route.params;
   const [animationValue, setAnimationValue] = useState(-1000);
   const showAnimation = useRef(new Animated.Value(animationValue)).current;
   useEffect(()=>{toggleAnimation3()}, []);
@@ -145,6 +145,8 @@ const PlaceInfoBottomSheet = ({route, navigation}) => {
       animationVal={animationValue}
       targetName={targetName}
       targetAddress={targetAddress}
+      targetId = {targetId}
+      targetLctn={targetLctn}
       navigation={navigation}
     />  
   )

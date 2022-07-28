@@ -1,5 +1,5 @@
 import {View, Text, StyleSheet, ScrollView, TextInput, Button, Image, SafeAreaView } from 'react-native';
-import React,{createFactory, useState} from 'react';
+import React,{createFactory, useEffect, useState} from 'react';
 import ImgPicker from '../components/ImgPicker';
 import DatePicker from '../components/DatePicker';
 import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -14,7 +14,7 @@ const RecordFolderImage = require('../assets/image/RecordFolder.png');
 const RecordFolderNameImage = require('../assets/image/RecordFolderName.png');
 const RecordTextImage = require('../assets/image/RecordText.png');
 const RecordPhotoImage = require('../assets/image/RecordPhoto.png');
-const goBackImage = require('../assets/image/goBack.png')
+const goBackImage = require('../assets/image/goBack.png');
 
 const firebaseConfig = {
     apiKey: "AIzaSyDBq4tZ1QLm1R7iPH8O4dTvebVGWgkRPks",
@@ -27,20 +27,23 @@ const firebaseConfig = {
   };
 
 const app = initializeApp(firebaseConfig);
-
 const myID = "kho2011";
-const saveData = (title, place, date, folderName, selectedPhoto, text) => {
-    const db = getDatabase();
-    const reference1 = ref(db, `users/${myID}/folderIDs/${folderName}`);
-    set(reference1, 
-        true
-    );
 
-    const reference2 = ref(db, '/records');
-    push(reference2, {
+const saveData = (title, place, placeID, address, lctn, date, folderID, folderName, selectedPhoto, text) => {
+    const timeNow = new Date();
+    const writeDate = {year: timeNow.getFullYear(), month: timeNow.getMonth()+1, day: timeNow.getDate(), hour: timeNow.getHours(), minute: timeNow.getMinutes()}
+    const db = getDatabase();
+    const reference1 = ref(db, '/records');
+    push(reference1, {
+        folderID: folderID,
+        placeID: placeID,
+        address: address,
+        lctn: lctn,
+        userID: myID,
+        writeDate: writeDate,
         title: title,
         placeName: place,
-        date: date,
+        date: {year: date.getFullYear(), month: date.getMonth()+1, day: date.getDate()},
         folderName: folderName,
         photos: selectedPhoto,
         text: text
@@ -49,8 +52,8 @@ const saveData = (title, place, date, folderName, selectedPhoto, text) => {
 
 const EditScreen = ({navigation, route}) => {
 
-    const {placeName} = route.params;              //기존 폴더에 대해 추가 작성하고 싶거나 열람하고 싶은 경우 route로 받아온 값으로 부터 initializing이 필요하다
-
+    const {placeName, placeID, address, lctn} = route.params;              //기존 폴더에 대해 추가 작성하고 싶거나 열람하고 싶은 경우 route로 받아온 값으로 부터 initializing이 필요하다
+    
     const [title, setTitle] = useState('');
 
     const [place,setPlace]=useState(placeName);
@@ -58,6 +61,7 @@ const EditScreen = ({navigation, route}) => {
     const [date, setDate] = useState(new Date());
     const [showDatePicker, setShowDatePicker] = useState(false);
 
+    const [folderID, setFolderID] = useState();
     const [folderName, setFolderName] = useState('폴더명');
     const [showFolderBottomSheet, setShowFolderBottomSheet] = useState(false);
     
@@ -66,7 +70,7 @@ const EditScreen = ({navigation, route}) => {
     const [text, setText]=useState('');
 
     const storeRecord = () => {
-        saveData(title, place, date, folderName, selectedPhoto, text);
+        saveData(title, place, placeID, address, lctn, date, folderID, folderName, selectedPhoto, text);
     }
 
     return(
@@ -84,10 +88,10 @@ const EditScreen = ({navigation, route}) => {
             />
         </View>
         <ScrollView style={{height: '90%', width: '100%'}} showsVerticalScrollIndicator={false}>
-            <View onTouchEndCapture={()=>{showFolderBottomSheet && setShowFolderBottomSheet(false)}} style={{height:50,...styles.item}}>
+            <View onTouchEndCapture={()=>{showFolderBottomSheet && setShowFolderBottomSheet(false)}} style={{height:50, ...styles.item}}>
                 <Image source={RecordLocationImage}/>
                 <TextInput
-                    style={{fontSize:15 ,...styles.textInput}}
+                    style={{fontSize:15,...styles.textInput}}
                     onChangeText={plc=>setPlace(plc)}
                     value={place}  
                 />
@@ -129,7 +133,7 @@ const EditScreen = ({navigation, route}) => {
                 </TouchableOpacity>
             </View>
         </ScrollView>
-        <FolderBottomSheet show={showFolderBottomSheet} setShow={s=>{setShowFolderBottomSheet(s)}} setFolderName={f=>setFolderName(f)}/>
+        <FolderBottomSheet show={showFolderBottomSheet} setShow={s=>{setShowFolderBottomSheet(s)}} setFolderName={f=>setFolderName(f)} setFolderID={f=>setFolderID(f)}/>
         </SafeAreaView>
     )
 }
@@ -141,7 +145,7 @@ const styles=StyleSheet.create({
     item:{
         marginLeft:7,
         flex:1,
-        flexDirection: 'row'
+        flexDirection: 'row',
     },
     label:{
         fontSize: 17,
@@ -149,7 +153,7 @@ const styles=StyleSheet.create({
         marginBottom:15,
         marginRight:15,
         paddingVertical:4,
-        paddingHorizontal:2
+        paddingHorizontal:2,
     },
     textInput:{
         //borderBottomColor: '#B0E0E6',
