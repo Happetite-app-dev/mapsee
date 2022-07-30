@@ -2,7 +2,6 @@ import { set } from 'firebase/database';
 import React, {useEffect, useRef, useState} from 'react';
 import { Animated, Text, View, TouchableOpacity, Button } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import { getPixelSizeForLayoutSize } from 'react-native/Libraries/Utilities/PixelRatio';
 import AddFolderBottomSheet from './AddFolderBottomSheet';
 
 import { initializeApp } from "firebase/app";
@@ -28,7 +27,7 @@ const FolderBottomSheet = ({show, setShow, setFolderName, setFolderID}) => {
       const folderIDList = Object.keys(snapshot.val());
       folderIDList.map((folderID)=>{
         return onValue(ref(db, '/folders/'+folderID+'/folderName'), (snapshot2)=>{
-            setFolderIDNameList((prev)=>[...prev, {folderID: folderID, folderName: snapshot2.val()}])           //elem의 [0]은 ID, [1]은 folderName
+            setFolderIDNameList((prev)=>[...prev, {folderID: folderID, folderName: snapshot2.val()}])          
         })
       })
       }

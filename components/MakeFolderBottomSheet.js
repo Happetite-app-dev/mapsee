@@ -17,7 +17,11 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const myID = "kho2011";
 
-const AddFolderBottomSheet = ({setFolderName, setFolderID, setFolderIDNameList, setShow}) => {
+const MakeFolderBottomSheet = ({stackNavigation}) => {
+    
+  const gotoStorageScreen = () => {
+    stackNavigation.navigate("Tabs")
+  }
   const addNewFolder = (folderName, folderColor, userID) => {
     const db = getDatabase();
   
@@ -27,14 +31,10 @@ const AddFolderBottomSheet = ({setFolderName, setFolderID, setFolderIDNameList, 
         folderColor: folderColor,
         userIDs: userID
         }).key;
-
     const reference2 = ref(db, `users/${myID}/folderIDs/${newFolderID}`);      //user에 folderID를 넣고
     set(reference2, 
         true
-    );
-    setFolderIDNameList((prev)=>[...prev, {folderID: newFolderID, folderName: newFolderName}]);
-    setFolderID(newFolderID);
-    setFolderName(newFolderName);
+    )
   }
 
     const [newFolderName, setNewFolderName] = useState('')
@@ -125,7 +125,7 @@ const AddFolderBottomSheet = ({setFolderName, setFolderID, setFolderIDNameList, 
         </View>
         <TouchableOpacity onPress={()=>{
             addNewFolder(newFolderName, newFolderColor, newFolderUserID);
-            setShow(false);
+            gotoStorageScreen();
           }}
           style={{
             position:'absolute',
@@ -150,4 +150,4 @@ const AddFolderBottomSheet = ({setFolderName, setFolderID, setFolderIDNameList, 
     )
 }
 
-export default AddFolderBottomSheet;
+export default MakeFolderBottomSheet;

@@ -35,7 +35,6 @@ const MypageScreen = ({navigation}) => {
         placeholder='Search'
         onPress={(data, details = null) => {
           // 'details' is provided when fetchDetails = true
-          console.log(data, details);
           setLctn(data.description);
         }}
         query={{

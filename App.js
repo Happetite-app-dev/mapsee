@@ -5,6 +5,7 @@ import EditScreen from './screens/EditScreen';
 import PlaceInfoBottomSheetScreen from './screens/PlaceInfoBottomSheetScreen';
 import { View } from 'react-native';
 import { useState } from 'react';
+import MakeFolderBottomSheetScreen from './screens/MakeFolderBottomSheetScreen';
 
 const Stack= createNativeStackNavigator();
 
@@ -13,6 +14,7 @@ const App = () => {
     <NavigationContainer>
       <Stack.Navigator initialRouteName='Tabs'>
         <Stack.Screen name="Tabs" component={Tabs} options={{ headerShown: false }}/>
+        <Stack.Screen name="MakeFolderBottomSheetScreen" component={MakeFolderBottomSheetScreen} options={{headerShown: false, presentation: 'containedTransparentModal',contentStyle:{backgroundColor:'transparent'}}}/>
         <Stack.Screen name="PlaceInfoBottomSheetScreen" component={PlaceInfoBottomSheetScreen} options={{headerShown: false, presentation: 'containedTransparentModal',contentStyle:{backgroundColor:'transparent'}}} />
         <Stack.Screen name="EditScreen" component={EditScreen} options={{headerShown: false, presentation: 'containedModal'}}/>
       </Stack.Navigator>

@@ -31,6 +31,9 @@ const Tabs = ({navigation}) => {
     const MapScreen2 = () => {
         return <MapScreen stackNavigation={navigation}/>
     }
+    const StorageScreen2 = () => {
+        return <StorageScreen stackNavigation={navigation}/>
+    }
 
     return(
         <Tab.Navigator
@@ -53,7 +56,7 @@ const Tabs = ({navigation}) => {
                 }  
             }}
         >   
-            <Tab.Screen name="Storage" component={StorageScreen} options={{
+            <Tab.Screen name="Storage" component={StorageScreen2} options={{
                 tabBarIcon: ({focused}) => (
                     <View style={{alignItems: 'center', justifyContent: 'center', top: 10}}>
                         <Image                    

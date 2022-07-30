@@ -28,6 +28,8 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const myID = "kho2011";
+const defaultFolderID = "123123123";
+const defaultFolderName = "폴더1"
 
 const saveData = (title, place, placeID, address, lctn, date, folderID, folderName, selectedPhoto, text) => {
     const timeNow = new Date();
@@ -41,7 +43,7 @@ const saveData = (title, place, placeID, address, lctn, date, folderID, folderNa
         lctn: lctn,
         userID: myID,
         writeDate: writeDate,
-        title: title,
+        title: title==undefined ? `${timeNow.getFullYear().toString()}_${(timeNow.getMonth()+1).toString()}_${timeNow.getDay().toString()}_기록` : title,
         placeName: place,
         date: {year: date.getFullYear(), month: date.getMonth()+1, day: date.getDate()},
         folderName: folderName,
@@ -52,17 +54,18 @@ const saveData = (title, place, placeID, address, lctn, date, folderID, folderNa
 
 const EditScreen = ({navigation, route}) => {
 
+    const timeNow2 = new Date();
     const {placeName, placeID, address, lctn} = route.params;              //기존 폴더에 대해 추가 작성하고 싶거나 열람하고 싶은 경우 route로 받아온 값으로 부터 initializing이 필요하다
     
-    const [title, setTitle] = useState('');
+    const [title, setTitle] = useState(undefined);
 
     const [place,setPlace]=useState(placeName);
 
     const [date, setDate] = useState(new Date());
     const [showDatePicker, setShowDatePicker] = useState(false);
 
-    const [folderID, setFolderID] = useState();
-    const [folderName, setFolderName] = useState('폴더명');
+    const [folderID, setFolderID] = useState(defaultFolderID);
+    const [folderName, setFolderName] = useState(defaultFolderName);
     const [showFolderBottomSheet, setShowFolderBottomSheet] = useState(false);
     
     const [selectedPhoto, setSelectedPhoto]=useState(null);
@@ -83,7 +86,7 @@ const EditScreen = ({navigation, route}) => {
                 style={{fontSize:17, fontWeight:'bold', top:7, left:1,...styles.textInput}}
                 onChangeText={tle=>setTitle(tle)}
                 value={title}
-                placeholder='제목'  
+                placeholder={`${timeNow2.getFullYear().toString()}_${(timeNow2.getMonth()+1).toString()}_${timeNow2.getDay().toString()}_기록`}  
                 placeholderTextColor='grey'
             />
         </View>
