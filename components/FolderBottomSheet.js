@@ -24,19 +24,23 @@ const FolderBottomSheet = ({show, setShow, setFolderName, setFolderID}) => {
   useEffect(()=>{
     const db = getDatabase();
     return onValue(ref(db, '/users/' + myID + '/folderIDs'), (snapshot) => {
+      if(snapshot.val()!=null){
       const folderIDList = Object.keys(snapshot.val());
+      setFolderIDNameList([])
       folderIDList.map((folderID)=>{
         return onValue(ref(db, '/folders/'+folderID+'/folderName'), (snapshot2)=>{
             setFolderIDNameList((prev)=>[...prev, {folderID: folderID, folderName: snapshot2.val()}])          
         })
       })
       }
+    }
     )
+    
     }, {
       onlyOnce: true
   },[]);
 
-  const [folderIDNameList, setFolderIDNameList] = useState([]);
+  const [folderIDNameList, setFolderIDNameList] = useState([]);            //{folderID: folderName}가 쌓여있음
   const [isSelectingFolder, setIsSelectingFolder] = useState(true);    //folderlist 창과 폴더 추가창 중 무엇을 띄울지에 대한 bool
 
   const [animationValue, setAnimationValue] = useState(-1000);

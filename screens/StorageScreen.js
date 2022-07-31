@@ -10,6 +10,7 @@ const searchImage = require('../assets/image/search.png')
 
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, onValue, set, push } from 'firebase/database';
+import RecordFlatList from '../components/RecordFlatList';
 const firebaseConfig = {
   apiKey: "AIzaSyDBq4tZ1QLm1R7iPH8O4dTvebVGWgkRPks",
   authDomain: "mapseedemo1.firebaseapp.com",
@@ -23,114 +24,91 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const myID = "kho2011";
 
-const DATA = [
-  {
-    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-    file: 'abcd',
-    //fileColor: 'red'
-    location: ['서울시 아몰랑', 10, 20],
-    date: '2020.01.01',
-    content: {
-      contentDate: '2020.01.02',
-      contentTitle: '개발조아1',
-      contentLocation: '짧은주소',
-      contentText: '기록내용',
-      contentImage: '이미지 어떤식으로 넣어야 함? 용량이 커서 개인기록은 로컬에 저장하는 것도 방법'
-    }
-  },
-  {
-    id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-    file: 'abcd',
-    //fileColor: 'red'
-    location: ['서울시 아몰랑', 10, 20],
-    date: '2020.01.01',
-    content: {
-      contentDate: '2020.01.02',
-      contentTitle: '개발조아2',
-      contentLocation: '짧은주소',
-      contentText: '기록내용',
-      contentImage: '이미지 어떤식으로 넣어야 함? 용량이 커서 개인기록은 로컬에 저장하는 것도 방법'
-    }
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d72',
-    file: '기본',
-    //fileColor: 'blue'
-    location: ['서울시 아몰랑', 10, 20],
-    date: '2020.01.01',
-    content: {
-      contentDate: '2020.01.02',
-      contentTitle: '개발조아3',
-      contentLocation: '짧은주소',
-      contentText: '기록내용',
-      contentImage: '이미지 어떤식으로 넣어야 함? 용량이 커서 개인기록은 로컬에 저장하는 것도 방법'
-    }
-  },
-];
-
 const StorageScreen = ({stackNavigation}) => {
-  useEffect(()=>{                                           //uniquefile채워주기
+  useEffect(()=>{                                          
     const db = getDatabase();
     onValue(ref(db, '/users/' + myID + '/folderIDs'), (snapshot) => {
-      const folderIDList = Object.keys(snapshot.val());
-      setUniqueFile([]);
-      folderIDList.map((folderID)=>{
-        return onValue(ref(db, '/folders/'+folderID+'/folderName'), (snapshot2)=>{
-          setUniqueFile((prev)=>[...prev, {folderID: folderID, folderName: snapshot2.val()}])          
-        })
-      })
-      }
-    )
-    onValue(ref(db, '/records'), (snapshot)=>{
-      setMasterDataSource(Object.values(snapshot.val()));
-    } )
-    }, {
-      onlyOnce: true
-  },[]);
+      if(snapshot.val()!=null){                             //한 user가 folder를 갖고 있지 않을 수 있어!!
+        //let recordIDList_=[];
+        const folderIDList = Object.keys(snapshot.val());           //folderIDList 만들기
+        setFolderIDNameColorList([]);                                 //initializing folderIDNameList
+        setMasterDataSource([]);                                  //initializing masterDataSource
 
-  const [userData, setUserData] = useState({});           
-  const [uniqueFiles, setUniqueFile] = useState([]);      //{folderID: folderName}가 쌓여있음
-  const [selectedFile, setSelectedFile] = useState([]);   
+        folderIDList.map((folderID)=>{                        //각 폴더에 대하여....
+          onValue(ref(db, '/folders/'+folderID), (snapshot2)=>{        
+            setFolderIDNameColorList((prev)=>[...prev, {folderID: folderID, folderName: snapshot2.child('folderName').val(), folderColor: snapshot2.child('folderColor').val()}])  //folderIDNameList채워주기
+            if(snapshot2.child('placeRecords').val()!=null)      //폴더는 있지만 빈폴더라서 record가 안에 없을 수 있어!!        
+            {
+              //recordIDList_.push(...Object.keys(snapshot2.child('placeRecords').val()))  //해당 user가 소속된 각 폴더에 들어있는 recordIDList들을 합쳐서 하나로 만들어주기(버림)
+              Object.values(snapshot2.child('placeRecords').val()).map((recordIDObject)=>{     //folders의 placeRecord 속에 있는 각 placeID에 대응되는 recordIDObject들에 대하여....
+                Object.keys(recordIDObject).map((recordID)=>{                                   //각 recordObject에 있는 recordID에 대하여 
+                  onValue(ref(db, '/records/'+recordID), (snapshot3)=>{                                            //masterDataSource 채워주기
+                    setMasterDataSource((prev)=>[...prev, {recordID: recordID, recordData: snapshot3.val()}])      //{recordID: recordID, recordData:{title: ~~, date: ~~, lctn: ~~, text: ~~, placeName: ~~}}가 쌓여있음
+                  })
+                })
+              })
+            } 
+          })
+        })
+      }
+    }
+    )
+   }, {
+     onlyOnce: true
+  },[]);
   
-  const [filteredDataSource, setFilteredDataSource] = useState([]); 
-  const [masterDataSource, setMasterDataSource] = useState([]);  //record가 쌓여있음 {recordID: record내용}
+  const [folderIDNameColorList, setFolderIDNameColorList] = useState([]);      //{folderID, folderName, folderColor}가 쌓여있음
+  const [selectedFolderID, setSelectedFolderID] = useState(undefined);   
+  
+  const [masterDataSource, setMasterDataSource] = useState([]);     //shortened record가 쌓여있음 {recordID, title, folderID, placeName, date, text, photos}
 
   const gotoAddFolderBottomSheetScreen = () => {
     stackNavigation.navigate("MakeFolderBottomSheetScreen")
   }
+
+
+
+
+
+  const gotoSingleFolderScreen = (recordDataSource) => {
+    setSelectedFolderID(undefined)
+    stackNavigation.navigate("SingleFolderScreen", {recordDataSource: recordDataSource})
+  }
+
   //선택된 파일에 따라서 filter 변화 useEffect
   useEffect(() => {
-    filterFunction(selectedFile)
-  }, [selectedFile])
+    console.log(selectedFolderID)
+    if(selectedFolderID!=undefined){
+      filterFunction(selectedFolderID)
+    }
+  }, [selectedFolderID])
 
-  const filterFunction = (fileName) => {
-    // If fileName is "all", we don't filter anything
-    if(fileName === 'all') {
-      setFilteredDataSource(masterDataSource);
-    }
-    // If fileName is not "all", we apply filter based on file
-    else {
+  const filterFunction = (folderID) => {
       // Filter the masterDataSource and update FilteredDataSource
-      const newData = masterDataSource.filter(function (item) {
+      const filteredDataSource = masterDataSource.filter(function (item) {
         // Applying filter for the inserted text in search bar
-        return item.folderName == fileName;
+        return item.recordData.folderID === folderID;
       });
-      setFilteredDataSource(newData);
-    }
+      gotoSingleFolderScreen(filteredDataSource)
   };
 
-  const IndividualFolder = ({folderID, folderName}) => {
+
+
+
+
+  const IndividualFolder = ({folderID, folderName, folderColor}) => {
     return(
       <TouchableOpacity
           onPress={() => {
-            setSelectedFile(folderName)
-            //<naviagte folderID, folderName> 
+            setSelectedFolderID(folderID)
+            //gotoSingleFolderScreen()
           }}
           style={{height:65}}
       >
         <View style={{marginLeft:10, marginRight:10}}>
           <Image
             source={folderImage}
+            style={{tintColor: folderColor}}
           />
             {/* Image source path changes depending on fileColor */}
             {/* <Image source={} style={{width: 50, height:50}}/> */}
@@ -140,26 +118,9 @@ const StorageScreen = ({stackNavigation}) => {
     )
   }
 
-  const IndividualRecord = ({ title, placeName, date}) => (
-    <View style={styles.item}>
-      <Text style={styles.title}>{title}</Text>
-      <Text style={styles.title}>{placeName}</Text>
-      <Text style={styles.title}>{`${date.year}.${date.month}.${date.day}`}</Text>
-    </View>
-  );
-
   const renderFolder = ({ item }) => (
-    <IndividualFolder folderID={item.folderID} folderName={item.folderName} />
+    <IndividualFolder folderID={item.folderID} folderName={item.folderName} folderColor={item.folderColor}/>
   );  
-
-  const renderItem = ({ item }) => (
-    
-    <IndividualRecord 
-      title={item.title}
-      placeName={item.placeName}
-      date={item.date}
-    />
-  );
 
   return (
     <SafeAreaView style={styles.container}>
@@ -181,7 +142,7 @@ const StorageScreen = ({stackNavigation}) => {
       </View>
       <View style={{height: 85}}>
         <FlatList
-          data={uniqueFiles}
+          data={folderIDNameColorList}
           renderItem={renderFolder}
           keyExtractor={item => item.id}
           horizontal={true}
@@ -190,26 +151,7 @@ const StorageScreen = ({stackNavigation}) => {
           }}
         />
       </View>
-      <FlatList
-        data={masterDataSource}
-        renderItem={renderItem}
-        keyExtractor={item => '_'+item.id}
-        key={'_'}
-        numColumns={2}
-        style={{
-          flex:1,
-          left: 10
-        }}
-        
-      />
-      {/* <FolderMakerBottomSheet 
-        isShow={showFolderMaker}
-        showOnOff={setShowFolderMaker}
-        fileName={newFileName}
-        setFileName={setNewFileName}
-        fileColor={newFileColor}
-        setFileColor={setNewFileColor}
-      /> */}
+      <RecordFlatList recordDataSource={masterDataSource} stackNavigation={stackNavigation}/>
     </SafeAreaView>
   );
 }

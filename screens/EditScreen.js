@@ -35,8 +35,8 @@ const saveData = (title, place, placeID, address, lctn, date, folderID, folderNa
     const timeNow = new Date();
     const writeDate = {year: timeNow.getFullYear(), month: timeNow.getMonth()+1, day: timeNow.getDate(), hour: timeNow.getHours(), minute: timeNow.getMinutes()}
     const db = getDatabase();
-    const reference1 = ref(db, '/records');
-    push(reference1, {
+    const reference1 = ref(db, '/records');                   
+    let newRecordID = push(reference1, {                                   // records에 push
         folderID: folderID,
         placeID: placeID,
         address: address,
@@ -49,7 +49,12 @@ const saveData = (title, place, placeID, address, lctn, date, folderID, folderNa
         folderName: folderName,
         photos: selectedPhoto,
         text: text
-        });
+        }).key;
+    const reference2 = ref(db, `/folders/${folderID}/placeRecords/${placeID}/${newRecordID}`);           //folder에 recordID를 넣고
+    set(reference2, 
+        true    
+    )
+
 }
 
 const EditScreen = ({navigation, route}) => {
@@ -86,7 +91,7 @@ const EditScreen = ({navigation, route}) => {
                 style={{fontSize:17, fontWeight:'bold', top:7, left:1,...styles.textInput}}
                 onChangeText={tle=>setTitle(tle)}
                 value={title}
-                placeholder={`${timeNow2.getFullYear().toString()}_${(timeNow2.getMonth()+1).toString()}_${timeNow2.getDay().toString()}_기록`}  
+                placeholder={`${timeNow2.getFullYear().toString()}_${(timeNow2.getMonth()+1).toString()}_${timeNow2.getDate().toString()}_기록`}  
                 placeholderTextColor='grey'
             />
         </View>
