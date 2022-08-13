@@ -14,7 +14,7 @@ const targetLocationImage = require('../assets/image/targetLocation.png')
 
 //address: 지번 주소, lctn: lat과 lng으로 이루어진 좌표 주소
 
-const MapScreen = ({ stackNavigation }) => {
+const MapScreen = ({navigation}) => {
 
   const mapRef = React.createRef();
   const [origin, setOrigin] = useState({ latitude: 0, longitude: 0, latitudeDelta: 0.0016, longitudeDelta: 0.0012 });   //현재 스크린에 나타나는 map의 중앙 좌표값
@@ -30,7 +30,7 @@ const MapScreen = ({ stackNavigation }) => {
 
   useEffect(() => {
     if (targetShown) {
-      stackNavigation.navigate("PlaceInfoBottomSheetScreen", { setIsShow: s => setTargetShown(s), targetName: target.name, targetAddress: target.address, targetId: target.id, targetLctn: target.lctn })
+      navigation.navigate("PlaceInfoBottomSheetScreen", { setIsShow: s => setTargetShown(s), targetName: target.name, targetAddress: target.address, targetId: target.id, targetLctn: target.lctn })
     }
   }, [targetShown])
 

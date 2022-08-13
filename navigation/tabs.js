@@ -28,13 +28,6 @@ const CustomTabBarButton = ({children, onPress}) => (
 );
 
 const Tabs = ({navigation}) => {
-    const MapScreen2 = () => {
-        return <MapScreen stackNavigation={navigation}/>
-    }
-    const StorageScreen2 = () => {
-        return <StorageScreen stackNavigation={navigation}/>
-    }
-
     return(
         <Tab.Navigator
             initialRouteName="Map"
@@ -56,7 +49,7 @@ const Tabs = ({navigation}) => {
                 }  
             }}
         >   
-            <Tab.Screen name="Storage" component={StorageScreen2} options={{
+            <Tab.Screen name="Storage" component={StorageScreen} options={{
                 tabBarIcon: ({focused}) => (
                     <View style={{alignItems: 'center', justifyContent: 'center', top: 10}}>
                         <Image                    
@@ -78,7 +71,7 @@ const Tabs = ({navigation}) => {
                     </View>
                 )
             }}/>
-            <Tab.Screen name="Map" component={MapScreen2} 
+            <Tab.Screen name="Map" component={MapScreen} 
                 options={{
                     tabBarIcon: ({focused}) => (
                         <Image

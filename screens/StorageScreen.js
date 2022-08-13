@@ -24,7 +24,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const myID = "kho2011";
 
-const StorageScreen = ({stackNavigation}) => {
+const StorageScreen = ({navigation}) => {
   const isFocused = useIsFocused();
   useEffect(()=>{    
     if(isFocused)
@@ -66,16 +66,12 @@ const StorageScreen = ({stackNavigation}) => {
   const [masterDataSource, setMasterDataSource] = useState([]);     //shortened record가 쌓여있음 {recordID, title, folderID, placeName, date, text, photos}
 
   const gotoMakeFolderBottomSheetScreen = () => {
-    stackNavigation.navigate("MakeFolderBottomSheetScreen", {folderName: null, folderColor: null})
+    navigation.navigate("MakeFolderBottomSheetScreen", {folderName: null, folderColor: null})
   }
-
-
-
-
 
   const gotoSingleFolderScreen = (recordDataSource, folderID, folderName, folderColor) => {
     setSelectedFolderIDNameColor(undefined)
-    stackNavigation.navigate("SingleFolderScreen", {recordDataSource: recordDataSource, folderID: folderID, folderName: folderName, folderColor: folderColor})
+    navigation.navigate("SingleFolderScreen", {recordDataSource: recordDataSource, folderID: folderID, folderName: folderName, folderColor: folderColor})
   }
 
   //선택된 파일에 따라서 filter 변화 useEffect
@@ -153,7 +149,7 @@ const StorageScreen = ({stackNavigation}) => {
           }}
         />
       </View>
-      <RecordFlatList recordDataSource={masterDataSource} stackNavigation={stackNavigation}/>
+      <RecordFlatList recordDataSource={masterDataSource} stackNavigation={navigation}/>
     </SafeAreaView>
   );
 }
