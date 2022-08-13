@@ -2,7 +2,7 @@ import { FlatList, StyleSheet, View, Text, TouchableOpacity } from "react-native
 
 const RecordFlatList = ({recordDataSource, stackNavigation}) => {
     const gotoEditScreen = (item) => {
-      stackNavigation.navigate("EditScreen",{placeName: item.recordData.placeName, placeID: item.recordData.placeID, address: item.recordData.address, lctn: item.recordData.lctn})
+      stackNavigation.navigate("EditScreen",{recordID: item.recordID, ...item.recordData})
     }
     const IndividualRecord = ({ item }) => (
         <View style={styles.item}>

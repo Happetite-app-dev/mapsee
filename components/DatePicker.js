@@ -12,7 +12,7 @@ const getday = (day) => {
     else if(day==6){return '토'}
 }
 
-const DatePicker = ({date1, setDate1, show, setShow}) => {
+const DatePicker = ({date1, setDate1, show, setShow, IsEditable}) => {
     const [date, setDate] = useState(date1);
     const onChange = (event, selectedDate) => {
         const currentDate = selectedDate;
@@ -25,7 +25,10 @@ const DatePicker = ({date1, setDate1, show, setShow}) => {
             setShow(false);
         }
         else{
-            setShow(true);
+            if(IsEditable)
+            {
+                setShow(true);
+            }
         }
     };
 

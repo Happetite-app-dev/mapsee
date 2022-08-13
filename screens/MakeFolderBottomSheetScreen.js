@@ -3,6 +3,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import { Animated, Text, View, TouchableOpacity, Button } from 'react-native';
 
 const MakeFolderBottomSheetScreen = ({navigation, route}) => {
+  const {folderID, folderName, folderColor, recordDataSource}= route.params
   const [animationValue, setAnimationValue] = useState(0);
 
   const showAnimation = useRef(new Animated.Value(animationValue)).current
@@ -40,7 +41,7 @@ const MakeFolderBottomSheetScreen = ({navigation, route}) => {
         bottom: showAnimation,
         elevation: 24,
       }}>
-        <MakeFolderBottomSheet stackNavigation={navigation}/>
+        <MakeFolderBottomSheet stackNavigation={navigation} folderID={folderID} folderName_={folderName} folderColor_={folderColor} recordDataSource={recordDataSource}/>
       </Animated.View>
       </View>
   )  

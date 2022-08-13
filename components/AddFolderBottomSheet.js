@@ -25,11 +25,13 @@ const AddFolderBottomSheet = ({setFolderName, setFolderID, setFolderIDNameList, 
     let newFolderID = push(reference1, {
         folderName: folderName,
         folderColor: folderColor,
-        userIDs: userID
         }).key;
-
-    const reference2 = ref(db, `users/${myID}/folderIDs/${newFolderID}`);      //user에 folderID를 넣고
-    set(reference2, 
+    const reference2 = ref(db, `/folders/${newFolderID}/userIDs/${myID}`)     //folders/newfolderID/userIDs에 userID:true를 넣기
+    set (reference2,
+      true
+    );
+    const reference3 = ref(db, `users/${myID}/folderIDs/${newFolderID}`);      //user에 folderID를 넣고
+    set(reference3, 
         true
     );
     setFolderIDNameList((prev)=>[...prev, {folderID: newFolderID, folderName: newFolderName}]);

@@ -8,53 +8,55 @@ import Geocoder from 'react-native-geocoding';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { TouchableOpacity } from 'react-native';
 import PlaceInfoBottomSheet from '../components/PlaceInfoBottomSheet';
-const findCurrentLocationImage = require('../assets/image/findCurrentLocation.png');                             
+const findCurrentLocationImage = require('../assets/image/findCurrentLocation.png');
 const currentLocationImage = require('../assets/image/currentLocation.png');
 const targetLocationImage = require('../assets/image/targetLocation.png')
 
 //address: 지번 주소, lctn: lat과 lng으로 이루어진 좌표 주소
 
-const MapScreen=({stackNavigation}) => {
-  Geocoder.init("AIzaSyA2FBudItIm0cVgwNOsuc8D9BKk0HUeUTs", {language : "kor"}); 
+const MapScreen = ({ stackNavigation }) => {
+
   const mapRef = React.createRef();
-  const [origin, setOrigin] = useState({latitude: 0, longitude: 0, latitudeDelta: 0.0016, longitudeDelta: 0.0012});   //현재 스크린에 나타나는 map의 중앙 좌표값
-  const [current, setCurrent] = useState({latitude: 0, longitude: 0});                  //내 위치 좌표
-  const [target, setTarget] = useState({name: '', address: '', id: '', lctn:{latitude: 0, longitude:0}}); //검색 target의 좌표
+  const [origin, setOrigin] = useState({ latitude: 0, longitude: 0, latitudeDelta: 0.0016, longitudeDelta: 0.0012 });   //현재 스크린에 나타나는 map의 중앙 좌표값
+  const [current, setCurrent] = useState({ latitude: 0, longitude: 0 });                  //내 위치 좌표
+  const [target, setTarget] = useState({ name: '', address: '', id: '', lctn: { latitude: 0, longitude: 0 } }); //검색 target의 좌표
   const [targetShown, setTargetShown] = useState(false);
   const [isShowBottomSheet, setIsShowBottomSheet] = useState(false);
 
-  useEffect(()=>{
+  useEffect(() => {
+    Geocoder.init("AIzaSyA2FBudItIm0cVgwNOsuc8D9BKk0HUeUTs", { language: "kor" });
     getLocationPermission();
-  },[])
+  }, [])
 
-  useEffect(()=>{
-    if(targetShown){
-      stackNavigation.navigate("PlaceInfoBottomSheetScreen", {setIsShow: s=>setTargetShown(s), targetName: target.name, targetAddress: target.address, targetId: target.id, targetLctn: target.lctn})
+  useEffect(() => {
+    if (targetShown) {
+      stackNavigation.navigate("PlaceInfoBottomSheetScreen", { setIsShow: s => setTargetShown(s), targetName: target.name, targetAddress: target.address, targetId: target.id, targetLctn: target.lctn })
     }
   }, [targetShown])
 
-  const targetingFromAddress = (address, name) => {
-    Geocoder.from(address)
-        .then(json => {
-            var location = json.results[0].geometry.location;
-            const lat = location.lat;
-            const lng = location.lng;
-            setOrigin({latitude: lat, longitude: lng, latitudeDelta: 0.0016, longitudeDelta: 0.0012});
-            setTarget({name: name, address: address, id: json.results[0].place_id ,lctn:{latitude: lat, longitude:lng}});
-            setTargetShown(true);
-        })
-        .catch(error => console.warn(error));
+  const targetingFromAddress = async (address, name) => {
+    try {
+      const json = await Geocoder.from(address)
+      var location = json.results[0].geometry.location;
+      const lat = location.lat;
+      const lng = location.lng;
+      setOrigin({ latitude: lat, longitude: lng, latitudeDelta: 0.0016, longitudeDelta: 0.0012 });
+      setTarget({ name: name, address: address, id: json.results[0].place_id, lctn: { latitude: lat, longitude: lng } });
+      setTargetShown(true);
+    } catch (e) {
+      console.warn(e)
+    }
   }
 
   const targetingFromLocation = (lctn, name) => {
     Geocoder.from(lctn)
-        .then(json => {
-            var addressComponent  = json.results[0].formatted_address;
-            setOrigin({latitude: lctn.latitude, longitude: lctn.longitude, latitudeDelta: 0.0016, longitudeDelta: 0.0012});
-            setTarget({name: name, address: addressComponent, id: json.results[0].place_id, lctn:{latitude: lctn.latitude, longitude:lctn.longitude}});
-            setTargetShown(true);
-        })
-        .catch(error => console.warn(error));
+      .then(json => {
+        var addressComponent = json.results[0].formatted_address;
+        setOrigin({ latitude: lctn.latitude, longitude: lctn.longitude, latitudeDelta: 0.0016, longitudeDelta: 0.0012 });
+        setTarget({ name: name, address: addressComponent, id: json.results[0].place_id, lctn: { latitude: lctn.latitude, longitude: lctn.longitude } });
+        setTargetShown(true);
+      })
+      .catch(error => console.warn(error));
   }
 
   const GooglePlacesInput = () => {
@@ -75,9 +77,9 @@ const MapScreen=({stackNavigation}) => {
 
 
   async function getLocationPermission() {
-  
-    let {status} = await Location.requestForegroundPermissionsAsync();
-    if(status !== 'granted') {
+
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== 'granted') {
       alert('Permission denied');
       return;
     }
@@ -86,20 +88,20 @@ const MapScreen=({stackNavigation}) => {
       latitude: location.coords.latitude,
       longitude: location.coords.longitude
     });
-    setOrigin((prev)=>({
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude,
-        latitudeDelta: 0.0016,
-        longitudeDelta: 0.0012
+    setOrigin((prev) => ({
+      latitude: location.coords.latitude,
+      longitude: location.coords.longitude,
+      latitudeDelta: 0.0016,
+      longitudeDelta: 0.0012
     }));
   }
-  
+
 
   return (
     <SafeAreaView style={styles.container}>
-      <MapView 
+      <MapView
         provider='google'
-        ref = {mapRef}
+        ref={mapRef}
         style={styles.map}
         region={{
           latitude: origin.latitude,
@@ -108,17 +110,16 @@ const MapScreen=({stackNavigation}) => {
           longitudeDelta: origin.longitudeDelta
         }}
         onRegionChangeComplete={(region) => {
-            if(region != undefined)
-            { 
-              setOrigin({latitude: region.latitude, longitude: region.longitude, latitudeDelta: region.latitudeDelta, longitudeDelta: region.longitudeDelta});
-            }
+          if (region != undefined) {
+            setOrigin({ latitude: region.latitude, longitude: region.longitude, latitudeDelta: region.latitudeDelta, longitudeDelta: region.longitudeDelta });
+          }
         }}
-        onPoiClick={(data)=>{
+        onPoiClick={(data) => {
           targetingFromLocation(data.nativeEvent.coordinate, data.nativeEvent.name.split("\n")[0]);
         }}
-        onPress={({nativeEvent})=>{
-          if((nativeEvent.action==="marker-press") && (nativeEvent.coordinate.latitude===target.lctn.latitude) && (nativeEvent.coordinate.longitude===target.lctn.longitude)){setTargetShown(true);}
-          else{setTargetShown(false);}
+        onPress={({ nativeEvent }) => {
+          if ((nativeEvent.action === "marker-press") && (nativeEvent.coordinate.latitude === target.lctn.latitude) && (nativeEvent.coordinate.longitude === target.lctn.longitude)) { setTargetShown(true); }
+          else { setTargetShown(false); }
         }}
       >
         <GooglePlacesInput />
@@ -126,67 +127,67 @@ const MapScreen=({stackNavigation}) => {
           <Image
             source={currentLocationImage}
             style={{
-              width:25,
-              height:25,
+              width: 25,
+              height: 25,
               resizeMode: 'contain',
             }}
           />
         </Marker>
         <Marker coordinate={target.lctn} opacity={targetShown ? 100 : 0}>
-            <Image
-                source={targetLocationImage}
-                style={{
-                    width: 37,
-                    height: 37,
-                    resizeMode: 'contain',
-                    tintColor: 'blue'
-                }}
-            />
+          <Image
+            source={targetLocationImage}
+            style={{
+              width: 37,
+              height: 37,
+              resizeMode: 'contain',
+              tintColor: 'blue'
+            }}
+          />
         </Marker>
         <View
-            style={{
-                position: 'absolute',
-                width: 40,
-                height: 40,
-                borderRadius: 20,
-                right: 25,
-                bottom: 120,
-                backgroundColor: 'white',
-            }}
+          style={{
+            position: 'absolute',
+            width: 40,
+            height: 40,
+            borderRadius: 20,
+            right: 25,
+            bottom: 120,
+            backgroundColor: 'white',
+          }}
         >
-            <TouchableOpacity
+          <TouchableOpacity
             style={{
-                position: 'absolute',
-                width: 40,
-                height: 40,
-                borderRadius: 20,
-                left: 325,
-                top: 603,
+              position: 'absolute',
+              width: 40,
+              height: 40,
+              borderRadius: 20,
+              left: 325,
+              top: 603,
             }}
             activeOpacity={1}
             onPress={() => {
-                mapRef.current.animateToRegion({
+              mapRef.current.animateToRegion({
                 latitude: current.latitude,
                 longitude: current.longitude,
                 latitudeDelta: 0.0016,
                 longitudeDelta: 0.0012,
-                });
+              });
             }}
-            />
-            <Image
+          />
+          <Image
             source={findCurrentLocationImage}
             resizeMode='contain'
-            
+
             style={{
-                position: 'absolute',
-                width: 30,
-                height: 30,
-                borderRadius: 15,
-                left: 330,
-                top: 608,
-                tintColor: 'grey',
+              position: 'absolute',
+              width: 30,
+              height: 30,
+              borderRadius: 15,
+              left: 330,
+              top: 608,
+              tintColor: 'grey',
             }}
-            />
+          />
 
         </View>
       </MapView>
@@ -206,7 +207,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
-  
+
 });
 
 

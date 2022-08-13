@@ -2,7 +2,7 @@ import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, SafeAreaView, TouchableOpacity } from 'react-native';
 import { AnimatedButton, FlatList, Image } from 'react-native';
-
+import { useIsFocused } from '@react-navigation/native';
 
 const folderImage = require('../assets/image/folder.png');
 const addFolderImage = require('../assets/image/addFolder.png');
@@ -25,27 +25,30 @@ const app = initializeApp(firebaseConfig);
 const myID = "kho2011";
 
 const StorageScreen = ({stackNavigation}) => {
-  useEffect(()=>{                                          
+  const isFocused = useIsFocused();
+  useEffect(()=>{    
+    if(isFocused)
+    {                                   
     const db = getDatabase();
     onValue(ref(db, '/users/' + myID + '/folderIDs'), (snapshot) => {
       if(snapshot.val()!=null){                             //한 user가 folder를 갖고 있지 않을 수 있어!!
-        //let recordIDList_=[];
-        const folderIDList = Object.keys(snapshot.val());           //folderIDList 만들기
+        const folderIDList = Object.keys(snapshot.val());           //folderIDList 만들기 
         setFolderIDNameColorList([]);                                 //initializing folderIDNameList
-        setMasterDataSource([]);                                  //initializing masterDataSource
-
+        setMasterDataSource([])                            //initializing masterDataSource
         folderIDList.map((folderID)=>{                        //각 폴더에 대하여....
           onValue(ref(db, '/folders/'+folderID), (snapshot2)=>{        
             setFolderIDNameColorList((prev)=>[...prev, {folderID: folderID, folderName: snapshot2.child('folderName').val(), folderColor: snapshot2.child('folderColor').val()}])  //folderIDNameList채워주기
-            if(snapshot2.child('placeRecords').val()!=null)      //폴더는 있지만 빈폴더라서 record가 안에 없을 수 있어!!        
+            if(snapshot2.child('placeRecords').val()!=(null||undefined))      //폴더는 있지만 빈폴더라서 record가 안에 없을 수 있어!!        
             {
               //recordIDList_.push(...Object.keys(snapshot2.child('placeRecords').val()))  //해당 user가 소속된 각 폴더에 들어있는 recordIDList들을 합쳐서 하나로 만들어주기(버림)
               Object.values(snapshot2.child('placeRecords').val()).map((recordIDObject)=>{     //folders의 placeRecord 속에 있는 각 placeID에 대응되는 recordIDObject들에 대하여....
                 Object.keys(recordIDObject).map((recordID)=>{                                   //각 recordObject에 있는 recordID에 대하여 
-                  onValue(ref(db, '/records/'+recordID), (snapshot3)=>{                                            //masterDataSource 채워주기
-                    setMasterDataSource((prev)=>[...prev, {recordID: recordID, recordData: snapshot3.val()}])      //{recordID: recordID, recordData:{title: ~~, date: ~~, lctn: ~~, text: ~~, placeName: ~~}}가 쌓여있음
+                  onValue(ref(db, '/records/'+recordID), (snapshot3)=>{   
+                    if(snapshot3.val()!=(null||undefined)){            //masterDataSource 채워주기 --> 기존 record를 지웠을 때, 없는 recordID를 찾아서 null이 masterDataSource에 들어가는 경우를 방지하고자 함
+                      setMasterDataSource((prev)=>[...prev, {recordID: recordID, recordData: snapshot3.val()}])      //{recordID: recordID, recordData:{title: ~~, date: ~~, lctn: ~~, text: ~~, placeName: ~~}}가 쌓여있음
+                    }                                      
                   })
-                })
+                });
               })
             } 
           })
@@ -53,43 +56,42 @@ const StorageScreen = ({stackNavigation}) => {
       }
     }
     )
-   }, {
-     onlyOnce: true
-  },[]);
+    }
+   }, 
+  [isFocused]);
   
   const [folderIDNameColorList, setFolderIDNameColorList] = useState([]);      //{folderID, folderName, folderColor}가 쌓여있음
-  const [selectedFolderID, setSelectedFolderID] = useState(undefined);   
+  const [selectedFolderIDNameColor, setSelectedFolderIDNameColor] = useState(undefined);   
   
   const [masterDataSource, setMasterDataSource] = useState([]);     //shortened record가 쌓여있음 {recordID, title, folderID, placeName, date, text, photos}
 
-  const gotoAddFolderBottomSheetScreen = () => {
-    stackNavigation.navigate("MakeFolderBottomSheetScreen")
+  const gotoMakeFolderBottomSheetScreen = () => {
+    stackNavigation.navigate("MakeFolderBottomSheetScreen", {folderName: null, folderColor: null})
   }
 
 
 
 
 
-  const gotoSingleFolderScreen = (recordDataSource) => {
-    setSelectedFolderID(undefined)
-    stackNavigation.navigate("SingleFolderScreen", {recordDataSource: recordDataSource})
+  const gotoSingleFolderScreen = (recordDataSource, folderID, folderName, folderColor) => {
+    setSelectedFolderIDNameColor(undefined)
+    stackNavigation.navigate("SingleFolderScreen", {recordDataSource: recordDataSource, folderID: folderID, folderName: folderName, folderColor: folderColor})
   }
 
   //선택된 파일에 따라서 filter 변화 useEffect
   useEffect(() => {
-    console.log(selectedFolderID)
-    if(selectedFolderID!=undefined){
-      filterFunction(selectedFolderID)
+    if(selectedFolderIDNameColor!=undefined){
+      filterFunction(selectedFolderIDNameColor)
     }
-  }, [selectedFolderID])
+  }, [selectedFolderIDNameColor])
 
-  const filterFunction = (folderID) => {
+  const filterFunction = ({folderID, folderName, folderColor}) => {
       // Filter the masterDataSource and update FilteredDataSource
       const filteredDataSource = masterDataSource.filter(function (item) {
         // Applying filter for the inserted text in search bar
         return item.recordData.folderID === folderID;
       });
-      gotoSingleFolderScreen(filteredDataSource)
+      gotoSingleFolderScreen(filteredDataSource, folderID, folderName, folderColor)
   };
 
 
@@ -100,7 +102,7 @@ const StorageScreen = ({stackNavigation}) => {
     return(
       <TouchableOpacity
           onPress={() => {
-            setSelectedFolderID(folderID)
+            setSelectedFolderIDNameColor({folderID: folderID, folderName: folderName, folderColor: folderColor})
             //gotoSingleFolderScreen()
           }}
           style={{height:65}}
@@ -128,7 +130,7 @@ const StorageScreen = ({stackNavigation}) => {
         <Text style={{fontWeight: 'bold', fontSize: 16, left: 20}}>보관함</Text>
         <TouchableOpacity 
           style={{position:'absolute', right: 64}}
-          onPress={gotoAddFolderBottomSheetScreen}
+          onPress={gotoMakeFolderBottomSheetScreen}
         >
           <Image
             source={addFolderImage}

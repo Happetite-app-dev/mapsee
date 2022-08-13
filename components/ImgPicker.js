@@ -5,8 +5,8 @@ import * as Permissions from 'expo-permissions';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 
-const ImgPicker= props => {
-    const [pickedImage, setPickedImage]=useState();
+const ImgPicker= ({onImageTaken, defaultPhotos, IsEditable}) => {
+    const [pickedImage, setPickedImage]=useState(defaultPhotos || undefined);
 
     const verifyPermissions = async () =>{
         const result = await Permissions.askAsync(Permissions.CAMERA);
@@ -32,15 +32,22 @@ const ImgPicker= props => {
         });
         
         setPickedImage(image.uri);
-        props.onImageTaken(image.uri)
+        onImageTaken(image.uri)
     };
     
     return (
     <View style={styles.imagePicker}>
-        <TouchableOpacity onPress={takeImageHandler} style={styles.imagePreview}>
-            {!pickedImage ? (<Text style={{fontSize:35, color: 'grey'}}>+</Text>):
-            (<Image style={styles.image} source={{uri: pickedImage}}/>)}
-        </TouchableOpacity>
+        {IsEditable?
+            <TouchableOpacity onPress={takeImageHandler} style={styles.imagePreview}>
+                {!pickedImage ? (<Text style={{fontSize:35, color: 'grey'}}>+</Text>):
+                (<Image style={styles.image} source={{uri: pickedImage}}/>)}
+            </TouchableOpacity>
+        :
+            <View style={styles.imagePreview}>
+                {!pickedImage ? (<Text style={{fontSize:35, color: 'grey'}}>+</Text>):
+                (<Image style={styles.image} source={{uri: pickedImage}}/>)}
+            </View>
+        }
         
     </View>
     );

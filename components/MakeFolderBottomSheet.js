@@ -17,33 +17,58 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const myID = "kho2011";
 
-const MakeFolderBottomSheet = ({stackNavigation}) => {
-    
+const MakeFolderBottomSheet = ({stackNavigation, folderID, folderName_, folderColor_, recordDataSource}) => {
+  const IsNewRecord = folderName_===null ? true : false;
   const gotoStorageScreen = () => {
-    stackNavigation.navigate("Tabs")
+    stackNavigation.navigate('Storage')
   }
-  const addNewFolder = (folderName, folderColor, userID) => {
+  const gotoSingleFolderScreen = () => {
+    stackNavigation.navigate('SingleFolderScreen', {recordDataSource: recordDataSource, folderID: folderID, folderName: newFolderName, folderColor: newFolderColor})
+  }
+  const addNewFolder = (folderID, folderName, folderColor, userID) => {
     const db = getDatabase();
-  
-    const reference1 = ref(db, '/folders');                      //folders에 push
-    let newFolderID = push(reference1, {
-        folderName: folderName,
-        folderColor: folderColor,
-        userIDs: userID
-        }).key;
-    const reference2 = ref(db, `users/${myID}/folderIDs/${newFolderID}`);      //user에 folderID를 넣고
-    set(reference2, 
+    if(IsNewRecord)         //새 기록이면
+    {
+      const reference1 = ref(db, '/folders');                      //folders에 push
+      let newFolderID = push(reference1, {
+          folderName: folderName,
+          folderColor: folderColor,
+          }).key;
+      const reference2 = ref(db, `/folders/${newFolderID}/userIDs/${myID}`)     //folders/newfolderID/userIDs에 userID:true를 넣기
+      set (reference2,
         true
-    )
+      );
+      const reference3 = ref(db, `users/${myID}/folderIDs/${newFolderID}`);      //user에 folderID를 넣고
+      set(reference3, 
+          true
+      );
+    }
+    else                    //새 기록이 아니라면
+    {
+      const reference1 = ref(db, '/folders/'+folderID+'/folderName');                      //folders에 push
+      set(reference1, 
+          folderName
+      )
+      const reference2 = ref(db, '/folders/'+folderID+'/folderColor');                      //folders에 push
+      set(reference2, 
+          folderColor
+      )
+    }
+    
   }
 
-    const [newFolderName, setNewFolderName] = useState('')
-    const [newFolderColor, setNewFolderColor] = useState('red')
-    const [newFolderUserID, setNewFolderUserID] = useState('kho2011')
+    const [newFolderName, setNewFolderName] = useState(folderName_ || '')
+    const [newFolderColor, setNewFolderColor] = useState(folderColor_ || '#FF6363')
+    const [newFolderUserID, setNewFolderUserID] = useState(myID)
     return(
       <View style={{width:'100%', height: '100%'}}>
         <View style={{top: 24, width: 61, height: 24, left: 23, marginBottom: 24}}>
-          <Text style={{fontSize: 16, fontWeight: "700"}}>폴더 추가</Text> 
+          {
+            IsNewRecord?
+            <Text style={{fontSize: 16, fontWeight: "700"}}>폴더 추가</Text> 
+            :
+            <Text style={{fontSize: 16, fontWeight: "700"}}>폴더 수정</Text> 
+          }
         </View>
         <View style={{top: 26, width: 344, height: 48, left: 23, marginBottom: 24, borderBottomColor: 'black', borderBottomWidth: 1, justifyContent:'center'}}>
           <TextInput
@@ -123,9 +148,11 @@ const MakeFolderBottomSheet = ({stackNavigation}) => {
             <Text>+</Text>
           </TouchableOpacity>
         </View>
-        <TouchableOpacity onPress={()=>{
-            addNewFolder(newFolderName, newFolderColor, newFolderUserID);
-            gotoStorageScreen();
+        <TouchableOpacity onPress={()=>
+          {
+            addNewFolder(folderID, newFolderName, newFolderColor, newFolderUserID)
+            if(IsNewRecord){gotoStorageScreen()}
+            else{gotoSingleFolderScreen()} //gotoSingleFolderScreen() 
           }}
           style={{
             position:'absolute',
@@ -143,7 +170,12 @@ const MakeFolderBottomSheet = ({stackNavigation}) => {
             justifyContent: 'center',
             height: 40,
           }}>
-            <Text style={{fontSize: 16, fontWeight: "bold"}}>추가</Text>
+            {
+              IsNewRecord ? 
+              <Text style={{fontSize: 16, fontWeight: "bold"}}>추가</Text>
+              :
+              <Text style={{fontSize: 16, fontWeight: "bold"}}>수정</Text>
+            }
           </View>
         </TouchableOpacity>
       </View>
