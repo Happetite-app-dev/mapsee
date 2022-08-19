@@ -89,7 +89,6 @@ const saveData = async (title, place, placeID, address, lctn, date, folderID, fo
                     }
                 })
             )
-            .catch(e=>console.warn(e))
             const reference4 = ref(db, `/folders/${folderID}/placeRecords/${placeID}/${recordID}`);           //folder에 recordID를 넣고
             set(reference4, 
                 true    
@@ -115,8 +114,6 @@ const removeData = async (recordID, folderID, placeID) => {
             }
         })
     )
-
-    
 }
 
 const EditScreen = ({navigation, route}) => {

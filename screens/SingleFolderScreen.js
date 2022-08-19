@@ -1,18 +1,73 @@
-import { SafeAreaView, Text, View, TouchableOpacity, Image } from "react-native"
+import { SafeAreaView, Text, View, TouchableOpacity, Image, Alert } from "react-native"
 import RecordFlatList from "../components/RecordFlatList";
+import { initializeApp } from "firebase/app";
+import { getDatabase, ref, onValue, set, push, remove, off } from 'firebase/database';
 
 const goBackImage = require('../assets/image/goBack.png')
 const folder2Image = require('../assets/image/folder2.png')
 const editImage = require('../assets/image/edit.png')
 const trashcanImage = require('../assets/image/trashcan.png')
 
+const firebaseConfig = {
+    apiKey: "AIzaSyDBq4tZ1QLm1R7iPH8O4dTvebVGWgkRPks",
+    authDomain: "mapseedemo1.firebaseapp.com",
+    projectId: "mapseedemo1",
+    storageBucket: "mapseedemo1.appspot.com",
+    messagingSenderId: "839335870793",
+    appId: "1:839335870793:web:75004c5d43270610411a98",
+    measurementId: "G-8L1MD1CGN2"
+  };
+
+const app = initializeApp(firebaseConfig);
+const myID = "kho2011";
+
+
+const exitData = async (folderID) => {
+    const db = getDatabase();
+    const reference1 = ref(db, '/users/'+myID+'/folderIDs/'+folderID);
+    await remove(reference1)
+    .then(()=>{
+        const reference2 = ref(db, '/folders/'+folderID+'/userIDs/'+myID)
+        remove(reference2)
+    })
+    .then(
+        onValue(ref(db, '/folders/'+folderID+'/userIDs'), (snapshot)=>{
+            if(!snapshot.hasChildren())
+            {
+                const reference3 = ref(db, '/folders/'+folderID)
+                remove(reference3)
+            }
+        })
+    )
+}
+
 const SingleFolderScreen = ({navigation, route}) => {
     const {recordDataSource, folderID, folderName, folderColor} = route.params
     const gotoStorageScreen = () => {
-        navigation.pop()//navigation.navigate('Storage')
+        navigation.pop()
     }
     const gotoMakeFolderBottomSheetScreen = () => {
         navigation.navigate('MakeFolderBottomSheetScreen', {folderID: folderID, folderName: folderName, folderColor: folderColor, recordDataSource: recordDataSource})
+    }
+    const exitFolder = async () => {
+        await exitData(folderID)
+        .then(
+            ()=>navigation.navigate('Storage')               //realtimeDataBase가 모두 업데이트 된후 
+        )
+    }
+    const exitFolderPopUp = () => {
+        return(
+            Alert.alert(
+                '정말 삭제하시겠습니까?', '',
+                [
+                  {text: '취소'},
+                  {text: '삭제', onPress: () => exitFolder(), style: 'default'}
+                ],
+                { 
+                  cancelable: false, 
+                }
+              )
+        )
     }
     return(
         <SafeAreaView style={{height:'100%', width:'100%'}}>
@@ -32,7 +87,7 @@ const SingleFolderScreen = ({navigation, route}) => {
                         source={editImage}
                     />
                 </TouchableOpacity>
-                <TouchableOpacity style={{position:'absolute', right: 26}}>
+                <TouchableOpacity style={{position:'absolute', right: 26}} onPress={()=>exitFolderPopUp()}>
                 <Image
                     source={trashcanImage}
                 />

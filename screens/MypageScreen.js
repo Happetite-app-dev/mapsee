@@ -14,7 +14,6 @@ const MypageScreen = ({navigation}) => {
     Geocoder.from(lat, lng)
 		.then(json => {
         		var addressComponent = json.results[0];
-			console.log(addressComponent);
 		})
 		.catch(error => console.warn(error));
   }
@@ -25,7 +24,6 @@ const MypageScreen = ({navigation}) => {
              var location = json.results[0].geometry.location;
             setLat(location.lat);
             setLng(location.lng);
-            console.log(lat, lng);
         })
         .catch(error => console.warn(error));
   }

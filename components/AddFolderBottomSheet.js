@@ -23,22 +23,29 @@ const AddFolderBottomSheet = ({setFolderName, setFolderID, setFolderIDNameList, 
   
     const reference1 = ref(db, '/folders');                      //folders에 push
     let newFolderID = push(reference1, {
-        folderName: folderName,
-        folderColor: folderColor,
+        initFolderName: folderName,
+        initFolderColor: folderColor,
         }).key;
-    const reference2 = ref(db, `/folders/${newFolderID}/userIDs/${myID}`)     //folders/newfolderID/userIDs에 userID:true를 넣기
+    const reference2 = ref(db, `/folders/${newFolderID}/folderName/${myID}`)    //folderName 개인화
     set (reference2,
+      folderName
+    );
+    const reference3 = ref(db, `/folders/${newFolderID}/folderColor/${myID}`)    //folderColor 개인화
+    set (reference3,
+      folderColor
+    );
+    const reference4 = ref(db, `/folders/${newFolderID}/userIDs/${myID}`)     //folders/newfolderID/userIDs에 userID:true를 넣기
+    set (reference4,
       true
     );
-    const reference3 = ref(db, `users/${myID}/folderIDs/${newFolderID}`);      //user에 folderID를 넣고
-    set(reference3, 
+    const reference5 = ref(db, `users/${myID}/folderIDs/${newFolderID}`);      //user에 folderID를 넣고
+    set(reference5, 
         true
     );
     setFolderIDNameList((prev)=>[...prev, {folderID: newFolderID, folderName: newFolderName}]);
     setFolderID(newFolderID);
     setFolderName(newFolderName);
   }
-
     const [newFolderName, setNewFolderName] = useState('')
     const [newFolderColor, setNewFolderColor] = useState('red')
     const [newFolderUserID, setNewFolderUserID] = useState('kho2011')

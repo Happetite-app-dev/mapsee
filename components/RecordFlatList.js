@@ -1,6 +1,7 @@
 import { FlatList, StyleSheet, View, Text, TouchableOpacity } from "react-native";
 
 const RecordFlatList = ({recordDataSource, stackNavigation}) => {
+    console.log(recordDataSource.length)
     const gotoEditScreen = (item) => {
       stackNavigation.navigate("EditScreen",{recordID: item.recordID, ...item.recordData})
     }
@@ -22,9 +23,9 @@ const RecordFlatList = ({recordDataSource, stackNavigation}) => {
         <FlatList
             data={recordDataSource}
             renderItem={renderItem}
-            keyExtractor={item => '_'+item.id}
-            key={'_'}
+            keyExtractor={item => item.recordID}
             numColumns={2}
+            initialNumToRender={6}
             style={{
             flex:1,
             left: 10

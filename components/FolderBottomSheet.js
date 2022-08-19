@@ -23,12 +23,12 @@ const FolderBottomSheet = ({show, setShow, setFolderName, setFolderID}) => {
 
   useEffect(()=>{
     const db = getDatabase();
-    return onValue(ref(db, '/users/' + myID + '/folderIDs'), (snapshot) => {
+    onValue(ref(db, '/users/' + myID + '/folderIDs'), (snapshot) => {
       if(snapshot.val()!=null){
       const folderIDList = Object.keys(snapshot.val());
       setFolderIDNameList([])
       folderIDList.map((folderID)=>{
-        return onValue(ref(db, '/folders/'+folderID+'/folderName'), (snapshot2)=>{
+        onValue(ref(db, '/folders/'+folderID+'/folderName/'+myID), (snapshot2)=>{
             setFolderIDNameList((prev)=>[...prev, {folderID: folderID, folderName: snapshot2.val()}])          
         })
       })
@@ -36,9 +36,7 @@ const FolderBottomSheet = ({show, setShow, setFolderName, setFolderID}) => {
     }
     )
     
-    }, {
-      onlyOnce: true
-  },[]);
+    }, []);
 
   const [folderIDNameList, setFolderIDNameList] = useState([]);            //{folderID: folderName}가 쌓여있음
   const [isSelectingFolder, setIsSelectingFolder] = useState(true);    //folderlist 창과 폴더 추가창 중 무엇을 띄울지에 대한 bool
@@ -82,11 +80,11 @@ const FolderBottomSheet = ({show, setShow, setFolderName, setFolderID}) => {
       
       {isSelectingFolder? 
       <View style={{width:'100%', height: '100%'}}>
-        <ScrollView showsHorizontalScrollIndicator={false} style={{width: "100%", top:20}}>
+        <ScrollView showsHorizontalScrollIndicator={false} style={{width: "100%", top:20}} >
           {folderIDNameList.map(({folderID, folderName}) => {
             if(folderName!=null)
             return(
-              <View style={{alignItems:'center', paddingBottom: 10}}>
+              <View style={{alignItems:'center', paddingBottom: 10}} key={folderID}>
               <TouchableOpacity onPress={()=>{
                 setFolderName(folderName);
                 setFolderID(folderID);

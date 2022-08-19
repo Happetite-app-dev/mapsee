@@ -28,16 +28,19 @@ const StorageScreen = ({navigation}) => {
   const isFocused = useIsFocused();
   useEffect(()=>{    
     if(isFocused)
-    {                                   
+    {                               
     const db = getDatabase();
     onValue(ref(db, '/users/' + myID + '/folderIDs'), (snapshot) => {
       if(snapshot.val()!=null){                             //한 user가 folder를 갖고 있지 않을 수 있어!!
         const folderIDList = Object.keys(snapshot.val());           //folderIDList 만들기 
-        setFolderIDNameColorList([]);                                 //initializing folderIDNameList
-        setMasterDataSource([])                            //initializing masterDataSource
+        setFolderIDNameColorList((prev)=>[]);                                 //initializing folderIDNameList
+        setMasterDataSource((prev)=>[])                            //initializing masterDataSource
         folderIDList.map((folderID)=>{                        //각 폴더에 대하여....
-          onValue(ref(db, '/folders/'+folderID), (snapshot2)=>{        
-            setFolderIDNameColorList((prev)=>[...prev, {folderID: folderID, folderName: snapshot2.child('folderName').val(), folderColor: snapshot2.child('folderColor').val()}])  //folderIDNameList채워주기
+          onValue(ref(db, '/folders/'+folderID), (snapshot2)=>{  
+            if(!folderIDNameColorList.includes({folderID: folderID, folderName: snapshot2.child('folderName').child(myID).val() , folderColor: snapshot2.child('folderColor').child(myID).val()}) )
+            {
+            setFolderIDNameColorList((prev)=>[...prev, {folderID: folderID, folderName: snapshot2.child('folderName').child(myID).val() , folderColor: snapshot2.child('folderColor').child(myID).val()}])  //folderIDNameList채워주기
+            //console.log('folder',folderIDNameColorList.length)
             if(snapshot2.child('placeRecords').val()!=(null||undefined))      //폴더는 있지만 빈폴더라서 record가 안에 없을 수 있어!!        
             {
               //recordIDList_.push(...Object.keys(snapshot2.child('placeRecords').val()))  //해당 user가 소속된 각 폴더에 들어있는 recordIDList들을 합쳐서 하나로 만들어주기(버림)
@@ -51,6 +54,9 @@ const StorageScreen = ({navigation}) => {
                 });
               })
             } 
+
+          }
+
           })
         })
       }
@@ -58,8 +64,11 @@ const StorageScreen = ({navigation}) => {
     )
     }
    }, 
+   {  
+    
+   },
   [isFocused]);
-  
+
   const [folderIDNameColorList, setFolderIDNameColorList] = useState([]);      //{folderID, folderName, folderColor}가 쌓여있음
   const [selectedFolderIDNameColor, setSelectedFolderIDNameColor] = useState(undefined);   
   
@@ -89,9 +98,6 @@ const StorageScreen = ({navigation}) => {
       });
       gotoSingleFolderScreen(filteredDataSource, folderID, folderName, folderColor)
   };
-
-
-
 
 
   const IndividualFolder = ({folderID, folderName, folderColor}) => {
@@ -142,7 +148,7 @@ const StorageScreen = ({navigation}) => {
         <FlatList
           data={folderIDNameColorList}
           renderItem={renderFolder}
-          keyExtractor={item => item.id}
+          keyExtractor={item => item.folderID}
           horizontal={true}
           style={{
             flex:1,

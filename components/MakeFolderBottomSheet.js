@@ -25,7 +25,7 @@ const MakeFolderBottomSheet = ({stackNavigation, folderID, folderName_, folderCo
   const gotoSingleFolderScreen = () => {
     stackNavigation.navigate('SingleFolderScreen', {recordDataSource: recordDataSource, folderID: folderID, folderName: newFolderName, folderColor: newFolderColor})
   }
-  const addNewFolder = (folderID, folderName, folderColor, userID) => {
+  const addNewFolder = async (folderID, folderName, folderColor, userID) => {
     const db = getDatabase();
     if(IsNewRecord)         //새 기록이면
     {
@@ -34,22 +34,30 @@ const MakeFolderBottomSheet = ({stackNavigation, folderID, folderName_, folderCo
           folderName: folderName,
           folderColor: folderColor,
           }).key;
-      const reference2 = ref(db, `/folders/${newFolderID}/userIDs/${myID}`)     //folders/newfolderID/userIDs에 userID:true를 넣기
+      const reference2 = ref(db, `/folders/${newFolderID}/folderName/${myID}`)    //folderName 개인화
       set (reference2,
+        folderName
+      );
+      const reference3 = ref(db, `/folders/${newFolderID}/folderColor/${myID}`)    //folderColor 개인화
+      set (reference3,
+        folderColor
+      );
+      const reference4 = ref(db, `/folders/${newFolderID}/userIDs/${myID}`)     //folders/newfolderID/userIDs에 userID:true를 넣기
+      set (reference4,
         true
       );
-      const reference3 = ref(db, `users/${myID}/folderIDs/${newFolderID}`);      //user에 folderID를 넣고
-      set(reference3, 
+      const reference5 = ref(db, `users/${myID}/folderIDs/${newFolderID}`);      //user에 folderID를 넣고
+      set(reference5, 
           true
       );
     }
     else                    //새 기록이 아니라면
     {
-      const reference1 = ref(db, '/folders/'+folderID+'/folderName');                      //folders에 push
+      const reference1 = ref(db, '/folders/'+folderID+'/folderName/'+myID);                      //folders에 push
       set(reference1, 
           folderName
       )
-      const reference2 = ref(db, '/folders/'+folderID+'/folderColor');                      //folders에 push
+      const reference2 = ref(db, '/folders/'+folderID+'/folderColor/'+myID);                      //folders에 push
       set(reference2, 
           folderColor
       )
@@ -148,11 +156,16 @@ const MakeFolderBottomSheet = ({stackNavigation, folderID, folderName_, folderCo
             <Text>+</Text>
           </TouchableOpacity>
         </View>
-        <TouchableOpacity onPress={()=>
+        <TouchableOpacity onPress={async ()=>
           {
-            addNewFolder(folderID, newFolderName, newFolderColor, newFolderUserID)
-            if(IsNewRecord){gotoStorageScreen()}
-            else{gotoSingleFolderScreen()} //gotoSingleFolderScreen() 
+            await addNewFolder(folderID, newFolderName, newFolderColor, newFolderUserID)
+            .then(()=>{
+              IsNewRecord?
+              gotoStorageScreen() : gotoSingleFolderScreen()
+            }
+            )
+            // if(IsNewRecord){gotoStorageScreen()}
+            // else{gotoSingleFolderScreen()} //gotoSingleFolderScreen() 
           }}
           style={{
             position:'absolute',
