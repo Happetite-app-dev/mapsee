@@ -1,7 +1,7 @@
 import { FlatList, StyleSheet, View, Text, TouchableOpacity } from "react-native";
 
 const RecordFlatList = ({recordDataSource, stackNavigation}) => {
-    console.log(recordDataSource.length)
+    //console.log(recordDataSource.length)
     const gotoEditScreen = (item) => {
       stackNavigation.navigate("EditScreen",{recordID: item.recordID, ...item.recordData})
     }

@@ -5,6 +5,8 @@ import EditScreen from './screens/EditScreen';
 import PlaceInfoBottomSheetScreen from './screens/PlaceInfoBottomSheetScreen';
 import MakeFolderBottomSheetScreen from './screens/MakeFolderBottomSheetScreen';
 import SingleFolderScreen from './screens/SingleFolderScreen';
+import ProfileScreen from './screens/ProfileScreen';
+import FriendListScreen from './screens/FriendListScreen';
 
 const Stack= createNativeStackNavigator();
 
@@ -17,6 +19,8 @@ const App = () => {
         <Stack.Screen name="MakeFolderBottomSheetScreen" component={MakeFolderBottomSheetScreen} options={{headerShown: false, presentation: 'containedTransparentModal',contentStyle:{backgroundColor:'transparent'}}}/>
         <Stack.Screen name="PlaceInfoBottomSheetScreen" component={PlaceInfoBottomSheetScreen} options={{headerShown: false, presentation: 'containedTransparentModal',contentStyle:{backgroundColor:'transparent'}}} />
         <Stack.Screen name="EditScreen" component={EditScreen} options={{headerShown: false, presentation: 'containedModal'}}/>
+        <Stack.Screen name="ProfileScreen" component={ProfileScreen} options={{headerShown: false, gestureEnabled:false}}/>
+        <Stack.Screen name="FriendListScreen" component={FriendListScreen} options={{headerShown: false, gestureEnabled: false}}/>
       </Stack.Navigator>
     </NavigationContainer>
   )

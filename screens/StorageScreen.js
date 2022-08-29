@@ -36,7 +36,7 @@ const StorageScreen = ({navigation}) => {
         setFolderIDNameColorList((prev)=>[]);                                 //initializing folderIDNameList
         setMasterDataSource((prev)=>[])                            //initializing masterDataSource
         folderIDList.map((folderID)=>{                        //각 폴더에 대하여....
-          onValue(ref(db, '/folders/'+folderID), (snapshot2)=>{  
+          onValue(ref(db, '/folders/'+folderID), (snapshot2)=>{
             if(!folderIDNameColorList.includes({folderID: folderID, folderName: snapshot2.child('folderName').child(myID).val() , folderColor: snapshot2.child('folderColor').child(myID).val()}) )
             {
             setFolderIDNameColorList((prev)=>[...prev, {folderID: folderID, folderName: snapshot2.child('folderName').child(myID).val() , folderColor: snapshot2.child('folderColor').child(myID).val()}])  //folderIDNameList채워주기
@@ -107,7 +107,8 @@ const StorageScreen = ({navigation}) => {
             setSelectedFolderIDNameColor({folderID: folderID, folderName: folderName, folderColor: folderColor})
             //gotoSingleFolderScreen()
           }}
-          style={{height:65}}
+          style={{height:65, }}
+          activeOpacity={0.2}
       >
         <View style={{marginLeft:10, marginRight:10}}>
           <Image

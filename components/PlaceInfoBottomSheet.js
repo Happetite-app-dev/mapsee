@@ -1,6 +1,22 @@
 import React, {useEffect, useRef, useState} from 'react';
 import { Animated, Text, View, TouchableHighlight, Button, Image } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
+import { initializeApp } from "firebase/app";
+import { getDatabase, ref, onValue, set, push } from 'firebase/database';
+import RecordFlatList from '../components/RecordFlatList';
+const firebaseConfig = {
+  apiKey: "AIzaSyDBq4tZ1QLm1R7iPH8O4dTvebVGWgkRPks",
+  authDomain: "mapseedemo1.firebaseapp.com",
+  projectId: "mapseedemo1",
+  storageBucket: "mapseedemo1.appspot.com",
+  messagingSenderId: "839335870793",
+  appId: "1:839335870793:web:75004c5d43270610411a98",
+  measurementId: "G-8L1MD1CGN2"
+};
+
+const app = initializeApp(firebaseConfig);
+const myID = "kho2011";
+
 const mapScreenBottomSheetExampleImage = require('../assets/image/mapScreenBottomSheetExample.png')
 const LocationplusIcon = require('../assets/icons/locationplus.png')
 const CreateNoteImage = require('../assets/image/CreateNote.png')
@@ -35,6 +51,45 @@ const BottomSheetScreen = ({onDisplay, onCancel, animationVal, targetName, targe
     )
   }
   else{   
+    const [masterDataSource, setMasterDataSource] = useState([]);     //shortened record가 쌓여있음 {recordID, title, folderID, placeName, date, text, photos}
+    useEffect(()=>{
+      const db = getDatabase();
+      onValue(ref(db, '/users/' + myID + '/folderIDs'), (snapshot) => {
+        if(snapshot.val()!=null){                             //한 user가 folder를 갖고 있지 않을 수 있어!!
+          const folderIDList = Object.keys(snapshot.val());           //folderIDList 만들기 
+          setMasterDataSource([]);                             //initializing masterDataSource
+          folderIDList.map((folderID)=>{                        //각 폴더에 대하여...
+            onValue(ref(db, '/folders/'+folderID+'/placeRecords/' + targetId), (snapshot2)=>{
+              if(snapshot2.val()!=(null||undefined))      //폴더는 있지만 빈폴더라서 record가 안에 없을 수 있어!!        
+              {
+                Object.keys(snapshot2.val()).map((recordID)=>{     //folders의 placeRecord 속에 있는 각 placeID에 대응되는 recordIDObject들에 대하여....
+                    onValue(ref(db, '/records/'+recordID), (snapshot3)=>{   
+                      // console.log('----------------------------')
+                      // console.log(recordID)
+                      // console.log(snapshot3.val().address)
+                      //   console.log('placeName', snapshot3.val().placeName)
+                      //   console.log('targetName', targetName)
+                      //   console.log(snapshot3.val().placeName.includes(targetName))
+                      //   console.log(targetName.includes(snapshot3.val().placeName))
+                      if((snapshot3.val()!=(null||undefined))&&(snapshot3.val().placeName.includes(targetName)||targetName.includes(snapshot3.val().placeName)||snapshot3.val().placeName==targetName)){            //masterDataSource 채워주기 --> 기존 record를 지웠을 때, 없는 recordID를 찾아서 null이 masterDataSource에 들어가는 경우를 방지하고자 함
+                        // console.log('----------------------------')
+                        // console.log('placeName', snapshot3.val().placeName)
+                        // console.log('targetName', targetName)
+                        // console.log(snapshot3.val().placeName.includes(targetName))
+                        // console.log(targetName.includes(snapshot3.val().placeName))
+                        setMasterDataSource((prev)=>[...prev, {recordID: recordID, recordData: snapshot3.val()}])      //{recordID: recordID, recordData:{title: ~~, date: ~~, lctn: ~~, text: ~~, placeName: ~~}}가 쌓여있음
+                      }                                      
+                    })
+                })
+              } 
+
+            })
+          })
+        }
+      }
+      ) 
+    }, [])    
+
     return(                                                       //bottomsheet가 전체 화면을 덮은 후
       <View style={{position:'absolute', width: '110%', height: '100%'}}>
         <View style={{position: 'absolute', top: 30, left: 0, width: 60, height: 50, paddingTop:5}}>
@@ -42,6 +97,9 @@ const BottomSheetScreen = ({onDisplay, onCancel, animationVal, targetName, targe
         </View>
         <View style={{position: 'absolute', top: 45, width: '50%', height: 40, alignSelf:'center'}}>
           <Text style={{textAlign:'center', textAlignVertical:'center', marginTop:4, fontSize:25}}>{targetName}</Text>
+        </View>
+        <View style={{position: 'absolute', top: 85, width: '100%', height: 600}}>
+          <RecordFlatList recordDataSource={masterDataSource} stackNavigation={navigation}/>
         </View>
         <TouchableHighlight
             style={{

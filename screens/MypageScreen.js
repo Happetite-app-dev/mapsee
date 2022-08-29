@@ -1,63 +1,68 @@
 import { StatusBar } from 'expo-status-bar';
-import { useState, useSyncExternalStore, useTransition } from 'react';
-import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { useState } from 'react';
+import { Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Button } from 'react-native';
-import Geocoder from 'react-native-geocoding';
-import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+
+const friendListImage = require('../assets/image/friendList.png');
+const alarmImage = require('../assets/image/alarm.png');
+const themeImage = require('../assets/image/theme.png');
+const fontImage = require('../assets/image/font.png');
+
+const myID = 'kho2011'
+const myName = '고동욱'
+
+const gotoProfileScreen = ({navigation}) => {
+  navigation.navigate("ProfileScreen")
+}
+const gotoFriendListSreen = ({navigation}) => {
+  navigation.navigate("FriendListScreen")
+}
 const MypageScreen = ({navigation}) => {
-  Geocoder.init("AIzaSyA2FBudItIm0cVgwNOsuc8D9BKk0HUeUTs", {language : "en"}); 
-  const[lat, setLat] = useState(37.5860485);
-  const[lng, setLng] = useState(127.0008828);
-  const[lctn, setLctn] = useState("혜화 골목냉면");
-
-  const geocodeaddress = () => {
-    Geocoder.from(lat, lng)
-		.then(json => {
-        		var addressComponent = json.results[0];
-		})
-		.catch(error => console.warn(error));
-  }
-
-  const geocodelctn = () => {
-    Geocoder.from(lctn)
-        .then(json => {
-             var location = json.results[0].geometry.location;
-            setLat(location.lat);
-            setLng(location.lng);
-        })
-        .catch(error => console.warn(error));
-  }
-  const GooglePlacesInput = () => {
-    return (
-      <GooglePlacesAutocomplete
-        placeholder='Search'
-        onPress={(data, details = null) => {
-          // 'details' is provided when fetchDetails = true
-          setLctn(data.description);
-        }}
-        query={{
-          key: 'AIzaSyA2FBudItIm0cVgwNOsuc8D9BKk0HUeUTs',
-          language: 'en',
-        }}
-        styles={{
-          
-        }}
-      />
-    );
-  };
+  
   return (
     <SafeAreaView style={styles.container}>
-      <GooglePlacesInput/>
-      <Text>Mypage Screen</Text>
-      <Button
-        title="Click Here"
-        onPress={() => geocodeaddress()}
-      />
-      <Button
-        title="Click Here2"
-        onPress={()=> geocodelctn()}
-      />
-      
+      <View style={{position: 'absolute', width: '100%', height: 60, top: 45, paddingTop: 20}}>
+        <Text style={{left: 20, fontSize:16, fontWeight:'bold'}}>마이페이지</Text> 
+      </View>
+
+      <TouchableOpacity onPress={()=>gotoProfileScreen({navigation: navigation})} style={{position: 'absolute', width: '100%', height: 80, top: 105}}>
+        <Text style={{top: 20, left: 20, fontSize:16, fontWeight:'bold'}}>{myName}</Text>
+        <Text style={{top:30, left: 20, fontSize:14, fontWeight:'bold'}}>{myID}</Text>
+      </TouchableOpacity>
+
+      <View style={{position: 'absolute', top: 185, width:'100%', height:250, justifyContent:'space-between', flexDirection:'column', paddingHorizontal : 23, paddingVertical: 13 }}>
+        <View style={{alignItems:'center', flexDirection:'row', justifyContent: 'space-between'}}>
+          <TouchableOpacity onPress={()=>gotoFriendListSreen({navigation: navigation})} style={{height: 104, width: 160,  borderWidth: 1, borderColor: 'gray', borderRadius: 8, flexDirection: 'row', paddingTop: 16, paddingLeft: 18}}>
+            <Image source={friendListImage}/>
+            <Text style={{fontSize: 14, fontWeight:'bold', left: 14, top: 3 }}>친구 목록</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={{height: 104, width: 160, borderWidth: 1, borderColor: 'gray', borderRadius: 8, flexDirection: 'row', paddingTop: 16, paddingLeft: 18}}>
+            <Image source={alarmImage}/>
+            <Text style={{fontSize: 14, fontWeight:'bold', left: 14, top: 3 }}>알림</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={{alignItems:'center', flexDirection:'row', justifyContent: 'space-between'}}>
+          <TouchableOpacity style={{height: 104, width: 160, borderWidth: 1, borderColor: 'gray', borderRadius: 8, flexDirection: 'row', paddingTop: 16, paddingLeft: 18}}>
+            <Image source={themeImage}/>
+            <Text style={{fontSize: 14, fontWeight:'bold', left: 14, top: 3 }}>테마</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={{height: 104, width: 160, borderWidth: 1, borderColor: 'gray', borderRadius: 8, flexDirection: 'row', paddingTop: 16, paddingLeft: 18}}>
+            <Image source={fontImage}/>
+            <Text style={{fontSize: 14, fontWeight:'bold', left: 14, top: 3 }}>폰트</Text>
+          </TouchableOpacity>
+        </View> 
+      </View>
+
+      <TouchableOpacity style={{position: 'absolute', width: '100%', height: 35, top: 435, justifyContent: 'center', marginTop: 10}}>
+        <Text style={{left: 20, fontSize:14, fontWeight: '400'}}>앱정보</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={{position: 'absolute', width: '100%', height: 35, top: 485, justifyContent: 'center'}}>
+        <Text style={{left: 20, fontSize:14, fontWeight: '400'}}>맵시 응원하기</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={{position: 'absolute', width: '100%', height: 35, top: 525, justifyContent: 'center'}}>
+        <Text style={{left: 20, fontSize:14, fontWeight: '400'}}>의견 보내기</Text>
+      </TouchableOpacity>
+
     </SafeAreaView>
   );
 }
@@ -67,7 +72,6 @@ export default MypageScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'grey',
     alignItems: 'center',
     justifyContent: 'center',
   },
