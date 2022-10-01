@@ -1,14 +1,17 @@
 import { SafeAreaView, Text, StyleSheet, View, Image, TouchableOpacity } from "react-native";
+import { useContext } from 'react';
+import AppContext from '../components/AppContext';
 
 const goBackImage = require('../assets/image/goBack.png');
-const myNickname = '고등어'
-const myID = 'kho2011'
-const myEmail = 'kho2011@snu.ac.kr'
 
 const gotoMypageScreen = ({navigation}) => {
     navigation.pop()
 }
 const ProfileScreen = ({navigation}) => {
+    const myContext = useContext(AppContext);
+    const myName = myContext.myLastName+myContext.myFirstName
+    const myID = myContext.myID
+    const myEmail = myContext.myEmail
 
     return(
         <SafeAreaView style={styles.container}> 
@@ -22,8 +25,8 @@ const ProfileScreen = ({navigation}) => {
             </View>
             
             <View style={{position: 'absolute', top: 105, width: '100%', height: 24, marginTop: 24, flexDirection: 'row'}}>
-                <Text style={{marginLeft: 24, fontSize: 14, fontWeight: 'bold'}}>닉네임</Text>
-                <Text style={{marginLeft: 24, fontWeight: '400'}}>{myNickname}</Text>
+                <Text style={{marginLeft: 24, fontSize: 14, fontWeight: 'bold'}}>이름</Text>
+                <Text style={{marginLeft: 24, fontWeight: '400'}}>{myName}</Text>
             </View>
             <View style={{position: 'absolute', top: 177, width: '100%', height: 24, flexDirection: 'row'}}>
                 <Text style={{marginLeft: 24, fontSize: 14, fontWeight: 'bold'}}>아이디</Text>

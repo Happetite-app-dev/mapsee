@@ -3,7 +3,8 @@ import React, {useEffect, useRef, useState} from 'react';
 import { Animated, Text, View, TouchableOpacity, Button } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import AddFolderBottomSheet from './AddFolderBottomSheet';
-
+import { useContext } from 'react';
+import AppContext from '../components/AppContext';
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, onValue, push } from 'firebase/database';
 const firebaseConfig = {
@@ -17,18 +18,20 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const myID = "kho2011";
 
 const FolderBottomSheet = ({show, setShow, setFolderName, setFolderID}) => {
+  
+  const myContext = useContext(AppContext);
+  const myUID = myContext.myUID
 
   useEffect(()=>{
     const db = getDatabase();
-    onValue(ref(db, '/users/' + myID + '/folderIDs'), (snapshot) => {
+    onValue(ref(db, '/users/' + myUID + '/folderIDs'), (snapshot) => {
       if(snapshot.val()!=null){
       const folderIDList = Object.keys(snapshot.val());
       setFolderIDNameList([])
       folderIDList.map((folderID)=>{
-        onValue(ref(db, '/folders/'+folderID+'/folderName/'+myID), (snapshot2)=>{
+        onValue(ref(db, '/folders/'+folderID+'/folderName/'+myUID), (snapshot2)=>{
             setFolderIDNameList((prev)=>[...prev, {folderID: folderID, folderName: snapshot2.val()}])          
         })
       })

@@ -4,10 +4,14 @@ import MypageScreen from '../screens/MypageScreen';
 import MapScreen from '../screens/MapScreen';
 import { StyleSheet, Text, View, Image, TouchableHighlight } from "react-native";
 import { useState } from "react";
-
+import { useContext } from 'react';
+import AppContext from '../components/AppContext';
 const Tab = createBottomTabNavigator();
 
-const CustomTabBarButton = ({children, onPress}) => (
+const CustomTabBarButton = ({children, onPress}) => {
+
+    const [pressing, setPressing] = useState(false)
+    return(
     <TouchableHighlight
         style={{
             top: -30,
@@ -21,13 +25,28 @@ const CustomTabBarButton = ({children, onPress}) => (
             ...styles.shadow
         }}
         underlayColor='blue'
-        onPress={onPress}
+        onPressIn={()=>{setPressing(true);onPress()}}
+        onPressOut={()=>setPressing(false)}
     >
         {children}
+        {/* {
+            pressing?
+            <View style={{borderRadius: 8, borderWidth: 3, borderColor: 'red'}}>
+                <Text style={{fontSize: 20, fontWeight: 'bold', color: 'green'}}>dd</Text>
+            </View>
+            :
+            <View style={{borderRadius: 8, borderWidth: 3, borderColor: 'black'}}>
+                <Text style={{fontSize: 20, fontWeight: 'bold', color: 'green'}}>ddwww</Text>
+            </View>
+        } */}
     </TouchableHighlight>
-);
+    )
+};
 
 const Tabs = ({navigation}) => {
+    const myContext = useContext(AppContext);
+    const tabBarVisible = myContext.tabBarVisible
+    const tabBarHandler = myContext.tabBarHandler
     return(
         <Tab.Navigator
             initialRouteName="Map"
@@ -45,7 +64,7 @@ const Tabs = ({navigation}) => {
                     height: 90,
                     opacity: 100,
                     zIndex:1,
-                    ...styles.shadow
+                    //...styles.shadow
                 }  
             }}
         >   
@@ -74,6 +93,9 @@ const Tabs = ({navigation}) => {
             <Tab.Screen name="Map" component={MapScreen} 
                 options={{
                     tabBarIcon: ({focused}) => (
+                        // <View>
+
+                        // </View>
                         <Image
                             source={focused? require('../assets/icons/locationplus.png') : require('../assets/icons/location.png')}
                             resizeMode='contain'
@@ -87,7 +109,7 @@ const Tabs = ({navigation}) => {
                     ),
                     tabBarButton: (props) => (
                         <CustomTabBarButton {...props} />
-                    )
+                    ),
                 }}
             />
             <Tab.Screen name="Mypage" component={MypageScreen} options={{
@@ -110,7 +132,8 @@ const Tabs = ({navigation}) => {
                         </Text>
 
                     </View>
-                )
+                ),
+                tabBarStyle: {display: tabBarVisible? "flex" : "none"}
             }}/>
         </Tab.Navigator>
     )

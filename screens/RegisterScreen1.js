@@ -1,62 +1,34 @@
 import React,{useEffect, useState} from 'react'
 import {StyleSheet, Text, View, KeyboardAvoidingView, TextInput, TouchableOpacity, Dimensions} from 'react-native'
-import { auth } from '../firebase'
-import {getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword} from "firebase/auth";
-import { useContext } from 'react';
-import AppContext from '../components/AppContext';
 
 const { height } = Dimensions.get('window');
 
-const RegisterScreen=({ navigation })=>{
-    const myContext = useContext(AppContext);
-    const startTutorial = false;
+const RegisterScreen1=({ navigation })=>{
     const [email,setEmail]=useState('')
-    const [password,setPassword]=useState('')
-    const [passwordCheck,setPasswordCheck]=useState('')
-    const [id,setId]=useState('')
     const [valid, setValid]=useState(false)
-    const gotoApp = (myID_) => {
-        myContext.initMyID(myID_)
-        if(!startTutorial){
-            navigation.navigate('Tabs')
-        }
-    }
-    useEffect(()=>{
-        const unsubscribe=auth.onAuthStateChanged(user=>{
-            if(!user){
-                //navigation.replace("Home")
-            }
-        })
-
-        return unsubscribe
-    },[])
 
     const handleSignUp=()=>{
-        createUserWithEmailAndPassword(auth, email, password)
-            .then(userCredentials=>{
-                const user=userCredentials.user;
-                gotoApp(user.uid)
-                //navigation.navigate("AfterLoginScreen", user.uid)
-            })
-            .catch(error=>alert(error.message))
-
+        navigation.navigate("RegisterScreen2",email)
     }
 
-
-    
+    const validate = (text) => {
+        const reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
+        //console.log(text, reg.test(text));
+        return reg.test(text);
+      };
 
     const ContinueButton=()=>{
         useEffect(()=>{
-            if(id.length!==0){
-                if(password===passwordCheck){
-                    setValid(true);
-                }
-                else{
-                    setValid(false);
-                }
+            const whetherValid=validate(email);
+            if(whetherValid){
+                setValid(true);
+                //console.log("correct")
             }
-            else setValid(false);
-        },[id,password,passwordCheck])        
+            else{
+                setValid(false);
+                //console.log("wrong")
+            } 
+        },[email])        
         if(valid){
             return(
                 <View style={styles.buttonContainer}>
@@ -87,7 +59,7 @@ const RegisterScreen=({ navigation })=>{
     return(
         <View style={styles.container}>
             <View style={{width:'100%',marginBottom:10}}>
-                <Text style={styles.textContainer}>개인정보를 입력해주세요</Text>
+                <Text style={styles.textContainer}>이메일을 입력해주세요</Text>
             </View>
             <View style={styles.inputContainer}>
                 <Text style={{fontSize:13,marginLeft:14}}>이메일</Text>
@@ -99,43 +71,13 @@ const RegisterScreen=({ navigation })=>{
                         style={styles.input}
                     />
                 </View>
-                
-                <Text style={{fontSize:13,marginLeft:14,marginTop:20}}>아이디</Text>
-                <View style={{borderBottomColor:'#ADB1C5', borderBottomWidth:1,marginTop:5,paddingVertical:10,marginHorizontal:10}}>
-                    <TextInput
-                        placeholder="mapsee"
-                        value={id}
-                        onChangeText={text=>setId(text)}
-                        style={styles.input}
-                    />
-                </View>
-                <Text style={{fontSize:13,marginLeft:14, marginTop:20}}>비밀번호</Text>
-                <View style={{borderBottomColor:'#ADB1C5', borderBottomWidth:1,marginTop:5,paddingVertical:10,marginHorizontal:10}}>
-                    <TextInput
-                        placeholder="Password"
-                        value={password}
-                        onChangeText={text => setPassword(text)}
-                        style={styles.input}
-                        secureTextEntry
-                    />
-                </View>
-                <Text style={{fontSize:13,marginLeft:14, marginTop:20}}>비밀번호 확인</Text>
-                <View style={{borderBottomColor:'#ADB1C5', borderBottomWidth:1,marginTop:5,paddingVertical:10,marginHorizontal:10}}>
-                    <TextInput
-                        placeholder="Password Check"
-                        value={passwordCheck}
-                        onChangeText={text => setPasswordCheck(text)}
-                        style={styles.input}
-                        secureTextEntry
-                    />
-                </View>
             </View>
             <ContinueButton/>
         </View>
     )
 }
 
-export default RegisterScreen
+export default RegisterScreen1
 
 const styles = StyleSheet.create({
     container: {

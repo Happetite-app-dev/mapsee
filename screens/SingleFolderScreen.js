@@ -2,7 +2,8 @@ import { SafeAreaView, Text, View, TouchableOpacity, Image, Alert } from "react-
 import RecordFlatList from "../components/RecordFlatList";
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, onValue, set, push, remove, off } from 'firebase/database';
-
+import { useContext } from 'react';
+import AppContext from '../components/AppContext';
 const goBackImage = require('../assets/image/goBack.png')
 const folder2Image = require('../assets/image/folder2.png')
 const editImage = require('../assets/image/edit.png')
@@ -19,15 +20,14 @@ const firebaseConfig = {
   };
 
 const app = initializeApp(firebaseConfig);
-const myID = "kho2011";
 
 
-const exitData = async (folderID) => {
+const exitData = async (myUID, folderID) => {
     const db = getDatabase();
-    const reference1 = ref(db, '/users/'+myID+'/folderIDs/'+folderID);
+    const reference1 = ref(db, '/users/'+myUID+'/folderIDs/'+folderID);
     await remove(reference1)
     .then(()=>{
-        const reference2 = ref(db, '/folders/'+folderID+'/userIDs/'+myID)
+        const reference2 = ref(db, '/folders/'+folderID+'/userIDs/'+myUID)
         remove(reference2)
     })
     .then(
@@ -42,6 +42,9 @@ const exitData = async (folderID) => {
 }
 
 const SingleFolderScreen = ({navigation, route}) => {
+    const myContext = useContext(AppContext);
+    const myUID = myContext.myUID
+
     const {recordDataSource, folderID, folderName, folderColor} = route.params
     const gotoStorageScreen = () => {
         navigation.pop()
@@ -50,7 +53,7 @@ const SingleFolderScreen = ({navigation, route}) => {
         navigation.navigate('MakeFolderBottomSheetScreen', {folderID: folderID, folderName: folderName, folderColor: folderColor, recordDataSource: recordDataSource})
     }
     const exitFolder = async () => {
-        await exitData(folderID)
+        await exitData(myUID, folderID)
         .then(
             ()=>navigation.navigate('Storage')               //realtimeDataBase가 모두 업데이트 된후 
         )

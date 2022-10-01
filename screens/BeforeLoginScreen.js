@@ -2,18 +2,47 @@ import React from 'react';
 import { useEffect } from 'react';
 import { View, Image, StyleSheet, TouchableOpacity,Text,Dimensions } from 'react-native';
 import { auth } from '../firebase'
-import { Auth, AuthCredential, onAuthStateChanged } from 'firebase/auth';
-import {getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword} from "firebase/auth";
+import { useContext } from 'react';
+import AppContext from '../components/AppContext';
+import { initializeApp } from "firebase/app";
+import { getDatabase, ref, onValue, set, push, remove, off } from 'firebase/database';
+
 
 const mapseeLogoImage = require('../assets/image/mapsee_logo.png')
 const { height } = Dimensions.get('window');
 
+const firebaseConfig = {
+    apiKey: "AIzaSyDBq4tZ1QLm1R7iPH8O4dTvebVGWgkRPks",
+    authDomain: "mapseedemo1.firebaseapp.com",
+    projectId: "mapseedemo1",
+    storageBucket: "mapseedemo1.appspot.com",
+    messagingSenderId: "839335870793",
+    appId: "1:839335870793:web:75004c5d43270610411a98",
+    measurementId: "G-8L1MD1CGN2"
+};
+const app = initializeApp(firebaseConfig);
+const db = getDatabase();
+
 const BeforeLoginScreen=({navigation})=>{
+    const myContext = useContext(AppContext);
+    const startTutorial = false;
+    const gotoApp = (myUID_) => {
+        myContext.initMyUID(myUID_)
+        onValue(ref(db, '/users/' + myUID_), (snapshot) => {
+            myContext.initMyID(snapshot.child('id').val())
+            myContext.initMyFirstName(snapshot.child('firstName').val())
+            myContext.initMyLastName(snapshot.child('lastName').val())
+            myContext.initMyEmail(snapshot.child('email').val())
+        })
+        if(!startTutorial){
+            navigation.navigate('Tabs')
+        }
+    }
+
     useEffect(()=>{
         const unsubscribe=auth.onAuthStateChanged(user=>{
             if(user){
-                console.log(user)
-                navigation.replace("AfterLoginScreen",user.email)
+                gotoApp(user.uid)
             }
         })
 
@@ -24,7 +53,7 @@ const BeforeLoginScreen=({navigation})=>{
         navigation.navigate("LoginScreen")
     }
     const gotoRegisterScreen=()=>{
-        navigation.navigate("RegisterScreen")
+        navigation.navigate("RegisterScreen1")
     }
 
     return(

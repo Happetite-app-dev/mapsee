@@ -4,7 +4,8 @@ import ImgPicker from '../components/ImgPicker';
 import DatePicker from '../components/DatePicker';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import FolderBottomSheet from '../components/FolderBottomSheet';
-
+import { useContext } from 'react';
+import AppContext from '../components/AppContext';
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, onValue, set, push, remove, off } from 'firebase/database';
 
@@ -29,11 +30,11 @@ const firebaseConfig = {
   };
 
 const app = initializeApp(firebaseConfig);
-const myID = "kho2011";
-const defaultFolderID = "-N8m6bMn5ucRfUhXkHwK";
+
+const defaultFolderID = "-NB6gdHZgh_liXbnuOLr";
 const defaultFolderName = "폴더1"
 
-const saveData = async (title, place, placeID, address, lctn, date, folderID, folderName, selectedPhoto, text, writeDate_, recordID, originalfolderID) => {
+const saveData = async (myUID, title, place, placeID, address, lctn, date, folderID, folderName, selectedPhoto, text, writeDate_, recordID, originalfolderID) => {
     const timeNow = new Date();
     const writeDate = writeDate_ || {year: timeNow.getFullYear(), month: timeNow.getMonth()+1, day: timeNow.getDate(), hour: timeNow.getHours(), minute: timeNow.getMinutes()}
     const db = getDatabase();
@@ -45,7 +46,7 @@ const saveData = async (title, place, placeID, address, lctn, date, folderID, fo
             placeID: placeID,
             address: address,
             lctn: lctn,
-            userID: myID,
+            userID: myUID,
             writeDate: writeDate,
             title: title==undefined ? `${timeNow.getFullYear().toString()}_${(timeNow.getMonth()+1).toString()}_${timeNow.getDay().toString()}_기록` : title,
             placeName: place,
@@ -67,7 +68,7 @@ const saveData = async (title, place, placeID, address, lctn, date, folderID, fo
             placeID: placeID,
             address: address,
             lctn: lctn,
-            userID: myID,
+            userID: myUID,
             writeDate: writeDate,
             title: title==undefined ? `${timeNow.getFullYear().toString()}_${(timeNow.getMonth()+1).toString()}_${timeNow.getDay().toString()}_기록` : title,  //나중에 modify할 때 default title을 어떻게 할지를 기획한테 물어보기
             placeName: place,
@@ -117,14 +118,16 @@ const removeData = async (recordID, folderID, placeID) => {
 }
 
 const EditScreen = ({navigation, route}) => {
+    const myContext = useContext(AppContext);
+    const myUID = myContext.myUID
 
     const timeNow2 = new Date();
    
     const {recordID, folderID, placeID, address, lctn, userID, writeDate, title, placeName, date, folderName, photos, text} = route.params;
 
     const IsNewRecord = title===undefined ? true : false;     //지금 사용자가 작성하고 있는 record가 새로 만드는 record인지 기존에 있던 record인지를 알려주는 bool
-    const IsRecordOwner = userID===myID;         //기존의 기록인 경우, 그것이 자신의 기록인지 확인하는 bool
-    const [isEditable, setIsEditable] = useState(IsNewRecord);   //이거는 IsNewRecord이거나, IsRecordOwner이고 토글을 눌렀을 때 true가 됨 
+    const IsRecordOwner = userID===myUID;         //기존의 기록인 경우, 그것이 자신의 기록인지 확인하는 bool
+    const [isEditable, setIsEditable] = useState(IsNewRecord);   //이거는 IsNewRecord이거나, IsRecordOwner이고 토글을 눌렀을 때 true가 됨   
 
     const [title_, setTitle_] = useState(title || undefined);
 
@@ -138,12 +141,11 @@ const EditScreen = ({navigation, route}) => {
     const [folderName_, setFolderName_] = useState(folderName || defaultFolderName);
     const [showFolderBottomSheet, setShowFolderBottomSheet] = useState(false);
     
-    const [selectedPhoto, setSelectedPhoto]=useState(photos || null);
+    const [selectedPhotos, setSelectedPhotos]=useState(photos || []);
 
     const [text_, setText_]=useState(text || '');
-
     const storeRecord = async () => {
-        await saveData(title_, place, placeID, address, lctn, date_, folderID_, folderName_, selectedPhoto, text_, writeDate, recordID, originalfolderID)
+        await saveData(myUID, title_, place, placeID, address, lctn, date_, folderID_, folderName_, selectedPhoto, text_, writeDate, recordID, originalfolderID)
         .then(()=>{
             IsNewRecord ? navigation.pop() : navigation.navigate('Storage')    //realtimeDataBase가 모두 업데이트 된후 
         })
@@ -234,7 +236,7 @@ const EditScreen = ({navigation, route}) => {
             </View>
             <View style={{height:105, bottom: 5,...styles.item}}>
                 <Image source={RecordPhotoImage}/>
-                <ImgPicker onImageTaken={photo=>setSelectedPhoto(photo)} defaultPhotos={selectedPhoto} IsEditable={isEditable}/>
+                <ImgPicker onImageTaken={photo=>{setSelectedPhotos(selectedPhotos => [...selectedPhotos, photo])}} defaultPhotos={selectedPhotos} IsEditable={isEditable}/>
             </View>
             <View style={{...styles.item}}>
                 <Image source={RecordTextImage}/>  

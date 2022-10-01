@@ -2,34 +2,55 @@ import React,{useEffect, useState} from 'react'
 import {StyleSheet, Text, View, KeyboardAvoidingView, TextInput, TouchableOpacity, Dimensions} from 'react-native'
 import { auth } from '../firebase'
 import {getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword} from "firebase/auth";
-
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { useContext } from 'react';
+import AppContext from '../components/AppContext';
+import { initializeApp } from "firebase/app";
+import { getDatabase, ref, onValue, set, push, remove, off } from 'firebase/database';
 
 const { height } = Dimensions.get('window');
 
+const firebaseConfig = {
+    apiKey: "AIzaSyDBq4tZ1QLm1R7iPH8O4dTvebVGWgkRPks",
+    authDomain: "mapseedemo1.firebaseapp.com",
+    projectId: "mapseedemo1",
+    storageBucket: "mapseedemo1.appspot.com",
+    messagingSenderId: "839335870793",
+    appId: "1:839335870793:web:75004c5d43270610411a98",
+    measurementId: "G-8L1MD1CGN2"
+};
+const app = initializeApp(firebaseConfig);
+const db = getDatabase();
+
+
 const LoginScreen=({ navigation })=>{
+
     const [email,setEmail]=useState('')
     const [password,setPassword]=useState('')
     const [valid, setValid]=useState(false)
 
-    const handleSignUp=()=>{
-        createUserWithEmailAndPassword(auth, email,password)
-            .then(userCredentials=>{
-                const user=userCredentials.user;
-                console.log(user.email);
-            })
-            .catch(error=>alert(error.message))
+    const myContext = useContext(AppContext);
+    const startTutorial = false;
+
+    const gotoApp = (myUID_) => {
+        myContext.initMyUID(myUID_)
+        onValue(ref(db, '/users/' + myUID_), (snapshot) => {
+            myContext.initMyID(snapshot.child('id').val())
+            myContext.initMyFirstName(snapshot.child('firstName').val())
+            myContext.initMyLastName(snapshot.child('lastName').val())
+            myContext.initMyEmail(snapshot.child('email').val())
+        })
+        if(!startTutorial){
+            navigation.navigate('Tabs')
+        }
     }
 
     const handleLogin=()=>{
         signInWithEmailAndPassword(auth, email,password)
             .then(userCredentials=>{
                 const user =userCredentials.user;
-                console.log('Logged in with', user.email);
+                gotoApp(user.uid)
             })
             .catch(error=>alert(error.message))
-            navigation.navigate("AfterLogin")
     }
 
     

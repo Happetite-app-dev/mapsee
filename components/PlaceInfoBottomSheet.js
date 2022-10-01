@@ -2,6 +2,8 @@ import React, {useEffect, useRef, useState} from 'react';
 import { Animated, Text, View, TouchableHighlight, Button, Image } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { initializeApp } from "firebase/app";
+import { useContext } from 'react';
+import AppContext from '../components/AppContext';
 import { getDatabase, ref, onValue, set, push } from 'firebase/database';
 import RecordFlatList from '../components/RecordFlatList';
 const firebaseConfig = {
@@ -15,12 +17,16 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const myID = "kho2011";
+
 
 const mapScreenBottomSheetExampleImage = require('../assets/image/mapScreenBottomSheetExample.png')
 const LocationplusIcon = require('../assets/icons/locationplus.png')
 const CreateNoteImage = require('../assets/image/CreateNote.png')
 const BottomSheetScreen = ({onDisplay, onCancel, animationVal, targetName, targetAddress, targetId, targetLctn, navigation}) => {
+  
+  const myContext = useContext(AppContext);
+  const myUID = myContext.myUID
+
   const gotoEditScreen = () => {return(navigation.push("EditScreen", {placeName: targetName, placeID: targetId, address:targetAddress, lctn: targetLctn}))}
   if(animationVal<0){
     return(                                                 //bottomsheet가 전체 화면을 덮기 전
@@ -54,7 +60,7 @@ const BottomSheetScreen = ({onDisplay, onCancel, animationVal, targetName, targe
     const [masterDataSource, setMasterDataSource] = useState([]);     //shortened record가 쌓여있음 {recordID, title, folderID, placeName, date, text, photos}
     useEffect(()=>{
       const db = getDatabase();
-      onValue(ref(db, '/users/' + myID + '/folderIDs'), (snapshot) => {
+      onValue(ref(db, '/users/' + myUID + '/folderIDs'), (snapshot) => {
         if(snapshot.val()!=null){                             //한 user가 folder를 갖고 있지 않을 수 있어!!
           const folderIDList = Object.keys(snapshot.val());           //folderIDList 만들기 
           setMasterDataSource([]);                             //initializing masterDataSource
@@ -155,7 +161,7 @@ const BottomSheet = ({onRemove, onDisplay, onCancel, setIsShow, animation, anima
   )
 }
 
-const PlaceInfoBottomSheet = ({route, navigation}) => {
+const PlaceInfoBottomSheet = ({navigation, route}) => {
   const {setIsShow, targetName, targetAddress, targetId, targetLctn} = route.params;
   const [animationValue, setAnimationValue] = useState(-1000);
   const showAnimation = useRef(new Animated.Value(animationValue)).current;

@@ -1,7 +1,8 @@
 import React, {useEffect, useRef, useState} from 'react';
 import { Animated, Text, View, TouchableOpacity, Button, SafeAreaView } from 'react-native';
 import { ScrollView, Switch, TextInput } from 'react-native-gesture-handler';
-
+import { useContext } from 'react';
+import AppContext from '../components/AppContext';
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, onValue, set, push } from 'firebase/database';
 const firebaseConfig = {
@@ -15,9 +16,11 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const myID = "kho2011";
 
 const MakeFolderBottomSheet = ({stackNavigation, folderID, folderName_, folderColor_, recordDataSource}) => {
+  const myContext = useContext(AppContext);
+  const myUID = myContext.myUID
+
   const IsNewRecord = folderName_===null ? true : false;
   const gotoStorageScreen = () => {
     stackNavigation.navigate('Storage')
@@ -34,30 +37,30 @@ const MakeFolderBottomSheet = ({stackNavigation, folderID, folderName_, folderCo
           folderName: folderName,
           folderColor: folderColor,
           }).key;
-      const reference2 = ref(db, `/folders/${newFolderID}/folderName/${myID}`)    //folderName 개인화
+      const reference2 = ref(db, `/folders/${newFolderID}/folderName/${myUID}`)    //folderName 개인화
       set (reference2,
         folderName
       );
-      const reference3 = ref(db, `/folders/${newFolderID}/folderColor/${myID}`)    //folderColor 개인화
+      const reference3 = ref(db, `/folders/${newFolderID}/folderColor/${myUID}`)    //folderColor 개인화
       set (reference3,
         folderColor
       );
-      const reference4 = ref(db, `/folders/${newFolderID}/userIDs/${myID}`)     //folders/newfolderID/userIDs에 userID:true를 넣기
+      const reference4 = ref(db, `/folders/${newFolderID}/userIDs/${myUID}`)     //folders/newfolderID/userIDs에 userID:true를 넣기
       set (reference4,
         true
       );
-      const reference5 = ref(db, `users/${myID}/folderIDs/${newFolderID}`);      //user에 folderID를 넣고
+      const reference5 = ref(db, `users/${myUID}/folderIDs/${newFolderID}`);      //user에 folderID를 넣고
       set(reference5, 
           true
       );
     }
     else                    //새 기록이 아니라면
     {
-      const reference1 = ref(db, '/folders/'+folderID+'/folderName/'+myID);                      //folders에 push
+      const reference1 = ref(db, '/folders/'+folderID+'/folderName/'+myUID);                      //folders에 push
       set(reference1, 
           folderName
       )
-      const reference2 = ref(db, '/folders/'+folderID+'/folderColor/'+myID);                      //folders에 push
+      const reference2 = ref(db, '/folders/'+folderID+'/folderColor/'+myUID);                      //folders에 push
       set(reference2, 
           folderColor
       )
@@ -67,7 +70,7 @@ const MakeFolderBottomSheet = ({stackNavigation, folderID, folderName_, folderCo
 
     const [newFolderName, setNewFolderName] = useState(folderName_ || '')
     const [newFolderColor, setNewFolderColor] = useState(folderColor_ || '#FF6363')
-    const [newFolderUserID, setNewFolderUserID] = useState(myID)
+    const [newFolderUserID, setNewFolderUserID] = useState(myUID)
     return(
       <View style={{width:'100%', height: '100%'}}>
         <View style={{top: 24, width: 61, height: 24, left: 23, marginBottom: 24}}>

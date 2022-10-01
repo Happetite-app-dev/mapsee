@@ -1,7 +1,8 @@
 import React, {useEffect, useRef, useState} from 'react';
 import { Animated, Text, View, TouchableOpacity, Button, SafeAreaView } from 'react-native';
 import { ScrollView, Switch, TextInput } from 'react-native-gesture-handler';
-
+import { useContext } from 'react';
+import AppContext from '../components/AppContext';
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, onValue, set, push } from 'firebase/database';
 const firebaseConfig = {
@@ -15,9 +16,10 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const myID = "kho2011";
 
 const AddFolderBottomSheet = ({setFolderName, setFolderID, setFolderIDNameList, setShow}) => {
+  const myContext = useContext(AppContext);
+  const myUID = myContext.myUID
   const addNewFolder = (folderName, folderColor, userID) => {
     const db = getDatabase();
   
@@ -26,19 +28,19 @@ const AddFolderBottomSheet = ({setFolderName, setFolderID, setFolderIDNameList, 
         initFolderName: folderName,
         initFolderColor: folderColor,
         }).key;
-    const reference2 = ref(db, `/folders/${newFolderID}/folderName/${myID}`)    //folderName 개인화
+    const reference2 = ref(db, `/folders/${newFolderID}/folderName/${myUID}`)    //folderName 개인화
     set (reference2,
       folderName
     );
-    const reference3 = ref(db, `/folders/${newFolderID}/folderColor/${myID}`)    //folderColor 개인화
+    const reference3 = ref(db, `/folders/${newFolderID}/folderColor/${myUID}`)    //folderColor 개인화
     set (reference3,
       folderColor
     );
-    const reference4 = ref(db, `/folders/${newFolderID}/userIDs/${myID}`)     //folders/newfolderID/userIDs에 userID:true를 넣기
+    const reference4 = ref(db, `/folders/${newFolderID}/userIDs/${myUID}`)     //folders/newfolderID/userIDs에 userID:true를 넣기
     set (reference4,
       true
-    );
-    const reference5 = ref(db, `users/${myID}/folderIDs/${newFolderID}`);      //user에 folderID를 넣고
+    );ㄴ
+    const reference5 = ref(db, `users/${myUID}/folderIDs/${newFolderID}`);      //user에 folderID를 넣고
     set(reference5, 
         true
     );
@@ -48,7 +50,7 @@ const AddFolderBottomSheet = ({setFolderName, setFolderID, setFolderIDNameList, 
   }
     const [newFolderName, setNewFolderName] = useState('')
     const [newFolderColor, setNewFolderColor] = useState('red')
-    const [newFolderUserID, setNewFolderUserID] = useState('kho2011')
+    const [newFolderUserID, setNewFolderUserID] = useState('kho2011')  //변수명 수정 필요
     return(
       <View style={{width:'100%', height: '100%'}}>
         <View style={{top: 24, width: 61, height: 24, left: 23, marginBottom: 24}}>

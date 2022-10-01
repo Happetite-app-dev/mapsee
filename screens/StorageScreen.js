@@ -3,7 +3,8 @@ import { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, SafeAreaView, TouchableOpacity } from 'react-native';
 import { AnimatedButton, FlatList, Image } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
-
+import { useContext } from 'react';
+import AppContext from '../components/AppContext';
 const folderImage = require('../assets/image/folder.png');
 const addFolderImage = require('../assets/image/addFolder.png');
 const searchImage = require('../assets/image/search.png')
@@ -25,21 +26,24 @@ const app = initializeApp(firebaseConfig);
 const myID = "kho2011";
 
 const StorageScreen = ({navigation}) => {
+  
+  const myContext = useContext(AppContext);
+  const myUID = myContext.myUID
   const isFocused = useIsFocused();
   useEffect(()=>{    
     if(isFocused)
-    {                               
+    {                                 
     const db = getDatabase();
-    onValue(ref(db, '/users/' + myID + '/folderIDs'), (snapshot) => {
+    onValue(ref(db, '/users/' + myUID + '/folderIDs'), (snapshot) => {
       if(snapshot.val()!=null){                             //한 user가 folder를 갖고 있지 않을 수 있어!!
         const folderIDList = Object.keys(snapshot.val());           //folderIDList 만들기 
         setFolderIDNameColorList((prev)=>[]);                                 //initializing folderIDNameList
         setMasterDataSource((prev)=>[])                            //initializing masterDataSource
         folderIDList.map((folderID)=>{                        //각 폴더에 대하여....
           onValue(ref(db, '/folders/'+folderID), (snapshot2)=>{
-            if(!folderIDNameColorList.includes({folderID: folderID, folderName: snapshot2.child('folderName').child(myID).val() , folderColor: snapshot2.child('folderColor').child(myID).val()}) )
+            if(!folderIDNameColorList.includes({folderID: folderID, folderName: snapshot2.child('folderName').child(myUID).val() , folderColor: snapshot2.child('folderColor').child(myUID).val()}) )
             {
-            setFolderIDNameColorList((prev)=>[...prev, {folderID: folderID, folderName: snapshot2.child('folderName').child(myID).val() , folderColor: snapshot2.child('folderColor').child(myID).val()}])  //folderIDNameList채워주기
+            setFolderIDNameColorList((prev)=>[...prev, {folderID: folderID, folderName: snapshot2.child('folderName').child(myUID).val() , folderColor: snapshot2.child('folderColor').child(myUID).val()}])  //folderIDNameList채워주기
             //console.log('folder',folderIDNameColorList.length)
             if(snapshot2.child('placeRecords').val()!=(null||undefined))      //폴더는 있지만 빈폴더라서 record가 안에 없을 수 있어!!        
             {
