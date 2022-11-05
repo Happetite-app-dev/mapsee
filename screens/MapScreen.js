@@ -14,6 +14,9 @@ const targetLocationImage = require('../assets/image/targetLocation.png')
 
 //address: 지번 주소, lctn: lat과 lng으로 이루어진 좌표 주소
 
+  
+
+
 const MapScreen = ({navigation}) => {
 
   const mapRef = React.createRef();
@@ -24,7 +27,7 @@ const MapScreen = ({navigation}) => {
   const [isShowBottomSheet, setIsShowBottomSheet] = useState(false);
 
   useEffect(() => {
-    Geocoder.init("AIzaSyA2FBudItIm0cVgwNOsuc8D9BKk0HUeUTs", { language: "kor" });
+    Geocoder.init("AIzaSyDBq4tZ1QLm1R7iPH8O4dTvebVGWgkRPks", { language: "kor" });
     getLocationPermission();
   }, [])
 
@@ -67,7 +70,7 @@ const MapScreen = ({navigation}) => {
           targetingFromAddress(data.description, data.structured_formatting.main_text);
         }}
         query={{
-          key: 'AIzaSyA2FBudItIm0cVgwNOsuc8D9BKk0HUeUTs',
+          key: 'AIzaSyDBq4tZ1QLm1R7iPH8O4dTvebVGWgkRPks',
           language: 'kor',
           components: 'country:kor'
         }}

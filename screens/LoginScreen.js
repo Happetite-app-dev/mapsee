@@ -38,7 +38,7 @@ const LoginScreen=({ navigation })=>{
             myContext.initMyFirstName(snapshot.child('firstName').val())
             myContext.initMyLastName(snapshot.child('lastName').val())
             myContext.initMyEmail(snapshot.child('email').val())
-        })
+        })  
         if(!startTutorial){
             navigation.navigate('Tabs')
         }

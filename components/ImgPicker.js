@@ -7,6 +7,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const ImgPicker= ({onImageTaken, defaultPhotos, IsEditable}) => {
     const [pickedImages, setPickedImages]=useState(defaultPhotos);
+
     const verifyPermissionsCam = async () =>{
         const result = await Permissions.askAsync(Permissions.CAMERA);
         if (result.status !== 'granted'){
@@ -18,7 +19,7 @@ const ImgPicker= ({onImageTaken, defaultPhotos, IsEditable}) => {
         }
         return true;
     };
-
+    
     const verifyPermissionsLib = async () =>{
         const result = await Permissions.askAsync(Permissions.MEDIA_LIBRARY);
         if (result.status !== 'granted'){
@@ -36,16 +37,17 @@ const ImgPicker= ({onImageTaken, defaultPhotos, IsEditable}) => {
         if(!hasPermission){
             return;
         }
+
+       
         const image = await ImagePicker.launchCameraAsync({
             allowsEditing: true,
             //aspect: [16,9],
-            quality: 0.5
+            quality: 0.5,
         });
         
         setPickedImages((images)=>[...images, image.uri]);
         onImageTaken(image.uri)
     };
-
     const takeImageHandlerLib= async() => {
         const hasPermission=await verifyPermissionsLib();
         if(!hasPermission){
@@ -56,8 +58,10 @@ const ImgPicker= ({onImageTaken, defaultPhotos, IsEditable}) => {
             //aspect: [16,9],
             quality: 0.5
         });
-        setPickedImages(images=>[...images, image.uri]);
-        onImageTaken(image.uri)
+        if(!image.cancelled){                  
+            setPickedImages(images=>[...images, image.uri]);
+            onImageTaken(image.uri)
+        }
     };
     
     return (
@@ -89,7 +93,7 @@ const ImgPicker= ({onImageTaken, defaultPhotos, IsEditable}) => {
                                     return(
                                         <Image style={styles.image} source={{uri: image}}/>
                                     )
-                                }
+                                }  
                             )}
                         </ScrollView>
                     }
@@ -111,9 +115,20 @@ const ImgPicker= ({onImageTaken, defaultPhotos, IsEditable}) => {
                 </View>
             </View>
         :
-            <View style={styles.imagePreview}>
-                {!pickedImages ? (<Text style={{fontSize:35, color: 'grey'}}>+</Text>):
-                (<Image style={styles.image} source={{uri: pickedImage}}/>)}
+            <View style={{height: 110, width: 360}}>
+                <ScrollView showsHorizontalScrollIndicator={false} horizontal={true} style={{height: 110}} >
+                    {(pickedImages.length==0) ? 
+                        (<Text style={{fontSize:35, color: 'grey'}}>저장된 사진이 없습니다</Text>)
+                        :
+                        (pickedImages.map(image => 
+                            {
+                                return(
+                                    <Image style={styles.image} source={{uri: image}}/>
+                                )
+                            }
+                        ))
+                    }
+                </ScrollView>
             </View>
         }
         
@@ -141,8 +156,15 @@ const styles=StyleSheet.create({
         borderWidth: 1,
     },
     image: {
-        width: '100%',
-        height: '100%'
+        width: 100,
+        height:100,
+        borderRadius: 10,
+        //marginBottom:10,
+        marginRight: 15,
+        justifyContent:'center',
+        alignItems: 'center',
+        borderColor: '#ccc',
+        borderWidth: 1,
     }
 })
 

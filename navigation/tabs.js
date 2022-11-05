@@ -2,46 +2,12 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 import StorageScreen from "../screens/StorageScreen";
 import MypageScreen from '../screens/MypageScreen';
 import MapScreen from '../screens/MapScreen';
+import AlarmScreen from "../screens/AlarmScreen";
 import { StyleSheet, Text, View, Image, TouchableHighlight } from "react-native";
 import { useState } from "react";
 import { useContext } from 'react';
 import AppContext from '../components/AppContext';
 const Tab = createBottomTabNavigator();
-
-const CustomTabBarButton = ({children, onPress}) => {
-
-    const [pressing, setPressing] = useState(false)
-    return(
-    <TouchableHighlight
-        style={{
-            top: -30,
-            justifyContent: 'center',
-            alignItems: 'center',
-            width:80,
-            height:80,
-            borderRadius: 40,
-            backgroundColor: 'skyblue',
-            zIndex:1,
-            ...styles.shadow
-        }}
-        underlayColor='blue'
-        onPressIn={()=>{setPressing(true);onPress()}}
-        onPressOut={()=>setPressing(false)}
-    >
-        {children}
-        {/* {
-            pressing?
-            <View style={{borderRadius: 8, borderWidth: 3, borderColor: 'red'}}>
-                <Text style={{fontSize: 20, fontWeight: 'bold', color: 'green'}}>dd</Text>
-            </View>
-            :
-            <View style={{borderRadius: 8, borderWidth: 3, borderColor: 'black'}}>
-                <Text style={{fontSize: 20, fontWeight: 'bold', color: 'green'}}>ddwww</Text>
-            </View>
-        } */}
-    </TouchableHighlight>
-    )
-};
 
 const Tabs = ({navigation}) => {
     const myContext = useContext(AppContext);
@@ -64,7 +30,6 @@ const Tabs = ({navigation}) => {
                     height: 90,
                     opacity: 100,
                     zIndex:1,
-                    //...styles.shadow
                 }  
             }}
         >   
@@ -72,20 +37,14 @@ const Tabs = ({navigation}) => {
                 tabBarIcon: ({focused}) => (
                     <View style={{alignItems: 'center', justifyContent: 'center', top: 10}}>
                         <Image                    
-                            source={require('../assets/icons/bookmark.png')}
+                            source={focused? require('../assets/icons/storage_on.png') : require('../assets/icons/storage_off.png')}
                             resizeMode='contain'
                             style={{
-                                width: 37,
-                                height: 37,
-                                tintColor: focused? 'black' : 'grey',
+                                width: 24,
+                                height: 24,
                                 zIndex:1,
                             }}
                         />
-                        <Text
-                            style={{color: focused ? 'black' : 'grey', fontSize: 12,zIndex:1,}}
-                        >
-                        보관함
-                        </Text>
 
                     </View>
                 )
@@ -93,47 +52,51 @@ const Tabs = ({navigation}) => {
             <Tab.Screen name="Map" component={MapScreen} 
                 options={{
                     tabBarIcon: ({focused}) => (
-                        // <View>
-
-                        // </View>
-                        <Image
-                            source={focused? require('../assets/icons/locationplus.png') : require('../assets/icons/location.png')}
-                            resizeMode='contain'
-                            style={{
-                                width: 40,
-                                height: 40,
-                                tintColor: '#fff',
-                                zIndex:1,
-                            }}
-                        />
-                    ),
-                    tabBarButton: (props) => (
-                        <CustomTabBarButton {...props} />
+                        <View style={{alignItems: 'center', justifyContent: 'center', top: 10}}>
+                            <Image
+                                source={focused? require('../assets/icons/map_on.png') : require('../assets/icons/map_off.png')}
+                                resizeMode='contain'
+                                style={{
+                                    width: 24,
+                                    height: 24,
+                                    zIndex:1,
+                                }}
+                            />
+                        </View>
                     ),
                 }}
             />
+            <Tab.Screen name="Alarm" component={AlarmScreen} options={{
+                tabBarIcon: ({focused}) => (
+                    <View style={{alignItems: 'center', justifyContent: 'center', top: 10}}>
+                        <Image                    
+                            source={focused ? require('../assets/icons/alarm_on.png') : require('../assets/icons/alarm_off.png')}
+                            resizeMode='contain'
+                            style={{
+                                width: 24,
+                                height: 24,
+                                zIndex:1,
+                            }}
+                        />
+
+                    </View>
+                )
+            }}/>
             <Tab.Screen name="Mypage" component={MypageScreen} options={{
                 tabBarIcon: ({focused}) => (
                     <View style={{alignItems: 'center', justifyContent: 'center', top: 10}}>
                         <Image
-                            source={require('../assets/icons/profile.png')}
+                            source={focused ? require('../assets/icons/mypage_on.png') : require('../assets/icons/mypage_off.png')}
                             resizeMode='contain'
                             style={{
-                                width:37,
-                                height: 37,
-                                tintColor: focused? 'black' : 'grey',
+                                width:24,
+                                height: 24,
                                 zIndex:1,
                             }}
                         />
-                        <Text
-                            style={{color: focused ? 'black' : 'grey', fontSize: 12, zIndex:1}}
-                        >
-                        나
-                        </Text>
-
                     </View>
                 ),
-                tabBarStyle: {display: tabBarVisible? "flex" : "none"}
+                // tabBarStyle: {display: tabBarVisible? "flex" : "none"}
             }}/>
         </Tab.Navigator>
     )

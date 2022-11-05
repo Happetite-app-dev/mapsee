@@ -11,7 +11,7 @@ const searchImage = require('../assets/image/search.png')
 
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, onValue, set, push } from 'firebase/database';
-import RecordFlatList from '../components/RecordFlatList';
+import RecordFlatList from '../components/RecordFlatList'
 const firebaseConfig = {
   apiKey: "AIzaSyDBq4tZ1QLm1R7iPH8O4dTvebVGWgkRPks",
   authDomain: "mapseedemo1.firebaseapp.com",

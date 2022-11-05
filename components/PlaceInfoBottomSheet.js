@@ -20,7 +20,6 @@ const app = initializeApp(firebaseConfig);
 
 
 const mapScreenBottomSheetExampleImage = require('../assets/image/mapScreenBottomSheetExample.png')
-const LocationplusIcon = require('../assets/icons/locationplus.png')
 const CreateNoteImage = require('../assets/image/CreateNote.png')
 const BottomSheetScreen = ({onDisplay, onCancel, animationVal, targetName, targetAddress, targetId, targetLctn, navigation}) => {
   

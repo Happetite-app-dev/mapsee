@@ -8,7 +8,7 @@ import { useContext } from 'react';
 import AppContext from '../components/AppContext';
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, onValue, set, push, remove, off } from 'firebase/database';
-
+import { ref as ref_storage, getStorage } from 'firebase/storage'
 const RecordLocationImage = require('../assets/image/RecordLocation.png');
 const RecordDateImage = require('../assets/image/RecordDate.png');
 const RecordFolderImage = require('../assets/image/RecordFolder.png');
@@ -34,7 +34,16 @@ const app = initializeApp(firebaseConfig);
 const defaultFolderID = "-NB6gdHZgh_liXbnuOLr";
 const defaultFolderName = "폴더1"
 
-const saveData = async (myUID, title, place, placeID, address, lctn, date, folderID, folderName, selectedPhoto, text, writeDate_, recordID, originalfolderID) => {
+const uploadImage = async(uri) => {
+    const strg = getStorage()
+    const response = await fetch(uri);
+    const blob = await response.blob();
+    const reference1 = ref_storage(strg, './my-image')
+    
+    
+  }
+
+const saveData = async (myUID, title, place, placeID, address, lctn, date, folderID, folderName, selectedPhotos, text, writeDate_, recordID, originalfolderID) => {
     const timeNow = new Date();
     const writeDate = writeDate_ || {year: timeNow.getFullYear(), month: timeNow.getMonth()+1, day: timeNow.getDate(), hour: timeNow.getHours(), minute: timeNow.getMinutes()}
     const db = getDatabase();
@@ -52,13 +61,19 @@ const saveData = async (myUID, title, place, placeID, address, lctn, date, folde
             placeName: place,
             date: {year: date.getFullYear(), month: date.getMonth()+1, day: date.getDate()},
             folderName: folderName,
-            photos: selectedPhoto,
+            photos: selectedPhotos,
             text: text
             }).key;
         const reference2 = ref(db, `/folders/${folderID}/placeRecords/${placeID}/${newRecordID}`);           //folder에 recordID를 넣고
         set(reference2, 
             true    
         )
+        
+            
+        
+
+
+
     }
     else                                         //새 기록이 아니라면
     {
@@ -74,7 +89,7 @@ const saveData = async (myUID, title, place, placeID, address, lctn, date, folde
             placeName: place,
             date: {year: date.getFullYear(), month: date.getMonth()+1, day: date.getDate()},
             folderName: folderName,
-            photos: selectedPhoto,
+            photos: selectedPhotos,
             text: text
         })
         if(folderID!=originalfolderID)
@@ -140,12 +155,12 @@ const EditScreen = ({navigation, route}) => {
     const [folderID_, setFolderID_] = useState(folderID || defaultFolderID);
     const [folderName_, setFolderName_] = useState(folderName || defaultFolderName);
     const [showFolderBottomSheet, setShowFolderBottomSheet] = useState(false);
-    
-    const [selectedPhotos, setSelectedPhotos]=useState(photos || []);
 
+    const [selectedPhotos, setSelectedPhotos]=useState(photos || []);
+    
     const [text_, setText_]=useState(text || '');
     const storeRecord = async () => {
-        await saveData(myUID, title_, place, placeID, address, lctn, date_, folderID_, folderName_, selectedPhoto, text_, writeDate, recordID, originalfolderID)
+        await saveData(myUID, title_, place, placeID, address, lctn, date_, folderID_, folderName_, selectedPhotos, text_, writeDate, recordID, originalfolderID)
         .then(()=>{
             IsNewRecord ? navigation.pop() : navigation.navigate('Storage')    //realtimeDataBase가 모두 업데이트 된후 
         })

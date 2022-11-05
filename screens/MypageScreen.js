@@ -6,7 +6,7 @@ import { useContext } from 'react';
 import AppContext from '../components/AppContext';
 
 const friendListImage = require('../assets/image/friendList.png');
-const alarmImage = require('../assets/image/alarm.png');
+const alarmImage = require('../assets/icons/alarm_on.png');
 const themeImage = require('../assets/image/theme.png');
 const fontImage = require('../assets/image/font.png');
 

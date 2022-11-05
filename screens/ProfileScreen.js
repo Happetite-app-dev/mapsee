@@ -1,6 +1,7 @@
 import { SafeAreaView, Text, StyleSheet, View, Image, TouchableOpacity } from "react-native";
 import { useContext } from 'react';
 import AppContext from '../components/AppContext';
+import { RotateOutUpLeft } from "react-native-reanimated";
 
 const goBackImage = require('../assets/image/goBack.png');
 
