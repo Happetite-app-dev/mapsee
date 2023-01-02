@@ -1,5 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { Image, StyleSheet, Text, View, SafeAreaView, Button } from 'react-native';
+import React, { useEffect, useState, useContext } from 'react';
+import AppContext from '../components/AppContext';
+import { getDatabase, ref, onValue, set, push, remove, off } from 'firebase/database';
+
+import { Image, StyleSheet, Text, View, SafeAreaView, Button, Animated } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import { PROVIDER_GOOGLE } from 'react-native-maps';
 import { API_KEY } from "@env";
@@ -8,16 +11,53 @@ import Geocoder from 'react-native-geocoding';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { TouchableOpacity } from 'react-native';
 import PlaceInfoBottomSheet from '../components/PlaceInfoBottomSheet';
+import { Easing } from 'react-native-reanimated';
 const findCurrentLocationImage = require('../assets/image/findCurrentLocation.png');
 const currentLocationImage = require('../assets/image/currentLocation.png');
 const targetLocationImage = require('../assets/image/targetLocation.png')
+import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useIsFocused } from '@react-navigation/native';
+/*import AsyncStorage from '@react-native-async-storage/async-storage';
 
-//address: 지번 주소, lctn: lat과 lng으로 이루어진 좌표 주소
+const storeData = async (value) => {
+  try {
+    await AsyncStorage.setItem('@tutorial', value)
+  } catch (e) {
+    // saving error
+  }
+}
 
-  
 
+const getData = async () => {
+  try {
+    const value = await AsyncStorage.getItem('@tutorial')
+    if(value !== null) {
+      return value;
+    }
+    return false;
+  } catch(e) {
+    // error reading value
+  }
+}*/
 
 const MapScreen = ({navigation}) => {
+    //1번에 대한 코드
+  const myContext = useContext(AppContext);
+  const myUID = myContext.myUID
+  const isFocused = useIsFocused();
+  const [list1, setList1] = useState([]);
+
+
+  const gotoTutorial = () => {
+      navigation.navigate('TutorialScreen')
+  }
+
+  useEffect(()=>{
+    //console.log(getData());
+    if(true) {
+      gotoTutorial();
+    }
+  },[])
 
   const mapRef = React.createRef();
   const [origin, setOrigin] = useState({ latitude: 0, longitude: 0, latitudeDelta: 0.0016, longitudeDelta: 0.0012 });   //현재 스크린에 나타나는 map의 중앙 좌표값
@@ -33,7 +73,7 @@ const MapScreen = ({navigation}) => {
 
   useEffect(() => {
     if (targetShown) {
-      navigation.navigate("PlaceInfoBottomSheetScreen", { setIsShow: s => setTargetShown(s), targetName: target.name, targetAddress: target.address, targetId: target.id, targetLctn: target.lctn })
+      navigation.navigate("PlaceInfoBottomSheetScreen", {targetName: target.name, targetAddress: target.address, targetId: target.id, targetLctn: target.lctn})
     }
   }, [targetShown])
 
@@ -61,24 +101,7 @@ const MapScreen = ({navigation}) => {
       })
       .catch(error => console.warn(error));
   }
-
-  const GooglePlacesInput = () => {
-    return (
-      <GooglePlacesAutocomplete
-        placeholder='Search'
-        onPress={(data, details = null) => {
-          targetingFromAddress(data.description, data.structured_formatting.main_text);
-        }}
-        query={{
-          key: 'AIzaSyDBq4tZ1QLm1R7iPH8O4dTvebVGWgkRPks',
-          language: 'kor',
-          components: 'country:kor'
-        }}
-      />
-    );
-  };
-
-
+  
   async function getLocationPermission() {
 
     let { status } = await Location.requestForegroundPermissionsAsync();
@@ -99,9 +122,34 @@ const MapScreen = ({navigation}) => {
     }));
   }
 
+  let rotateValueHolder = new Animated.Value(0);
+
+  if(isFocused){
+    rotateValueHolder.setValue(0);
+    Animated.loop(
+      Animated.timing(rotateValueHolder, {
+        toValue: 1,
+        duration: 3000,
+        easing: Easing.linear,
+        useNativeDriver: false
+      }),
+     {iteration: 4},
+    ).start();
+  
+}
+
+  const RotateData = rotateValueHolder.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0deg', '360deg']
+  })
+//------------//Rotate Image//------------//
 
   return (
     <SafeAreaView style={styles.container}>
+      <Button 
+          onPress={() => navigation.navigate('TutorialScreen')}
+          title = 'Tutorial'
+        />
       <MapView
         provider='google'
         ref={mapRef}
@@ -125,7 +173,16 @@ const MapScreen = ({navigation}) => {
           else { setTargetShown(false); }
         }}
       >
-        <GooglePlacesInput />
+
+      <Button 
+          onPress={() => navigation.navigate('MapSearchScreen1')}
+          title = 'Search'
+          style = {{
+            position: 'absolute',
+            bottom: 100,
+            left: 50
+          }}
+        />
         <Marker coordinate={current}>
           <Image
             source={currentLocationImage}
@@ -177,10 +234,9 @@ const MapScreen = ({navigation}) => {
               });
             }}
           />
-          <Image
+          <Animated.Image
             source={findCurrentLocationImage}
             resizeMode='contain'
-
             style={{
               position: 'absolute',
               width: 30,
@@ -189,10 +245,23 @@ const MapScreen = ({navigation}) => {
               left: 330,
               top: 608,
               tintColor: 'grey',
+              transform: [{rotate:RotateData}]
             }}
           />
-
         </View>
+        {list1.map((record)=>{
+          <Marker coordinate={record.lctn} onPress={({nativeEvent})=>{setIsShowRecord(true); showRecord(nativeEvent.id)}}> //isShowRecord라는 useState변수를 만들고, 기록마커를 누르면 isShowRecord가 true가 되도록 함
+                    <Image
+                      source={targetLocationImage}
+                      style={{
+                        width: 37,
+                        height: 37,
+                        resizeMode: 'contain',
+                        tintColor: 'blue'
+                      }}
+                    />
+          </Marker>
+        })}
       </MapView>
     </SafeAreaView>
   );
@@ -210,9 +279,16 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
-
+  currentLocationImage: {
+    position: 'absolute',
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    left: 330,
+    top: 608,
+    tintColor: 'grey',
+  }
 });
-
 
 
 
