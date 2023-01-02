@@ -1,10 +1,22 @@
 import React, {useEffect, useRef, useState} from 'react';
 import { Animated, Text, View, TouchableHighlight, Button, Image } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
+import { initializeApp } from "firebase/app";
 import { useContext } from 'react';
 import AppContext from '../components/AppContext';
 import { getDatabase, ref, onValue, set, push } from 'firebase/database';
 import RecordFlatList from '../components/RecordFlatList';
+const firebaseConfig = {
+  apiKey: "AIzaSyDBq4tZ1QLm1R7iPH8O4dTvebVGWgkRPks",
+  authDomain: "mapseedemo1.firebaseapp.com",
+  projectId: "mapseedemo1",
+  storageBucket: "mapseedemo1.appspot.com",
+  messagingSenderId: "839335870793",
+  appId: "1:839335870793:web:75004c5d43270610411a98",
+  measurementId: "G-8L1MD1CGN2"
+};
+
+const app = initializeApp(firebaseConfig);
 
 
 const mapScreenBottomSheetExampleImage = require('../assets/image/mapScreenBottomSheetExample.png')
@@ -118,7 +130,8 @@ const BottomSheetScreen = ({onDisplay, onCancel, animationVal, targetName, targe
 const BottomSheet = ({onRemove, onDisplay, onCancel, setIsShow, animation, animationVal, targetName, targetAddress, targetId, targetLctn, navigation}) => {
   return(
     <View style={{width: '100%', height: '100%'}}>
-    <View style={{width:'100%', height: '76%'}} onTouchEndCapture={()=>{setIsShow(false); onRemove(); navigation.navigate('Tabs')}}/>
+    <View style={{width:'100%', height: '76%'}} 
+          onTouchEndCapture={()=>{setIsShow(false); onRemove(); navigation.goBack(); }}/>
     <Animated.View style={{
       width: "100%",
       height: '40%',
@@ -142,7 +155,7 @@ const BottomSheet = ({onRemove, onDisplay, onCancel, setIsShow, animation, anima
     }}
     >
       <BottomSheetScreen onRemove={()=>onRemove()} onDisplay={()=>onDisplay()} onCancel={()=>onCancel()} 
-        animationVal={animationVal} targetName={targetName} targetAddress={targetAddress} targetId={targetId} targetLctn={targetLctn} navigation={navigation}/>  
+        animationVal={animationVal} targetName={targetName} targetAddress={targetAddress} targetId={targetId} targetLctn={targetLctn} navigation={navigation} />  
     </Animated.View>
     </View>
   )
