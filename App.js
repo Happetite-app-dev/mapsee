@@ -18,7 +18,7 @@ import RegisterScreen2 from './screens/RegisterScreen2';
 import RegisterScreen3 from './screens/RegisterScreen3';
 import RegisterScreen from './screens/RegisterScreen';
 import LoginScreen from './screens/LoginScreen';
-import AfterLoginScreen from './screens/AfterLoginScreen';
+import AfterLoginScreen from './screens/AfterLoginScreen'
 
 import React, { useState } from 'react';
 import AppContext from './components/AppContext';
