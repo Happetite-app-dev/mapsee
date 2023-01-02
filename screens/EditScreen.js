@@ -1,321 +1,504 @@
-import {View, Text, StyleSheet, ScrollView, TextInput, Button, Image, SafeAreaView, TouchableHighlight, Alert } from 'react-native';
-import React,{createFactory, useEffect, useState} from 'react';
-import ImgPicker from '../components/ImgPicker';
-import DatePicker from '../components/DatePicker';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import FolderBottomSheet from '../components/FolderBottomSheet';
-import { useContext } from 'react';
-import AppContext from '../components/AppContext';
+import {
+  getDatabase,
+  ref,
+  onValue,
+  set,
+  push,
+  remove,
+  off,
+} from "firebase/database";
+import { ref as ref_storage, getStorage } from "firebase/storage";
+import React, { useContext, createFactory, useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TextInput,
+  Button,
+  Image,
+  SafeAreaView,
+  TouchableHighlight,
+  Alert,
+} from "react-native";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
-import { getDatabase, ref, onValue, set, push, remove, off } from 'firebase/database';
-import { ref as ref_storage, getStorage } from 'firebase/storage'
-const RecordLocationImage = require('../assets/image/RecordLocation.png');
-const RecordDateImage = require('../assets/image/RecordDate.png');
-const RecordFolderImage = require('../assets/image/RecordFolder.png');
-const RecordFolderNameImage = require('../assets/image/RecordFolderName.png');
-const RecordTextImage = require('../assets/image/RecordText.png');
-const RecordPhotoImage = require('../assets/image/RecordPhoto.png');
-const goBackImage = require('../assets/image/goBack.png');
-const editImage = require('../assets/image/edit.png')
-const trashcanImage = require('../assets/image/trashcan.png')
+import AppContext from "../components/AppContext";
+import DatePicker from "../components/DatePicker";
+import FolderBottomSheet from "../components/FolderBottomSheet";
+import ImgPicker from "../components/ImgPicker";
+
+const RecordDateImage = require("../assets/image/RecordDate.png");
+const RecordFolderImage = require("../assets/image/RecordFolder.png");
+const RecordFolderNameImage = require("../assets/image/RecordFolderName.png");
+const RecordLocationImage = require("../assets/image/RecordLocation.png");
+const RecordPhotoImage = require("../assets/image/RecordPhoto.png");
+const RecordTextImage = require("../assets/image/RecordText.png");
+const editImage = require("../assets/image/edit.png");
+const goBackImage = require("../assets/image/goBack.png");
+const trashcanImage = require("../assets/image/trashcan.png");
 
 const defaultFolderID = "-NB6gdHZgh_liXbnuOLr";
-const defaultFolderName = "폴더1"
+const defaultFolderName = "폴더1";
 
-const uploadImage = async(uri) => {
-    const strg = getStorage()
-    const response = await fetch(uri);
-    const blob = await response.blob();
-    const reference1 = ref_storage(strg, './my-image')
-    
-    
-  }
+const uploadImage = async (uri) => {
+  const strg = getStorage();
+  const response = await fetch(uri);
+  const blob = await response.blob();
+  const reference1 = ref_storage(strg, "./my-image");
+};
 
-const saveData = async (myUID, title, place, placeID, address, lctn, date, folderID, folderName, selectedPhotos, text, writeDate_, recordID, originalfolderID) => {
-    const timeNow = new Date();
-    const writeDate = writeDate_ || {year: timeNow.getFullYear(), month: timeNow.getMonth()+1, day: timeNow.getDate(), hour: timeNow.getHours(), minute: timeNow.getMinutes()}
-    const db = getDatabase();
-    if(recordID==(undefined))           //새 기록이라면
-    {
-        const reference1 = ref(db, '/records');                   
-        let newRecordID = push(reference1, {                                   // records에 push
-            folderID: folderID,
-            placeID: placeID,
-            address: address,
-            lctn: lctn,
-            userID: myUID,
-            writeDate: writeDate,
-            title: title==undefined ? `${timeNow.getFullYear().toString()}_${(timeNow.getMonth()+1).toString()}_${timeNow.getDay().toString()}_기록` : title,
-            placeName: place,
-            date: {year: date.getFullYear(), month: date.getMonth()+1, day: date.getDate()},
-            folderName: folderName,
-            photos: selectedPhotos,
-            text: text
-            }).key;
-        const reference2 = ref(db, `/folders/${folderID}/placeRecords/${placeID}/${newRecordID}`);           //folder에 recordID를 넣고
-        set(reference2, 
-            true    
+const saveData = async (
+  myUID,
+  title,
+  place,
+  placeID,
+  address,
+  lctn,
+  date,
+  folderID,
+  folderName,
+  selectedPhotos,
+  text,
+  writeDate_,
+  recordID,
+  originalfolderID
+) => {
+  const timeNow = new Date();
+  const writeDate = writeDate_ || {
+    year: timeNow.getFullYear(),
+    month: timeNow.getMonth() + 1,
+    day: timeNow.getDate(),
+    hour: timeNow.getHours(),
+    minute: timeNow.getMinutes(),
+  };
+  const db = getDatabase();
+  if (recordID == undefined) {
+    //새 기록이라면
+    const reference1 = ref(db, "/records");
+    const newRecordID = push(reference1, {
+      // records에 push
+      folderID,
+      placeID,
+      address,
+      lctn,
+      userID: myUID,
+      writeDate,
+      title:
+        title == undefined
+          ? `${timeNow.getFullYear().toString()}_${(
+              timeNow.getMonth() + 1
+            ).toString()}_${timeNow.getDay().toString()}_기록`
+          : title,
+      placeName: place,
+      date: {
+        year: date.getFullYear(),
+        month: date.getMonth() + 1,
+        day: date.getDate(),
+      },
+      folderName,
+      photos: selectedPhotos,
+      text,
+    }).key;
+    const reference2 = ref(
+      db,
+      `/folders/${folderID}/placeRecords/${placeID}/${newRecordID}`
+    ); //folder에 recordID를 넣고
+    set(reference2, true);
+  } //새 기록이 아니라면
+  else {
+    const reference1 = ref(db, "/records/" + recordID);
+    set(reference1, {
+      // records에 push
+      folderID,
+      placeID,
+      address,
+      lctn,
+      userID: myUID,
+      writeDate,
+      title:
+        title == undefined
+          ? `${timeNow.getFullYear().toString()}_${(
+              timeNow.getMonth() + 1
+            ).toString()}_${timeNow.getDay().toString()}_기록`
+          : title, //나중에 modify할 때 default title을 어떻게 할지를 기획한테 물어보기
+      placeName: place,
+      date: {
+        year: date.getFullYear(),
+        month: date.getMonth() + 1,
+        day: date.getDate(),
+      },
+      folderName,
+      photos: selectedPhotos,
+      text,
+    });
+    if (folderID != originalfolderID) {
+      const reference2 = ref(
+        db,
+        `/folders/${originalfolderID}/placeRecords/${placeID}/${recordID}`
+      );
+      await remove(reference2).then(
+        onValue(
+          ref(db, "/folders/" + originalfolderID + "/placeRecords/" + placeID),
+          (snapshot) => {
+            if (!snapshot.hasChildren()) {
+              const reference3 = ref(
+                db,
+                "/folders/" + originalfolderID + "/placeRecords/" + placeID
+              );
+              remove(reference3);
+            }
+          }
         )
-        
-            
-        
-
-
-
+      );
+      const reference4 = ref(
+        db,
+        `/folders/${folderID}/placeRecords/${placeID}/${recordID}`
+      ); //folder에 recordID를 넣고
+      set(reference4, true);
     }
-    else                                         //새 기록이 아니라면
-    {
-        const reference1 = ref(db, '/records/'+recordID);                   
-        set(reference1, {                                   // records에 push
-            folderID: folderID,
-            placeID: placeID,
-            address: address,
-            lctn: lctn,
-            userID: myUID,
-            writeDate: writeDate,
-            title: title==undefined ? `${timeNow.getFullYear().toString()}_${(timeNow.getMonth()+1).toString()}_${timeNow.getDay().toString()}_기록` : title,  //나중에 modify할 때 default title을 어떻게 할지를 기획한테 물어보기
-            placeName: place,
-            date: {year: date.getFullYear(), month: date.getMonth()+1, day: date.getDate()},
-            folderName: folderName,
-            photos: selectedPhotos,
-            text: text
-        })
-        if(folderID!=originalfolderID)
-        {
-            const reference2 = ref(db, `/folders/${originalfolderID}/placeRecords/${placeID}/${recordID}`)
-            await remove(reference2)
-            .then(
-                onValue(ref(db, '/folders/'+originalfolderID+'/placeRecords/'+placeID), (snapshot)=>{
-                    if(!snapshot.hasChildren())
-                    {
-                        const reference3 = ref(db, '/folders/'+originalfolderID+'/placeRecords/'+placeID)
-                        remove(reference3)
-                    }
-                })
-            )
-            const reference4 = ref(db, `/folders/${folderID}/placeRecords/${placeID}/${recordID}`);           //folder에 recordID를 넣고
-            set(reference4, 
-                true    
-            )
-        }
-    }
-}
+  }
+};
 
 const removeData = async (recordID, folderID, placeID) => {
-    const db = getDatabase();
-    const reference1 = ref(db, '/records/' + recordID);
-    await remove(reference1)
-    .then(()=>{
-        const reference2 = ref(db, '/folders/'+folderID+'/placeRecords/'+placeID+'/'+recordID)
-        remove(reference2)
+  const db = getDatabase();
+  const reference1 = ref(db, "/records/" + recordID);
+  await remove(reference1)
+    .then(() => {
+      const reference2 = ref(
+        db,
+        "/folders/" + folderID + "/placeRecords/" + placeID + "/" + recordID
+      );
+      remove(reference2);
     })
     .then(
-        onValue(ref(db, '/folders/'+folderID+'/placeRecords/'+placeID), (snapshot)=>{
-            if(!snapshot.hasChildren())
-            {
-                const reference3 = ref(db, '/folders/'+folderID+'/placeRecords/'+placeID)
-                remove(reference3)
-            }
-        })
-    )
-}
+      onValue(
+        ref(db, "/folders/" + folderID + "/placeRecords/" + placeID),
+        (snapshot) => {
+          if (!snapshot.hasChildren()) {
+            const reference3 = ref(
+              db,
+              "/folders/" + folderID + "/placeRecords/" + placeID
+            );
+            remove(reference3);
+          }
+        }
+      )
+    );
+};
 
-const EditScreen = ({navigation, route}) => {
-    const myContext = useContext(AppContext);
-    const myUID = myContext.myUID
+const EditScreen = ({ navigation, route }) => {
+  const myContext = useContext(AppContext);
+  const myUID = myContext.myUID;
 
-    const timeNow2 = new Date();
-   
-    const {recordID, folderID, placeID, address, lctn, userID, writeDate, title, placeName, date, folderName, photos, text} = route.params;
+  const timeNow2 = new Date();
 
-    const IsNewRecord = title===undefined ? true : false;     //지금 사용자가 작성하고 있는 record가 새로 만드는 record인지 기존에 있던 record인지를 알려주는 bool
-    const IsRecordOwner = userID===myUID;         //기존의 기록인 경우, 그것이 자신의 기록인지 확인하는 bool
-    const [isEditable, setIsEditable] = useState(IsNewRecord);   //이거는 IsNewRecord이거나, IsRecordOwner이고 토글을 눌렀을 때 true가 됨   
+  const {
+    recordID,
+    folderID,
+    placeID,
+    address,
+    lctn,
+    userID,
+    writeDate,
+    title,
+    placeName,
+    date,
+    folderName,
+    photos,
+    text,
+  } = route.params;
 
-    const [title_, setTitle_] = useState(title || undefined);
+  const IsNewRecord = title === undefined; //지금 사용자가 작성하고 있는 record가 새로 만드는 record인지 기존에 있던 record인지를 알려주는 bool
+  const IsRecordOwner = userID === myUID; //기존의 기록인 경우, 그것이 자신의 기록인지 확인하는 bool
+  const [isEditable, setIsEditable] = useState(IsNewRecord); //이거는 IsNewRecord이거나, IsRecordOwner이고 토글을 눌렀을 때 true가 됨
 
-    const [place,setPlace]=useState(placeName);
+  const [title_, setTitle_] = useState(title || undefined);
 
-    const [date_, setDate_] = useState(date===undefined ? new Date() : new Date(date.year, date.month-1, date.day));  
-    const [showDatePicker, setShowDatePicker] = useState(false);
+  const [place, setPlace] = useState(placeName);
 
-    const originalfolderID = folderID      //만약 IsnewRecord가 아니라면 기존에 저장되어 있을 folderID를 받는다. IsNewRecord라면 
-    const [folderID_, setFolderID_] = useState(folderID || defaultFolderID);
-    const [folderName_, setFolderName_] = useState(folderName || defaultFolderName);
-    const [showFolderBottomSheet, setShowFolderBottomSheet] = useState(false);
+  const [date_, setDate_] = useState(
+    date === undefined
+      ? new Date()
+      : new Date(date.year, date.month - 1, date.day)
+  );
+  const [showDatePicker, setShowDatePicker] = useState(false);
 
-    const [selectedPhotos, setSelectedPhotos]=useState(photos || []);
-    
-    const [text_, setText_]=useState(text || '');
-    const storeRecord = async () => {
-        await saveData(myUID, title_, place, placeID, address, lctn, date_, folderID_, folderName_, selectedPhotos, text_, writeDate, recordID, originalfolderID)
-        .then(()=>{
-            IsNewRecord ? navigation.pop() : navigation.navigate('Storage')    //realtimeDataBase가 모두 업데이트 된후 
-        })
-    }
+  const originalfolderID = folderID; //만약 IsnewRecord가 아니라면 기존에 저장되어 있을 folderID를 받는다. IsNewRecord라면
+  const [folderID_, setFolderID_] = useState(folderID || defaultFolderID);
+  const [folderName_, setFolderName_] = useState(
+    folderName || defaultFolderName
+  );
+  const [showFolderBottomSheet, setShowFolderBottomSheet] = useState(false);
 
-    const removeRecord = async () => {
-        await removeData(recordID, folderID_, placeID)
-        .then(
-            ()=>navigation.navigate('Storage')               //realtimeDataBase가 모두 업데이트 된후 
-        )
-    }
+  const [selectedPhotos, setSelectedPhotos] = useState(photos || []);
 
-    const removeRecordPopUp = () => {
-        return(
-            Alert.alert(
-                '정말 삭제하시겠습니까?', '',
-                [
-                  {text: '취소'},
-                  {text: '삭제', onPress: () => removeRecord(), style: 'default'}
-                ],
-                { 
-                  cancelable: false, 
-                }
-              )
-        )
-    }
+  const [text_, setText_] = useState(text || "");
+  const storeRecord = async () => {
+    await saveData(
+      myUID,
+      title_,
+      place,
+      placeID,
+      address,
+      lctn,
+      date_,
+      folderID_,
+      folderName_,
+      selectedPhotos,
+      text_,
+      writeDate,
+      recordID,
+      originalfolderID
+    ).then(() => {
+      IsNewRecord ? navigation.pop() : navigation.navigate("Storage"); //realtimeDataBase가 모두 업데이트 된후
+    });
+  };
 
-    return(
-        <SafeAreaView style={{width: '100%', height: '100%', position:'absolute', top: 20}}>
-        <View style={{height:'8%', width:'100%', flexDirection: 'row', alignItems:'center'}}>
-            <TouchableOpacity style={{left: 7, width:20, height:30, justifyContent:'center'}} onPress={()=>navigation.pop()}>
-                <Image source={goBackImage}/>
-            </TouchableOpacity>
-            <TextInput
-                editable={isEditable}
-                selectTextOnFocus={isEditable}
-                style={{fontSize:17, fontWeight:'bold', top:7, left:1,...styles.textInput, width:280}}
-                onChangeText={tle=>setTitle_(tle)}
-                value={title_}
-                placeholder={`${timeNow2.getFullYear().toString()}_${(timeNow2.getMonth()+1).toString()}_${timeNow2.getDate().toString()}_기록`}  
-                placeholderTextColor='grey'
-            />
-            {
-            (IsRecordOwner && !isEditable) &&
-            <View style={{position: 'absolute', right: 11, width: 70, height: 30}}>
+  const removeRecord = async () => {
+    await removeData(recordID, folderID_, placeID).then(
+      () => navigation.navigate("Storage") //realtimeDataBase가 모두 업데이트 된후
+    );
+  };
+
+  const removeRecordPopUp = () => {
+    return Alert.alert(
+      "정말 삭제하시겠습니까?",
+      "",
+      [
+        { text: "취소" },
+        { text: "삭제", onPress: () => removeRecord(), style: "default" },
+      ],
+      {
+        cancelable: false,
+      }
+    );
+  };
+
+  return (
+    <SafeAreaView
+      style={{ width: "100%", height: "100%", position: "absolute", top: 20 }}
+    >
+      <View
+        style={{
+          height: "8%",
+          width: "100%",
+          flexDirection: "row",
+          alignItems: "center",
+        }}
+      >
+        <TouchableOpacity
+          style={{ left: 7, width: 20, height: 30, justifyContent: "center" }}
+          onPress={() => navigation.pop()}
+        >
+          <Image source={goBackImage} />
+        </TouchableOpacity>
+        <TextInput
+          editable={isEditable}
+          selectTextOnFocus={isEditable}
+          style={{
+            fontSize: 17,
+            fontWeight: "bold",
+            top: 7,
+            left: 1,
+            ...styles.textInput,
+            width: 280,
+          }}
+          onChangeText={(tle) => setTitle_(tle)}
+          value={title_}
+          placeholder={`${timeNow2.getFullYear().toString()}_${(
+            timeNow2.getMonth() + 1
+          ).toString()}_${timeNow2.getDate().toString()}_기록`}
+          placeholderTextColor="grey"
+        />
+        {IsRecordOwner && !isEditable && (
+          <View
+            style={{ position: "absolute", right: 11, width: 70, height: 30 }}
+          >
             <TouchableHighlight
-                style={{left:0, position: 'absolute', width: 18, height: 18}}
-                underlayColor='none'
-                onPress={()=>setIsEditable(true)}
+              style={{ left: 0, position: "absolute", width: 18, height: 18 }}
+              underlayColor="none"
+              onPress={() => setIsEditable(true)}
             >
-                <Image
-                    source={editImage}
-                />
+              <Image source={editImage} />
             </TouchableHighlight>
             <TouchableHighlight
-                style={{right: 14, position: 'absolute', width: 18, height: 18}}
-                onPress={()=>removeRecordPopUp()}
+              style={{ right: 14, position: "absolute", width: 18, height: 18 }}
+              onPress={() => removeRecordPopUp()}
             >
-                <Image
-                    source={trashcanImage}
-                />
+              <Image source={trashcanImage} />
             </TouchableHighlight>
-            </View>
-            }
+          </View>
+        )}
+      </View>
+      <ScrollView
+        style={{ height: "90%", width: "100%" }}
+        showsVerticalScrollIndicator={false}
+      >
+        <View
+          onTouchEndCapture={() => {
+            showFolderBottomSheet && setShowFolderBottomSheet(false);
+          }}
+          style={{ height: 50, ...styles.item }}
+        >
+          <Image source={RecordLocationImage} />
+          <TextInput
+            editable={isEditable}
+            selectTextOnFocus={isEditable}
+            style={{ fontSize: 15, ...styles.textInput }}
+            onChangeText={(plc) => setPlace(plc)}
+            value={place}
+          />
         </View>
-        <ScrollView style={{height: '90%', width: '100%'}} showsVerticalScrollIndicator={false}>
-            <View onTouchEndCapture={()=>{showFolderBottomSheet && setShowFolderBottomSheet(false)}} style={{height:50, ...styles.item}}>
-                <Image source={RecordLocationImage}/>
-                <TextInput
-                    editable={isEditable}
-                    selectTextOnFocus={isEditable}
-                    style={{fontSize:15,...styles.textInput}}
-                    onChangeText={plc=>setPlace(plc)}
-                    value={place}  
-                />
-            </View>
-            <View onTouchEndCapture={()=>{showFolderBottomSheet && setShowFolderBottomSheet(false)}} style={{width: 350, height: showDatePicker? 266 : 50, ...styles.item}}>
-                <Image source={RecordDateImage}/>
-                <DatePicker date1={date_} setDate1={date1=>setDate_(date1)} show={showDatePicker} setShow={show1=>setShowDatePicker(show1)} IsEditable={isEditable}/>
-            </View>
-            <View style={{height:50,...styles.item}}>
-                <Image source={RecordFolderImage}/> 
-                <TouchableOpacity onPress={()=>{isEditable && setShowFolderBottomSheet(!showFolderBottomSheet)}} style={{width:76, height:32, borderRadius: 16, left: 10, bottom: 7, alignItems:'center', justifyContent: 'center', flexDirection:'row', backgroundColor: 'grey'}}>
-                    <Image source={RecordFolderNameImage}/>
-                    <Text> {folderName_}</Text>
-                </TouchableOpacity> 
-                <View onTouchEndCapture={()=>{showFolderBottomSheet && setShowFolderBottomSheet(false)}} style={{flex:1}}/>        
-            </View>
-            <View style={{height:105, bottom: 5,...styles.item}}>
-                <Image source={RecordPhotoImage}/>
-                <ImgPicker onImageTaken={photo=>{setSelectedPhotos(selectedPhotos => [...selectedPhotos, photo])}} defaultPhotos={selectedPhotos} IsEditable={isEditable}/>
-            </View>
-            <View style={{...styles.item}}>
-                <Image source={RecordTextImage}/>  
-                <TextInput
-                    editable={isEditable}
-                    selectTextOnFocus={isEditable}
-                    style={styles.record}
-                    onChangeText={txt=>setText_(txt)}
-                    value={text_}
-                    multiline={true}
-                    placeholder='내용을 입력해주세요'
-                    placeholderTextColor='grey'
-                />
-            </View>
-            {
-            isEditable &&
-            <View style={{...styles.button}}>
-                <TouchableOpacity onPress={()=>{IsNewRecord? navigation.pop() : setIsEditable(false)}} style={{width:160, padding:15, marginRight:7}}>
-                    <Text style={{alignSelf:'center', fontWeight:'bold'}}>취소</Text>
-                </TouchableOpacity>
-                <Text>|</Text>
-                <TouchableOpacity onPress={storeRecord} style={{width:160, padding:15, marginLeft: 7}}>
-                    <Text style={{alignSelf:'center', fontWeight:'bold'}}>저장</Text>
-                </TouchableOpacity>
-            </View>
-            }
-        </ScrollView>
-        <FolderBottomSheet show={showFolderBottomSheet} setShow={s=>{setShowFolderBottomSheet(s)}} setFolderName={f=>setFolderName_(f)} setFolderID={f=>setFolderID_(f)}/>
-        </SafeAreaView>
-    )
-}
+        <View
+          onTouchEndCapture={() => {
+            showFolderBottomSheet && setShowFolderBottomSheet(false);
+          }}
+          style={{
+            width: 350,
+            height: showDatePicker ? 266 : 50,
+            ...styles.item,
+          }}
+        >
+          <Image source={RecordDateImage} />
+          <DatePicker
+            date1={date_}
+            setDate1={(date1) => setDate_(date1)}
+            show={showDatePicker}
+            setShow={(show1) => setShowDatePicker(show1)}
+            IsEditable={isEditable}
+          />
+        </View>
+        <View style={{ height: 50, ...styles.item }}>
+          <Image source={RecordFolderImage} />
+          <TouchableOpacity
+            onPress={() => {
+              isEditable && setShowFolderBottomSheet(!showFolderBottomSheet);
+            }}
+            style={{
+              width: 76,
+              height: 32,
+              borderRadius: 16,
+              left: 10,
+              bottom: 7,
+              alignItems: "center",
+              justifyContent: "center",
+              flexDirection: "row",
+              backgroundColor: "grey",
+            }}
+          >
+            <Image source={RecordFolderNameImage} />
+            <Text> {folderName_}</Text>
+          </TouchableOpacity>
+          <View
+            onTouchEndCapture={() => {
+              showFolderBottomSheet && setShowFolderBottomSheet(false);
+            }}
+            style={{ flex: 1 }}
+          />
+        </View>
+        <View style={{ height: 105, bottom: 5, ...styles.item }}>
+          <Image source={RecordPhotoImage} />
+          <ImgPicker
+            onImageTaken={(photo) => {
+              setSelectedPhotos((selectedPhotos) => [...selectedPhotos, photo]);
+            }}
+            defaultPhotos={selectedPhotos}
+            IsEditable={isEditable}
+          />
+        </View>
+        <View style={{ ...styles.item }}>
+          <Image source={RecordTextImage} />
+          <TextInput
+            editable={isEditable}
+            selectTextOnFocus={isEditable}
+            style={styles.record}
+            onChangeText={(txt) => setText_(txt)}
+            value={text_}
+            multiline
+            placeholder="내용을 입력해주세요"
+            placeholderTextColor="grey"
+          />
+        </View>
+        {isEditable && (
+          <View style={{ ...styles.button }}>
+            <TouchableOpacity
+              onPress={() => {
+                IsNewRecord ? navigation.pop() : setIsEditable(false);
+              }}
+              style={{ width: 160, padding: 15, marginRight: 7 }}
+            >
+              <Text style={{ alignSelf: "center", fontWeight: "bold" }}>
+                취소
+              </Text>
+            </TouchableOpacity>
+            <Text>|</Text>
+            <TouchableOpacity
+              onPress={storeRecord}
+              style={{ width: 160, padding: 15, marginLeft: 7 }}
+            >
+              <Text style={{ alignSelf: "center", fontWeight: "bold" }}>
+                저장
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      </ScrollView>
+      <FolderBottomSheet
+        show={showFolderBottomSheet}
+        setShow={(s) => {
+          setShowFolderBottomSheet(s);
+        }}
+        setFolderName={(f) => setFolderName_(f)}
+        setFolderID={(f) => setFolderID_(f)}
+      />
+    </SafeAreaView>
+  );
+};
 
 export default EditScreen;
 
-
-const styles=StyleSheet.create({
-    item:{
-        marginLeft:7,
-        flex:1,
-        flexDirection: 'row',
-    },
-    label:{
-        fontSize: 17,
-        marginTop:2,
-        marginBottom:15,
-        marginRight:15,
-        paddingVertical:4,
-        paddingHorizontal:2,
-    },
-    textInput:{
-        //borderBottomColor: '#B0E0E6',
-        //borderBottomWidth:1,
-        marginBottom: 15,
-        paddingVertical:2,
-        paddingHorizontal:2,
-        width: '85%',
-        bottom:6,
-        paddingLeft:14,
-    },
-    record:{
-        //borderColor: '#B0E0E6',
-        width: '85%',
-        height:360,
-        //borderWidth:1,
-        marginBottom: 7,
-        paddingVertical:2,
-        paddingHorizontal:2,
-        left:10,
-        bottom: 6,
-    },
-    button:{
-        flex:1,
-        justifyContent:'center',
-        alignItems: 'center',
-        width:'100%',
-        height: 60,
-        flexDirection: 'row'
-    },
+const styles = StyleSheet.create({
+  item: {
+    marginLeft: 7,
+    flex: 1,
+    flexDirection: "row",
+  },
+  label: {
+    fontSize: 17,
+    marginTop: 2,
+    marginBottom: 15,
+    marginRight: 15,
+    paddingVertical: 4,
+    paddingHorizontal: 2,
+  },
+  textInput: {
+    //borderBottomColor: '#B0E0E6',
+    //borderBottomWidth:1,
+    marginBottom: 15,
+    paddingVertical: 2,
+    paddingHorizontal: 2,
+    width: "85%",
+    bottom: 6,
+    paddingLeft: 14,
+  },
+  record: {
+    //borderColor: '#B0E0E6',
+    width: "85%",
+    height: 360,
+    //borderWidth:1,
+    marginBottom: 7,
+    paddingVertical: 2,
+    paddingHorizontal: 2,
+    left: 10,
+    bottom: 6,
+  },
+  button: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
+    height: 60,
+    flexDirection: "row",
+  },
 });

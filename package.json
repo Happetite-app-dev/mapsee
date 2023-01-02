@@ -43,7 +43,13 @@
     "react-native-web": "0.17.7"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.9"
+    "@babel/core": "^7.12.9",
+    "eslint": "^8.31.0",
+    "eslint-config-universe": "^11.1.1",
+    "prettier": "^2.8.1"
+  },
+  "eslintConfig": {
+    "extends": "universe/native"
   },
   "private": true
 }
