@@ -2,13 +2,25 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 import StorageScreen from "../screens/StorageScreen";
 import MypageScreen from '../screens/MypageScreen';
 import MapScreen from '../screens/MapScreen';
-import AlarmScreen from "../screens/AlarmScreen";
+import NoticeScreen from "../screens/NoticeScreen";
 import { StyleSheet, Text, View, Image, TouchableHighlight } from "react-native";
 import { useState } from "react";
 import { useContext } from 'react';
 import AppContext from '../components/AppContext';
-const Tab = createBottomTabNavigator();
+import { initializeApp } from "firebase/app";
 
+
+const Tab = createBottomTabNavigator();
+const firebaseConfig = {
+    apiKey: "AIzaSyDBq4tZ1QLm1R7iPH8O4dTvebVGWgkRPks",
+    authDomain: "mapseedemo1.firebaseapp.com",
+    projectId: "mapseedemo1",
+    storageBucket: "mapseedemo1.appspot.com",
+    messagingSenderId: "839335870793",
+    appId: "1:839335870793:web:75004c5d43270610411a98",
+    measurementId: "G-8L1MD1CGN2"
+  };
+const app = initializeApp(firebaseConfig);
 const Tabs = ({navigation}) => {
     const myContext = useContext(AppContext);
     const tabBarVisible = myContext.tabBarVisible
@@ -33,22 +45,6 @@ const Tabs = ({navigation}) => {
                 }  
             }}
         >   
-            <Tab.Screen name="Storage" component={StorageScreen} options={{
-                tabBarIcon: ({focused}) => (
-                    <View style={{alignItems: 'center', justifyContent: 'center', top: 10}}>
-                        <Image                    
-                            source={focused? require('../assets/icons/storage_on.png') : require('../assets/icons/storage_off.png')}
-                            resizeMode='contain'
-                            style={{
-                                width: 24,
-                                height: 24,
-                                zIndex:1,
-                            }}
-                        />
-
-                    </View>
-                )
-            }}/>
             <Tab.Screen name="Map" component={MapScreen} 
                 options={{
                     tabBarIcon: ({focused}) => (
@@ -66,11 +62,27 @@ const Tabs = ({navigation}) => {
                     ),
                 }}
             />
-            <Tab.Screen name="Alarm" component={AlarmScreen} options={{
+            <Tab.Screen name="Storage" component={StorageScreen} options={{
                 tabBarIcon: ({focused}) => (
                     <View style={{alignItems: 'center', justifyContent: 'center', top: 10}}>
                         <Image                    
-                            source={focused ? require('../assets/icons/alarm_on.png') : require('../assets/icons/alarm_off.png')}
+                            source={focused? require('../assets/icons/storage_on.png') : require('../assets/icons/storage_off.png')}
+                            resizeMode='contain'
+                            style={{
+                                width: 24,
+                                height: 24,
+                                zIndex:1,
+                            }}
+                        />
+
+                    </View>
+                )
+            }}/>
+            <Tab.Screen name="Notice" component={NoticeScreen} options={{
+                tabBarIcon: ({focused}) => (
+                    <View style={{alignItems: 'center', justifyContent: 'center', top: 10}}>
+                        <Image                    
+                            source={focused ? require('../assets/icons/notice_on.png') : require('../assets/icons/notice_off.png')}
                             resizeMode='contain'
                             style={{
                                 width: 24,

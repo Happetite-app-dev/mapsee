@@ -3,34 +3,26 @@ import { Animated, Text, View, TouchableOpacity, Button, SafeAreaView } from 're
 import { ScrollView, Switch, TextInput } from 'react-native-gesture-handler';
 import { useContext } from 'react';
 import AppContext from '../components/AppContext';
-import { initializeApp } from "firebase/app";
 import { getDatabase, ref, onValue, set, push } from 'firebase/database';
-const firebaseConfig = {
-  apiKey: "AIzaSyDBq4tZ1QLm1R7iPH8O4dTvebVGWgkRPks",
-  authDomain: "mapseedemo1.firebaseapp.com",
-  projectId: "mapseedemo1",
-  storageBucket: "mapseedemo1.appspot.com",
-  messagingSenderId: "839335870793",
-  appId: "1:839335870793:web:75004c5d43270610411a98",
-  measurementId: "G-8L1MD1CGN2"
-};
 
-const app = initializeApp(firebaseConfig);
-
-const MakeFolderBottomSheet = ({stackNavigation, folderID, folderName_, folderColor_, recordDataSource}) => {
+const MakeFolderBottomSheet = ({stackNavigation, folderID, folderName_, folderColor_, folderUserIDs_, recordDataSource}) => {
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID
-
-  const IsNewRecord = folderName_===null ? true : false;
+  
+  const IsNewRecord = folderName_=== '' ? true : false;
   const gotoStorageScreen = () => {
     stackNavigation.navigate('Storage')
   }
   const gotoSingleFolderScreen = () => {
-    stackNavigation.navigate('SingleFolderScreen', {recordDataSource: recordDataSource, folderID: folderID, folderName: newFolderName, folderColor: newFolderColor})
+    stackNavigation.navigate('SingleFolderScreen', {recordDataSource: recordDataSource, folderID: folderID, folderName: newFolderName, folderColor: newFolderColor, folderUserIDs: newFolderUserIDs})
   }
-  const addNewFolder = async (folderID, folderName, folderColor, userID) => {
+  const gotoInviteFriendScreen = () => {
+    stackNavigation.navigate('InviteFriendScreen', {folderUserIDs: newFolderUserIDs, onChangeFolderUserIDs: onChangeNewFolderUserIDs})
+  }
+  const addNewFolder = async (folderID, folderName, folderColor, folderUserIDs) => {
     const db = getDatabase();
     if(IsNewRecord)         //새 기록이면
+    //친구초대한 사람한테 push알림 보내는 함수
     {
       const reference1 = ref(db, '/folders');                      //folders에 push
       let newFolderID = push(reference1, {
@@ -70,7 +62,30 @@ const MakeFolderBottomSheet = ({stackNavigation, folderID, folderName_, folderCo
 
     const [newFolderName, setNewFolderName] = useState(folderName_ || '')
     const [newFolderColor, setNewFolderColor] = useState(folderColor_ || '#FF6363')
-    const [newFolderUserID, setNewFolderUserID] = useState(myUID)
+    const [newFolderUserIDs, setNewFolderUserIDs] = useState(folderUserIDs_ || [myUID])
+    const [newFolderUserNameIDs, setNewFolderUserNameIDs] = useState({})
+    const onChangeNewFolderUserIDs = (newFolderUserIDs_) => {
+      setNewFolderUserIDs(newFolderUserIDs_)
+    }
+    //폴더에 속한 친구이름 목록을 바텀쉬트에 띄우는 함수
+    /** 
+    useEffect(()=>{
+      const db = getDatabase()
+      newFolderUserIDs.map((userID)=>{
+        onValue(ref(db, '/users/' + userID), (snapshot) => {
+          if(snapshot.val()!=null){                             //한 user가 folder를 갖고 있지 않을 수 있어!!
+            const reference
+                onValue(ref(db, '/users/' + friendUID), (snapshot2) => {
+                    if(!friendIDNameList.includes({userID: friendUID, id: snapshot2.child("id").val(), name: snapshot2.child("lastName").val()+snapshot2.child("firstName").val()}))
+                        {setFriendIDNameList((prev)=>[...prev, {userID: friendUID, id: snapshot2.child("id").val(), name: snapshot2.child("lastName").val()+snapshot2.child("firstName").val()}])}
+                })
+          }
+        })
+        setNewFolderUserNameIDs((prev)=>[...prev, ])
+
+      })
+    }, [])
+    **/
     return(
       <View style={{width:'100%', height: '100%'}}>
         <View style={{top: 24, width: 61, height: 24, left: 23, marginBottom: 24}}>
@@ -135,7 +150,7 @@ const MakeFolderBottomSheet = ({stackNavigation, folderID, folderName_, folderCo
             </View>
           </View>
         </View>
-        <View style={{top: 30, width: 344, height: 24, left: 23, marginBottom: 24, flexDirection: 'row', justifyContent:'space-between'}}>
+        {/* <View style={{top: 30, width: 344, height: 24, left: 23, marginBottom: 24, flexDirection: 'row', justifyContent:'space-between'}}>
           <Text style={{fontSize: 14, fontWeight: "700"}}>공유 폴더</Text> 
           <Switch
             trackColor={{ false: "#767577", true: "#81b0ff" }}
@@ -158,10 +173,27 @@ const MakeFolderBottomSheet = ({stackNavigation, folderID, folderName_, folderCo
           >
             <Text>+</Text>
           </TouchableOpacity>
+        </View> */}
+        <View style={{top: 30, width: 344, height: 24, left: 23, marginBottom: 24, flexDirection: 'row'}}>
+          <Text style={{fontSize: 14, fontWeight: "400"}}>친구초대</Text> 
+          <View>
+            <TouchableOpacity
+              onPress={()=>{
+                gotoInviteFriendScreen()
+              }}
+              style={{
+                marginLeft: 20,
+                backgroundColor: 'red'
+              }}
+            >
+              <Text>친구초대 버튼</Text>
+            </TouchableOpacity>
+          </View>
         </View>
+
         <TouchableOpacity onPress={async ()=>
           {
-            await addNewFolder(folderID, newFolderName, newFolderColor, newFolderUserID)
+            await addNewFolder(folderID, newFolderName, newFolderColor, newFolderUserIDs)
             .then(()=>{
               IsNewRecord?
               gotoStorageScreen() : gotoSingleFolderScreen()

@@ -6,7 +6,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import FolderBottomSheet from '../components/FolderBottomSheet';
 import { useContext } from 'react';
 import AppContext from '../components/AppContext';
-import { initializeApp } from "firebase/app";
+
 import { getDatabase, ref, onValue, set, push, remove, off } from 'firebase/database';
 import { ref as ref_storage, getStorage } from 'firebase/storage'
 const RecordLocationImage = require('../assets/image/RecordLocation.png');
@@ -18,18 +18,6 @@ const RecordPhotoImage = require('../assets/image/RecordPhoto.png');
 const goBackImage = require('../assets/image/goBack.png');
 const editImage = require('../assets/image/edit.png')
 const trashcanImage = require('../assets/image/trashcan.png')
-
-const firebaseConfig = {
-    apiKey: "AIzaSyDBq4tZ1QLm1R7iPH8O4dTvebVGWgkRPks",
-    authDomain: "mapseedemo1.firebaseapp.com",
-    projectId: "mapseedemo1",
-    storageBucket: "mapseedemo1.appspot.com",
-    messagingSenderId: "839335870793",
-    appId: "1:839335870793:web:75004c5d43270610411a98",
-    measurementId: "G-8L1MD1CGN2"
-  };
-
-const app = initializeApp(firebaseConfig);
 
 const defaultFolderID = "-NB6gdHZgh_liXbnuOLr";
 const defaultFolderName = "폴더1"

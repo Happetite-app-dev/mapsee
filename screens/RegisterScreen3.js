@@ -1,22 +1,11 @@
 import React,{useEffect, useState} from 'react'
 import {StyleSheet, Text, View, KeyboardAvoidingView, TextInput, TouchableOpacity, Dimensions} from 'react-native'
-import { initializeApp } from "firebase/app";
 import { auth } from '../firebase'
 import {getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword} from "firebase/auth";
 import { getDatabase, ref, onValue, set, push, remove, off } from 'firebase/database';
 import { useContext } from 'react';
 import AppContext from '../components/AppContext';
 
-const firebaseConfig = {
-    apiKey: "AIzaSyDBq4tZ1QLm1R7iPH8O4dTvebVGWgkRPks",
-    authDomain: "mapseedemo1.firebaseapp.com",
-    projectId: "mapseedemo1",
-    storageBucket: "mapseedemo1.appspot.com",
-    messagingSenderId: "839335870793",
-    appId: "1:839335870793:web:75004c5d43270610411a98",
-    measurementId: "G-8L1MD1CGN2"
-  };
-const app = initializeApp(firebaseConfig);
 const { height } = Dimensions.get('window');
 
 const saveUser = async (uid, email, id, firstName, lastName) => {

@@ -6,7 +6,7 @@ import { useContext } from 'react';
 import AppContext from '../components/AppContext';
 
 const friendListImage = require('../assets/image/friendList.png');
-const alarmImage = require('../assets/icons/alarm_on.png');
+const NoticeImage = require('../assets/icons/notice_on.png');
 const themeImage = require('../assets/image/theme.png');
 const fontImage = require('../assets/image/font.png');
 
@@ -45,7 +45,7 @@ const MypageScreen = ({navigation}) => {
             <Text style={{fontSize: 14, fontWeight:'bold', left: 14, top: 3 }}>친구 목록</Text>
           </TouchableOpacity>
           <TouchableOpacity style={{height: 104, width: 160, borderWidth: 1, borderColor: 'gray', borderRadius: 8, flexDirection: 'row', paddingTop: 16, paddingLeft: 18}}>
-            <Image source={alarmImage}/>
+            <Image source={NoticeImage}/>
             <Text style={{fontSize: 14, fontWeight:'bold', left: 14, top: 3 }}>알림</Text>
           </TouchableOpacity>
         </View>

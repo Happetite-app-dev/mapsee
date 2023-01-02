@@ -4,21 +4,10 @@ import { auth } from '../firebase'
 import {getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword} from "firebase/auth";
 import { useContext } from 'react';
 import AppContext from '../components/AppContext';
-import { initializeApp } from "firebase/app";
 import { getDatabase, ref, onValue, set, push, remove, off } from 'firebase/database';
 
 const { height } = Dimensions.get('window');
 
-const firebaseConfig = {
-    apiKey: "AIzaSyDBq4tZ1QLm1R7iPH8O4dTvebVGWgkRPks",
-    authDomain: "mapseedemo1.firebaseapp.com",
-    projectId: "mapseedemo1",
-    storageBucket: "mapseedemo1.appspot.com",
-    messagingSenderId: "839335870793",
-    appId: "1:839335870793:web:75004c5d43270610411a98",
-    measurementId: "G-8L1MD1CGN2"
-};
-const app = initializeApp(firebaseConfig);
 const db = getDatabase();
 
 

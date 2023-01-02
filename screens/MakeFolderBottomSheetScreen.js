@@ -3,7 +3,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import { Animated, Text, View, TouchableOpacity, Button } from 'react-native';
 
 const MakeFolderBottomSheetScreen = ({navigation, route}) => {
-  const {folderID, folderName, folderColor, recordDataSource}= route.params
+  const {folderID, folderName, folderColor, folderUserIDs, recordDataSource}= route.params
   const [animationValue, setAnimationValue] = useState(0);
 
   const showAnimation = useRef(new Animated.Value(animationValue)).current
@@ -18,11 +18,11 @@ const MakeFolderBottomSheetScreen = ({navigation, route}) => {
   }
   
   return (
-    <View style={{width: '100%', height: '100%'}}>
-    <View style={{width:'100%', height: '26%'}} onTouchEndCapture={()=>{toggleAnimation(); navigation.goBack()}}/>
-    <Animated.View style={{
+    <View style={{width: '100%', height: '100%', backgroundColor:'transparent'}}>
+      <View style={{width:'100%', height: '26%', backgroundColor:'transparent'}} onTouchEndCapture={()=>{toggleAnimation(); navigation.goBack()}}/>
+      <Animated.View style={{
         width: "100%",
-        backgroundColor:"#fff",
+        backgroundColor:'#fff',
         borderTopLeftRadius: 30,
         borderTopRightRadius: 30,
         padding: 0,
@@ -41,7 +41,7 @@ const MakeFolderBottomSheetScreen = ({navigation, route}) => {
         bottom: showAnimation,
         elevation: 24,
       }}>
-        <MakeFolderBottomSheet stackNavigation={navigation} folderID={folderID} folderName_={folderName} folderColor_={folderColor} recordDataSource={recordDataSource}/>
+        <MakeFolderBottomSheet stackNavigation={navigation} folderID={folderID} folderName_={folderName} folderColor_={folderColor} folderUserIDs_={folderUserIDs} recordDataSource={recordDataSource}/>
       </Animated.View>
       </View>
   )  

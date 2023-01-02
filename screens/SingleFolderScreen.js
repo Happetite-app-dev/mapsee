@@ -1,25 +1,12 @@
 import { SafeAreaView, Text, View, TouchableOpacity, Image, Alert } from "react-native"
 import RecordFlatList from "../components/RecordFlatList";
-import { initializeApp } from "firebase/app";
 import { getDatabase, ref, onValue, set, push, remove, off } from 'firebase/database';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import AppContext from '../components/AppContext';
 const goBackImage = require('../assets/image/goBack.png')
 const folder2Image = require('../assets/image/folder2.png')
 const editImage = require('../assets/image/edit.png')
 const trashcanImage = require('../assets/image/trashcan.png')
-
-const firebaseConfig = {
-    apiKey: "AIzaSyDBq4tZ1QLm1R7iPH8O4dTvebVGWgkRPks",
-    authDomain: "mapseedemo1.firebaseapp.com",
-    projectId: "mapseedemo1",
-    storageBucket: "mapseedemo1.appspot.com",
-    messagingSenderId: "839335870793",
-    appId: "1:839335870793:web:75004c5d43270610411a98",
-    measurementId: "G-8L1MD1CGN2"
-  };
-
-const app = initializeApp(firebaseConfig);
 
 
 const exitData = async (myUID, folderID) => {
@@ -45,12 +32,13 @@ const SingleFolderScreen = ({navigation, route}) => {
     const myContext = useContext(AppContext);
     const myUID = myContext.myUID
 
-    const {recordDataSource, folderID, folderName, folderColor} = route.params
+    const {recordDataSource, folderID, folderName, folderColor, folderUserIDs} = route.params
+
     const gotoStorageScreen = () => {
         navigation.pop()
     }
     const gotoMakeFolderBottomSheetScreen = () => {
-        navigation.navigate('MakeFolderBottomSheetScreen', {folderID: folderID, folderName: folderName, folderColor: folderColor, recordDataSource: recordDataSource})
+        navigation.navigate('MakeFolderBottomSheetScreen', {folderID: folderID, folderName: folderName, folderColor: folderColor, folderUserIDs: folderUserIDs, recordDataSource: recordDataSource})
     }
     const exitFolder = async () => {
         await exitData(myUID, folderID)

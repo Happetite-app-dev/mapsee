@@ -3,26 +3,14 @@ import { Animated, Text, View, TouchableOpacity, Button, SafeAreaView } from 're
 import { ScrollView, Switch, TextInput } from 'react-native-gesture-handler';
 import { useContext } from 'react';
 import AppContext from '../components/AppContext';
-import { initializeApp } from "firebase/app";
 import { getDatabase, ref, onValue, set, push } from 'firebase/database';
-const firebaseConfig = {
-  apiKey: "AIzaSyDBq4tZ1QLm1R7iPH8O4dTvebVGWgkRPks",
-  authDomain: "mapseedemo1.firebaseapp.com",
-  projectId: "mapseedemo1",
-  storageBucket: "mapseedemo1.appspot.com",
-  messagingSenderId: "839335870793",
-  appId: "1:839335870793:web:75004c5d43270610411a98",
-  measurementId: "G-8L1MD1CGN2"
-};
-
-const app = initializeApp(firebaseConfig);
 
 const AddFolderBottomSheet = ({setFolderName, setFolderID, setFolderIDNameList, setShow}) => {
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID
-  const addNewFolder = (folderName, folderColor, userID) => {
+  const addNewFolder = (folderName, folderColor, folderUserIDs) => {
     const db = getDatabase();
-  
+    //친구초대한 사람한테 push알림 보내는 함수
     const reference1 = ref(db, '/folders');                      //folders에 push
     let newFolderID = push(reference1, {
         initFolderName: folderName,
@@ -39,7 +27,7 @@ const AddFolderBottomSheet = ({setFolderName, setFolderID, setFolderIDNameList, 
     const reference4 = ref(db, `/folders/${newFolderID}/userIDs/${myUID}`)     //folders/newfolderID/userIDs에 userID:true를 넣기
     set (reference4,
       true
-    );ㄴ
+    );
     const reference5 = ref(db, `users/${myUID}/folderIDs/${newFolderID}`);      //user에 folderID를 넣고
     set(reference5, 
         true
@@ -50,7 +38,7 @@ const AddFolderBottomSheet = ({setFolderName, setFolderID, setFolderIDNameList, 
   }
     const [newFolderName, setNewFolderName] = useState('')
     const [newFolderColor, setNewFolderColor] = useState('red')
-    const [newFolderUserID, setNewFolderUserID] = useState('kho2011')  //변수명 수정 필요
+    const [newFolderUserIDs, setNewFolderUserIDs] = useState([myUID])  //변수명 수정 필요
     return(
       <View style={{width:'100%', height: '100%'}}>
         <View style={{top: 24, width: 61, height: 24, left: 23, marginBottom: 24}}>
@@ -135,7 +123,7 @@ const AddFolderBottomSheet = ({setFolderName, setFolderID, setFolderIDNameList, 
           </TouchableOpacity>
         </View>
         <TouchableOpacity onPress={()=>{
-            addNewFolder(newFolderName, newFolderColor, newFolderUserID);
+            addNewFolder(newFolderName, newFolderColor, newFolderUserIDs);
             setShow(false);
           }}
           style={{

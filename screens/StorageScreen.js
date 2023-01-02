@@ -9,27 +9,15 @@ const folderImage = require('../assets/image/folder.png');
 const addFolderImage = require('../assets/image/addFolder.png');
 const searchImage = require('../assets/image/search.png')
 
-import { initializeApp } from "firebase/app";
 import { getDatabase, ref, onValue, set, push } from 'firebase/database';
 import RecordFlatList from '../components/RecordFlatList'
-const firebaseConfig = {
-  apiKey: "AIzaSyDBq4tZ1QLm1R7iPH8O4dTvebVGWgkRPks",
-  authDomain: "mapseedemo1.firebaseapp.com",
-  projectId: "mapseedemo1",
-  storageBucket: "mapseedemo1.appspot.com",
-  messagingSenderId: "839335870793",
-  appId: "1:839335870793:web:75004c5d43270610411a98",
-  measurementId: "G-8L1MD1CGN2"
-};
 
-const app = initializeApp(firebaseConfig);
-const myID = "kho2011";
-
-const StorageScreen = ({navigation}) => {
+const StorageScreen = ({navigation, route}) => {
   
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID
   const isFocused = useIsFocused();
+  //const {folderID, folderName, folderColor, folderUserID, recordDataSource}
   useEffect(()=>{    
     if(isFocused)
     {                                 
@@ -37,14 +25,15 @@ const StorageScreen = ({navigation}) => {
     onValue(ref(db, '/users/' + myUID + '/folderIDs'), (snapshot) => {
       if(snapshot.val()!=null){                             //한 user가 folder를 갖고 있지 않을 수 있어!!
         const folderIDList = Object.keys(snapshot.val());           //folderIDList 만들기 
-        setFolderIDNameColorList((prev)=>[]);                                 //initializing folderIDNameList
+        setFolderIDNameColorUserIDsList((prev)=>[]);                                 //initializing folderIDNameList
         setMasterDataSource((prev)=>[])                            //initializing masterDataSource
         folderIDList.map((folderID)=>{                        //각 폴더에 대하여....
           onValue(ref(db, '/folders/'+folderID), (snapshot2)=>{
-            if(!folderIDNameColorList.includes({folderID: folderID, folderName: snapshot2.child('folderName').child(myUID).val() , folderColor: snapshot2.child('folderColor').child(myUID).val()}) )
+            if(!folderIDNameColorUserIDsList.includes({folderID: folderID, folderName: snapshot2.child('folderName').child(myUID).val() , folderColor: snapshot2.child('folderColor').child(myUID).val(), folderUserIDs: Object.keys(snapshot2.child('userIDs').val())}) )
             {
-            setFolderIDNameColorList((prev)=>[...prev, {folderID: folderID, folderName: snapshot2.child('folderName').child(myUID).val() , folderColor: snapshot2.child('folderColor').child(myUID).val()}])  //folderIDNameList채워주기
-            //console.log('folder',folderIDNameColorList.length)
+            setFolderIDNameColorUserIDsList((prev)=>[...prev, {folderID: folderID, folderName: snapshot2.child('folderName').child(myUID).val() , folderColor: snapshot2.child('folderColor').child(myUID).val(), folderUserIDs: Object.keys(snapshot2.child('userIDs').val())}])  //folderIDNameList채워주기
+            //console.log(folderIDNameColorUserIDsList)
+            //console.log('folder',folderIDNameColorUserIDsList.length)
             if(snapshot2.child('placeRecords').val()!=(null||undefined))      //폴더는 있지만 빈폴더라서 record가 안에 없을 수 있어!!        
             {
               //recordIDList_.push(...Object.keys(snapshot2.child('placeRecords').val()))  //해당 user가 소속된 각 폴더에 들어있는 recordIDList들을 합쳐서 하나로 만들어주기(버림)
@@ -73,42 +62,42 @@ const StorageScreen = ({navigation}) => {
    },
   [isFocused]);
 
-  const [folderIDNameColorList, setFolderIDNameColorList] = useState([]);      //{folderID, folderName, folderColor}가 쌓여있음
-  const [selectedFolderIDNameColor, setSelectedFolderIDNameColor] = useState(undefined);   
+  const [folderIDNameColorUserIDsList, setFolderIDNameColorUserIDsList] = useState([]);      //{folderID, folderName, folderColor, folderUserIDs}가 쌓여있음
+  const [selectedFolderIDNameColorUserIDs, setSelectedFolderIDNameColorUserIDs] = useState(undefined);   
   
   const [masterDataSource, setMasterDataSource] = useState([]);     //shortened record가 쌓여있음 {recordID, title, folderID, placeName, date, text, photos}
 
   const gotoMakeFolderBottomSheetScreen = () => {
-    navigation.navigate("MakeFolderBottomSheetScreen", {folderName: null, folderColor: null})
+    navigation.navigate("MakeFolderBottomSheetScreen", {folderID: '', folderName: null, folderColor: null, recordDataSource: {}, folderUserIDs: null})
   }
 
-  const gotoSingleFolderScreen = (recordDataSource, folderID, folderName, folderColor) => {
-    setSelectedFolderIDNameColor(undefined)
-    navigation.navigate("SingleFolderScreen", {recordDataSource: recordDataSource, folderID: folderID, folderName: folderName, folderColor: folderColor})
+  const gotoSingleFolderScreen = (recordDataSource, folderID, folderName, folderColor, folderUserIDs) => {
+    setSelectedFolderIDNameColorUserIDs(undefined)
+    navigation.navigate("SingleFolderScreen", {recordDataSource: recordDataSource, folderID: folderID, folderName: folderName, folderColor: folderColor, folderUserIDs: folderUserIDs})
   }
 
   //선택된 파일에 따라서 filter 변화 useEffect
   useEffect(() => {
-    if(selectedFolderIDNameColor!=undefined){
-      filterFunction(selectedFolderIDNameColor)
+    if(selectedFolderIDNameColorUserIDs!=undefined){
+      filterFunction(selectedFolderIDNameColorUserIDs)
     }
-  }, [selectedFolderIDNameColor])
+  }, [selectedFolderIDNameColorUserIDs])
 
-  const filterFunction = ({folderID, folderName, folderColor}) => {
+  const filterFunction = ({folderID, folderName, folderColor, folderUserIDs}) => {
       // Filter the masterDataSource and update FilteredDataSource
       const filteredDataSource = masterDataSource.filter(function (item) {
         // Applying filter for the inserted text in search bar
         return item.recordData.folderID === folderID;
       });
-      gotoSingleFolderScreen(filteredDataSource, folderID, folderName, folderColor)
+      gotoSingleFolderScreen(filteredDataSource, folderID, folderName, folderColor, folderUserIDs)
   };
 
 
-  const IndividualFolder = ({folderID, folderName, folderColor}) => {
+  const IndividualFolder = ({folderID, folderName, folderColor, folderUserIDs}) => {
     return(
       <TouchableOpacity
           onPress={() => {
-            setSelectedFolderIDNameColor({folderID: folderID, folderName: folderName, folderColor: folderColor})
+            setSelectedFolderIDNameColorUserIDs({folderID: folderID, folderName: folderName, folderColor: folderColor, folderUserIDs: folderUserIDs})
             //gotoSingleFolderScreen()
           }}
           style={{height:65, }}
@@ -128,7 +117,7 @@ const StorageScreen = ({navigation}) => {
   }
 
   const renderFolder = ({ item }) => (
-    <IndividualFolder folderID={item.folderID} folderName={item.folderName} folderColor={item.folderColor}/>
+    <IndividualFolder folderID={item.folderID} folderName={item.folderName} folderColor={item.folderColor} folderUserIDs={item.folderUserIDs}/>
   );  
 
   return (
@@ -151,7 +140,7 @@ const StorageScreen = ({navigation}) => {
       </View>
       <View style={{height: 85}}>
         <FlatList
-          data={folderIDNameColorList}
+          data={folderIDNameColorUserIDsList}
           renderItem={renderFolder}
           keyExtractor={item => item.folderID}
           horizontal={true}
