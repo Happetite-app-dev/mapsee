@@ -8,6 +8,7 @@ import AfterLoginScreen from "./screens/AfterLoginScreen";
 import BeforeLoginScreen from "./screens/BeforeLoginScreen";
 import EditScreen from "./screens/EditScreen";
 import FriendListScreen from "./screens/FriendListScreen";
+import InviteFriendScreen from "./screens/InviteFriendScreen";
 import LoginScreen from "./screens/LoginScreen";
 import MakeFolderBottomSheetScreen from "./screens/MakeFolderBottomSheetScreen";
 import MapSearchScreen1 from "./screens/MapSearchScreen1";
@@ -134,7 +135,8 @@ const App = () => {
             component={MakeFolderBottomSheetScreen}
             options={{
               headerShown: false,
-              presentation: "containedTransparentModal",
+              presentation: "transparentModal",
+              gestureDirection: "vertical",
               contentStyle: { backgroundColor: "transparent" },
             }}
           />
@@ -143,7 +145,8 @@ const App = () => {
             component={PlaceInfoBottomSheetScreen}
             options={{
               headerShown: false,
-              presentation: "containedTransparentModal",
+              presentation: "transparentModal",
+              gestureDirection: "vertical",
               contentStyle: { backgroundColor: "transparent" },
             }}
           />
@@ -161,6 +164,15 @@ const App = () => {
             name="FriendListScreen"
             component={FriendListScreen}
             options={{ headerShown: false, gestureEnabled: false }}
+          />
+          <Stack.Screen
+            name="InviteFriendScreen"
+            component={InviteFriendScreen}
+            options={{
+              headerShown: false,
+              gestureEnabled: true,
+              presentation: "fullScreenModal",
+            }}
           />
         </Stack.Navigator>
       </NavigationContainer>
