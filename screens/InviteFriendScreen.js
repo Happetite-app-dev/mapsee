@@ -55,7 +55,6 @@ const InviteFriendScreen = ({ navigation, route }) => {
   }, []);
 
   const [friendIDNameList, setFriendIDNameList] = useState([]);
-
   const isFocused = useIsFocused();
   useEffect(() => {
     if (isFocused) {
@@ -93,10 +92,20 @@ const InviteFriendScreen = ({ navigation, route }) => {
       });
     }
   }, []);
-
+  const updateFolderUserIDs = ({
+    onChangeFolderUserIDs,
+    folderUserNameIDs,
+  }) => {
+    onChangeFolderUserIDs(folderUserNameIDs.map(({ userID }) => userID));
+  };
   const IndividualFriend = ({ userID, id, name }) => {
     return (
       <TouchableOpacity
+        onPress={() => {
+          if (!folderUserNameIDs.some((item) => item.userID === userID)) {
+            setFolderUserNameIDs((prev) => [...prev, { userID, name }]);
+          }
+        }}
         style={{
           alignSelf: "center",
           width: "100%",
@@ -140,12 +149,14 @@ const InviteFriendScreen = ({ navigation, route }) => {
       <View
         style={{
           height: 32,
-          paddingHorizontal: 16,
+          paddingLeft: 16,
+          paddingRight: 4,
           paddingVertical: 8,
           borderRadius: 16,
           marginHorizontal: 8,
           marginVertical: 20,
           backgroundColor: "#F4F5F9",
+          flexDirection: "row",
         }}
       >
         <Text
@@ -160,6 +171,36 @@ const InviteFriendScreen = ({ navigation, route }) => {
         >
           {item.name}
         </Text>
+        <TouchableOpacity
+          onPress={() => {
+            setFolderUserNameIDs(
+              folderUserNameIDs.filter(
+                (folderUserNameID) => folderUserNameID.userID !== item.userID
+              )
+            );
+          }}
+          style={{
+            width: 24,
+            height: 24,
+            borderRadius: 12,
+            borderWidth: 1,
+            borderColor: "#DDDFE9",
+            backgroundColor: "#FFFFFF",
+            marginLeft: 8,
+            justifyContent: "center",
+            alignSelf: "center",
+            alignItems: "center",
+          }}
+        >
+          <View
+            style={{
+              borderWidth: 2,
+              width: 12,
+              borderColor: "#5ED3CC",
+              borderRadius: 1,
+            }}
+          />
+        </TouchableOpacity>
       </View>
     );
   };
@@ -176,7 +217,12 @@ const InviteFriendScreen = ({ navigation, route }) => {
         }}
       >
         <TouchableOpacity
-          onPress={() => gotoMakeFolderBottomSheetScreen({ navigation })}
+          onPress={() => {
+            onChangeFolderUserIDs(
+              folderUserNameIDs.map(({ userID }) => userID)
+            );
+            gotoMakeFolderBottomSheetScreen({ navigation });
+          }}
           style={{
             left: 21,
             width: 20,

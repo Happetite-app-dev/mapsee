@@ -81,36 +81,55 @@ const MakeFolderBottomSheet = ({
   ) => {
     const db = getDatabase();
     if (IsNewRecord) {
-      //새 기록이면
+      //새 기록이면 친구초대한 모든 사람 대상으로 데이터베이스 수정 및 알림 보내기
       //친구초대한 사람한테 push알림 보내는 함수
       const reference1 = ref(db, "/folders"); //folders에 push
       const newFolderID = push(reference1, {
         folderName,
         folderColor,
       }).key;
-      const reference2 = ref(db, `/folders/${newFolderID}/folderName/${myUID}`); //folderName 개인화
-      set(reference2, folderName);
-      const reference3 = ref(
-        db,
-        `/folders/${newFolderID}/folderColor/${myUID}`
-      ); //folderColor 개인화
-      set(reference3, folderColor);
-      const reference4 = ref(db, `/folders/${newFolderID}/userIDs/${myUID}`); //folders/newfolderID/userIDs에 userID:true를 넣기
-      set(reference4, true);
-      const reference5 = ref(db, `users/${myUID}/folderIDs/${newFolderID}`); //user에 folderID를 넣고
-      set(reference5, true);
-    } //새 기록이 아니라면
-    else {
-      const reference1 = ref(
-        db,
-        "/folders/" + folderID + "/folderName/" + myUID
-      ); //folders에 push
+      folderUserIDs.map((folderUserID) => {
+        const reference2 = ref(
+          db,
+          `/folders/${newFolderID}/folderName/${folderUserID}`
+        ); //folderName 개인화
+        set(reference2, folderName);
+        const reference3 = ref(
+          db,
+          `/folders/${newFolderID}/folderColor/${folderUserID}`
+        ); //folderColor 개인화
+        set(reference3, folderColor);
+        const reference4 = ref(
+          db,
+          `/folders/${newFolderID}/userIDs/${folderUserID}`
+        ); //folders/newfolderID/userIDs에 userID:true를 넣기
+        set(reference4, true);
+        const reference5 = ref(
+          db,
+          `users/${folderUserID}/folderIDs/${newFolderID}`
+        ); //user에 folderID를 넣고
+        set(reference5, true);
+      });
+    } else {
+      //새 기록이 아니라면 개인화폴더이름, 폴더색상만 데이터베이스상에서 수정
+      const reference1 = ref(db, `/folders/${folderID}/folderName/${myUID}`); //folderName 개인화
       set(reference1, folderName);
-      const reference2 = ref(
-        db,
-        "/folders/" + folderID + "/folderColor/" + myUID
-      ); //folders에 push
+      const reference2 = ref(db, `/folders/${folderID}/folderColor/${myUID}`); //folderColor 개인화
       set(reference2, folderColor);
+      //공통폴더이름, 색상 가져오기
+      folderUserIDs.map((folderUserID) => {
+        //새로 추가된 친구에 대해 공통폴더이름, 색상 부여 필요
+        const reference4 = ref(
+          db,
+          `/folders/${folderID}/userIDs/${folderUserID}`
+        ); //folders/newfolderID/userIDs에 userID:true를 넣기
+        set(reference4, true);
+        const reference5 = ref(
+          db,
+          `users/${folderUserID}/folderIDs/${folderID}`
+        ); //user에 folderID를 넣고
+        set(reference5, true);
+      });
     }
   };
 
@@ -129,6 +148,7 @@ const MakeFolderBottomSheet = ({
 
   useEffect(() => {
     const db = getDatabase();
+    setNewFolderUserNameIDs([]);
     newFolderUserIDs.map((userID) => {
       onValue(ref(db, "/users/" + userID), (snapshot) => {
         setNewFolderUserNameIDs((prev) => [
@@ -141,9 +161,8 @@ const MakeFolderBottomSheet = ({
           },
         ]);
       });
-      console.log(newFolderUserNameIDs);
     });
-  }, []);
+  }, [newFolderUserIDs]);
 
   return (
     <View style={{ width: "100%", height: "100%" }}>
