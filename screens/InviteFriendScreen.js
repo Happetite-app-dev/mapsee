@@ -27,15 +27,32 @@ const goBackImage = require("../assets/image/goBack.png");
 
 const db = getDatabase();
 
-const gotoMakeFolderBottomSheetScreen = ({ navigation, folderUserIDs }) => {
+const gotoMakeFolderBottomSheetScreen = ({ navigation }) => {
   navigation.pop();
 };
 
 const InviteFriendScreen = ({ navigation, route }) => {
-  const { folderUserIDs } = route.params;
+  const { folderUserIDs, onChangeFolderUserIDs } = route.params;
 
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
+  const [folderUserNameIDs, setFolderUserNameIDs] = useState([]);
+  useEffect(() => {
+    const db = getDatabase();
+    folderUserIDs.map((userID) => {
+      onValue(ref(db, "/users/" + userID), (snapshot) => {
+        setFolderUserNameIDs((prev) => [
+          ...prev,
+          {
+            userID,
+            name:
+              snapshot.child("lastName").val() +
+              snapshot.child("firstName").val(),
+          },
+        ]);
+      });
+    });
+  }, []);
 
   const [friendIDNameList, setFriendIDNameList] = useState([]);
 
@@ -117,7 +134,35 @@ const InviteFriendScreen = ({ navigation, route }) => {
   const renderFriendList = ({ item }) => (
     <IndividualFriend userID={item.userID} id={item.id} name={item.name} />
   );
-
+  const renderFolderUser = ({ item }) => {
+    //isNewFolder냐에 따라 편집여부, 버튼 여부가 달라진다.
+    return (
+      <View
+        style={{
+          height: 32,
+          paddingHorizontal: 16,
+          paddingVertical: 8,
+          borderRadius: 16,
+          marginHorizontal: 8,
+          marginVertical: 20,
+          backgroundColor: "#F4F5F9",
+        }}
+      >
+        <Text
+          style={{
+            //width: 58,
+            height: 24,
+            fontWeight: "500",
+            fontSize: 16,
+            letterSpacing: -0.5,
+            color: "black",
+          }}
+        >
+          {item.name}
+        </Text>
+      </View>
+    );
+  };
   return (
     <SafeAreaView style={styles.container}>
       <View
@@ -131,9 +176,7 @@ const InviteFriendScreen = ({ navigation, route }) => {
         }}
       >
         <TouchableOpacity
-          onPress={() =>
-            gotoMakeFolderBottomSheetScreen({ navigation, folderUserIDs })
-          }
+          onPress={() => gotoMakeFolderBottomSheetScreen({ navigation })}
           style={{
             left: 21,
             width: 20,
@@ -149,7 +192,20 @@ const InviteFriendScreen = ({ navigation, route }) => {
         </View>
       </View>
       <View
-        style={{ position: "absolute", width: "100%", height: 740, top: 105 }}
+        style={{ position: "absolute", width: "100%", height: 60, top: 90 }}
+      >
+        <FlatList
+          data={folderUserNameIDs}
+          renderItem={renderFolderUser}
+          keyExtractor={(item) => item.userID}
+          horizontal
+          style={{
+            height: 48,
+          }}
+        />
+      </View>
+      <View
+        style={{ position: "absolute", width: "100%", height: 740, top: 160 }}
       >
         <FlatList
           data={friendIDNameList}
@@ -171,5 +227,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: "white",
   },
 });

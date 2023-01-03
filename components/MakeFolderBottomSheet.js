@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Button,
   SafeAreaView,
+  FlatList,
 } from "react-native";
 import { ScrollView, Switch, TextInput } from "react-native-gesture-handler";
 
@@ -23,7 +24,7 @@ const MakeFolderBottomSheet = ({
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
 
-  const IsNewRecord = folderName_ === "";
+  const IsNewRecord = folderName_ === null;
   const gotoStorageScreen = () => {
     stackNavigation.navigate("Storage");
   };
@@ -41,6 +42,36 @@ const MakeFolderBottomSheet = ({
       folderUserIDs: newFolderUserIDs,
       onChangeFolderUserIDs: onChangeNewFolderUserIDs,
     });
+  };
+
+  const renderFolderUser = ({ item }) => {
+    //isNewFolder냐에 따라 편집여부, 버튼 여부가 달라진다.
+    return (
+      <View
+        style={{
+          height: 32,
+          paddingHorizontal: 16,
+          paddingVertical: 8,
+          borderRadius: 16,
+          marginHorizontal: 8,
+          marginVertical: 20,
+          backgroundColor: "#F4F5F9",
+        }}
+      >
+        <Text
+          style={{
+            //width: 58,
+            height: 24,
+            fontWeight: "500",
+            fontSize: 16,
+            letterSpacing: -0.5,
+            color: "black",
+          }}
+        >
+          {item.name}
+        </Text>
+      </View>
+    );
   };
   const addNewFolder = async (
     folderID,
@@ -90,29 +121,30 @@ const MakeFolderBottomSheet = ({
   const [newFolderUserIDs, setNewFolderUserIDs] = useState(
     folderUserIDs_ || [myUID]
   );
-  const [newFolderUserNameIDs, setNewFolderUserNameIDs] = useState({});
+  const [newFolderUserNameIDs, setNewFolderUserNameIDs] = useState([]);
   const onChangeNewFolderUserIDs = (newFolderUserIDs_) => {
     setNewFolderUserIDs(newFolderUserIDs_);
   };
   //폴더에 속한 친구이름 목록을 바텀쉬트에 띄우는 함수
-  /** 
-    useEffect(()=>{
-      const db = getDatabase()
-      newFolderUserIDs.map((userID)=>{
-        onValue(ref(db, '/users/' + userID), (snapshot) => {
-          if(snapshot.val()!=null){                             //한 user가 folder를 갖고 있지 않을 수 있어!!
-            const reference
-                onValue(ref(db, '/users/' + friendUID), (snapshot2) => {
-                    if(!friendIDNameList.includes({userID: friendUID, id: snapshot2.child("id").val(), name: snapshot2.child("lastName").val()+snapshot2.child("firstName").val()}))
-                        {setFriendIDNameList((prev)=>[...prev, {userID: friendUID, id: snapshot2.child("id").val(), name: snapshot2.child("lastName").val()+snapshot2.child("firstName").val()}])}
-                })
-          }
-        })
-        setNewFolderUserNameIDs((prev)=>[...prev, ])
 
-      })
-    }, [])
-    **/
+  useEffect(() => {
+    const db = getDatabase();
+    newFolderUserIDs.map((userID) => {
+      onValue(ref(db, "/users/" + userID), (snapshot) => {
+        setNewFolderUserNameIDs((prev) => [
+          ...prev,
+          {
+            userID,
+            name:
+              snapshot.child("lastName").val() +
+              snapshot.child("firstName").val(),
+          },
+        ]);
+      });
+      console.log(newFolderUserNameIDs);
+    });
+  }, []);
+
   return (
     <View style={{ width: "100%", height: "100%" }}>
       <View
@@ -468,6 +500,16 @@ const MakeFolderBottomSheet = ({
           </TouchableOpacity>
         </View>
       </View>
+      <FlatList
+        data={newFolderUserNameIDs}
+        renderItem={renderFolderUser}
+        keyExtractor={(item) => item.userID}
+        horizontal={false}
+        numColumns={3}
+        style={{
+          flex: 1,
+        }}
+      />
 
       <TouchableOpacity
         onPress={async () => {
