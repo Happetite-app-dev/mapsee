@@ -1,14 +1,6 @@
-import { StatusBar } from "expo-status-bar";
 import LottieView from "lottie-react-native";
-import React, { useEffect, useState } from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  SafeAreaView,
-  Button,
-  TouchableOpacity,
-} from "react-native";
+import React, { useState } from "react";
+import { StyleSheet, View } from "react-native";
 
 const TutorialScreen = ({ navigation }) => {
   const [tuto1, setTuto1] = useState(true);
@@ -21,7 +13,8 @@ const TutorialScreen = ({ navigation }) => {
       <View
         style={styles.container}
         onTouchEndCapture={() => {
-          setTuto1(false), setTuto2(true);
+          setTuto1(false);
+          setTuto2(true);
         }}
       >
         <LottieView
@@ -55,7 +48,8 @@ const TutorialScreen = ({ navigation }) => {
       <View
         style={styles.container}
         onTouchEndCapture={() => {
-          setTuto3(false), setTuto4(true);
+          setTuto3(false);
+          setTuto4(true);
         }}
       >
         <LottieView

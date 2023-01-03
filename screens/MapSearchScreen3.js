@@ -24,7 +24,6 @@ const gotoSearch2Screen = ({ navigation, item }) => {
     (response) => {
       const { lat, lng } = response.results[0].geometry.location;
       console.log("gotoSearch2Screen");
-
       const newPlace = {
         geometry: { location: { lat, lng } },
         name: item.structured_formatting.main_text,
@@ -80,10 +79,8 @@ const MapSearchScreen3 = ({ navigation, route }) => {
 
   const [latList, setLatList] = useState([]);
   const [lngList, setLngList] = useState([]);
-  const [locationList, setLocationList] = useState([]);
 
   const [focused, setFocused] = useState(true);
-  const [move, setMove] = useState(false);
 
   const toggleAnimation = () => {
     const val = animationValue == 0 ? 400 : 0;
@@ -121,11 +118,6 @@ const MapSearchScreen3 = ({ navigation, route }) => {
 
     setFocused(false);
   }
-  if (move) {
-    console.log("AVERAGE");
-    console.log(getAverage(latList), getAverage(lngList));
-    setOrigin(getAverage(latList), getAverage(lngList));
-  }
 
   const BottomSheet = ({ navigation, animation, data }) => {
     return (
@@ -137,6 +129,7 @@ const MapSearchScreen3 = ({ navigation, route }) => {
           borderTopRightRadius: 30,
           padding: 20,
           position: "absolute",
+          bottom: animation,
           zIndex: 3,
           alignItems: "center",
           justifyContent: "center",
@@ -144,7 +137,6 @@ const MapSearchScreen3 = ({ navigation, route }) => {
           borderWidth: 1,
           borderColor: "#DDDFE9",
           borderRadius: 16,
-          bottom: animation,
           elevation: 24,
         }}
       >
