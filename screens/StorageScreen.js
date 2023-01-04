@@ -110,7 +110,7 @@ const StorageScreen = ({ navigation, route }) => {
       }
     },
     {},
-    [isFocused]
+    []
   );
 
   const [folderIDNameColorUserIDsList, setFolderIDNameColorUserIDsList] =

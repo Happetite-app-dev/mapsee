@@ -41,11 +41,11 @@ const MakeFolderBottomSheet = ({
     stackNavigation.navigate("InviteFriendScreen", {
       folderUserIDs: newFolderUserIDs,
       onChangeFolderUserIDs: onChangeNewFolderUserIDs,
+      originalFolderUserIDs: folderUserIDs_,
     });
   };
 
   const renderFolderUser = ({ item }) => {
-    //isNewFolder냐에 따라 편집여부, 버튼 여부가 달라진다.
     return (
       <View
         style={{
@@ -85,8 +85,8 @@ const MakeFolderBottomSheet = ({
       //친구초대한 사람한테 push알림 보내는 함수
       const reference1 = ref(db, "/folders"); //folders에 push
       const newFolderID = push(reference1, {
-        folderName,
-        folderColor,
+        initFolderName: folderName,
+        initFolderColor: folderColor,
       }).key;
       folderUserIDs.map((folderUserID) => {
         const reference2 = ref(
@@ -117,18 +117,47 @@ const MakeFolderBottomSheet = ({
       const reference2 = ref(db, `/folders/${folderID}/folderColor/${myUID}`); //folderColor 개인화
       set(reference2, folderColor);
       //공통폴더이름, 색상 가져오기
-      folderUserIDs.map((folderUserID) => {
-        //새로 추가된 친구에 대해 공통폴더이름, 색상 부여 필요
-        const reference4 = ref(
-          db,
-          `/folders/${folderID}/userIDs/${folderUserID}`
-        ); //folders/newfolderID/userIDs에 userID:true를 넣기
-        set(reference4, true);
-        const reference5 = ref(
-          db,
-          `users/${folderUserID}/folderIDs/${folderID}`
-        ); //user에 folderID를 넣고
-        set(reference5, true);
+      onValue(ref(db, `/folders/${folderID}/initFolderName`), (snapshot) => {
+        const initFolderName = snapshot.val();
+        onValue(
+          ref(db, `/folders/${folderID}/initFolderColor`),
+          (snapshot2) => {
+            const initFolderColor = snapshot2.val();
+            folderUserIDs.map((folderUserID) => {
+              //새로 추가된 친구에 대해 공통폴더이름, 색상 부여 필요
+              //folderName 공통폴더이름 부여
+              const reference3 = ref(
+                db,
+                `/folders/${folderID}/folderName/${folderUserID}`
+              );
+              onValue(reference3, (snapshot3) => {
+                if (snapshot3.val() == null) {
+                  set(reference3, initFolderName);
+                }
+              });
+              //folderColor 공통폴더색상 부여
+              const reference4 = ref(
+                db,
+                `/folders/${folderID}/folderColor/${folderUserID}`
+              );
+              onValue(reference4, (snapshot4) => {
+                if (snapshot4.val() == null) {
+                  set(reference4, initFolderColor);
+                }
+              });
+              const reference5 = ref(
+                db,
+                `/folders/${folderID}/userIDs/${folderUserID}`
+              ); //folders/newfolderID/userIDs에 userID:true를 넣기
+              set(reference5, true);
+              const reference6 = ref(
+                db,
+                `users/${folderUserID}/folderIDs/${folderID}`
+              ); //user에 folderID를 넣고
+              set(reference6, true);
+            });
+          }
+        );
       });
     }
   };
