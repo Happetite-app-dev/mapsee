@@ -34,6 +34,7 @@ const exitData = async (myUID, folderID) => {
       remove(reference2);
     })
     .then(
+      //지울 필요가 있음
       onValue(ref(db, "/folders/" + folderID + "/userIDs"), (snapshot) => {
         if (!snapshot.hasChildren()) {
           const reference3 = ref(db, "/folders/" + folderID);

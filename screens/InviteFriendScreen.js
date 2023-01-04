@@ -21,7 +21,6 @@ import {
 } from "react-native";
 
 import AppContext from "../components/AppContext";
-import AddFriendModal from "./AddFriendModal";
 
 const goBackImage = require("../assets/image/goBack.png");
 
@@ -32,7 +31,8 @@ const gotoMakeFolderBottomSheetScreen = ({ navigation }) => {
 };
 
 const InviteFriendScreen = ({ navigation, route }) => {
-  const { folderUserIDs, onChangeFolderUserIDs } = route.params;
+  const { folderUserIDs, onChangeFolderUserIDs, originalFolderUserIDs } =
+    route.params;
 
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
@@ -92,12 +92,7 @@ const InviteFriendScreen = ({ navigation, route }) => {
       });
     }
   }, []);
-  const updateFolderUserIDs = ({
-    onChangeFolderUserIDs,
-    folderUserNameIDs,
-  }) => {
-    onChangeFolderUserIDs(folderUserNameIDs.map(({ userID }) => userID));
-  };
+
   const IndividualFriend = ({ userID, id, name }) => {
     return (
       <TouchableOpacity
@@ -144,65 +139,100 @@ const InviteFriendScreen = ({ navigation, route }) => {
     <IndividualFriend userID={item.userID} id={item.id} name={item.name} />
   );
   const renderFolderUser = ({ item }) => {
-    //isNewFolder냐에 따라 편집여부, 버튼 여부가 달라진다.
-    return (
-      <View
-        style={{
-          height: 32,
-          paddingLeft: 16,
-          paddingRight: 4,
-          paddingVertical: 8,
-          borderRadius: 16,
-          marginHorizontal: 8,
-          marginVertical: 20,
-          backgroundColor: "#F4F5F9",
-          flexDirection: "row",
-        }}
-      >
-        <Text
+    //이미 폴더에 속해있는 친구인 경우 -띄우지 않는다, 새로 추가되는 친구이름만 -띄운다
+    //새 폴더 생성인 경우에는 내 이름을 -띄우지 않고, 기존 폴더에 멤버 추가인 경우에는 기존 멤버를 띄우지 않는다
+    if (
+      item.userID === myUID ||
+      (originalFolderUserIDs != null &&
+        originalFolderUserIDs.includes(item.userID))
+    ) {
+      return (
+        <View
           style={{
-            //width: 58,
-            height: 24,
-            fontWeight: "500",
-            fontSize: 16,
-            letterSpacing: -0.5,
-            color: "black",
+            height: 32,
+            paddingHorizontal: 16,
+            paddingVertical: 8,
+            borderRadius: 16,
+            marginHorizontal: 8,
+            marginVertical: 20,
+            backgroundColor: "#F4F5F9",
+            flexDirection: "row",
           }}
         >
-          {item.name}
-        </Text>
-        <TouchableOpacity
-          onPress={() => {
-            setFolderUserNameIDs(
-              folderUserNameIDs.filter(
-                (folderUserNameID) => folderUserNameID.userID !== item.userID
-              )
-            );
-          }}
-          style={{
-            width: 24,
-            height: 24,
-            borderRadius: 12,
-            borderWidth: 1,
-            borderColor: "#DDDFE9",
-            backgroundColor: "#FFFFFF",
-            marginLeft: 8,
-            justifyContent: "center",
-            alignSelf: "center",
-            alignItems: "center",
-          }}
-        >
-          <View
+          <Text
             style={{
-              borderWidth: 2,
-              width: 12,
-              borderColor: "#5ED3CC",
-              borderRadius: 1,
+              //width: 58,
+              height: 24,
+              fontWeight: "500",
+              fontSize: 16,
+              letterSpacing: -0.5,
+              color: "black",
             }}
-          />
-        </TouchableOpacity>
-      </View>
-    );
+          >
+            {item.name}
+          </Text>
+        </View>
+      );
+    } else {
+      return (
+        <View
+          style={{
+            height: 32,
+            paddingLeft: 16,
+            paddingRight: 4,
+            paddingVertical: 8,
+            borderRadius: 16,
+            marginHorizontal: 8,
+            marginVertical: 20,
+            backgroundColor: "#F4F5F9",
+            flexDirection: "row",
+          }}
+        >
+          <Text
+            style={{
+              //width: 58,
+              height: 24,
+              fontWeight: "500",
+              fontSize: 16,
+              letterSpacing: -0.5,
+              color: "black",
+            }}
+          >
+            {item.name}
+          </Text>
+          <TouchableOpacity
+            onPress={() => {
+              setFolderUserNameIDs(
+                folderUserNameIDs.filter(
+                  (folderUserNameID) => folderUserNameID.userID !== item.userID
+                )
+              );
+            }}
+            style={{
+              width: 24,
+              height: 24,
+              borderRadius: 12,
+              borderWidth: 1,
+              borderColor: "#DDDFE9",
+              backgroundColor: "#FFFFFF",
+              marginLeft: 8,
+              justifyContent: "center",
+              alignSelf: "center",
+              alignItems: "center",
+            }}
+          >
+            <View
+              style={{
+                borderWidth: 2,
+                width: 12,
+                borderColor: "#5ED3CC",
+                borderRadius: 1,
+              }}
+            />
+          </TouchableOpacity>
+        </View>
+      );
+    }
   };
   return (
     <SafeAreaView style={styles.container}>
