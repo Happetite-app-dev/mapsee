@@ -21,11 +21,12 @@ const DisplayTime = (time) => {
   }
 };
 //오로지 display만을 위한 함수
-const FriendRequestCard = ({
+const FolderInviteRequestCard = ({
   requesterID,
   requesterFirstName,
   requesterLastName,
   time,
+  folderName,
   acceptRequest,
   denyRequest,
 }) => {
@@ -55,7 +56,8 @@ const FriendRequestCard = ({
               {requesterFirstName}(@{requesterID})
             </Text>
             님이
-            <Text style={{ fontWeight: "700" }}> 친구요청</Text>을 보냈습니다.
+            <Text style={{ fontWeight: "700" }}> {folderName}</Text>에 회원님을
+            초대했습니다.
           </Text>
           <Text
             style={{
@@ -125,4 +127,4 @@ const FriendRequestCard = ({
   );
 };
 
-export default FriendRequestCard;
+export default FolderInviteRequestCard;

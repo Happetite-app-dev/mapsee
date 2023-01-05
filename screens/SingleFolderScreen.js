@@ -33,8 +33,22 @@ const exitData = async (myUID, folderID) => {
       const reference2 = ref(db, "/folders/" + folderID + "/userIDs/" + myUID);
       remove(reference2);
     })
+    .then(() => {
+      const reference3 = ref(
+        db,
+        "/folders/" + folderID + "/folderName/" + myUID
+      );
+      remove(reference3);
+    })
+    .then(() => {
+      const reference4 = ref(
+        db,
+        "/folders/" + folderID + "/folderColor/" + myUID
+      );
+      remove(reference4);
+    })
     .then(
-      //지울 필요가 있음
+      //지울 필요가 없음
       onValue(ref(db, "/folders/" + folderID + "/userIDs"), (snapshot) => {
         if (!snapshot.hasChildren()) {
           const reference3 = ref(db, "/folders/" + folderID);
