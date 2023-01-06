@@ -12,6 +12,7 @@ import {
 import { ScrollView, Switch, TextInput } from "react-native-gesture-handler";
 
 import AppContext from "../components/AppContext";
+import SendPushNotification from "../modules/SendPushNotification";
 
 const AddFolderBottomSheet = ({
   stackNavigation,
@@ -22,6 +23,9 @@ const AddFolderBottomSheet = ({
 }) => {
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
+  const myID = myContext.myID;
+  const myFirstName = myContext.myFirstName;
+  const myLastName = myContext.myLastName;
   const gotoInviteFriendScreen = () => {
     stackNavigation.navigate("InviteFriendScreen", {
       folderUserIDs: newFolderUserIDs,
@@ -65,26 +69,48 @@ const AddFolderBottomSheet = ({
       initFolderColor: folderColor,
     }).key;
     folderUserIDs.map((folderUserID) => {
-      const reference2 = ref(
-        db,
-        `/folders/${newFolderID}/folderName/${folderUserID}`
-      ); //folderName 개인화
-      set(reference2, folderName);
-      const reference3 = ref(
-        db,
-        `/folders/${newFolderID}/folderColor/${folderUserID}`
-      ); //folderColor 개인화
-      set(reference3, folderColor);
-      const reference4 = ref(
-        db,
-        `/folders/${newFolderID}/userIDs/${folderUserID}`
-      ); //folders/newfolderID/userIDs에 userID:true를 넣기
-      set(reference4, true);
-      const reference5 = ref(
-        db,
-        `users/${folderUserID}/folderIDs/${newFolderID}`
-      ); //user에 folderID를 넣고
-      set(reference5, true);
+      if (folderUserID == myUID) {
+        const reference2 = ref(
+          db,
+          `/folders/${newFolderID}/folderName/${folderUserID}`
+        ); //folderName 개인화
+        set(reference2, folderName);
+        const reference3 = ref(
+          db,
+          `/folders/${newFolderID}/folderColor/${folderUserID}`
+        ); //folderColor 개인화
+        set(reference3, folderColor);
+        const reference4 = ref(
+          db,
+          `/folders/${newFolderID}/userIDs/${folderUserID}`
+        ); //folders/newfolderID/userIDs에 userID:true를 넣기
+        set(reference4, true);
+        const reference5 = ref(
+          db,
+          `users/${folderUserID}/folderIDs/${newFolderID}`
+        ); //user에 folderID를 넣고
+        set(reference5, true);
+      } else {
+        const timeNow = new Date();
+        const reference = ref(db, "/notices/" + folderUserID);
+        push(reference, {
+          type: "recept_folderInvite_request",
+          requesterUID: myUID,
+          requesterID: myID,
+          requesterFirstName: myFirstName,
+          requesterLastName: myLastName,
+          time: timeNow.getTime(),
+          //여기서 부턴 "recept_folderInvite_request" type 알림만의 정보
+          folderID: newFolderID,
+          folderName,
+          folderColor,
+        });
+        SendPushNotification({
+          receiverUID: folderUserID,
+          title_: "새폴더초대타이틀",
+          body_: "새폴더초대바디",
+        });
+      }
     });
     setFolderIDNameList((prev) => [
       ...prev,

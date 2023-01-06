@@ -32,6 +32,7 @@ import { Easing } from "react-native-reanimated";
 
 import AppContext from "../components/AppContext";
 import PlaceInfoBottomSheet from "../components/PlaceInfoBottomSheet";
+import GeneratePushToken from "../modules/GeneratePushToken";
 
 const currentLocationImage = require("../assets/image/currentLocation.png");
 const findCurrentLocationImage = require("../assets/image/findCurrentLocation.png");
@@ -73,7 +74,7 @@ const MapScreen = ({ navigation }) => {
   useEffect(() => {
     //console.log(getData());
     if (true) {
-      gotoTutorial();
+      gotoTutorial(); //"각종 알림 권한 허용 팝업"이랑 "튜토리얼 창"을 synchronous하게 맞출 필요가 있어 보여요.
     }
   }, []);
 
@@ -199,6 +200,7 @@ const MapScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <GeneratePushToken />
       <Button
         onPress={() => navigation.navigate("TutorialScreen")}
         title="Tutorial"
