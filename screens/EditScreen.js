@@ -334,7 +334,18 @@ const EditScreen = ({ navigation, route }) => {
       <ScrollView
         style={{ height: "90%", width: "100%" }}
         showsVerticalScrollIndicator={false}
+        scrollEnabled={false}
       >
+        <View style={{ height: 210, ...styles.item }}>
+          <Image source={RecordPhotoImage} />
+          <ImgPicker
+            onImageTaken={(photo) => {
+              setSelectedPhotos((selectedPhotos) => [...selectedPhotos, photo]);
+            }}
+            defaultPhotos={selectedPhotos}
+            IsEditable={isEditable}
+          />
+        </View>
         <View
           onTouchEndCapture={() => {
             showFolderBottomSheet && setShowFolderBottomSheet(false);
@@ -395,16 +406,6 @@ const EditScreen = ({ navigation, route }) => {
               showFolderBottomSheet && setShowFolderBottomSheet(false);
             }}
             style={{ flex: 1 }}
-          />
-        </View>
-        <View style={{ height: 105, bottom: 5, ...styles.item }}>
-          <Image source={RecordPhotoImage} />
-          <ImgPicker
-            onImageTaken={(photo) => {
-              setSelectedPhotos((selectedPhotos) => [...selectedPhotos, photo]);
-            }}
-            defaultPhotos={selectedPhotos}
-            IsEditable={isEditable}
           />
         </View>
         <View style={{ ...styles.item }}>

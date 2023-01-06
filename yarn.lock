@@ -7558,6 +7558,11 @@ react-is@^16.13.0, react-is@^16.13.1, react-is@^16.7.0:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
 
+react-native-3d-swiper@^2.0.7:
+  version "2.0.7"
+  resolved "https://registry.yarnpkg.com/react-native-3d-swiper/-/react-native-3d-swiper-2.0.7.tgz#68fc4fd9b782afb3e38d1f4c9c4bdc825a3dc249"
+  integrity sha512-TgXpPLI3O7zojtBo5otQSMSY2zd31KfM5TG6NXkQlzCy8WLT0AW2KjpxIKE6VK70ohKZg4oquwrqZ8gM10GgeQ==
+
 react-native-codegen@^0.0.17:
   version "0.0.17"
   resolved "https://registry.yarnpkg.com/react-native-codegen/-/react-native-codegen-0.0.17.tgz#83fb814d94061cbd46667f510d2ddba35ffb50ac"
