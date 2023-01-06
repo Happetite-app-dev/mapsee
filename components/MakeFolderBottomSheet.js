@@ -94,54 +94,52 @@ const MakeFolderBottomSheet = ({
         initFolderColor: folderColor,
       }).key;
       folderUserIDs.map((folderUserID) => {
-        const timeNow = new Date();
-        const reference = ref(db, "/notices/" + folderUserID);
-        push(reference, {
-          //나중에 push 알림의 type과 그 form에 대해 정리할 필요 있음
-          type: "recept_folderInvite_request",
-          requesterUID: myUID,
-          requesterID: myID,
-          requesterFirstName: myFirstName,
-          requesterLastName: myLastName,
-          time: timeNow.getTime(),
-          //여기서 부턴 "recept_folderInvite_request" type 알림만의 정보
-          folderID: newFolderID,
-          folderName,
-          folderColor,
-          //folderUserIDs: folderUserIDs, //추가되는 그 친구의 알림으로 폴더에 누가 현재 소속되어 있는지를 알려줄 필요가 있으면 실시.
-        });
-        SendPushNotification({
-          receiverUID: folderUserID,
-          title_: "폴더초대타이틀",
-          body_: "폴더초대바디",
-        });
+        if (folderUserID == myUID) {
+          //나는 폴더에 넣기
+          const reference2 = ref(
+            db,
+            `/folders/${newFolderID}/folderName/${folderUserID}`
+          ); //folderName 개인화
+          set(reference2, folderName);
+          const reference3 = ref(
+            db,
+            `/folders/${newFolderID}/folderColor/${folderUserID}`
+          ); //folderColor 개인화
+          set(reference3, folderColor);
+          const reference4 = ref(
+            db,
+            `/folders/${newFolderID}/userIDs/${folderUserID}`
+          ); //folders/newfolderID/userIDs에 userID:true를 넣기
+          set(reference4, true);
+          const reference5 = ref(
+            db,
+            `users/${folderUserID}/folderIDs/${newFolderID}`
+          ); //user에 folderID를 넣고
+          set(reference5, true);
+        } else {
+          const timeNow = new Date();
+          const reference = ref(db, "/notices/" + folderUserID);
+          push(reference, {
+            type: "recept_folderInvite_request",
+            requesterUID: myUID,
+            requesterID: myID,
+            requesterFirstName: myFirstName,
+            requesterLastName: myLastName,
+            time: timeNow.getTime(),
+            //여기서 부턴 "recept_folderInvite_request" type 알림만의 정보
+            folderID: newFolderID,
+            folderName,
+            folderColor,
+          });
+          SendPushNotification({
+            receiverUID: folderUserID,
+            title_: "새폴더초대타이틀",
+            body_: "새폴더초대바디",
+          });
+        }
       });
-      /** 
-      folderUserIDs.map((folderUserID) => {
-        const reference2 = ref(
-          db,
-          `/folders/${newFolderID}/folderName/${folderUserID}`
-        ); //folderName 개인화
-        set(reference2, folderName);
-        const reference3 = ref(
-          db,
-          `/folders/${newFolderID}/folderColor/${folderUserID}`
-        ); //folderColor 개인화
-        set(reference3, folderColor);
-        const reference4 = ref(
-          db,
-          `/folders/${newFolderID}/userIDs/${folderUserID}`
-        ); //folders/newfolderID/userIDs에 userID:true를 넣기
-        set(reference4, true);
-        const reference5 = ref(
-          db,
-          `users/${folderUserID}/folderIDs/${newFolderID}`
-        ); //user에 folderID를 넣고
-        set(reference5, true);
-      });
-      */
     } else {
-      //새 기록이 아니라면 개인화폴더이름, 폴더색상만 데이터베이스상에서 수정
+      //새 폴더가 아니라면 개인화폴더이름, 폴더색상만 데이터베이스상에서 수정
       const reference1 = ref(db, `/folders/${folderID}/folderName/${myUID}`); //folderName 개인화
       set(reference1, folderName);
       const reference2 = ref(db, `/folders/${folderID}/folderColor/${myUID}`); //folderColor 개인화
@@ -156,35 +154,27 @@ const MakeFolderBottomSheet = ({
             folderUserIDs.map((folderUserID) => {
               //새로 추가된 친구에 대해 공통폴더이름, 색상 부여 필요
               //folderName 공통폴더이름 부여
-              const reference3 = ref(
-                db,
-                `/folders/${folderID}/folderName/${folderUserID}`
-              );
-              onValue(reference3, (snapshot3) => {
-                if (snapshot3.val() == null) {
-                  set(reference3, initFolderName);
-                }
-              });
-              //folderColor 공통폴더색상 부여
-              const reference4 = ref(
-                db,
-                `/folders/${folderID}/folderColor/${folderUserID}`
-              );
-              onValue(reference4, (snapshot4) => {
-                if (snapshot4.val() == null) {
-                  set(reference4, initFolderColor);
-                }
-              });
-              const reference5 = ref(
-                db,
-                `/folders/${folderID}/userIDs/${folderUserID}`
-              ); //folders/newfolderID/userIDs에 userID:true를 넣기
-              set(reference5, true);
-              const reference6 = ref(
-                db,
-                `users/${folderUserID}/folderIDs/${folderID}`
-              ); //user에 folderID를 넣고
-              set(reference6, true);
+              if (!originalFolderUserIDs.includes(folderUserID)) {
+                const timeNow = new Date();
+                const reference = ref(db, "/notices/" + folderUserID);
+                push(reference, {
+                  type: "recept_folderInvite_request",
+                  requesterUID: myUID,
+                  requesterID: myID,
+                  requesterFirstName: myFirstName,
+                  requesterLastName: myLastName,
+                  time: timeNow.getTime(),
+                  //여기서 부턴 "recept_folderInvite_request" type 알림만의 정보
+                  folderID,
+                  folderName: initFolderName,
+                  folderColor: initFolderColor,
+                });
+                SendPushNotification({
+                  receiverUID: folderUserID,
+                  title_: "기존폴더초대타이틀",
+                  body_: "기존폴더초대바디",
+                });
+              }
             });
           }
         );
