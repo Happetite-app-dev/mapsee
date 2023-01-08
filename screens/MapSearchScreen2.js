@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, View, Image } from "react-native";
+import { StyleSheet, View, Image, Text } from "react-native";
 import Geocoder from "react-native-geocoding";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import MapView, { Marker } from "react-native-maps";
 
+const closeImage = require("../assets/image/close.png");
+const closeImage1 = require("../assets/image/close_1.png");
 const goBackImage = require("../assets/image/goBack.png");
 const targetLocationImage = require("../assets/image/targetLocation.png");
 
@@ -32,13 +34,12 @@ const MapSearchScreen2 = ({ navigation, route }) => {
     name: route.params.name,
     address: route.params.formatted_address,
     id: route.params.place_id,
-    bottomShown: route.params.bottomShown,
   });
 
   const [targetShown, setTargetShown] = useState(true);
 
   useEffect(() => {
-    gotoPlaceInfoBottomSheet();
+    //gotoPlaceInfoBottomSheet();
   });
 
   const targetingFromLocation = (lctn, name) => {
@@ -89,32 +90,37 @@ const MapSearchScreen2 = ({ navigation, route }) => {
           }
         }}
       >
-        <View style={{ height: 88, width: "100%", backgroundColor: "#fff" }}>
-          <TouchableOpacity
-            onPress={() => {
+        <View style={styles.buttons}>
+          <View
+            onTouchEndCapture={() => {
               console.log("back");
               navigation.goBack();
             }}
-            style={{
-              width: 30,
-              height: 30,
-              marginTop: 51,
-              marginLeft: 31,
-              backgroundColor: "red",
-            }}
+            style={styles.goBack}
           >
-            <Image
-              source={goBackImage}
-              style={{
-                width: 9,
-                height: 18,
-                resizeMode: "contain",
-                marginTop: 51,
-                marginLeft: 31,
-                tintColor: "black",
-              }}
-            />
-          </TouchableOpacity>
+            <Image source={goBackImage} style={styles.goBackImage} />
+          </View>
+          <View style={styles.title}>
+            <Text style={styles.titleText}>{target.name}</Text>
+          </View>
+          <View
+            onTouchEndCapture={() => {
+              console.log("close");
+              navigation.navigate("Map");
+            }}
+            style={styles.goHome}
+          >
+            <View style={{ position: "relative" }}>
+              <Image
+                style={{ width: 15, height: 15, position: "absolute" }}
+                source={closeImage}
+              />
+              <Image
+                style={{ width: 15, height: 15, position: "absolute" }}
+                source={closeImage1}
+              />
+            </View>
+          </View>
         </View>
         <Marker coordinate={target.lctn} opacity={targetShown ? 100 : 0}>
           <Image
@@ -142,6 +148,49 @@ const styles = StyleSheet.create({
   map: {
     width: "100%",
     height: "100%",
+  },
+  buttons: {
+    height: 88,
+    width: "100%",
+    backgroundColor: "#fff",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    position: "absolute",
+  },
+  goBack: {
+    width: 30,
+    height: 18,
+    marginTop: 51,
+    marginLeft: 31,
+    position: "absolute",
+    backgroundColor: "red",
+  },
+  goBackImage: {
+    width: 9,
+    height: 18,
+    resizeMode: "contain",
+    tintColor: "black",
+  },
+  title: {
+    width: 304,
+    height: 24,
+    marginTop: 48,
+    marginLeft: 63,
+    position: "absolute",
+  },
+  titleText: {
+    height: 24,
+    fontSize: 16,
+    lineHeight: 24,
+    marginTop: 2,
+    position: "absolute",
+  },
+  goHome: {
+    width: 15,
+    height: 15,
+    marginLeft: 347.5,
+    marginTop: 52.5,
+    backgroundColor: "blue",
   },
 });
 

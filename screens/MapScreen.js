@@ -195,7 +195,12 @@ const MapScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <Button
-        onPress={() => navigation.navigate("MapSearchScreen1")}
+        onPress={() =>
+          navigation.navigate("MapSearchScreen1", {
+            latitude: origin.latitude,
+            longitude: origin.longitude,
+          })
+        }
         title="Search"
         style={{
           position: "absolute",
