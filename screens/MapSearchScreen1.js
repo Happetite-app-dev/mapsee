@@ -66,7 +66,11 @@ const MapSearchScreen1 = ({ navigation, route }) => {
 
   useEffect(() => {
     async function fetchData() {
-      setHistory(JSON.parse(await AsyncStorage.getItem("search")));
+      setHistory(
+        JSON.parse(await AsyncStorage.getItem("search")) === null
+          ? []
+          : JSON.parse(await AsyncStorage.getItem("search"))
+      );
       console.log("setHistory done");
     }
 
@@ -86,7 +90,6 @@ const MapSearchScreen1 = ({ navigation, route }) => {
           </View>
           <View
             onTouchEndCapture={() => {
-              console.log("touch");
               storeData("");
               setHistory([]);
             }}
@@ -107,13 +110,13 @@ const MapSearchScreen1 = ({ navigation, route }) => {
     );
   };
 
-  const renderHistoryItem = ({ navigation, item }) => {
-    console.log("History Item", item);
+  const renderHistoryItem = ({ item }) => {
     return (
       <View
         style={styles.historyItem}
         onTouchEndCapture={() => {
-          navigation.navigate("MapSearchScreen2", item);
+          console.log("history page", item);
+          gotoSearch2Screen({ navigation, data: item });
         }}
       >
         <Image source={searchHistoryImage} />
@@ -129,7 +132,6 @@ const MapSearchScreen1 = ({ navigation, route }) => {
       <View style={styles.buttons}>
         <View
           onTouchEndCapture={() => {
-            console.log("back");
             navigation.goBack();
           }}
           style={styles.goBack}
@@ -138,7 +140,6 @@ const MapSearchScreen1 = ({ navigation, route }) => {
         </View>
         <View
           onTouchEndCapture={() => {
-            console.log("close");
             navigation.navigate("Map");
           }}
           style={styles.goHome}
@@ -172,10 +173,6 @@ const MapSearchScreen1 = ({ navigation, route }) => {
         listUnderlayColor="red"
         placeholder="검색어를 입력하세요"
         enablePoweredByContainer={false}
-        GooglePlacesSearchQuery={{
-          rankby: "radius",
-        }}
-        //currentLocation // ERROR !!
         query={{
           key: "AIzaSyA2FBudItIm0cVgwNOsuc8D9BKk0HUeUTs",
           language: "kor",
@@ -201,11 +198,13 @@ const MapSearchScreen1 = ({ navigation, route }) => {
 
           setHistory((prevList) => [...prevList, newPlace]);
 
-          const newArray = JSON.parse(await AsyncStorage.getItem("search"));
-          console.log("new Array: ", [...newArray, newPlace]);
+          const newArray =
+            JSON.parse(await AsyncStorage.getItem("search")) === null
+              ? []
+              : JSON.parse(await AsyncStorage.getItem("search"));
           storeData([...newArray, newPlace]);
 
-          console.log("\n\n");
+          console.log("onPress", details);
           gotoSearch2Screen({ navigation, data: details });
         }}
         styles={styles.GooglePlacesAutocomplete}

@@ -9,10 +9,6 @@ const goBackImage = require("../assets/image/goBack.png");
 const targetLocationImage = require("../assets/image/targetLocation.png");
 
 const MapSearchScreen2 = ({ navigation, route }) => {
-  // lat, lng: route.geometry.location.lat, route.geometry.locationn.lng
-  // name: route.name
-  // formated address: route.formatted_address
-
   const gotoPlaceInfoBottomSheet = () => {
     navigation.navigate("PlaceInfoBottomSheetScreen", {
       targetName: target.name,
