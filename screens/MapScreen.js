@@ -18,6 +18,8 @@ import MapView, { Marker } from "react-native-maps";
 import { Easing } from "react-native-reanimated";
 
 import AppContext from "../components/AppContext";
+import PlaceInfoBottomSheet from "../components/PlaceInfoBottomSheet";
+import GeneratePushToken from "../modules/GeneratePushToken";
 
 const currentLocationImage = require("../assets/image/currentLocation.png");
 const findCurrentLocationImage = require("../assets/image/findCurrentLocation.png");
@@ -194,6 +196,7 @@ const MapScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <GeneratePushToken />
       <Button
         onPress={() =>
           navigation.navigate("MapSearchScreen1", {
