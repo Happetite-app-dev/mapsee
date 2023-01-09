@@ -13,6 +13,7 @@ import {
 import { TouchableOpacity } from "react-native-gesture-handler";
 
 import SwipeTest from "./SwipeTest";
+import SwipeTest2 from "./SwipeTest2";
 
 const ImgPicker = ({ onImageTaken, defaultPhotos, IsEditable }) => {
   const [pickedImages, setPickedImages] = useState(defaultPhotos);
@@ -145,7 +146,8 @@ const ImgPicker = ({ onImageTaken, defaultPhotos, IsEditable }) => {
         //     )}
         //   </ScrollView>
         // </View>
-        <SwipeTest />
+        // <SwipeTest />
+        <SwipeTest2 />
       )}
     </View>
   );

@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React, { useState } from "react";
 
 import AppContext from "./components/AppContext";
+import SwipeTest2 from "./components/SwipeTest2";
 import Tabs from "./navigation/tabs";
 import AfterLoginScreen from "./screens/AfterLoginScreen";
 import BeforeLoginScreen from "./screens/BeforeLoginScreen";
@@ -67,7 +68,7 @@ const App = () => {
     tabBarHandler,
   };
   return (
-    <AppContext.Provider value={userSettings}>
+    <AppContext.Provider>
       <NavigationContainer>
         <Stack.Navigator initialRouteName="BeforeLoginScreen">
           <Stack.Screen

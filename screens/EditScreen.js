@@ -334,10 +334,10 @@ const EditScreen = ({ navigation, route }) => {
       <ScrollView
         style={{ height: "90%", width: "100%" }}
         showsVerticalScrollIndicator={false}
-        scrollEnabled={false}
+        scrollEnabled
       >
         <View style={{ height: 210, ...styles.item }}>
-          <Image source={RecordPhotoImage} />
+          {/* <Image source={RecordPhotoImage} /> */}
           <ImgPicker
             onImageTaken={(photo) => {
               setSelectedPhotos((selectedPhotos) => [...selectedPhotos, photo]);
