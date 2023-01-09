@@ -1,16 +1,9 @@
 import { API_KEY } from "@env";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useIsFocused } from "@react-navigation/native";
 import * as Location from "expo-location";
 import React, { useEffect, useState } from "react";
-import {
-  Image,
-  StyleSheet,
-  Text,
-  View,
-  SafeAreaView,
-  Button,
-  TouchableOpacity,
-} from "react-native";
+import { Image, StyleSheet, Text, View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 
@@ -18,34 +11,6 @@ const searchHistoryImage = require("../assets/image/Location.png");
 const closeImage = require("../assets/image/close.png");
 const closeImage1 = require("../assets/image/close_1.png");
 const goBackImage = require("../assets/image/goBack.png");
-/*  해당 페이지 할 일 - 완료
-1. Search box 클릭 시 MapSearchScreen1으로 옮기기
-2. MapSearchScreen1에 오자마자, 최근 검색어 띄우기
-3. 검색어 입력하면, autocomplete으로 띄우기
-4. 검색어 클릭 시 (autocomplete에서 OnClick) MapSearchScreen2로 이동
-5. 검색 완료 Done 클릭 시 MapSearchScreen3로 이동
-*/
-
-// Store Current Search Data
-const storeData = async (value) => {
-  try {
-    const jsonValue = JSON.stringify(value);
-    await AsyncStorage.setItem("search", jsonValue);
-  } catch (e) {
-    // saving error
-  }
-};
-
-const getData = async () => {
-  try {
-    const jsonValue = await AsyncStorage.getItem("search");
-    console.log("get data functionnnnnnnnnnn");
-    console.log(JSON.parse(jsonValue));
-    return jsonValue != null ? JSON.parse(jsonValue) : null;
-  } catch (e) {
-    // error reading value
-  }
-};
 
 const gotoSearch2Screen = ({ navigation, data }) => {
   navigation.navigate("MapSearchScreen2", data);
@@ -53,16 +18,6 @@ const gotoSearch2Screen = ({ navigation, data }) => {
 
 const gotoSearch3Screen = ({ navigation, data }) => {
   navigation.navigate("MapSearchScreen3", data);
-};
-
-const homePlace = {
-  name: "Home",
-  formatted_address: "formatted_address",
-  description: "Home",
-  structured_formatting: {
-    main_text: "home",
-  },
-  geometry: { location: { lat: 48.8152937, lng: 2.4597668 } },
 };
 
 const renderDescription = (data) => {
@@ -93,6 +48,27 @@ const renderDescription = (data) => {
   );
 };
 
+// Store Current Search Data
+const storeData = async (value) => {
+  try {
+    const jsonValue = JSON.stringify(value);
+    await AsyncStorage.setItem("search", jsonValue);
+  } catch (e) {
+    // saving error
+  }
+};
+
+const getData = async () => {
+  try {
+    const jsonValue = await AsyncStorage.getItem("search");
+    console.log("get data functionnnnnnnnnnn");
+    console.log(JSON.parse(jsonValue));
+    return jsonValue != null ? JSON.parse(jsonValue) : [];
+  } catch (e) {
+    // error reading value
+  }
+};
+
 const MapSearchScreen1 = ({ navigation, route }) => {
   const [name, setName] = useState("");
   const [history, setHistory] = useState([]);
@@ -101,28 +77,17 @@ const MapSearchScreen1 = ({ navigation, route }) => {
     gotoSearch3Screen({ navigation, data: [name, dataSource] });
   };
 
-  const renderHistoryItem = ({ item }) => {
+  const renderHistoryItem = ({ navigation, item }) => {
+    console.log("History Item", item);
     return (
       <View
-        style={{
-          height: 38,
-          width: 320,
-          marginLeft: 24,
-          flexDirection: "row",
-        }}
+        style={styles.historyItem}
         onTouchEndCapture={() => {
-          console.log(item);
           navigation.navigate("MapSearchScreen2", item);
         }}
       >
         <Image source={searchHistoryImage} />
-        <Text
-          style={{
-            marginLeft: 20,
-            fontSize: 14,
-            lineHeight: 24,
-          }}
-        >
+        <Text style={{ marginLeft: 20, fontSize: 14, lineHeight: 24 }}>
           {item.name}
         </Text>
       </View>
@@ -139,15 +104,7 @@ const MapSearchScreen1 = ({ navigation, route }) => {
           }}
           style={styles.goBack}
         >
-          <Image
-            source={goBackImage}
-            style={{
-              width: 9,
-              height: 18,
-              resizeMode: "contain",
-              tintColor: "black",
-            }}
-          />
+          <Image source={goBackImage} style={styles.goBackImage} />
         </View>
         <View
           onTouchEndCapture={() => {
@@ -158,11 +115,7 @@ const MapSearchScreen1 = ({ navigation, route }) => {
         >
           <View style={{ position: "relative" }}>
             <Image
-              style={{
-                width: 15,
-                height: 15,
-                position: "absolute",
-              }}
+              style={{ width: 15, height: 15, position: "absolute" }}
               source={closeImage}
             />
             <Image
@@ -194,10 +147,10 @@ const MapSearchScreen1 = ({ navigation, route }) => {
                 </View>
               </View>
               <FlatList
-                data={history}
+                data={getData()}
                 renderItem={renderHistoryItem}
                 extraData={history}
-                style={{ marginTop: 27 }}
+                style={{ marginTop: 24 }}
               />
             </View>
           ) : (
@@ -226,6 +179,9 @@ const MapSearchScreen1 = ({ navigation, route }) => {
         query={{
           key: "AIzaSyA2FBudItIm0cVgwNOsuc8D9BKk0HUeUTs",
           language: "kor",
+          location: route.params.latitude + ", " + route.params.longitude,
+          radius: "1500",
+          rankby: "distance",
         }}
         fetchDetails
         renderDescription={(data) => renderDescription(data)} // custom description render
@@ -245,8 +201,8 @@ const MapSearchScreen1 = ({ navigation, route }) => {
 
           setHistory((prevList) => [...prevList, newPlace]);
 
-          const newArray = [JSON.parse(await AsyncStorage.getItem("search"))];
-          console.log("new Array: ", newArray);
+          const newArray = JSON.parse(await AsyncStorage.getItem("search"));
+          console.log("new Array: ", [...newArray, newPlace]);
           storeData([...newArray, newPlace]);
 
           console.log("\n\n");
@@ -303,6 +259,12 @@ const styles = StyleSheet.create({
     height: 12,
     marginRight: 23,
   },
+  historyItem: {
+    height: 48,
+    width: 320,
+    marginLeft: 24,
+    flexDirection: "row",
+  },
   buttons: {
     height: 88,
     width: "100%",
@@ -315,6 +277,12 @@ const styles = StyleSheet.create({
     height: 18,
     marginTop: 51,
     marginLeft: 31,
+  },
+  goBackImage: {
+    width: 9,
+    height: 18,
+    resizeMode: "contain",
+    tintColor: "black",
   },
   goHome: { width: 15, height: 15, marginRight: 20.5, marginTop: 52.5 },
   descriptionContainer: {

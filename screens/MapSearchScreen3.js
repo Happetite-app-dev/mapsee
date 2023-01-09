@@ -70,7 +70,7 @@ const _renderRow = ({ navigation, item }) => {
       onPress={() => gotoSearch2Screen({ navigation, item })}
       underlayColor="#c8c7cc"
     >
-      <View style={{ flexDirection: "column", height: 84 }}>
+      <View style={{ flexDirection: "column", height: 84, marginLeft: 23 }}>
         <View style={styles.descriptionMainText}>
           <View style={{ height: 24, width: 90 }}>
             <Text style={{ fontSize: 14, fontWeight: "bold" }}>
@@ -187,7 +187,7 @@ const MapSearchScreen3 = ({ navigation, route }) => {
         <FlatList
           data={data}
           renderItem={({ item }) => _renderRow({ navigation, item })}
-          style={{ width: "100%", marginLeft: 23 }}
+          style={{ width: "100%" }}
           scrollEnabled={false}
         />
       </Animated.View>
@@ -228,14 +228,8 @@ const MapSearchScreen3 = ({ navigation, route }) => {
             style={styles.goHome}
           >
             <View style={{ position: "relative" }}>
-              <Image
-                style={{ width: 15, height: 15, position: "absolute" }}
-                source={closeImage}
-              />
-              <Image
-                style={{ width: 15, height: 15, position: "absolute" }}
-                source={closeImage1}
-              />
+              <Image style={styles.goHomeImage} source={closeImage} />
+              <Image style={styles.goHomeImage} source={closeImage1} />
             </View>
           </View>
         </View>
@@ -273,7 +267,6 @@ const styles = StyleSheet.create({
     width: "100%",
     backgroundColor: "#fff",
     flexDirection: "row",
-    justifyContent: "space-between",
     position: "absolute",
   },
   goBack: {
@@ -282,16 +275,17 @@ const styles = StyleSheet.create({
     marginTop: 51,
     marginLeft: 31,
     position: "absolute",
-    backgroundColor: "red",
   },
   goBackImage: {
     width: 9,
     height: 18,
     resizeMode: "contain",
+    marginTop: 51,
+    marginLeft: 31,
     tintColor: "black",
   },
   title: {
-    width: 304,
+    width: 280,
     height: 24,
     marginTop: 48,
     marginLeft: 63,
@@ -301,15 +295,21 @@ const styles = StyleSheet.create({
     height: 24,
     fontSize: 16,
     lineHeight: 24,
-    marginTop: 2,
-    position: "absolute",
+    marginTop: 48,
+    marginLeft: 63,
   },
   goHome: {
     width: 15,
     height: 15,
     marginLeft: 347.5,
     marginTop: 52.5,
-    backgroundColor: "blue",
+  },
+  goHomeImage: {
+    width: 15,
+    height: 15,
+    marginLeft: 347.5,
+    marginTop: 52.5,
+    position: "absolute",
   },
   descriptionMainText: {
     marginTop: 16,
