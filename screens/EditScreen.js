@@ -445,6 +445,7 @@ const EditScreen = ({ navigation, route }) => {
         )}
       </ScrollView>
       <FolderBottomSheet
+        stackNavigation={navigation}
         show={showFolderBottomSheet}
         setShow={(s) => {
           setShowFolderBottomSheet(s);

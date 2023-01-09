@@ -47,8 +47,8 @@ const callFriendRequest = (friendUID, myUID, myID, myFirstName, myLastName) => {
     });
     SendPushNotification({
       receiverUID: friendUID,
-      title_: "tit",
-      body_: "bd",
+      title_: "친구추가타이틀",
+      body_: "친구추가바디",
     });
   } else {
     console.log("no such uid");

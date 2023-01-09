@@ -6,7 +6,13 @@ import { ScrollView } from "react-native-gesture-handler";
 import AppContext from "../components/AppContext";
 import AddFolderBottomSheet from "./AddFolderBottomSheet";
 
-const FolderBottomSheet = ({ show, setShow, setFolderName, setFolderID }) => {
+const FolderBottomSheet = ({
+  stackNavigation,
+  show,
+  setShow,
+  setFolderName,
+  setFolderID,
+}) => {
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
 
@@ -146,6 +152,7 @@ const FolderBottomSheet = ({ show, setShow, setFolderName, setFolderID }) => {
         </View>
       ) : (
         <AddFolderBottomSheet
+          stackNavigation={stackNavigation}
           setFolderName={(f) => setFolderName(f)}
           setFolderID={(f) => setFolderID(f)}
           setFolderIDNameList={(f) => setFolderIDNameList(f)}

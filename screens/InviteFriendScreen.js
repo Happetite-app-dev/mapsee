@@ -21,24 +21,40 @@ import {
 } from "react-native";
 
 import AppContext from "../components/AppContext";
-import AddFriendModal from "./AddFriendModal";
 
 const goBackImage = require("../assets/image/goBack.png");
 
 const db = getDatabase();
 
-const gotoMakeFolderBottomSheetScreen = ({ navigation, folderUserIDs }) => {
+const gotoMakeFolderBottomSheetScreen = ({ navigation }) => {
   navigation.pop();
 };
 
 const InviteFriendScreen = ({ navigation, route }) => {
-  const { folderUserIDs } = route.params;
+  const { folderUserIDs, onChangeFolderUserIDs, originalFolderUserIDs } =
+    route.params;
 
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
+  const [folderUserNameIDs, setFolderUserNameIDs] = useState([]);
+  useEffect(() => {
+    const db = getDatabase();
+    folderUserIDs.map((userID) => {
+      onValue(ref(db, "/users/" + userID), (snapshot) => {
+        setFolderUserNameIDs((prev) => [
+          ...prev,
+          {
+            userID,
+            name:
+              snapshot.child("lastName").val() +
+              snapshot.child("firstName").val(),
+          },
+        ]);
+      });
+    });
+  }, []);
 
   const [friendIDNameList, setFriendIDNameList] = useState([]);
-
   const isFocused = useIsFocused();
   useEffect(() => {
     if (isFocused) {
@@ -80,6 +96,11 @@ const InviteFriendScreen = ({ navigation, route }) => {
   const IndividualFriend = ({ userID, id, name }) => {
     return (
       <TouchableOpacity
+        onPress={() => {
+          if (!folderUserNameIDs.some((item) => item.userID === userID)) {
+            setFolderUserNameIDs((prev) => [...prev, { userID, name }]);
+          }
+        }}
         style={{
           alignSelf: "center",
           width: "100%",
@@ -117,7 +138,102 @@ const InviteFriendScreen = ({ navigation, route }) => {
   const renderFriendList = ({ item }) => (
     <IndividualFriend userID={item.userID} id={item.id} name={item.name} />
   );
-
+  const renderFolderUser = ({ item }) => {
+    //이미 폴더에 속해있는 친구인 경우 -띄우지 않는다, 새로 추가되는 친구이름만 -띄운다
+    //새 폴더 생성인 경우에는 내 이름을 -띄우지 않고, 기존 폴더에 멤버 추가인 경우에는 기존 멤버를 띄우지 않는다
+    if (
+      item.userID === myUID ||
+      (originalFolderUserIDs != null &&
+        originalFolderUserIDs.includes(item.userID))
+    ) {
+      return (
+        <View
+          style={{
+            height: 32,
+            paddingHorizontal: 16,
+            paddingVertical: 8,
+            borderRadius: 16,
+            marginHorizontal: 8,
+            marginVertical: 20,
+            backgroundColor: "#F4F5F9",
+            flexDirection: "row",
+          }}
+        >
+          <Text
+            style={{
+              //width: 58,
+              height: 24,
+              fontWeight: "500",
+              fontSize: 16,
+              letterSpacing: -0.5,
+              color: "black",
+            }}
+          >
+            {item.name}
+          </Text>
+        </View>
+      );
+    } else {
+      return (
+        <View
+          style={{
+            height: 32,
+            paddingLeft: 16,
+            paddingRight: 4,
+            paddingVertical: 8,
+            borderRadius: 16,
+            marginHorizontal: 8,
+            marginVertical: 20,
+            backgroundColor: "#F4F5F9",
+            flexDirection: "row",
+          }}
+        >
+          <Text
+            style={{
+              //width: 58,
+              height: 24,
+              fontWeight: "500",
+              fontSize: 16,
+              letterSpacing: -0.5,
+              color: "black",
+            }}
+          >
+            {item.name}
+          </Text>
+          <TouchableOpacity
+            onPress={() => {
+              setFolderUserNameIDs(
+                folderUserNameIDs.filter(
+                  (folderUserNameID) => folderUserNameID.userID !== item.userID
+                )
+              );
+            }}
+            style={{
+              width: 24,
+              height: 24,
+              borderRadius: 12,
+              borderWidth: 1,
+              borderColor: "#DDDFE9",
+              backgroundColor: "#FFFFFF",
+              marginLeft: 8,
+              justifyContent: "center",
+              alignSelf: "center",
+              alignItems: "center",
+            }}
+          >
+            <View
+              style={{
+                borderWidth: 2,
+                width: 12,
+                borderColor: "#5ED3CC",
+                borderRadius: 1,
+              }}
+            />
+          </TouchableOpacity>
+        </View>
+      );
+    }
+  };
   return (
     <SafeAreaView style={styles.container}>
       <View
@@ -131,9 +247,12 @@ const InviteFriendScreen = ({ navigation, route }) => {
         }}
       >
         <TouchableOpacity
-          onPress={() =>
-            gotoMakeFolderBottomSheetScreen({ navigation, folderUserIDs })
-          }
+          onPress={() => {
+            onChangeFolderUserIDs(
+              folderUserNameIDs.map(({ userID }) => userID)
+            );
+            gotoMakeFolderBottomSheetScreen({ navigation });
+          }}
           style={{
             left: 21,
             width: 20,
@@ -149,7 +268,20 @@ const InviteFriendScreen = ({ navigation, route }) => {
         </View>
       </View>
       <View
-        style={{ position: "absolute", width: "100%", height: 740, top: 105 }}
+        style={{ position: "absolute", width: "100%", height: 60, top: 90 }}
+      >
+        <FlatList
+          data={folderUserNameIDs}
+          renderItem={renderFolderUser}
+          keyExtractor={(item) => item.userID}
+          horizontal
+          style={{
+            height: 48,
+          }}
+        />
+      </View>
+      <View
+        style={{ position: "absolute", width: "100%", height: 740, top: 160 }}
       >
         <FlatList
           data={friendIDNameList}
@@ -171,5 +303,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: "white",
   },
 });
