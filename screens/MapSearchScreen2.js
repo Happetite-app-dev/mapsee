@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, View, Image, Text } from "react-native";
 import Geocoder from "react-native-geocoding";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import MapView, { Marker } from "react-native-maps";
 
 const closeImage = require("../assets/image/close.png");
@@ -10,10 +9,6 @@ const goBackImage = require("../assets/image/goBack.png");
 const targetLocationImage = require("../assets/image/targetLocation.png");
 
 const MapSearchScreen2 = ({ navigation, route }) => {
-  // lat, lng: route.geometry.location.lat, route.geometry.locationn.lng
-  // name: route.name
-  // formated address: route.formatted_address
-
   const gotoPlaceInfoBottomSheet = () => {
     navigation.navigate("PlaceInfoBottomSheetScreen", {
       targetName: target.name,
@@ -111,14 +106,8 @@ const MapSearchScreen2 = ({ navigation, route }) => {
             style={styles.goHome}
           >
             <View style={{ position: "relative" }}>
-              <Image
-                style={{ width: 15, height: 15, position: "absolute" }}
-                source={closeImage}
-              />
-              <Image
-                style={{ width: 15, height: 15, position: "absolute" }}
-                source={closeImage1}
-              />
+              <Image style={styles.goHomeImage} source={closeImage} />
+              <Image style={styles.goHomeImage} source={closeImage1} />
             </View>
           </View>
         </View>
@@ -140,10 +129,12 @@ const MapSearchScreen2 = ({ navigation, route }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "stretch",
-    justifyContent: "center",
+    width: "100%",
+    height: "100%",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    position: "relative",
+    backgroundColor: "white",
   },
   map: {
     width: "100%",
@@ -154,7 +145,6 @@ const styles = StyleSheet.create({
     width: "100%",
     backgroundColor: "#fff",
     flexDirection: "row",
-    justifyContent: "space-between",
     position: "absolute",
   },
   goBack: {
@@ -163,16 +153,17 @@ const styles = StyleSheet.create({
     marginTop: 51,
     marginLeft: 31,
     position: "absolute",
-    backgroundColor: "red",
   },
   goBackImage: {
     width: 9,
     height: 18,
     resizeMode: "contain",
+    marginTop: 51,
+    marginLeft: 31,
     tintColor: "black",
   },
   title: {
-    width: 304,
+    width: 280,
     height: 24,
     marginTop: 48,
     marginLeft: 63,
@@ -182,15 +173,21 @@ const styles = StyleSheet.create({
     height: 24,
     fontSize: 16,
     lineHeight: 24,
-    marginTop: 2,
-    position: "absolute",
+    marginTop: 48,
+    marginLeft: 63,
   },
   goHome: {
     width: 15,
     height: 15,
     marginLeft: 347.5,
     marginTop: 52.5,
-    backgroundColor: "blue",
+  },
+  goHomeImage: {
+    width: 15,
+    height: 15,
+    marginLeft: 347.5,
+    marginTop: 52.5,
+    position: "absolute",
   },
 });
 
