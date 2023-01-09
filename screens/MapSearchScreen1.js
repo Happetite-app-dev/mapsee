@@ -1,7 +1,5 @@
-import { API_KEY } from "@env";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useIsFocused } from "@react-navigation/native";
-import * as Location from "expo-location";
 import React, { useEffect, useState } from "react";
 import { Image, StyleSheet, Text, View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
@@ -58,23 +56,55 @@ const storeData = async (value) => {
   }
 };
 
-const getData = async () => {
-  try {
-    const jsonValue = await AsyncStorage.getItem("search");
-    console.log("get data functionnnnnnnnnnn");
-    console.log(JSON.parse(jsonValue));
-    return jsonValue != null ? JSON.parse(jsonValue) : [];
-  } catch (e) {
-    // error reading value
-  }
-};
-
 const MapSearchScreen1 = ({ navigation, route }) => {
   const [name, setName] = useState("");
   const [history, setHistory] = useState([]);
 
   const onClick = (dataSource) => {
     gotoSearch3Screen({ navigation, data: [name, dataSource] });
+  };
+
+  useEffect(() => {
+    async function fetchData() {
+      setHistory(JSON.parse(await AsyncStorage.getItem("search")));
+      console.log("setHistory done");
+    }
+
+    fetchData();
+  }, [useIsFocused]);
+
+  useEffect(() => {
+    console.log("history changed", history);
+  }, [history]);
+
+  const InbetweenCompo = () => {
+    return name === "" ? (
+      <View>
+        <View style={styles.inbetweenCompo}>
+          <View style={styles.recentSearch}>
+            <Text style={{ fontSize: 16 }}>최근검색</Text>
+          </View>
+          <View
+            onTouchEndCapture={() => {
+              console.log("touch");
+              storeData("");
+              setHistory([]);
+            }}
+            style={styles.eraseAll}
+          >
+            <Text style={{ fontSize: 14, color: "#5ED3CC" }}>전체삭제</Text>
+          </View>
+        </View>
+        <FlatList
+          data={history}
+          renderItem={renderHistoryItem}
+          extraData={history}
+          style={{ marginTop: 24 }}
+        />
+      </View>
+    ) : (
+      <></>
+    );
   };
 
   const renderHistoryItem = ({ navigation, item }) => {
@@ -126,37 +156,7 @@ const MapSearchScreen1 = ({ navigation, route }) => {
         </View>
       </View>
       <GooglePlacesAutocomplete
-        inbetweenCompo={
-          name === "" ? (
-            <View>
-              <View style={styles.inbetweenCompo}>
-                <View style={styles.recentSearch}>
-                  <Text style={{ fontSize: 16 }}>최근검색</Text>
-                </View>
-                <View
-                  onTouchEndCapture={() => {
-                    console.log("touch");
-                    storeData("");
-                    setHistory([]);
-                  }}
-                  style={styles.eraseAll}
-                >
-                  <Text style={{ fontSize: 14, color: "#5ED3CC" }}>
-                    전체삭제
-                  </Text>
-                </View>
-              </View>
-              <FlatList
-                data={getData()}
-                renderItem={renderHistoryItem}
-                extraData={history}
-                style={{ marginTop: 24 }}
-              />
-            </View>
-          ) : (
-            <></>
-          )
-        }
+        inbetweenCompo={<InbetweenCompo />}
         getSearchWord={(text) => {
           setName(text);
         }}
