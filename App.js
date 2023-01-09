@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React, { useState } from "react";
 
 import AppContext from "./components/AppContext";
+import SearchTabs from "./navigation/searchTabs";
 import Tabs from "./navigation/tabs";
 import AfterLoginScreen from "./screens/AfterLoginScreen";
 import BeforeLoginScreen from "./screens/BeforeLoginScreen";
@@ -16,7 +17,6 @@ import MapSearchScreen2 from "./screens/MapSearchScreen2";
 import MapSearchScreen3 from "./screens/MapSearchScreen3";
 import PlaceInfoBottomSheetScreen from "./screens/PlaceInfoBottomSheetScreen";
 import ProfileScreen from "./screens/ProfileScreen";
-import RegisterScreen from "./screens/RegisterScreen";
 import RegisterScreen1 from "./screens/RegisterScreen1";
 import RegisterScreen2 from "./screens/RegisterScreen2";
 import RegisterScreen3 from "./screens/RegisterScreen3";

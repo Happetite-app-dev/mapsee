@@ -1,6 +1,11 @@
-import { initializeApp } from "firebase/app";
-import { getDatabase, ref, onValue, set, push } from "firebase/database";
-import React, { useEffect, useRef, useState, useContext } from "react";
+import { getDatabase, ref, onValue } from "firebase/database";
+import React, {
+  useEffect,
+  useRef,
+  useState,
+  useContext,
+  TouchableOpacity,
+} from "react";
 import {
   Animated,
   Text,
@@ -9,24 +14,12 @@ import {
   Button,
   Image,
 } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
 
 import AppContext from "../components/AppContext";
 import RecordFlatList from "../components/RecordFlatList";
-const firebaseConfig = {
-  apiKey: "AIzaSyDBq4tZ1QLm1R7iPH8O4dTvebVGWgkRPks",
-  authDomain: "mapseedemo1.firebaseapp.com",
-  projectId: "mapseedemo1",
-  storageBucket: "mapseedemo1.appspot.com",
-  messagingSenderId: "839335870793",
-  appId: "1:839335870793:web:75004c5d43270610411a98",
-  measurementId: "G-8L1MD1CGN2",
-};
-
-const app = initializeApp(firebaseConfig);
 
 const CreateNoteImage = require("../assets/image/CreateNote.png");
-const mapScreenBottomSheetExampleImage = require("../assets/image/mapScreenBottomSheetExample.png");
+
 const BottomSheetScreen = ({
   onDisplay,
   onCancel,
@@ -220,7 +213,6 @@ const BottomSheet = ({
   onRemove,
   onDisplay,
   onCancel,
-  setIsShow,
   animation,
   animationVal,
   targetName,
@@ -234,7 +226,6 @@ const BottomSheet = ({
       <View
         style={{ width: "100%", height: "76%" }}
         onTouchEndCapture={() => {
-          setIsShow(false);
           onRemove();
           navigation.goBack();
         }}
@@ -278,8 +269,8 @@ const BottomSheet = ({
 };
 
 const PlaceInfoBottomSheet = ({ navigation, route }) => {
-  const { setIsShow, targetName, targetAddress, targetId, targetLctn } =
-    route.params;
+  console.log(route);
+  const { targetName, targetAddress, targetId, targetLctn } = route.params;
   const [animationValue, setAnimationValue] = useState(-1000);
   const showAnimation = useRef(new Animated.Value(animationValue)).current;
   useEffect(() => {
@@ -316,25 +307,26 @@ const PlaceInfoBottomSheet = ({ navigation, route }) => {
     setAnimationValue(val3);
   };
   return (
-    <BottomSheet
-      onRemove={() => {
-        toggleAnimation1();
-      }}
-      onDisplay={() => {
-        toggleAnimation2();
-      }}
-      onCancel={() => {
-        toggleAnimation3();
-      }}
-      setIsShow={(s) => setIsShow(s)}
-      animation={showAnimation}
-      animationVal={animationValue}
-      targetName={targetName}
-      targetAddress={targetAddress}
-      targetId={targetId}
-      targetLctn={targetLctn}
-      navigation={navigation}
-    />
+    <View>
+      <BottomSheet
+        onRemove={() => {
+          toggleAnimation1();
+        }}
+        onDisplay={() => {
+          toggleAnimation2();
+        }}
+        onCancel={() => {
+          toggleAnimation3();
+        }}
+        animation={showAnimation}
+        animationVal={animationValue}
+        targetName={targetName}
+        targetAddress={targetAddress}
+        targetId={targetId}
+        targetLctn={targetLctn}
+        navigation={navigation}
+      />
+    </View>
   );
 };
 
