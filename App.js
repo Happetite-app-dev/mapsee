@@ -68,7 +68,7 @@ const App = () => {
     tabBarHandler,
   };
   return (
-    <AppContext.Provider>
+    <AppContext.Provider value={userSettings}>
       <NavigationContainer>
         <Stack.Navigator initialRouteName="BeforeLoginScreen">
           <Stack.Screen

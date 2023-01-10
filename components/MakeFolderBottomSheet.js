@@ -171,8 +171,8 @@ const MakeFolderBottomSheet = ({
                 });
                 SendPushNotification({
                   receiverUID: folderUserID,
-                  title_: "기존폴더초대타이틀",
-                  body_: "기존폴더초대바디",
+                  title_: "피어나 뭐해요?",
+                  body_: "뉴진스 덕질해요",
                 });
               }
             });
