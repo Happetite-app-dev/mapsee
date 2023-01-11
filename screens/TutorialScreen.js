@@ -2,7 +2,8 @@ import LottieView from "lottie-react-native";
 import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 
-const TutorialScreen = ({ navigation }) => {
+const TutorialScreen = ({ navigation, route }) => {
+  const { onChangeGetPermissions } = route.params;
   const [tuto1, setTuto1] = useState(true);
   const [tuto2, setTuto2] = useState(false);
   const [tuto3, setTuto3] = useState(false);
@@ -67,6 +68,7 @@ const TutorialScreen = ({ navigation }) => {
         style={styles.container}
         onTouchEndCapture={() => {
           navigation.goBack();
+          onChangeGetPermissions(true);
         }}
       >
         <LottieView
