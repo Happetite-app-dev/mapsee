@@ -49,7 +49,10 @@ const MapScreen = ({ navigation }) => {
   const myUID = myContext.myUID;
   const isFocused = useIsFocused();
   const [list1, setList1] = useState([]);
-
+  const [getPermissions, setGetPermissions] = useState(false);
+  const onChangeGetPermissions = (b) => {
+    setGetPermissions(b);
+  };
   const share = () => {
     Share.share({
       message: "hihi",
@@ -90,13 +93,17 @@ const MapScreen = ({ navigation }) => {
   }, []);
 
   const gotoTutorial = () => {
-    navigation.navigate("TutorialScreen");
+    navigation.navigate("TutorialScreen", {
+      onChangeGetPermissions,
+    });
   };
 
   useEffect(() => {
     if (getData == null) {
       gotoTutorial();
       storeData("true");
+    } else {
+      onChangeGetPermissions(true);
     }
   }, []);
 
@@ -117,11 +124,14 @@ const MapScreen = ({ navigation }) => {
   const [targetShown, setTargetShown] = useState(false);
 
   useEffect(() => {
-    Geocoder.init("AIzaSyDBq4tZ1QLm1R7iPH8O4dTvebVGWgkRPks", {
-      language: "kor",
-    });
-    getLocationPermission();
-  }, []);
+    if (getPermissions) {
+      Geocoder.init("AIzaSyDBq4tZ1QLm1R7iPH8O4dTvebVGWgkRPks", {
+        language: "kor",
+      });
+      GeneratePushToken(myUID);
+      getLocationPermission();
+    }
+  }, [getPermissions]);
 
   useEffect(() => {
     if (targetShown) {
@@ -196,7 +206,6 @@ const MapScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <GeneratePushToken />
       <Button
         onPress={() =>
           navigation.navigate("MapSearchScreen1", {
@@ -316,7 +325,7 @@ const MapScreen = ({ navigation }) => {
           />
         </View>
         {list1.map((record) => {
-          console.log(record);
+          // console.log(record);
           const showMarker = Math.random();
           return (
             <Marker
