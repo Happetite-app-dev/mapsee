@@ -29,7 +29,7 @@ const DispatchFriendRequestList = ({
             {approverLastName}
             {approverFirstName}(@{approverID})
           </Text>
-          님과 친구가 되었습니다.
+          님이 친구 요청을 수락했습니다.
         </Text>
       </View>
     </View>
