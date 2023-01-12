@@ -5,6 +5,7 @@ import {
   onValue,
   set,
   push,
+  get,
 } from "firebase/database";
 import { useContext } from "react";
 
@@ -14,7 +15,9 @@ import DispatchFolderInviteRequestList from "./DispatchFolderInviteRequestList";
 import DispatchFriendRequestList from "./DispatchFriendRequestList";
 import FolderInviteRequestCard from "./FolderInviteRequestCard";
 import FriendRequestCard from "./FriendRequestCard";
+import ReceptFolderInviteRequestList from "./ReceptFolderInviteRequestList";
 import ReceptFriendRequestList from "./ReceptFriendRequestList";
+import ReceptRecordAddDoneList from "./ReceptRecordAddDoneList";
 //NoticeRenderer에서는 각 내부 알림을 그 type에 따라 분류하여 알맞은 모양의 컴포넌트를 return한다
 //이때, 이 컴포넌트가 수행해야되는 함수 또한 여기서 처리한다
 //ID를 UID에서 갖고 오는 식으로 바꿔야 될수도
@@ -68,6 +71,9 @@ const acceptFolderInviteRequest = ({
   myLastName,
   noticeKey,
   requesterUID,
+  requesterID,
+  requesterFirstName,
+  requesterLastName,
   folderID,
   folderName,
   folderColor,
@@ -87,6 +93,14 @@ const acceptFolderInviteRequest = ({
     receiverUID: requesterUID,
     title_: "폴더초대수락타이틀",
     body_: "폴더초대수락바디",
+  });
+  push(ref(db, "/notices/" + myUID), {
+    type: "recept_folderInvite_request_accept_act",
+    requesterUID,
+    requesterID,
+    requesterFirstName,
+    requesterLastName,
+    folderName,
   });
   push(ref(db, "/notices/" + requesterUID), {
     type: "dispatch_folderInvite_request_accept_act",
@@ -112,7 +126,16 @@ const denyFolderInviteRequest = ({ myUID, noticeKey, onToggleSnackBar }) => {
   onToggleSnackBar();
 };
 
-const NoticeRenderer = ({ item, onToggleSnackBar }) => {
+const getFolderName = ({ folderID, userID }) => {
+  const db = getDatabase();
+  let folderName;
+  onValue(
+    ref(db, `/folders/${folderID}/folderName/${userID}`),
+    (snapshot) => (folderName = snapshot.val())
+  );
+  return folderName;
+};
+const NoticeRenderer = ({ navigation, item, onToggleSnackBar }) => {
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
   const myID = myContext.myID;
@@ -186,6 +209,9 @@ const NoticeRenderer = ({ item, onToggleSnackBar }) => {
               myLastName,
               noticeKey: item.key,
               requesterUID: item.val.requesterUID,
+              requesterID: item.val.requesterID,
+              requesterFirstName: item.val.requesterFirstName,
+              requesterLastName: item.val.requesterLastName,
               folderID: item.val.folderID,
               folderName: item.val.folderName,
               folderColor: item.val.folderColor,
@@ -198,6 +224,15 @@ const NoticeRenderer = ({ item, onToggleSnackBar }) => {
               onToggleSnackBar,
             })
           }
+        />
+      );
+    case "recept_folderInvite_request_accept_act": //공유폴대초대 요청 수신 - 수락하여 활성화된 새로운 알림
+      return (
+        <ReceptFolderInviteRequestList
+          requesterID={item.val.requesterID}
+          requesterFirstName={item.val.requesterFirstName}
+          requesterLastName={item.val.requesterLastName}
+          folderName={item.val.folderName}
         />
       );
     case "dispatch_folderInvite_request_accept_act": //공유폴더초대 요청 발신 - 수락하여 활성화된 새로운 알림
@@ -213,6 +248,20 @@ const NoticeRenderer = ({ item, onToggleSnackBar }) => {
       return <></>;
     case "recept_folderInvite_request_deny_inact": //공유폴더초대 요청 수신 - 거절하여 비활성화된 알림
       return <></>;
+    case "recept_recordAdd_done": //기록추가 완료되었음 수신
+      return (
+        <ReceptRecordAddDoneList
+          performerID={item.val.performerID}
+          performerFirstName={item.val.performerFirstName}
+          performerLastName={item.val.performerLastName}
+          folderName={getFolderName({
+            folderID: item.val.folderID,
+            userID: myUID,
+          })}
+          recordID={item.val.recordID}
+          navigation={navigation}
+        />
+      );
     default:
       return null;
   }
