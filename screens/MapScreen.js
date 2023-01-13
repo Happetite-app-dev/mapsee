@@ -48,7 +48,7 @@ const MapScreen = ({ navigation }) => {
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
   const isFocused = useIsFocused();
-  const [list1, setList1] = useState([]);
+  const [list1, setList1] = useState({});
   const [getPermissions, setGetPermissions] = useState(false);
   const onChangeGetPermissions = (b) => {
     setGetPermissions(b);
@@ -76,10 +76,10 @@ const MapScreen = ({ navigation }) => {
                     onValue(
                       ref(db, "/records/" + recordID + "/lctn"),
                       (snapshot3) => {
-                        setList1((list1) => [
+                        setList1((list1) => ({
                           ...list1,
-                          { recordID, lctn: snapshot3.val() },
-                        ]);
+                          [recordID]: { recordID, lctn: snapshot3.val() },
+                        }));
                       }
                     );
                   });
@@ -324,11 +324,12 @@ const MapScreen = ({ navigation }) => {
             }}
           />
         </View>
-        {list1.map((record) => {
+        {Object.values(list1).map((record) => {
           // console.log(record);
           const showMarker = Math.random();
           return (
             <Marker
+              // key={record.recordID}
               key={record.recordID}
               coordinate={record.lctn}
               opacity={

@@ -211,6 +211,7 @@ const MakeFolderBottomSheet = ({
         ]);
       });
     });
+    return () => setNewFolderUserNameIDs([]);
   }, [newFolderUserIDs]);
 
   return (
@@ -519,30 +520,6 @@ const MakeFolderBottomSheet = ({
           </View>
         </View>
       </View>
-      {/* <View style={{top: 30, width: 344, height: 24, left: 23, marginBottom: 24, flexDirection: 'row', justifyContent:'space-between'}}>
-          <Text style={{fontSize: 14, fontWeight: "700"}}>공유 폴더</Text> 
-          <Switch
-            trackColor={{ false: "#767577", true: "#81b0ff" }}
-            thumbColor={"#f5dd4b"}
-            ios_backgroundColor="#3e3e3e"
-          />
-        </View>
-        <View style={{top: 30, width: 344, height: 48, left: 23, marginBottom: 24, flexDirection:'column'}}>
-          <Text style={{fontSize: 14, fontWeight: "700"}}>친구 추가</Text> 
-          <TouchableOpacity
-            style={{
-              top:20,
-              width:24,
-              height:24,
-              borderRadius:12,
-              borderWidth:1,
-              justifyContent: 'center',
-              alignItems: 'center'
-            }}
-          >
-            <Text>+</Text>
-          </TouchableOpacity>
-        </View> */}
       <View
         style={{
           top: 30,
@@ -590,8 +567,6 @@ const MakeFolderBottomSheet = ({
           ).then(() => {
             IsNewRecord ? gotoStorageScreen() : gotoSingleFolderScreen();
           });
-          // if(IsNewRecord){gotoStorageScreen()}
-          // else{gotoSingleFolderScreen()} //gotoSingleFolderScreen()
         }}
         style={{
           position: "absolute",
