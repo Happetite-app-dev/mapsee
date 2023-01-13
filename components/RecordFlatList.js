@@ -31,7 +31,7 @@ const RecordFlatList = ({ recordDataSource, stackNavigation }) => {
   const renderItem = ({ item }) => <IndividualRecord item={item} />;
   return (
     <FlatList
-      data={recordDataSource}
+      data={Object.values(recordDataSource)}
       renderItem={renderItem}
       keyExtractor={(item) => item.recordID}
       numColumns={2}
