@@ -78,37 +78,6 @@ const ImgPicker = ({ onImageTaken, defaultPhotos, IsEditable }) => {
     <View style={styles.imagePicker}>
       {IsEditable ? (
         <View>
-          {/* <TouchableOpacity onPress={takeImageHandlerCam} style={styles.imagePreview}>
-                    {(pickedImages===[]) ? 
-                        (<Text style={{fontSize:35, color: 'grey'}}>+</Text>)
-                        :
-                        <ScrollView showsHorizontalScrollIndicator={false} horizontal={true}>
-                            {pickedImages.map(image => 
-                                {
-                                    return(
-                                        <Image style={styles.image} source={{uri: image}}/>
-                                    )
-                                }
-                            )}
-                        </ScrollView>
-                    }
-                </TouchableOpacity> */}
-          {/* <TouchableOpacity onPress={takeImageHandlerLib} style={styles.imagePreview}>
-                    {(pickedImages===[]) ? 
-                        (<Text style={{fontSize:35, color: 'grey'}}>+</Text>)
-                        :
-                        <ScrollView showsHorizontalScrollIndicator={false} horizontal={true} style={{width: 100, height: 100}}>
-                            {pickedImages.map(image => 
-                                {
-                                    return(
-                                        <Image style={styles.image} source={{uri: image}}/>
-                                    )
-                                }  
-                            )}
-                        </ScrollView>
-                    }
-                </TouchableOpacity> */}
-
           <View style={{ height: 148, width: 360 }}>
             <ScrollView
               showsHorizontalScrollIndicator={false}
@@ -122,7 +91,13 @@ const ImgPicker = ({ onImageTaken, defaultPhotos, IsEditable }) => {
                 <Text style={{ fontSize: 35, color: "grey" }}>+</Text>
               </TouchableOpacity>
               {pickedImages.map((image) => {
-                return <Image style={styles.image} source={{ uri: image }} />;
+                return (
+                  <Image
+                    style={styles.image}
+                    source={{ uri: image }}
+                    key={image}
+                  />
+                );
               })}
             </ScrollView>
           </View>

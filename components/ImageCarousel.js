@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { View, Text, SafeAreaView, Image } from "react-native";
+import { View, Image } from "react-native";
 import Carousel from "react-native-snap-carousel";
 
 const ImageCarousel = ({ images }) => {
@@ -36,7 +36,7 @@ const ImageCarousel = ({ images }) => {
         sliderWidth={200}
         itemWidth={140}
         renderItem={_renderItem}
-        layoutCardOffset="18"
+        layoutCardOffset={18}
         style={{ backgroundColor: "red" }}
       />
     </View>

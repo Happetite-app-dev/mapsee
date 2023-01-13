@@ -329,6 +329,7 @@ const MapScreen = ({ navigation }) => {
           const showMarker = Math.random();
           return (
             <Marker
+              key={record.recordID}
               coordinate={record.lctn}
               opacity={
                 origin.latitudeDelta < 0.01 || showMarker > 0.5 ? 100 : 0

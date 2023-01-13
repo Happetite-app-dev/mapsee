@@ -24,8 +24,8 @@ const NoticeScreen = ({ navigation }) => {
 
   const db = getDatabase();
   useEffect(() => {
-    setNoticeList([]);
     onValue(ref(db, "/notices/" + myUID), (snapshot) => {
+      setNoticeList([]);
       snapshot.forEach((datasnapshot) => {
         setNoticeList((prev) => [
           ...prev,
@@ -59,7 +59,6 @@ const NoticeScreen = ({ navigation }) => {
         <FlatList
           data={noticeList}
           renderItem={renderNotice}
-          keyExtractor={(item) => item.time}
           numColumns={1}
           initialNumToRender={6}
           style={{
