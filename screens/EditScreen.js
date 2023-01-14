@@ -27,7 +27,8 @@ import AppContext from "../components/AppContext";
 import DatePicker from "../components/DatePicker";
 import FolderBottomSheet from "../components/FolderBottomSheet";
 import ImgPicker from "../components/ImgPicker";
-import { storage } from "../firebase";
+import { storage, auth } from "../firebase";
+import SendPushNotification from "../modules/SendPushNotification";
 
 const RecordDateImage = require("../assets/image/RecordDate.png");
 const RecordFolderImage = require("../assets/image/RecordFolder.png");
@@ -81,6 +82,9 @@ const uploadImage = (imageArray, newRecordID) => {
 
 const saveData = async (
   myUID,
+  myID,
+  myFirstName,
+  myLastName,
   title,
   place,
   placeID,
@@ -136,8 +140,34 @@ const saveData = async (
       `/folders/${folderID}/placeRecords/${placeID}/${newRecordID}`
     ); //folder에 recordID를 넣고
     set(reference2, true); //////// 여기에 사진 저장 함수 넣기
-    console.log("photooooo", newRecordID, selectedPhotos);
+    //console.log("photooooo", newRecordID, selectedPhotos);
     uploadImage(selectedPhotos, newRecordID);
+    //push 알림과 내부 알림 보내기(나에게는 스낵바만 띄우기)
+    onValue(ref(db, `/folders/${folderID}/userIDs`), (snapshot) => {
+      console.log(snapshot);
+      const folderUserIDs = Object.keys(snapshot.val());
+      folderUserIDs.map((folderUserID) => {
+        if (folderUserID != myUID) {
+          const reference = ref(db, "/notices/" + folderUserID);
+          push(reference, {
+            type: "recept_recordAdd_done",
+            performerUID: myUID,
+            performerID: myID, //-->수정 필요
+            performerFirstName: myFirstName,
+            performerLastName: myLastName,
+            time: timeNow.getTime(),
+            //여기서 부턴 "recept_recordAdd_done" type 알림만의 정보
+            folderID,
+            recordID: newRecordID,
+          });
+          SendPushNotification({
+            receiverUID: folderUserID,
+            title_: "기록추가타이틀",
+            body_: "기록추가바디",
+          });
+        }
+      });
+    });
   } //새 기록이 아니라면
   else {
     const reference1 = ref(db, "/records/" + recordID);
@@ -192,6 +222,7 @@ const saveData = async (
 
       console.log("photooooo2", selectedPhotos);
       uploadImage(selectedPhotos, recordID);
+      //기존 기록의 수정이나 삭제는 알림 없어도 됨.
     }
   }
 };
@@ -226,6 +257,9 @@ const removeData = async (recordID, folderID, placeID) => {
 const EditScreen = ({ navigation, route }) => {
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
+  const myID = myContext.myID;
+  const myFirstName = myContext.myFirstName;
+  const myLastName = myContext.myLastName;
 
   const timeNow2 = new Date();
 
@@ -273,6 +307,9 @@ const EditScreen = ({ navigation, route }) => {
   const storeRecord = async () => {
     await saveData(
       myUID,
+      myID,
+      myFirstName,
+      myLastName,
       title_,
       place,
       placeID,
@@ -375,7 +412,18 @@ const EditScreen = ({ navigation, route }) => {
       <ScrollView
         style={{ height: "90%", width: "100%" }}
         showsVerticalScrollIndicator={false}
+        scrollEnabled
       >
+        <View style={{ height: 210, ...styles.item }}>
+          {/* <Image source={RecordPhotoImage} /> */}
+          <ImgPicker
+            onImageTaken={(photo) => {
+              setSelectedPhotos((selectedPhotos) => [...selectedPhotos, photo]);
+            }}
+            defaultPhotos={selectedPhotos}
+            IsEditable={isEditable}
+          />
+        </View>
         <View
           onTouchEndCapture={() => {
             showFolderBottomSheet && setShowFolderBottomSheet(false);
@@ -436,16 +484,6 @@ const EditScreen = ({ navigation, route }) => {
               showFolderBottomSheet && setShowFolderBottomSheet(false);
             }}
             style={{ flex: 1 }}
-          />
-        </View>
-        <View style={{ height: 105, bottom: 5, ...styles.item }}>
-          <Image source={RecordPhotoImage} />
-          <ImgPicker
-            onImageTaken={(photo) => {
-              setSelectedPhotos((selectedPhotos) => [...selectedPhotos, photo]);
-            }}
-            defaultPhotos={selectedPhotos}
-            IsEditable={isEditable}
           />
         </View>
         <View style={{ ...styles.item }}>

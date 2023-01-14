@@ -1,9 +1,10 @@
-import { Pressable, SafeAreaView, Text, View } from "react-native";
+import { Text, View } from "react-native";
 
-const DispatchFriendRequestList = ({
-  approverID,
-  approverFirstName,
-  approverLastName,
+const ReceptFolderInviteRequestList = ({
+  requesterID,
+  requesterFirstName,
+  requesterLastName,
+  folderName,
 }) => {
   return (
     <View style={{ flex: 1, alignItems: "center", marginBottom: 40 }}>
@@ -26,14 +27,16 @@ const DispatchFriendRequestList = ({
           }}
         >
           <Text style={{ fontWeight: "700" }}>
-            {approverLastName}
-            {approverFirstName}(@{approverID})
+            {requesterLastName}
+            {requesterFirstName}(@{requesterID})
           </Text>
-          님이 친구 요청을 수락했습니다.
+          님의
+          <Text style={{ fontWeight: "700" }}>{folderName}</Text>
+          초대를 수락했습니다.
         </Text>
       </View>
     </View>
   );
 };
 
-export default DispatchFriendRequestList;
+export default ReceptFolderInviteRequestList;

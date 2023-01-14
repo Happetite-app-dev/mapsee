@@ -78,7 +78,7 @@ const RecordFlatList = ({ recordDataSource, stackNavigation }) => {
 
   return (
     <FlatList
-      data={recordDataSource}
+      data={Object.values(recordDataSource)}
       renderItem={renderItem}
       extraData={recordDataSource}
       keyExtractor={(item) => item.recordID}

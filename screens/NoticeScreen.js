@@ -13,7 +13,7 @@ import { Snackbar } from "react-native-paper";
 import AppContext from "../components/AppContext";
 import NoticeRenderer from "../components/NoticeRenderer";
 
-const NoticeScreen = () => {
+const NoticeScreen = ({ navigation }) => {
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
   const [noticeList, setNoticeList] = useState([]);
@@ -24,8 +24,8 @@ const NoticeScreen = () => {
 
   const db = getDatabase();
   useEffect(() => {
-    setNoticeList([]);
     onValue(ref(db, "/notices/" + myUID), (snapshot) => {
+      setNoticeList([]);
       snapshot.forEach((datasnapshot) => {
         setNoticeList((prev) => [
           ...prev,
@@ -36,7 +36,11 @@ const NoticeScreen = () => {
   }, []);
 
   const renderNotice = ({ item }) => (
-    <NoticeRenderer item={item} onToggleSnackBar={onToggleSnackBar} />
+    <NoticeRenderer
+      navigation={navigation}
+      item={item}
+      onToggleSnackBar={onToggleSnackBar}
+    />
   );
 
   return (
@@ -55,7 +59,6 @@ const NoticeScreen = () => {
         <FlatList
           data={noticeList}
           renderItem={renderNotice}
-          keyExtractor={(item) => item.time}
           numColumns={1}
           initialNumToRender={6}
           style={{
