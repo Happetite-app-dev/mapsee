@@ -27,7 +27,7 @@ import AppContext from "../components/AppContext";
 import DatePicker from "../components/DatePicker";
 import FolderBottomSheet from "../components/FolderBottomSheet";
 import ImgPicker from "../components/ImgPicker";
-import { storage, auth } from "../firebase";
+import { storage } from "../firebase";
 
 const RecordDateImage = require("../assets/image/RecordDate.png");
 const RecordFolderImage = require("../assets/image/RecordFolder.png");
