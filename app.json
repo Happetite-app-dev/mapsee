@@ -1,5 +1,14 @@
 {
   "expo": {
+    "plugins": [
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/icons/notification-icon.png",
+          "color": "#ffffff"
+        }
+      ]
+    ],
     "name": "mapsee220703_1",
     "slug": "mapsee220703_1",
     "version": "1.0.0",

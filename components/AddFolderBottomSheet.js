@@ -112,10 +112,10 @@ const AddFolderBottomSheet = ({
         });
       }
     });
-    setFolderIDNameList((prev) => [
+    setFolderIDNameList((prev) => ({
       ...prev,
-      { folderID: newFolderID, folderName: newFolderName },
-    ]);
+      [newFolderID]: { folderID: newFolderID, folderName: newFolderName },
+    }));
     setFolderID(newFolderID);
     setFolderName(newFolderName);
   };
