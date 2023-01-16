@@ -20,6 +20,7 @@ const bottomSheetImage = require("../assets/image/bottomSheetScroll.png");
 const closeImage = require("../assets/image/close.png");
 const closeImage1 = require("../assets/image/close_1.png");
 const goBackImage = require("../assets/image/goBack.png");
+const mapStyle = require("../assets/mapDesign.json");
 
 Geocode.setApiKey("AIzaSyDBq4tZ1QLm1R7iPH8O4dTvebVGWgkRPks");
 Geocode.setLanguage("ko");
@@ -197,6 +198,7 @@ const MapSearchScreen3 = ({ navigation, route }) => {
   return (
     <View>
       <MapView
+        customMapStyle={mapStyle}
         provider="google"
         ref={mapRef}
         style={styles.map}

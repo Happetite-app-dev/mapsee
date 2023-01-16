@@ -7,6 +7,7 @@ const closeImage = require("../assets/image/close.png");
 const closeImage1 = require("../assets/image/close_1.png");
 const goBackImage = require("../assets/image/goBack.png");
 const targetLocationImage = require("../assets/image/targetLocation.png");
+const mapStyle = require("../assets/mapDesign.json");
 
 const MapSearchScreen2 = ({ navigation, route }) => {
   const gotoPlaceInfoBottomSheet = () => {
@@ -58,6 +59,7 @@ const MapSearchScreen2 = ({ navigation, route }) => {
   return (
     <View>
       <MapView
+        customMapStyle={mapStyle}
         provider="google"
         ref={mapRef}
         style={styles.map}

@@ -24,6 +24,7 @@ import GeneratePushToken from "../modules/GeneratePushToken";
 const currentLocationImage = require("../assets/image/currentLocation.png");
 const findCurrentLocationImage = require("../assets/image/findCurrentLocation.png");
 const targetLocationImage = require("../assets/image/targetLocation.png");
+const mapStyle = require("../assets/mapDesign.json");
 
 // Tutorial Reload
 const storeData = async (value) => {
@@ -215,6 +216,7 @@ const MapScreen = ({ navigation }) => {
         provider="google"
         ref={mapRef}
         style={styles.map}
+        customMapStyle={mapStyle}
         region={{
           latitude: origin.latitude,
           longitude: origin.longitude,

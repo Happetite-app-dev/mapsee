@@ -1,6 +1,7 @@
 import * as ImagePicker from "expo-image-picker";
 import * as Permissions from "expo-permissions";
-import React, { useState } from "react";
+import { getStorage, ref, getDownloadURL } from "firebase/storage";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Button,
@@ -12,8 +13,20 @@ import {
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
+import { storage } from "../firebase";
+
+const getImage = async (recordID, photo, set) => {
+  const image = await getDownloadURL(
+    ref(storage, `images/${recordID}/${photo.split("/").at(-1)}`)
+  );
+  set(image);
+};
+
 const ImgPicker = ({ onImageTaken, defaultPhotos, IsEditable }) => {
   const [pickedImages, setPickedImages] = useState(defaultPhotos);
+  useEffect(() => {
+    console.log("ImgPicker pickedImages", pickedImages);
+  }, [pickedImages]);
 
   const verifyPermissionsCam = async () => {
     const result = await Permissions.askAsync(Permissions.CAMERA);
@@ -49,7 +62,6 @@ const ImgPicker = ({ onImageTaken, defaultPhotos, IsEditable }) => {
 
     const image = await ImagePicker.launchCameraAsync({
       allowsEditing: true,
-      //aspect: [16,9],
       quality: 0.5,
     });
 
@@ -61,9 +73,9 @@ const ImgPicker = ({ onImageTaken, defaultPhotos, IsEditable }) => {
     if (!hasPermission) {
       return;
     }
+
     const image = await ImagePicker.launchImageLibraryAsync({
       allowsEditing: true,
-      //aspect: [16,9],
       quality: 0.5,
     });
     if (!image.cancelled) {
@@ -76,37 +88,6 @@ const ImgPicker = ({ onImageTaken, defaultPhotos, IsEditable }) => {
     <View style={styles.imagePicker}>
       {IsEditable ? (
         <View>
-          {/* <TouchableOpacity onPress={takeImageHandlerCam} style={styles.imagePreview}>
-                    {(pickedImages===[]) ? 
-                        (<Text style={{fontSize:35, color: 'grey'}}>+</Text>)
-                        :
-                        <ScrollView showsHorizontalScrollIndicator={false} horizontal={true}>
-                            {pickedImages.map(image => 
-                                {
-                                    return(
-                                        <Image style={styles.image} source={{uri: image}}/>
-                                    )
-                                }
-                            )}
-                        </ScrollView>
-                    }
-                </TouchableOpacity> */}
-          {/* <TouchableOpacity onPress={takeImageHandlerLib} style={styles.imagePreview}>
-                    {(pickedImages===[]) ? 
-                        (<Text style={{fontSize:35, color: 'grey'}}>+</Text>)
-                        :
-                        <ScrollView showsHorizontalScrollIndicator={false} horizontal={true} style={{width: 100, height: 100}}>
-                            {pickedImages.map(image => 
-                                {
-                                    return(
-                                        <Image style={styles.image} source={{uri: image}}/>
-                                    )
-                                }  
-                            )}
-                        </ScrollView>
-                    }
-                </TouchableOpacity> */}
-
           <View style={{ height: 110, width: 360 }}>
             <ScrollView
               showsHorizontalScrollIndicator={false}
@@ -138,6 +119,7 @@ const ImgPicker = ({ onImageTaken, defaultPhotos, IsEditable }) => {
               </Text>
             ) : (
               pickedImages.map((image) => {
+                console.log("ImgPicker", image);
                 return <Image style={styles.image} source={{ uri: image }} />;
               })
             )}
