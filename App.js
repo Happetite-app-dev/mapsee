@@ -15,6 +15,7 @@ import MakeFolderBottomSheetScreen from "./screens/MakeFolderBottomSheetScreen";
 import MapSearchScreen1 from "./screens/MapSearchScreen1";
 import MapSearchScreen2 from "./screens/MapSearchScreen2";
 import MapSearchScreen3 from "./screens/MapSearchScreen3";
+import MapSearchScreen4 from "./screens/MapSearchScreen4";
 import PlaceInfoBottomSheetScreen from "./screens/PlaceInfoBottomSheetScreen";
 import ProfileScreen from "./screens/ProfileScreen";
 import RegisterScreen1 from "./screens/RegisterScreen1";
@@ -123,6 +124,11 @@ const App = () => {
           <Stack.Screen
             name="MapSearchScreen3"
             component={MapSearchScreen3}
+            options={{ headerShown: false, gestureEnabled: false }}
+          />
+          <Stack.Screen
+            name="MapSearchScreen4"
+            component={MapSearchScreen4}
             options={{ headerShown: false, gestureEnabled: false }}
           />
           <Stack.Screen

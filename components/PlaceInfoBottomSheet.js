@@ -8,6 +8,7 @@ import React, {
 } from "react";
 import {
   Animated,
+  StyleSheet,
   Text,
   View,
   TouchableHighlight,
@@ -19,6 +20,10 @@ import AppContext from "../components/AppContext";
 import RecordFlatList from "../components/RecordFlatList";
 
 const CreateNoteImage = require("../assets/image/CreateNote.png");
+const bottomSheetImage = require("../assets/image/bottomSheetScroll.png");
+const closeImage = require("../assets/image/close.png");
+const closeImage1 = require("../assets/image/close_1.png");
+const goBackImage = require("../assets/image/goBack.png");
 
 const BottomSheetScreen = ({
   onDisplay,
@@ -97,29 +102,76 @@ const BottomSheetScreen = ({
   if (animationVal < 0) {
     return (
       //bottomsheet가 전체 화면을 덮기 전
-      <View style={{ position: "absolute", width: "100%", height: "100%" }}>
+      <View
+        style={{
+          position: "absolute",
+          width: "100%",
+          height: "100%",
+          flexDirection: "column",
+        }}
+      >
         <View
-          style={{ position: "absolute", width: "75%", height: "100%" }}
+          style={{
+            position: "absolute",
+            width: "75%",
+            height: "100%",
+          }}
           onTouchEndCapture={() => onDisplay()}
         >
-          <Text style={{ position: "absolute", top: 20, fontSize: 20 }}>
+          <Image
+            source={bottomSheetImage}
+            style={{ marginLeft: 175, marginTop: 8 }}
+          />
+          <Text
+            style={{
+              position: "absolute",
+              marginTop: 24,
+              marginLeft: 23,
+              fontSize: 16,
+              fontWeight: "bold",
+            }}
+          >
             {targetName}
           </Text>
-          <Text style={{ position: "absolute", top: 80, fontSize: 15 }}>
+          <Text
+            style={{
+              position: "absolute",
+              marginTop: 56,
+              marginLeft: 23,
+              fontSize: 12,
+              color: "#545766",
+            }}
+          >
             {targetAddress}
+          </Text>
+          <Text
+            style={{
+              position: "absolute",
+              marginTop: 88,
+              marginLeft: 23,
+              fontSize: 12,
+              color: "#ADB1C5",
+            }}
+          >
+            기록 {Object.values(masterDataSource).length}
           </Text>
         </View>
         <View
-          style={{ position: "absolute", right: 0, width: "25%", height: "8%" }}
+          style={{
+            position: "absolute",
+            right: 0,
+            width: "25%",
+            height: "8%",
+          }}
           onTouchEndCapture={() => onDisplay()}
         />
         <View
           style={{
             position: "absolute",
-            top: "8%",
-            right: 0,
-            width: "25%",
-            height: "10%",
+            width: 48,
+            height: 48,
+            marginTop: 48,
+            marginLeft: 319,
             alignItems: "center",
             justifyContent: "center",
           }}
@@ -134,7 +186,7 @@ const BottomSheetScreen = ({
               zIndex: 1,
               bottom: 23,
             }}
-            underlayColor="blue"
+            underlayColor="white"
             onPress={gotoEditScreen}
           >
             <Image source={CreateNoteImage} resizeMode="contain" />
@@ -147,7 +199,39 @@ const BottomSheetScreen = ({
 
     return (
       //bottomsheet가 전체 화면을 덮은 후
-      <View style={{ position: "absolute", width: "110%", height: "100%" }}>
+      <View
+        style={{
+          position: "absolute",
+          width: "100%",
+          height: "100%",
+        }}
+      >
+        <View
+          style={styles.buttons}
+          onTouchEndCapture={() => {
+            console.log("back");
+            onCancel();
+          }}
+        >
+          <View style={styles.goBack}>
+            <Image source={goBackImage} style={styles.goBackImage} />
+          </View>
+          <View style={styles.title}>
+            <Text style={styles.titleText}>{targetName}</Text>
+          </View>
+          <View
+            onTouchEndCapture={() => {
+              console.log("close");
+              navigation.navigate("Map");
+            }}
+            style={styles.goHome}
+          >
+            <View style={{ position: "relative" }}>
+              <Image style={styles.goHomeImage} source={closeImage} />
+              <Image style={styles.goHomeImage} source={closeImage1} />
+            </View>
+          </View>
+        </View>
         <View
           style={{
             position: "absolute",
@@ -157,29 +241,7 @@ const BottomSheetScreen = ({
             height: 50,
             paddingTop: 5,
           }}
-        >
-          <Button title="back" onPress={() => onCancel()} />
-        </View>
-        <View
-          style={{
-            position: "absolute",
-            top: 45,
-            width: "50%",
-            height: 40,
-            alignSelf: "center",
-          }}
-        >
-          <Text
-            style={{
-              textAlign: "center",
-              textAlignVertical: "center",
-              marginTop: 4,
-              fontSize: 25,
-            }}
-          >
-            {targetName}
-          </Text>
-        </View>
+        />
         <View
           style={{ position: "absolute", top: 85, width: "100%", height: 600 }}
         >
@@ -222,9 +284,17 @@ const BottomSheet = ({
   navigation,
 }) => {
   return (
-    <View style={{ width: "100%", height: "100%" }}>
+    <View
+      style={{
+        width: "100%",
+        height: "100%",
+      }}
+    >
       <View
-        style={{ width: "100%", height: "76%" }}
+        style={{
+          width: "100%",
+          height: 692,
+        }}
         onTouchEndCapture={() => {
           onRemove();
           navigation.goBack();
@@ -233,23 +303,19 @@ const BottomSheet = ({
       <Animated.View
         style={{
           width: "100%",
+          height: 844, //조정 필요
           backgroundColor: "#fff",
           borderTopLeftRadius: 30,
           borderTopRightRadius: 30,
-          padding: 20,
+          padding: 0,
           position: "absolute",
           zIndex: 4,
           alignItems: "center",
           justifyContent: "center",
-          height: 850, //조정 필요
-          shadowOffset: {
-            width: 0,
-            height: 12,
-          },
-          shadowOpacity: 0.58,
-          shadowRadius: 16.0,
           bottom: animation,
           elevation: 24,
+          borderWidth: 1,
+          borderColor: "#DDDFE9",
         }}
       >
         <BottomSheetScreen
@@ -297,7 +363,7 @@ const PlaceInfoBottomSheet = ({ navigation, route }) => {
   };
   const toggleAnimation3 = () => {
     //bottomsheet가 -1000일 때 보이게 하기, bottomsheet가 0일 때 뒤로 가기 버튼 눌러서 보이게만 하기
-    const val3 = -650;
+    const val3 = -692;
     Animated.timing(showAnimation, {
       useNativeDriver: false,
       toValue: val3,
@@ -328,5 +394,64 @@ const PlaceInfoBottomSheet = ({ navigation, route }) => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    width: "100%",
+    height: "100%",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    position: "relative",
+    backgroundColor: "white",
+  },
+  map: {
+    width: "100%",
+    height: "100%",
+  },
+  buttons: {
+    height: 88,
+    width: "100%",
+    backgroundColor: "white",
+    flexDirection: "row",
+    position: "absolute",
+  },
+  goBack: {
+    width: 30,
+    height: 18,
+    position: "absolute",
+    marginTop: 51,
+    marginLeft: 31,
+  },
+  goBackImage: {
+    width: 9,
+    height: 18,
+    resizeMode: "contain",
+    tintColor: "black",
+  },
+  title: {
+    width: 280,
+    height: 24,
+
+    marginTop: 48,
+    marginLeft: 63,
+    position: "absolute",
+  },
+  titleText: {
+    height: 24,
+    fontSize: 16,
+    lineHeight: 24,
+  },
+  goHome: {
+    width: 15,
+    height: 15,
+    marginLeft: 347.5,
+    marginTop: 52.5,
+  },
+  goHomeImage: {
+    width: 15,
+    height: 15,
+    position: "absolute",
+  },
+});
 
 export default PlaceInfoBottomSheet;
