@@ -9,7 +9,14 @@ import {
   TouchableHighlight,
 } from "react-native";
 
-import AppContext from "../components/AppContext";
+import MapOff from "../assets/icons/map_off.svg";
+import MapOn from "../assets/icons/map_on.svg";
+import MypageOff from "../assets/icons/mypage_off.svg";
+import MypageOn from "../assets/icons/mypage_on.svg";
+import NoticeOff from "../assets/icons/notice_off.svg";
+import NoticeOn from "../assets/icons/notice_on.svg";
+import StorageOff from "../assets/icons/storage_off.svg";
+import StorageOn from "../assets/icons/storage_on.svg";
 import MapScreen from "../screens/MapScreen";
 import MypageScreen from "../screens/MypageScreen";
 import NoticeScreen from "../screens/NoticeScreen";
@@ -27,9 +34,6 @@ const firebaseConfig = {
 };
 const app = initializeApp(firebaseConfig);
 const Tabs = ({ navigation }) => {
-  const myContext = useContext(AppContext);
-  const tabBarVisible = myContext.tabBarVisible;
-  const tabBarHandler = myContext.tabBarHandler;
   return (
     <Tab.Navigator
       initialRouteName="Map"
@@ -62,19 +66,11 @@ const Tabs = ({ navigation }) => {
                 top: 10,
               }}
             >
-              <Image
-                source={
-                  focused
-                    ? require("../assets/icons/map_on.png")
-                    : require("../assets/icons/map_off.png")
-                }
-                resizeMode="contain"
-                style={{
-                  width: 24,
-                  height: 24,
-                  zIndex: 1,
-                }}
-              />
+              {focused ? (
+                <MapOn width={24} height={24} />
+              ) : (
+                <MapOff width={24} height={24} />
+              )}
             </View>
           ),
         }}
@@ -91,19 +87,11 @@ const Tabs = ({ navigation }) => {
                 top: 10,
               }}
             >
-              <Image
-                source={
-                  focused
-                    ? require("../assets/icons/storage_on.png")
-                    : require("../assets/icons/storage_off.png")
-                }
-                resizeMode="contain"
-                style={{
-                  width: 24,
-                  height: 24,
-                  zIndex: 1,
-                }}
-              />
+              {focused ? (
+                <StorageOn width={24} height={24} />
+              ) : (
+                <StorageOff width={24} height={24} />
+              )}
             </View>
           ),
         }}
@@ -120,19 +108,11 @@ const Tabs = ({ navigation }) => {
                 top: 10,
               }}
             >
-              <Image
-                source={
-                  focused
-                    ? require("../assets/icons/notice_on.png")
-                    : require("../assets/icons/notice_off.png")
-                }
-                resizeMode="contain"
-                style={{
-                  width: 24,
-                  height: 24,
-                  zIndex: 1,
-                }}
-              />
+              {focused ? (
+                <NoticeOn width={24} height={24} />
+              ) : (
+                <NoticeOff width={24} height={24} />
+              )}
             </View>
           ),
         }}
@@ -149,22 +129,13 @@ const Tabs = ({ navigation }) => {
                 top: 10,
               }}
             >
-              <Image
-                source={
-                  focused
-                    ? require("../assets/icons/mypage_on.png")
-                    : require("../assets/icons/mypage_off.png")
-                }
-                resizeMode="contain"
-                style={{
-                  width: 24,
-                  height: 24,
-                  zIndex: 1,
-                }}
-              />
+              {focused ? (
+                <MypageOn width={24} height={24} />
+              ) : (
+                <MypageOff width={24} height={24} />
+              )}
             </View>
           ),
-          // tabBarStyle: {display: tabBarVisible? "flex" : "none"}
         }}
       />
     </Tab.Navigator>
