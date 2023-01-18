@@ -20,6 +20,7 @@ const bottomSheetImage = require("../assets/image/bottomSheetScroll.png");
 const closeImage = require("../assets/image/close.png");
 const closeImage1 = require("../assets/image/close_1.png");
 const goBackImage = require("../assets/image/goBack.png");
+const mapStyle = require("../assets/mapDesign.json");
 
 Geocode.setApiKey("AIzaSyDBq4tZ1QLm1R7iPH8O4dTvebVGWgkRPks");
 Geocode.setLanguage("ko");
@@ -54,14 +55,14 @@ const getLatDelta = (numbers, average) => {
   if (numbers.length === 0) return 0.016;
   const diff = numbers.map((el) => el - average);
   console.log("in functionnnn", diff);
-  return 2 * Math.max(...diff);
+  return 3 * Math.max(...diff);
 };
 
 const getLngDelta = (numbers, average) => {
   if (numbers.length === 0) return 0.012;
   const diff = numbers.map((el) => el - average);
   console.log("in functionnnn", diff);
-  return 2 * Math.max(...diff);
+  return 3 * Math.max(...diff);
 };
 
 const _renderRow = ({ navigation, item }) => {
@@ -72,7 +73,12 @@ const _renderRow = ({ navigation, item }) => {
     >
       <View style={{ flexDirection: "column", height: 84, marginLeft: 23 }}>
         <View style={styles.descriptionMainText}>
-          <View style={{ height: 24, width: 90 }}>
+          <View
+            style={{
+              height: 24,
+              width: item.structured_formatting.main_text.length * 9 + 20,
+            }}
+          >
             <Text style={{ fontSize: 14, fontWeight: "bold" }}>
               {item.structured_formatting.main_text}
             </Text>
@@ -103,14 +109,8 @@ const MapSearchScreen3 = ({ navigation, route }) => {
   const [latList, setLatList] = useState([]);
   const [lngList, setLngList] = useState([]);
 
-  const toggleAnimation = () => {
-    const val = animationValue === 0 ? 500 : 0;
-    Animated.timing(showAnimation, {
-      useNativeDriver: false,
-      toValue: val,
-      duration: 350,
-    }).start();
-    setAnimationValue(val);
+  const toggleAnimation = (navigation, results) => {
+    navigation.navigate("MapSearchScreen4", results);
   };
 
   const onInsert = (data) => {
@@ -168,7 +168,7 @@ const MapSearchScreen3 = ({ navigation, route }) => {
           borderTopRightRadius: 30,
           position: "absolute",
           bottom: animation,
-          zIndex: 3,
+          zIndex: 1,
           alignItems: "center",
           justifyContent: "center",
           maxHeight: 256,
@@ -177,12 +177,13 @@ const MapSearchScreen3 = ({ navigation, route }) => {
           borderRadius: 16,
           elevation: 24,
         }}
+        onTouchEndCapture={() => {
+          const results = [route.params[0], data];
+          toggleAnimation(navigation, results);
+        }}
       >
-        <View
-          onTouchEndCapture={() => toggleAnimation()}
-          style={{ marginTop: 8 }}
-        >
-          <Image source={bottomSheetImage} style={{ position: "absolute" }} />
+        <View style={{ marginTop: 8, zIndex: 1 }}>
+          <Image source={bottomSheetImage} />
         </View>
         <FlatList
           data={data}
@@ -196,7 +197,13 @@ const MapSearchScreen3 = ({ navigation, route }) => {
 
   return (
     <View>
+      <BottomSheet
+        navigation={navigation}
+        animation={showAnimation}
+        data={route.params[1]}
+      />
       <MapView
+        customMapStyle={mapStyle}
         provider="google"
         ref={mapRef}
         style={styles.map}
@@ -241,12 +248,6 @@ const MapSearchScreen3 = ({ navigation, route }) => {
           );
         })}
       </MapView>
-
-      <BottomSheet
-        navigation={navigation}
-        animation={showAnimation}
-        data={route.params[1]}
-      />
     </View>
   );
 };
@@ -268,6 +269,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     flexDirection: "row",
     position: "absolute",
+    zIndex: 3,
   },
   goBack: {
     width: 30,
@@ -275,6 +277,7 @@ const styles = StyleSheet.create({
     marginTop: 51,
     marginLeft: 31,
     position: "absolute",
+    zIndex: 4,
   },
   goBackImage: {
     width: 9,
@@ -283,6 +286,7 @@ const styles = StyleSheet.create({
     marginTop: 51,
     marginLeft: 31,
     tintColor: "black",
+    zIndex: 4,
   },
   title: {
     width: 280,
@@ -290,6 +294,7 @@ const styles = StyleSheet.create({
     marginTop: 48,
     marginLeft: 63,
     position: "absolute",
+    zIndex: 4,
   },
   titleText: {
     height: 24,
@@ -297,12 +302,14 @@ const styles = StyleSheet.create({
     lineHeight: 24,
     marginTop: 48,
     marginLeft: 63,
+    zIndex: 4,
   },
   goHome: {
     width: 15,
     height: 15,
     marginLeft: 347.5,
     marginTop: 52.5,
+    zIndex: 4,
   },
   goHomeImage: {
     width: 15,
@@ -310,6 +317,7 @@ const styles = StyleSheet.create({
     marginLeft: 347.5,
     marginTop: 52.5,
     position: "absolute",
+    zIndex: 4,
   },
   descriptionMainText: {
     marginTop: 16,

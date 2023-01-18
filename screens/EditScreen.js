@@ -1,3 +1,4 @@
+import { useIsFocused } from "@react-navigation/native";
 import {
   getDatabase,
   ref,
@@ -7,7 +8,11 @@ import {
   remove,
   off,
 } from "firebase/database";
-import { ref as ref_storage, uploadBytes } from "firebase/storage";
+import {
+  ref as ref_storage,
+  uploadBytes,
+  getDownloadURL,
+} from "firebase/storage";
 import React, { useContext, createFactory, useEffect, useState } from "react";
 import {
   View,
@@ -49,8 +54,6 @@ const uploadImage = (imageArray, newRecordID) => {
   imageArray.map(async (image) => {
     const image1 = image.split("/");
     const imageName = image1[image1.length - 1];
-    console.log(image1.length);
-    console.log(imageName);
     const imageRef = ref_storage(storage, `images/${newRecordID}/${imageName}`);
     // `images === 참조값이름(폴더이름), / 뒤에는 파일이름 어떻게 지을지
     const blob = await new Promise((resolve, reject) => {
@@ -78,6 +81,13 @@ const uploadImage = (imageArray, newRecordID) => {
 
     blob.close();
   });
+};
+
+const getImage = async (recordID, photo, set) => {
+  const image = await getDownloadURL(
+    ref(storage, `images/${recordID}/${photo.split("/").at(-1)}`)
+  );
+  set(image);
 };
 
 const saveData = async (
@@ -302,6 +312,26 @@ const EditScreen = ({ navigation, route }) => {
   const [showFolderBottomSheet, setShowFolderBottomSheet] = useState(false);
 
   const [selectedPhotos, setSelectedPhotos] = useState(photos || []);
+  const [imageUrls, setImageUrls] = useState([]);
+
+  useEffect(() => {
+    console.log("selectedPhotos", selectedPhotos);
+    selectedPhotos.map(async (photo) => {
+      const name = photo.split("/").at(-1);
+      console.log("photo updating", `images/${recordID}/${name}`);
+
+      const url = await getDownloadURL(
+        ref_storage(storage, `images/${recordID}/${name}`)
+      );
+      console.log("url", url);
+      setImageUrls([...imageUrls, url]);
+      console.log("imageUrls changed");
+    });
+  }, [selectedPhotos]);
+
+  useEffect(() => {
+    console.log("imageUrls", imageUrls);
+  }, [imageUrls]);
 
   const [text_, setText_] = useState(text || "");
   const storeRecord = async () => {

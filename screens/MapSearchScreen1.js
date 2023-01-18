@@ -26,11 +26,17 @@ const renderDescription = (data) => {
       </View>
       <View style={{ flexDirection: "column" }}>
         <View style={styles.descriptionMainText}>
-          <View style={{ height: 24, width: 90 }}>
+          <View
+            style={{
+              height: 24,
+              width: data.structured_formatting.main_text.length * 9 + 20,
+            }}
+          >
             <Text style={{ fontSize: 14 }}>
               {data.structured_formatting.main_text}
             </Text>
           </View>
+
           <View style={styles.descriptionType}>
             <Text style={{ fontSize: 10, color: "#ADB1C5" }}>기타</Text>
           </View>
@@ -170,7 +176,7 @@ const MapSearchScreen1 = ({ navigation, route }) => {
           clearButtonMode: false,
           returnKeyType: "search",
         }}
-        listUnderlayColor="red"
+        listUnderlayColor="#DDDFE9"
         placeholder="검색어를 입력하세요"
         enablePoweredByContainer={false}
         query={{

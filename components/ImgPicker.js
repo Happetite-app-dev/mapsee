@@ -1,6 +1,7 @@
 import * as ImagePicker from "expo-image-picker";
 import * as Permissions from "expo-permissions";
-import React, { useState } from "react";
+import { getStorage, ref, getDownloadURL } from "firebase/storage";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Button,
@@ -12,10 +13,20 @@ import {
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
-import ImageCarousel from "./ImageCarousel";
+import { storage } from "../firebase";
+
+const getImage = async (recordID, photo, set) => {
+  const image = await getDownloadURL(
+    ref(storage, `images/${recordID}/${photo.split("/").at(-1)}`)
+  );
+  set(image);
+};
 
 const ImgPicker = ({ onImageTaken, defaultPhotos, IsEditable }) => {
   const [pickedImages, setPickedImages] = useState(defaultPhotos);
+  useEffect(() => {
+    console.log("ImgPicker pickedImages", pickedImages);
+  }, [pickedImages]);
 
   const verifyPermissionsCam = async () => {
     const result = await Permissions.askAsync(Permissions.CAMERA);
@@ -51,7 +62,6 @@ const ImgPicker = ({ onImageTaken, defaultPhotos, IsEditable }) => {
 
     const image = await ImagePicker.launchCameraAsync({
       allowsEditing: true,
-      //aspect: [16,9],
       quality: 0.5,
     });
 
@@ -63,9 +73,9 @@ const ImgPicker = ({ onImageTaken, defaultPhotos, IsEditable }) => {
     if (!hasPermission) {
       return;
     }
+
     const image = await ImagePicker.launchImageLibraryAsync({
       allowsEditing: true,
-      //aspect: [16,9],
       quality: 0.5,
     });
     if (!image.cancelled) {
@@ -78,11 +88,11 @@ const ImgPicker = ({ onImageTaken, defaultPhotos, IsEditable }) => {
     <View style={styles.imagePicker}>
       {IsEditable ? (
         <View>
-          <View style={{ height: 148, width: 360 }}>
+          <View style={{ height: 110, width: 360 }}>
             <ScrollView
               showsHorizontalScrollIndicator={false}
               horizontal
-              style={{ height: 148 }}
+              style={{ height: 110 }}
             >
               <TouchableOpacity
                 onPress={takeImageHandlerLib}
@@ -91,26 +101,29 @@ const ImgPicker = ({ onImageTaken, defaultPhotos, IsEditable }) => {
                 <Text style={{ fontSize: 35, color: "grey" }}>+</Text>
               </TouchableOpacity>
               {pickedImages.map((image) => {
-                return (
-                  <Image
-                    style={styles.image}
-                    source={{ uri: image }}
-                    key={image}
-                  />
-                );
+                return <Image style={styles.image} source={{ uri: image }} />;
               })}
             </ScrollView>
           </View>
         </View>
       ) : (
-        <View style={{ height: 148, width: 360 }}>
-          {pickedImages.length == 0 ? (
-            <Text style={{ fontSize: 35, color: "grey" }}>
-              저장된 사진이 없습니다
-            </Text>
-          ) : (
-            <ImageCarousel images={pickedImages} />
-          )}
+        <View style={{ height: 110, width: 360 }}>
+          <ScrollView
+            showsHorizontalScrollIndicator={false}
+            horizontal
+            style={{ height: 110 }}
+          >
+            {pickedImages.length == 0 ? (
+              <Text style={{ fontSize: 35, color: "grey" }}>
+                저장된 사진이 없습니다
+              </Text>
+            ) : (
+              pickedImages.map((image) => {
+                console.log("ImgPicker", image);
+                return <Image style={styles.image} source={{ uri: image }} />;
+              })
+            )}
+          </ScrollView>
         </View>
       )}
     </View>
@@ -125,8 +138,8 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
   },
   imagePreview: {
-    width: 148,
-    height: 148,
+    width: 100,
+    height: 100,
     borderRadius: 10,
     //marginBottom:10,
     marginRight: 15,
@@ -136,8 +149,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   image: {
-    width: 148,
-    height: 148,
+    width: 100,
+    height: 100,
     borderRadius: 10,
     //marginBottom:10,
     marginRight: 15,

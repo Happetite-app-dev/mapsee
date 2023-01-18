@@ -21,9 +21,6 @@ const getImage = async (recordID, photo, set) => {
 };
 
 const RecordFlatList = ({ recordDataSource, stackNavigation }) => {
-  const [url, setUrl] = useState(
-    "https://firebasestorage.googleapis.com/v0/b/mapseedemo1.appspot.com/o/images%2F-NLeE4fEydTvBWd_20si%2FA134E93B-F426-407B-BB00-4F312F428B0B.jpg?alt=media&token=e1c5ca50-e00b-40c3-a535-1c72e6d93ecb"
-  );
   const gotoEditScreen = (item) => {
     stackNavigation.navigate("EditScreen", {
       recordID: item.recordID,
@@ -49,7 +46,6 @@ const RecordFlatList = ({ recordDataSource, stackNavigation }) => {
                     style={{
                       width: 160,
                       height: 148,
-                      backgroundColor: "red",
                       borderTopLeftRadius: 8,
                       borderTopRightRadius: 8,
                     }}
