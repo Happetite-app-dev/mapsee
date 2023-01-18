@@ -37,7 +37,7 @@ const callFriendRequest = (friendUID, myUID, myID, myFirstName, myLastName) => {
     const timeNow = new Date();
     const reference = ref(db, "/notices/" + friendUID);
     push(reference, {
-      //db에 myUID, 요청 시각, type: "newfriend"가 적힌 obj가 friendUID/request에 새롭게 적힘}
+      //db에 mUID, 요청 시각, type: "newfriend"가 적힌 obj가 friendUID/request에 새롭게 적힘}
       type: "recept_friend_request",
       requesterUID: myUID,
       requesterID: myID,

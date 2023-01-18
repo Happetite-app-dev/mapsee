@@ -137,7 +137,10 @@ const SingleFolderScreen = ({ navigation, route }) => {
           <Image source={editImage} />
         </TouchableOpacity>
         <TouchableOpacity
-          style={{ position: "absolute", right: 26 }}
+          style={{
+            position: "absolute",
+            right: 26,
+          }}
           onPress={() => exitFolderPopUp()}
         >
           <Image source={trashcanImage} />

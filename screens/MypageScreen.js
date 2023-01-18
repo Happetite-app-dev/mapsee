@@ -10,9 +10,9 @@ import {
   Button,
 } from "react-native";
 
+import NoticeOn from "../assets/icons/notice_on.svg";
 import AppContext from "../components/AppContext";
 
-const NoticeImage = require("../assets/icons/notice_on.png");
 const fontImage = require("../assets/image/font.png");
 const friendListImage = require("../assets/image/friendList.png");
 const themeImage = require("../assets/image/theme.png");
@@ -31,7 +31,6 @@ const MypageScreen = ({ navigation }) => {
   const myContext = useContext(AppContext);
   const myID = myContext.myID;
   const myName = myContext.myLastName + myContext.myFirstName;
-  const tabBarHandler = myContext.tabBarHandler;
 
   return (
     <SafeAreaView style={styles.container}>
@@ -113,7 +112,7 @@ const MypageScreen = ({ navigation }) => {
               paddingLeft: 18,
             }}
           >
-            <Image source={NoticeImage} />
+            <NoticeOn width={24} height={24} />
             <Text
               style={{ fontSize: 14, fontWeight: "bold", left: 14, top: 3 }}
             >
@@ -170,7 +169,6 @@ const MypageScreen = ({ navigation }) => {
       </View>
 
       <TouchableOpacity
-        onPress={() => tabBarHandler(false)}
         style={{
           position: "absolute",
           width: "100%",
@@ -185,7 +183,6 @@ const MypageScreen = ({ navigation }) => {
         </Text>
       </TouchableOpacity>
       <TouchableOpacity
-        onPress={() => tabBarHandler(true)}
         style={{
           position: "absolute",
           width: "100%",

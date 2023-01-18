@@ -32,7 +32,6 @@ const App = () => {
   const [myFirstName, setMyFirstName] = useState(null);
   const [myLastName, setMyLastName] = useState(null);
   const [myEmail, setMyEmail] = useState(null);
-  const [tabBarVisible, setTabBarVisible] = useState(true);
 
   const initMyUID = (myUID_) => {
     setMyUID(myUID_);
@@ -49,9 +48,6 @@ const App = () => {
   const initMyEmail = (myEmail_) => {
     setMyEmail(myEmail_);
   };
-  const tabBarHandler = (b) => {
-    setTabBarVisible(b);
-  };
 
   const userSettings = {
     myUID,
@@ -59,13 +55,11 @@ const App = () => {
     myFirstName,
     myLastName,
     myEmail,
-    tabBarVisible,
     initMyUID,
     initMyID,
     initMyFirstName,
     initMyLastName,
     initMyEmail,
-    tabBarHandler,
   };
   return (
     <AppContext.Provider value={userSettings}>
