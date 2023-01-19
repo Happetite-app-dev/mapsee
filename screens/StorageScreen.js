@@ -15,6 +15,7 @@ import {
 
 import AppContext from "../components/AppContext";
 import RecordFlatList from "../components/RecordFlatList";
+import { storage } from "../firebase";
 
 const addFolderImage = require("../assets/image/addFolder.png");
 const folderImage = require("../assets/image/folder.png");
@@ -105,6 +106,9 @@ const StorageScreen = ({ navigation, route }) => {
 
   const [masterDataSource, setMasterDataSource] = useState({}); //shortened record가 쌓여있음 {recordID, title, folderID, placeName, date, text, photos}
 
+  useEffect(() => {
+    console.log(masterDataSource);
+  }, [masterDataSource]);
   const gotoMakeFolderBottomSheetScreen = () => {
     navigation.navigate("MakeFolderBottomSheetScreen", {
       folderID: "",

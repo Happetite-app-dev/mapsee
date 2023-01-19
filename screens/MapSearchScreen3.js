@@ -16,10 +16,12 @@ import {
 } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 
+import GoBack from "../assets/icons/goBack.svg";
+import GoHome1 from "../assets/icons/goHome1.svg";
+import GoHome2 from "../assets/icons/goHome2.svg";
+import SearchMarker from "../assets/icons/marker.svg";
+
 const bottomSheetImage = require("../assets/image/bottomSheetScroll.png");
-const closeImage = require("../assets/image/close.png");
-const closeImage1 = require("../assets/image/close_1.png");
-const goBackImage = require("../assets/image/goBack.png");
 const mapStyle = require("../assets/mapDesign.json");
 
 Geocode.setApiKey("AIzaSyDBq4tZ1QLm1R7iPH8O4dTvebVGWgkRPks");
@@ -222,7 +224,7 @@ const MapSearchScreen3 = ({ navigation, route }) => {
             }}
             style={styles.goBack}
           >
-            <Image source={goBackImage} style={styles.goBackImage} />
+            <GoBack style={styles.goBackImage} />
           </View>
           <View style={styles.title}>
             <Text style={styles.titleText}>{route.params[0]}</Text>
@@ -235,16 +237,16 @@ const MapSearchScreen3 = ({ navigation, route }) => {
             style={styles.goHome}
           >
             <View style={{ position: "relative" }}>
-              <Image style={styles.goHomeImage} source={closeImage} />
-              <Image style={styles.goHomeImage} source={closeImage1} />
+              <GoHome1 style={styles.goHomeImage} />
+              <GoHome2 style={styles.goHomeImage} />
             </View>
           </View>
         </View>
         {latList.map((item, index) => {
           return (
-            <Marker
-              coordinate={{ latitude: item, longitude: lngList[index] }}
-            />
+            <Marker coordinate={{ latitude: item, longitude: lngList[index] }}>
+              <SearchMarker />
+            </Marker>
           );
         })}
       </MapView>

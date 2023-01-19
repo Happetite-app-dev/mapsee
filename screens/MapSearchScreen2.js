@@ -18,15 +18,16 @@ import {
 import Geocoder from "react-native-geocoding";
 import MapView, { Marker } from "react-native-maps";
 
+import CreateNote from "../assets/icons/createNote.svg";
+import GoBack from "../assets/icons/goBack.svg";
+import GoHome1 from "../assets/icons/goHome1.svg";
+import GoHome2 from "../assets/icons/goHome2.svg";
+import SelectedMarker1 from "../assets/icons/selectedMarker1.svg";
+import SelectedMarker2 from "../assets/icons/selectedMarker2.svg";
 import AppContext from "../components/AppContext";
 import RecordFlatList from "../components/RecordFlatList";
 
-const CreateNoteImage = require("../assets/image/CreateNote.png");
 const bottomSheetImage = require("../assets/image/bottomSheetScroll.png");
-const closeImage = require("../assets/image/close.png");
-const closeImage1 = require("../assets/image/close_1.png");
-const goBackImage = require("../assets/image/goBack.png");
-const targetLocationImage = require("../assets/image/targetLocation.png");
 const mapStyle = require("../assets/mapDesign.json");
 
 const BottomSheetScreen = ({
@@ -193,7 +194,7 @@ const BottomSheetScreen = ({
             underlayColor="white"
             onPress={gotoEditScreen}
           >
-            <Image source={CreateNoteImage} resizeMode="contain" />
+            <CreateNote resizeMode="contain" />
           </TouchableHighlight>
         </View>
       </View>
@@ -218,7 +219,7 @@ const BottomSheetScreen = ({
           }}
         >
           <View style={styles.goBack}>
-            <Image source={goBackImage} style={styles.goBackImage} />
+            <GoBack style={styles.goBackImage} />
           </View>
           <View style={styles.title}>
             <Text style={styles.titleText}>{targetName}</Text>
@@ -231,8 +232,8 @@ const BottomSheetScreen = ({
             style={styles.goHome}
           >
             <View style={{ position: "relative" }}>
-              <Image style={styles.goHomeImage2} source={closeImage} />
-              <Image style={styles.goHomeImage2} source={closeImage1} />
+              <GoHome1 style={styles.goHomeImage2} />
+              <GoHome2 style={styles.goHomeImage2} />
             </View>
           </View>
         </View>
@@ -268,7 +269,7 @@ const BottomSheetScreen = ({
           underlayColor="blue"
           onPress={gotoEditScreen}
         >
-          <Image source={CreateNoteImage} resizeMode="contain" />
+          <CreateNote resizeMode="contain" />
         </TouchableHighlight>
       </View>
     );
@@ -431,7 +432,7 @@ const MapSearchScreen2 = ({ navigation, route }) => {
             }}
             style={styles.goBack}
           >
-            <Image source={goBackImage} style={styles.goBackImage} />
+            <GoBack style={styles.goBackImage} />
           </View>
           <View style={styles.title}>
             <Text style={styles.titleText}>{target.name}</Text>
@@ -444,20 +445,19 @@ const MapSearchScreen2 = ({ navigation, route }) => {
             style={styles.goHome}
           >
             <View style={{ position: "relative" }}>
-              <Image style={styles.goHomeImage} source={closeImage} />
-              <Image style={styles.goHomeImage} source={closeImage1} />
+              <GoHome1 style={styles.goHomeImage} />
+              <GoHome2 style={styles.goHomeImage} />
             </View>
           </View>
         </View>
-        <Marker coordinate={target.lctn} opacity={targetShown ? 100 : 0}>
-          <Image
-            source={targetLocationImage}
-            style={{
-              width: 37,
-              height: 37,
-              resizeMode: "contain",
-              tintColor: "blue",
-            }}
+        <Marker
+          coordinate={target.lctn}
+          opacity={targetShown ? 100 : 0}
+          style={{ position: "relative" }}
+        >
+          <SelectedMarker1 style={{ position: "absolute" }} />
+          <SelectedMarker2
+            style={{ position: "absolute", marginLeft: 8.89, marginTop: 8.89 }}
           />
         </Marker>
       </MapView>
@@ -508,13 +508,14 @@ const styles = StyleSheet.create({
     width: 30,
     height: 18,
     position: "absolute",
+
+    marginTop: 51,
+    marginLeft: 31,
   },
   goBackImage: {
     width: 9,
     height: 18,
     resizeMode: "contain",
-    marginTop: 51,
-    marginLeft: 31,
     tintColor: "black",
   },
   title: {
@@ -538,9 +539,6 @@ const styles = StyleSheet.create({
   goHomeImage: {
     width: 15,
     height: 15,
-
-    marginLeft: 347.5,
-    marginTop: 52.5,
     position: "absolute",
   },
   goHomeImage2: {
