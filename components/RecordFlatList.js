@@ -20,27 +20,23 @@ const getImage = async (recordID, photo, set) => {
   set(image);
 };
 
+const gotoEditScreen = (stackNavigation, item) => {
+  stackNavigation.navigate("EditScreen", {
+    recordID: item.recordID,
+    ...item.recordData,
+  });
+};
+
 const RecordFlatList = ({ recordDataSource, stackNavigation }) => {
-  const gotoEditScreen = (item) => {
-    stackNavigation.navigate("EditScreen", {
-      recordID: item.recordID,
-      ...item.recordData,
-    });
-  };
-
   const IndividualRecord = ({ item }) => {
-    const [url, setUrl] = useState();
-
-    if (item.recordData.photos !== undefined)
-      getImage(item.recordID, item.recordData.photos[0], setUrl);
-
+    console.log("item", Object.values(item.recordData.photos)[0]);
     return (
       <View style={styles.item}>
-        <TouchableOpacity onPress={() => gotoEditScreen(item)}>
+        <TouchableOpacity onPress={() => gotoEditScreen(stackNavigation, item)}>
           <View style={{ flexDirection: "column", justifyContent: "center" }}>
             <View style={{ width: 158, height: 148, alignItems: "center" }}>
-              {item.recordData.photos !== undefined &&
-              item.recordData.photos.length >= 1 ? (
+              {Object.values(item.recordData.photos) !== undefined &&
+              Object.values(item.recordData.photos).length >= 1 ? (
                 <View>
                   <Image
                     style={{
@@ -49,7 +45,7 @@ const RecordFlatList = ({ recordDataSource, stackNavigation }) => {
                       borderTopLeftRadius: 8,
                       borderTopRightRadius: 8,
                     }}
-                    source={{ uri: url }}
+                    source={{ uri: Object.values(item.recordData.photos)[0] }}
                   />
                 </View>
               ) : (

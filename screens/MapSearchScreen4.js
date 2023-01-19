@@ -9,10 +9,9 @@ import {
   Image,
 } from "react-native";
 
-const closeImage = require("../assets/image/close.png");
-const closeImage1 = require("../assets/image/close_1.png");
-const goBackImage = require("../assets/image/goBack.png");
-
+import GoBack from "../assets/icons/goBack.svg";
+import GoHome1 from "../assets/icons/goHome1.svg";
+import GoHome2 from "../assets/icons/goHome2.svg";
 Geocode.setApiKey("AIzaSyDBq4tZ1QLm1R7iPH8O4dTvebVGWgkRPks");
 Geocode.setLanguage("ko");
 
@@ -80,7 +79,7 @@ const MapSearchScreen4 = ({ navigation, route }) => {
           }}
           style={styles.goBack}
         >
-          <Image source={goBackImage} style={styles.goBackImage} />
+          <GoBack style={styles.goBackImage} />
         </View>
         <View style={styles.title}>
           <Text style={styles.titleText}>{route.params[0]}</Text>
@@ -93,8 +92,8 @@ const MapSearchScreen4 = ({ navigation, route }) => {
           style={styles.goHome}
         >
           <View style={{ position: "relative" }}>
-            <Image style={styles.goHomeImage} source={closeImage} />
-            <Image style={styles.goHomeImage} source={closeImage1} />
+            <GoHome1 style={styles.goHomeImage} />
+            <GoHome2 style={styles.goHomeImage} />
           </View>
         </View>
       </View>

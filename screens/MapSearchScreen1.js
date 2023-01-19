@@ -5,10 +5,10 @@ import { Image, StyleSheet, Text, View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 
-const searchHistoryImage = require("../assets/image/Location.png");
-const closeImage = require("../assets/image/close.png");
-const closeImage1 = require("../assets/image/close_1.png");
-const goBackImage = require("../assets/image/goBack.png");
+import GoBack from "../assets/icons/goBack.svg";
+import GoHome1 from "../assets/icons/goHome1.svg";
+import GoHome2 from "../assets/icons/goHome2.svg";
+import SearchHistory from "../assets/icons/searchPlace.svg";
 
 const gotoSearch2Screen = ({ navigation, data }) => {
   navigation.navigate("MapSearchScreen2", data);
@@ -22,7 +22,7 @@ const renderDescription = (data) => {
   return (
     <View style={styles.descriptionContainer}>
       <View style={styles.descriptionImage}>
-        <Image style={{ width: 16 }} source={searchHistoryImage} />
+        <SearchHistory style={{ width: 16 }} />
       </View>
       <View style={{ flexDirection: "column" }}>
         <View style={styles.descriptionMainText}>
@@ -125,7 +125,7 @@ const MapSearchScreen1 = ({ navigation, route }) => {
           gotoSearch2Screen({ navigation, data: item });
         }}
       >
-        <Image source={searchHistoryImage} />
+        <SearchHistory />
         <Text style={{ marginLeft: 20, fontSize: 14, lineHeight: 24 }}>
           {item.name}
         </Text>
@@ -142,7 +142,7 @@ const MapSearchScreen1 = ({ navigation, route }) => {
           }}
           style={styles.goBack}
         >
-          <Image source={goBackImage} style={styles.goBackImage} />
+          <GoBack style={styles.goBackImage} />
         </View>
         <View
           onTouchEndCapture={() => {
@@ -151,14 +151,8 @@ const MapSearchScreen1 = ({ navigation, route }) => {
           style={styles.goHome}
         >
           <View style={{ position: "relative" }}>
-            <Image
-              style={{ width: 15, height: 15, position: "absolute" }}
-              source={closeImage}
-            />
-            <Image
-              style={{ width: 15, height: 15, position: "absolute" }}
-              source={closeImage1}
-            />
+            <GoHome1 style={{ width: 15, height: 15, position: "absolute" }} />
+            <GoHome2 style={{ width: 15, height: 15, position: "absolute" }} />
           </View>
         </View>
       </View>
@@ -267,7 +261,7 @@ const styles = StyleSheet.create({
   historyItem: {
     height: 48,
     width: 320,
-    marginLeft: 24,
+    marginLeft: 20,
     flexDirection: "row",
   },
   buttons: {
@@ -297,8 +291,8 @@ const styles = StyleSheet.create({
     display: "flex",
   },
   descriptionImage: {
-    marginTop: 31,
-    marginLeft: 27,
+    marginTop: 28,
+    marginLeft: 23,
     width: 16,
     height: 18,
   },

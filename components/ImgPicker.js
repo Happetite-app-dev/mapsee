@@ -1,6 +1,5 @@
 import * as ImagePicker from "expo-image-picker";
 import * as Permissions from "expo-permissions";
-import { getStorage, ref, getDownloadURL } from "firebase/storage";
 import React, { useEffect, useState } from "react";
 import {
   View,
@@ -15,13 +14,6 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 
 import { storage } from "../firebase";
 import ImageCarousel from "./ImageCarousel";
-
-const getImage = async (recordID, photo, set) => {
-  const image = await getDownloadURL(
-    ref(storage, `images/${recordID}/${photo.split("/").at(-1)}`)
-  );
-  set(image);
-};
 
 const ImgPicker = ({ onImageTaken, defaultPhotos, IsEditable }) => {
   const [pickedImages, setPickedImages] = useState(defaultPhotos);
@@ -53,6 +45,10 @@ const ImgPicker = ({ onImageTaken, defaultPhotos, IsEditable }) => {
       return false;
     }
     return true;
+  };
+
+  const deleteImage = (image) => {
+    console.log(deleteImage, image);
   };
 
   const takeImageHandlerCam = async () => {
@@ -102,7 +98,15 @@ const ImgPicker = ({ onImageTaken, defaultPhotos, IsEditable }) => {
                 <Text style={{ fontSize: 35, color: "grey" }}>+</Text>
               </TouchableOpacity>
               {pickedImages.map((image) => {
-                return <Image style={styles.image} source={{ uri: image }} />;
+                return (
+                  <View>
+                    <Button
+                      title="사진 제거거거걱"
+                      onPress={deleteImage(image)}
+                    />
+                    <Image style={styles.image} source={{ uri: image }} />
+                  </View>
+                );
               })}
             </ScrollView>
           </View>
@@ -116,6 +120,7 @@ const ImgPicker = ({ onImageTaken, defaultPhotos, IsEditable }) => {
           ) : (
             <ImageCarousel images={pickedImages} />
           )}
+
         </View>
       )}
     </View>

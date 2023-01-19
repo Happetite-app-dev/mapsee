@@ -48,12 +48,41 @@ const trashcanImage = require("../assets/image/trashcan.png");
 const defaultFolderID = "-NB6gdHZgh_liXbnuOLr";
 const defaultFolderName = "폴더1";
 
-const uploadImage = (imageArray, newRecordID) => {
-  if (imageArray === null) return;
+const uploadImage = async (image, imageName, newRecordID) => {
+  const imageRef = ref_storage(storage, `images/${newRecordID}/${imageName}`);
+  // `images === 참조값이름(폴더이름), / 뒤에는 파일이름 어떻게 지을지
+  const blob = await new Promise((resolve, reject) => {
+    // image 불러오기 위한 XML 만든다
+    const xhr = new XMLHttpRequest();
+    // imagePicker통해 선택된 사진을 blob형태로 가져온다
+    xhr.open("GET", image, true);
+    xhr.responseType = "blob";
+    // XML 상태 확인
+    xhr.onload = function () {
+      // 성공하면 Promise의 값으로 xhr.response 반환
+      resolve(xhr.response);
+    };
+    xhr.onerror = function () {
+      // 실패하면 Promise의 값으로 Error 반환
+      reject(new TypeError("Network request failed"));
+    };
+    // "GET" 인 경우에는 서버에 데이터를 보낼 필요 없음
+    xhr.send(null);
+  });
 
-  imageArray.map(async (image) => {
-    const image1 = image.split("/");
-    const imageName = image1[image1.length - 1];
+  await uploadBytes(imageRef, blob, {
+    connectType: "image/png",
+  }).then((snapshot) => {});
+
+  blob.close();
+
+  return await getDownloadURL(imageRef);
+};
+
+const uploadImages = (imageArray, imageNameArray, newRecordID) => {
+  imageArray.map(async (image, index) => {
+    const imageName = imageNameArray[index];
+    console.log("image Name", index, imageName);
     const imageRef = ref_storage(storage, `images/${newRecordID}/${imageName}`);
     // `images === 참조값이름(폴더이름), / 뒤에는 파일이름 어떻게 지을지
     const blob = await new Promise((resolve, reject) => {
@@ -81,13 +110,6 @@ const uploadImage = (imageArray, newRecordID) => {
 
     blob.close();
   });
-};
-
-const getImage = async (recordID, photo, set) => {
-  const image = await getDownloadURL(
-    ref(storage, `images/${recordID}/${photo.split("/").at(-1)}`)
-  );
-  set(image);
 };
 
 const saveData = async (
@@ -142,7 +164,6 @@ const saveData = async (
         day: date.getDate(),
       },
       folderName,
-      photos: selectedPhotos,
       text,
     }).key;
     const reference2 = ref(
@@ -150,8 +171,19 @@ const saveData = async (
       `/folders/${folderID}/placeRecords/${placeID}/${newRecordID}`
     ); //folder에 recordID를 넣고
     set(reference2, true); //////// 여기에 사진 저장 함수 넣기
-    //console.log("photooooo", newRecordID, selectedPhotos);
-    uploadImage(selectedPhotos, newRecordID);
+    selectedPhotos.map(async (image) => {
+      const referenceImage = ref(db, "/records/" + newRecordID + "/photos");
+      const imageID = push(referenceImage, image).key;
+
+      const url = await uploadImage(image, imageID, newRecordID);
+      const referenceUrl = ref(
+        db,
+        "/records/" + newRecordID + "/photos/" + imageID
+      );
+      set(referenceUrl, url);
+    });
+
+    //uploadImages(selectedPhotos, imageIDs, newRecordID);
     //push 알림과 내부 알림 보내기(나에게는 스낵바만 띄우기)
     onValue(ref(db, `/folders/${folderID}/userIDs`), (snapshot) => {
       console.log(snapshot);
@@ -230,8 +262,18 @@ const saveData = async (
       ); //folder에 recordID를 넣고
       set(reference4, true);
 
-      console.log("photooooo2", selectedPhotos);
-      uploadImage(selectedPhotos, recordID);
+      selectedPhotos.map(async (image) => {
+        const referenceImage = ref(db, "/records/" + recordID + "/photos");
+        const imageID = push(referenceImage, image).key;
+
+        const url = await uploadImage(image, imageID, recordID);
+        const referenceUrl = ref(
+          db,
+          "/records/" + recordID + "/photos/" + imageID
+        );
+        set(referenceUrl, url);
+      });
+
       //기존 기록의 수정이나 삭제는 알림 없어도 됨.
     }
   }
@@ -382,8 +424,8 @@ const EditScreen = ({ navigation, route }) => {
   const [imageUrls, setImageUrls] = useState([]);
 
   useEffect(() => {
-    //console.log("selectedPhotos", selectedPhotos);
-    selectedPhotos.map(async (photo) => {
+    console.log("selectedPhotos", selectedPhotos);
+    Object.values(selectedPhotos).map(async (photo) => {
       const name = photo.split("/").at(-1);
       //console.log("photo updating", `images/${recordID}/${name}`);
 
