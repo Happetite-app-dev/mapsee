@@ -30,6 +30,54 @@ const { height } = Dimensions.get("window");
 
 const db = getDatabase();
 
+const gotoApp = ({
+  myUID_,
+  initMyUID,
+  initMyID,
+  initMyFirstName,
+  initMyLastName,
+  initMyEmail,
+  startTutorial,
+  navigation,
+}) => {
+  initMyUID(myUID_);
+  onValue(ref(db, "/users/" + myUID_), (snapshot) => {
+    initMyID(snapshot.child("id").val());
+    initMyFirstName(snapshot.child("firstName").val());
+    initMyLastName(snapshot.child("lastName").val());
+    initMyEmail(snapshot.child("email").val());
+  });
+  if (!startTutorial) {
+    navigation.navigate("Tabs");
+  }
+};
+const handleLogin = ({
+  email,
+  password,
+  initMyUID,
+  initMyID,
+  initMyFirstName,
+  initMyLastName,
+  initMyEmail,
+  startTutorial,
+  navigation,
+}) => {
+  signInWithEmailAndPassword(auth, email, password)
+    .then((userCredentials) => {
+      const user = userCredentials.user;
+      gotoApp({
+        myUID_: user.uid,
+        initMyUID,
+        initMyID,
+        initMyFirstName,
+        initMyLastName,
+        initMyEmail,
+        startTutorial,
+        navigation,
+      });
+    })
+    .catch((error) => alert(error.message));
+};
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -37,27 +85,20 @@ const LoginScreen = ({ navigation }) => {
 
   const myContext = useContext(AppContext);
   const startTutorial = false;
-
-  const gotoApp = (myUID_) => {
-    myContext.initMyUID(myUID_);
-    onValue(ref(db, "/users/" + myUID_), (snapshot) => {
-      myContext.initMyID(snapshot.child("id").val());
-      myContext.initMyFirstName(snapshot.child("firstName").val());
-      myContext.initMyLastName(snapshot.child("lastName").val());
-      myContext.initMyEmail(snapshot.child("email").val());
-    });
-    if (!startTutorial) {
-      navigation.navigate("Tabs");
-    }
+  const initMyUID = (uid) => {
+    myContext.initMyUID(uid);
   };
-
-  const handleLogin = () => {
-    signInWithEmailAndPassword(auth, email, password)
-      .then((userCredentials) => {
-        const user = userCredentials.user;
-        gotoApp(user.uid);
-      })
-      .catch((error) => alert(error.message));
+  const initMyID = (id) => {
+    myContext.initMyID(id);
+  };
+  const initMyFirstName = (firstname) => {
+    myContext.initMyFirstName(firstname);
+  };
+  const initMyLastName = (lastname) => {
+    myContext.initMyLastName(lastname);
+  };
+  const initMyEmail = (email) => {
+    myContext.initMyEmail(email);
   };
 
   const ContinueButton = () => {
@@ -71,7 +112,22 @@ const LoginScreen = ({ navigation }) => {
     if (valid) {
       return (
         <View style={styles.buttonContainer}>
-          <TouchableOpacity onPress={handleLogin} style={styles.button}>
+          <TouchableOpacity
+            onPress={() =>
+              handleLogin({
+                email,
+                password,
+                initMyUID,
+                initMyID,
+                initMyFirstName,
+                initMyLastName,
+                initMyEmail,
+                startTutorial,
+                navigation,
+              })
+            }
+            style={styles.button}
+          >
             <View style={{ justifyContent: "center", alignItems: "center" }}>
               <Text style={styles.buttonText}>계속하기</Text>
             </View>

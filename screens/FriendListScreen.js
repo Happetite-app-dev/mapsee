@@ -57,6 +57,58 @@ const deleteFriend = async (myUID, friendUID) => {
   });
 };
 
+const IndividualFriend = ({ myUID, userID, id, name }) => {
+  return (
+    <View
+      style={{
+        alignSelf: "center",
+        width: "100%",
+        height: 75,
+        paddingVertical: 12,
+        paddingHorizontal: 24,
+        flexDirection: "row",
+      }}
+    >
+      <View
+        style={{
+          flex: 0.5,
+          flexDirection: "column",
+          justifyContent: "space-between",
+        }}
+      >
+        <Text style={{ fontSize: 14, fontWeight: "bold", top: 5 }}>{name}</Text>
+        <Text
+          style={{
+            fontSize: 14,
+            fontWeight: "400",
+            color: "gray",
+            bottom: 5,
+          }}
+        >
+          {id}
+        </Text>
+      </View>
+      <View style={{ flex: 0.5, justifyContent: "center" }}>
+        <TouchableOpacity
+          onPress={() => deleteFriendPopUp(myUID, userID)}
+          style={{
+            position: "absolute",
+            right: 0,
+            width: 40,
+            height: 30,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Text style={{ fontSize: 14, fontWeight: "500", color: "#5ED3CC" }}>
+            차단
+          </Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+};
+
 const FriendListScreen = ({ navigation }) => {
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
@@ -103,65 +155,14 @@ const FriendListScreen = ({ navigation }) => {
       });
     }
   }, []);
-
-  const IndividualFriend = ({ userID, id, name }) => {
-    return (
-      <View
-        style={{
-          alignSelf: "center",
-          width: "100%",
-          height: 75,
-          paddingVertical: 12,
-          paddingHorizontal: 24,
-          flexDirection: "row",
-        }}
-      >
-        <View
-          style={{
-            flex: 0.5,
-            flexDirection: "column",
-            justifyContent: "space-between",
-          }}
-        >
-          <Text style={{ fontSize: 14, fontWeight: "bold", top: 5 }}>
-            {name}
-          </Text>
-          <Text
-            style={{
-              fontSize: 14,
-              fontWeight: "400",
-              color: "gray",
-              bottom: 5,
-            }}
-          >
-            {id}
-          </Text>
-        </View>
-        <View style={{ flex: 0.5, justifyContent: "center" }}>
-          <TouchableOpacity
-            onPress={() => deleteFriendPopUp(myUID, userID)}
-            style={{
-              position: "absolute",
-              right: 0,
-              width: 40,
-              height: 30,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Text style={{ fontSize: 14, fontWeight: "500", color: "#5ED3CC" }}>
-              차단
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    );
-  };
-
   const renderFriendList = ({ item }) => (
-    <IndividualFriend userID={item.userID} id={item.id} name={item.name} />
+    <IndividualFriend
+      myUID={myUID}
+      userID={item.userID}
+      id={item.id}
+      name={item.name}
+    />
   );
-
   return (
     <SafeAreaView style={styles.container}>
       <View

@@ -3,21 +3,22 @@ import { Animated, Text, View, TouchableOpacity, Button } from "react-native";
 
 import MakeFolderBottomSheet from "../components/MakeFolderBottomSheet";
 
+const toggleAnimation = ({ showAnimation, setAnimationValue }) => {
+  const val = -1000;
+  Animated.timing(showAnimation, {
+    useNativeDriver: false,
+    toValue: val,
+    duration: 350,
+  }).start();
+  setAnimationValue(val);
+};
+
 const MakeFolderBottomSheetScreen = ({ navigation, route }) => {
   const { folderID, folderName, folderColor, folderUserIDs, recordDataSource } =
     route.params;
   const [animationValue, setAnimationValue] = useState(0);
 
   const showAnimation = useRef(new Animated.Value(animationValue)).current;
-  const toggleAnimation = () => {
-    const val = -1000;
-    Animated.timing(showAnimation, {
-      useNativeDriver: false,
-      toValue: val,
-      duration: 350,
-    }).start();
-    setAnimationValue(val);
-  };
 
   return (
     <View
@@ -26,7 +27,7 @@ const MakeFolderBottomSheetScreen = ({ navigation, route }) => {
       <View
         style={{ width: "100%", height: "26%", backgroundColor: "transparent" }}
         onTouchEndCapture={() => {
-          toggleAnimation();
+          toggleAnimation({ showAnimation, setAnimationValue });
           navigation.goBack();
         }}
       />

@@ -278,8 +278,50 @@ const saveData = async (
     }
   }
 };
-
-const removeData = async (recordID, folderID, placeID) => {
+const storeRecord = async ({
+  navigation,
+  myUID,
+  myID,
+  myFirstName,
+  myLastName,
+  title_,
+  place,
+  placeID,
+  address,
+  lctn,
+  date_,
+  folderID_,
+  folderName_,
+  selectedPhotos,
+  text_,
+  writeDate,
+  recordID,
+  originalfolderID,
+  IsNewRecord,
+}) => {
+  await saveData(
+    myUID,
+    myID,
+    myFirstName,
+    myLastName,
+    title_,
+    place,
+    placeID,
+    address,
+    lctn,
+    date_,
+    folderID_,
+    folderName_,
+    selectedPhotos,
+    text_,
+    writeDate,
+    recordID,
+    originalfolderID
+  ).then(() => {
+    IsNewRecord ? navigation.pop() : navigation.navigate("Storage"); //realtimeDataBase가 모두 업데이트 된후
+  });
+};
+const removeData = async ({ recordID, folderID, placeID }) => {
   const db = getDatabase();
   const reference1 = ref(db, "/records/" + recordID);
   await remove(reference1)
@@ -304,6 +346,31 @@ const removeData = async (recordID, folderID, placeID) => {
         }
       )
     );
+};
+
+const removeRecord = async ({ navigation, recordID, folderID_, placeID }) => {
+  await removeData({ recordID, folderID_, placeID }).then(
+    () => navigation.navigate("Storage") //realtimeDataBase가 모두 업데이트 된후
+  );
+};
+
+const removeRecordPopUp = ({ navigation, recordID, folderID_, placeID }) => {
+  return Alert.alert(
+    "정말 삭제하시겠습니까?",
+    "",
+    [
+      { text: "취소" },
+      {
+        text: "삭제",
+        onPress: () =>
+          removeRecord({ navigation, recordID, folderID_, placeID }),
+        style: "default",
+      },
+    ],
+    {
+      cancelable: false,
+    }
+  );
 };
 
 const EditScreen = ({ navigation, route }) => {
@@ -360,65 +427,22 @@ const EditScreen = ({ navigation, route }) => {
     console.log("selectedPhotos", selectedPhotos);
     Object.values(selectedPhotos).map(async (photo) => {
       const name = photo.split("/").at(-1);
-      console.log("photo updating", `images/${recordID}/${name}`);
+      //console.log("photo updating", `images/${recordID}/${name}`);
 
       const url = await getDownloadURL(
         ref_storage(storage, `images/${recordID}/${name}`)
       );
-      console.log("url", url);
+      //console.log("url", url);
       setImageUrls([...imageUrls, url]);
-      console.log("imageUrls changed");
+      //console.log("imageUrls changed");
     });
   }, [selectedPhotos]);
 
   useEffect(() => {
-    console.log("imageUrls", imageUrls);
+    //console.log("imageUrls", imageUrls);
   }, [imageUrls]);
 
   const [text_, setText_] = useState(text || "");
-  const storeRecord = async () => {
-    await saveData(
-      myUID,
-      myID,
-      myFirstName,
-      myLastName,
-      title_,
-      place,
-      placeID,
-      address,
-      lctn,
-      date_,
-      folderID_,
-      folderName_,
-      selectedPhotos,
-      text_,
-      writeDate,
-      recordID,
-      originalfolderID
-    ).then(() => {
-      IsNewRecord ? navigation.pop() : navigation.navigate("Storage"); //realtimeDataBase가 모두 업데이트 된후
-    });
-  };
-
-  const removeRecord = async () => {
-    await removeData(recordID, folderID_, placeID).then(
-      () => navigation.navigate("Storage") //realtimeDataBase가 모두 업데이트 된후
-    );
-  };
-
-  const removeRecordPopUp = () => {
-    return Alert.alert(
-      "정말 삭제하시겠습니까?",
-      "",
-      [
-        { text: "취소" },
-        { text: "삭제", onPress: () => removeRecord(), style: "default" },
-      ],
-      {
-        cancelable: false,
-      }
-    );
-  };
 
   return (
     <SafeAreaView
@@ -474,7 +498,9 @@ const EditScreen = ({ navigation, route }) => {
             </TouchableHighlight>
             <TouchableHighlight
               style={{ right: 14, position: "absolute", width: 18, height: 18 }}
-              onPress={() => removeRecordPopUp()}
+              onPress={() =>
+                removeRecordPopUp({ navigation, recordID, folderID_, placeID })
+              }
             >
               <Image source={trashcanImage} />
             </TouchableHighlight>
@@ -585,7 +611,29 @@ const EditScreen = ({ navigation, route }) => {
             </TouchableOpacity>
             <Text>|</Text>
             <TouchableOpacity
-              onPress={storeRecord}
+              onPress={() =>
+                storeRecord({
+                  navigation,
+                  myUID,
+                  myID,
+                  myFirstName,
+                  myLastName,
+                  title_,
+                  place,
+                  placeID,
+                  address,
+                  lctn,
+                  date_,
+                  folderID_,
+                  folderName_,
+                  selectedPhotos,
+                  text_,
+                  writeDate,
+                  recordID,
+                  originalfolderID,
+                  IsNewRecord,
+                })
+              }
               style={{ width: 160, padding: 15, marginLeft: 7 }}
             >
               <Text style={{ alignSelf: "center", fontWeight: "bold" }}>

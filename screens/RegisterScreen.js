@@ -18,7 +18,27 @@ import AppContext from "../components/AppContext";
 import { auth } from "../firebase";
 
 const { height } = Dimensions.get("window");
-
+const gotoApp = ({ myID_, initMyID, startTutorial, navigation }) => {
+  initMyID(myID_);
+  if (!startTutorial) {
+    navigation.navigate("Tabs");
+  }
+};
+const handleSignUp = ({
+  email,
+  password,
+  initMyID,
+  startTutorial,
+  navigation,
+}) => {
+  createUserWithEmailAndPassword(auth, email, password)
+    .then((userCredentials) => {
+      const user = userCredentials.user;
+      gotoApp({ myID_: user.uid, initMyID, startTutorial, navigation });
+      //navigation.navigate("AfterLoginScreen", user.uid)
+    })
+    .catch((error) => alert(error.message));
+};
 const RegisterScreen = ({ navigation }) => {
   const myContext = useContext(AppContext);
   const startTutorial = false;
@@ -27,11 +47,8 @@ const RegisterScreen = ({ navigation }) => {
   const [passwordCheck, setPasswordCheck] = useState("");
   const [id, setId] = useState("");
   const [valid, setValid] = useState(false);
-  const gotoApp = (myID_) => {
-    myContext.initMyID(myID_);
-    if (!startTutorial) {
-      navigation.navigate("Tabs");
-    }
+  const initMyID = (id) => {
+    myContext.initMyID(id);
   };
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -42,16 +59,6 @@ const RegisterScreen = ({ navigation }) => {
 
     return unsubscribe;
   }, []);
-
-  const handleSignUp = () => {
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredentials) => {
-        const user = userCredentials.user;
-        gotoApp(user.uid);
-        //navigation.navigate("AfterLoginScreen", user.uid)
-      })
-      .catch((error) => alert(error.message));
-  };
 
   const ContinueButton = () => {
     useEffect(() => {
@@ -66,7 +73,12 @@ const RegisterScreen = ({ navigation }) => {
     if (valid) {
       return (
         <View style={styles.buttonContainer}>
-          <TouchableOpacity onPress={handleSignUp} style={styles.button}>
+          <TouchableOpacity
+            onPress={() =>
+              handleSignUp(email, password, initMyID, startTutorial, navigation)
+            }
+            style={styles.button}
+          >
             <View style={{ justifyContent: "center", alignItems: "center" }}>
               <Text style={styles.buttonText}>계속하기</Text>
             </View>

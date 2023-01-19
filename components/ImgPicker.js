@@ -13,6 +13,7 @@ import {
 import { TouchableOpacity } from "react-native-gesture-handler";
 
 import { storage } from "../firebase";
+import ImageCarousel from "./ImageCarousel";
 
 const ImgPicker = ({ onImageTaken, defaultPhotos, IsEditable }) => {
   const [pickedImages, setPickedImages] = useState(defaultPhotos);
@@ -111,23 +112,15 @@ const ImgPicker = ({ onImageTaken, defaultPhotos, IsEditable }) => {
           </View>
         </View>
       ) : (
-        <View style={{ height: 110, width: 360 }}>
-          <ScrollView
-            showsHorizontalScrollIndicator={false}
-            horizontal
-            style={{ height: 110 }}
-          >
-            {Object.values(pickedImages).length == 0 ? (
-              <Text style={{ fontSize: 35, color: "grey" }}>
-                저장된 사진이 없습니다
-              </Text>
-            ) : (
-              Object.values(pickedImages).map((image) => {
-                console.log("ImgPicker", image);
-                return <Image style={styles.image} source={{ uri: image }} />;
-              })
-            )}
-          </ScrollView>
+        <View style={{ height: 148, width: 360 }}>
+          {pickedImages.length == 0 ? (
+            <Text style={{ fontSize: 35, color: "grey" }}>
+              저장된 사진이 없습니다
+            </Text>
+          ) : (
+            <ImageCarousel images={pickedImages} />
+          )}
+
         </View>
       )}
     </View>

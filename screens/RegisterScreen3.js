@@ -28,7 +28,7 @@ import { auth } from "../firebase";
 
 const { height } = Dimensions.get("window");
 
-const saveUser = async (uid, email, id, firstName, lastName) => {
+const saveUser = async ({ uid, email, id, firstName, lastName }) => {
   const db = getDatabase();
   const reference1 = ref(db, "/users/" + uid);
   set(reference1, {
@@ -38,7 +38,25 @@ const saveUser = async (uid, email, id, firstName, lastName) => {
     lastName,
   });
 };
-
+const gotoApp = ({
+  initMyUID,
+  initMyID,
+  initMyFirstName,
+  initMyLastName,
+  initMyEmail,
+  startTutorial,
+  navigation,
+}) => {
+  initMyUID();
+  initMyID();
+  initMyFirstName();
+  initMyLastName();
+  initMyEmail();
+  if (!startTutorial) {
+    navigation.navigate("Tabs");
+  }
+  //startTutorial 이 true라면 afterScreen.js로 이동필요
+};
 const RegisterScreen3 = ({ navigation, route }) => {
   const { uid, email } = route.params;
 
@@ -49,22 +67,33 @@ const RegisterScreen3 = ({ navigation, route }) => {
 
   const myContext = useContext(AppContext);
   const startTutorial = false;
-
-  const gotoApp = () => {
-    myContext.initMyID(id);
+  const initMyUID = () => {
     myContext.initMyUID(uid);
+  };
+  const initMyID = () => {
+    myContext.initMyID(id);
+  };
+  const initMyFirstName = () => {
     myContext.initMyFirstName(firstName);
+  };
+  const initMyLastName = () => {
     myContext.initMyLastName(lastName);
+  };
+  const initMyEmail = () => {
     myContext.initMyEmail(email);
-    if (!startTutorial) {
-      navigation.navigate("Tabs");
-    }
-    //startTutorial 이 true라면 afterScreen.js로 이동필요
   };
 
   const handleSignUp = () => {
-    saveUser(uid, email, id, firstName, lastName);
-    gotoApp();
+    saveUser({ uid, email, id, firstName, lastName });
+    gotoApp({
+      initMyUID,
+      initMyID,
+      initMyFirstName,
+      initMyLastName,
+      initMyEmail,
+      startTutorial,
+      navigation,
+    });
   };
 
   const ContinueButton = () => {

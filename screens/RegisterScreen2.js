@@ -17,26 +17,24 @@ import {
 import { auth } from "../firebase";
 
 const { height } = Dimensions.get("window");
-
+const handleSignUp = ({ email, password, navigation }) => {
+  createUserWithEmailAndPassword(auth, email, password)
+    .then((userCredentials) => {
+      const user = userCredentials.user;
+      //console.log(user.email);
+      navigation.navigate("RegisterScreen3", {
+        uid: user.uid,
+        email: user.email,
+      });
+    })
+    .catch((error) => alert(error.message));
+};
 const RegisterScreen2 = ({ navigation, route }) => {
   const email = route.params;
   const [password, setPassword] = useState("");
   const [passwordCheck, setPasswordCheck] = useState("");
   //const [id,setId]=useState('')
   const [valid, setValid] = useState(false);
-
-  const handleSignUp = () => {
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredentials) => {
-        const user = userCredentials.user;
-        //console.log(user.email);
-        navigation.navigate("RegisterScreen3", {
-          uid: user.uid,
-          email: user.email,
-        });
-      })
-      .catch((error) => alert(error.message));
-  };
 
   const ContinueButton = () => {
     useEffect(() => {
@@ -51,7 +49,10 @@ const RegisterScreen2 = ({ navigation, route }) => {
     if (valid) {
       return (
         <View style={styles.buttonContainer}>
-          <TouchableOpacity onPress={handleSignUp} style={styles.button}>
+          <TouchableOpacity
+            onPress={() => handleSignUp({ email, password, navigation })}
+            style={styles.button}
+          >
             <View style={{ justifyContent: "center", alignItems: "center" }}>
               <Text style={styles.buttonText}>계속하기</Text>
             </View>
