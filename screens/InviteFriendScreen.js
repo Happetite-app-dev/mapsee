@@ -29,7 +29,55 @@ const db = getDatabase();
 const gotoMakeFolderBottomSheetScreen = ({ navigation }) => {
   navigation.pop();
 };
+const IndividualFriend = ({
+  userID,
+  id,
+  name,
+  folderUserNameIDs,
+  setFolderUserNameIDs,
+}) => {
+  return (
+    <TouchableOpacity
+      onPress={() => {
+        if (!folderUserNameIDs.some((item) => item.userID === userID)) {
+          setFolderUserNameIDs((prev) => [...prev, { userID, name }]);
+        }
+      }}
+      style={{
+        alignSelf: "center",
+        width: "100%",
+        height: 75,
+        paddingVertical: 12,
+        paddingHorizontal: 24,
+        flexDirection: "row",
+      }}
+    >
+      <View
+        style={{
+          flex: 0.5,
+          flexDirection: "column",
+          justifyContent: "space-between",
+        }}
+      >
+        <Text style={{ fontSize: 14, fontWeight: "bold", top: 5 }}>{name}</Text>
+        <Text
+          style={{
+            fontSize: 14,
+            fontWeight: "400",
+            color: "gray",
+            bottom: 5,
+          }}
+        >
+          {id}
+        </Text>
+      </View>
+    </TouchableOpacity>
+  );
+};
 
+// const IndividualFolderUser = ()=>{
+
+// }
 const InviteFriendScreen = ({ navigation, route }) => {
   const { folderUserIDs, onChangeFolderUserIDs, originalFolderUserIDs } =
     route.params;
@@ -37,6 +85,9 @@ const InviteFriendScreen = ({ navigation, route }) => {
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
   const [folderUserNameIDs, setFolderUserNameIDs] = useState([]);
+  const [friendIDNameList, setFriendIDNameList] = useState([]);
+  const isFocused = useIsFocused();
+
   useEffect(() => {
     const db = getDatabase();
     folderUserIDs.map((userID) => {
@@ -54,8 +105,6 @@ const InviteFriendScreen = ({ navigation, route }) => {
     });
   }, []);
 
-  const [friendIDNameList, setFriendIDNameList] = useState([]);
-  const isFocused = useIsFocused();
   useEffect(() => {
     if (isFocused) {
       setFriendIDNameList([]);
@@ -93,54 +142,19 @@ const InviteFriendScreen = ({ navigation, route }) => {
     }
   }, []);
 
-  const IndividualFriend = ({ userID, id, name }) => {
-    return (
-      <TouchableOpacity
-        onPress={() => {
-          if (!folderUserNameIDs.some((item) => item.userID === userID)) {
-            setFolderUserNameIDs((prev) => [...prev, { userID, name }]);
-          }
-        }}
-        style={{
-          alignSelf: "center",
-          width: "100%",
-          height: 75,
-          paddingVertical: 12,
-          paddingHorizontal: 24,
-          flexDirection: "row",
-        }}
-      >
-        <View
-          style={{
-            flex: 0.5,
-            flexDirection: "column",
-            justifyContent: "space-between",
-          }}
-        >
-          <Text style={{ fontSize: 14, fontWeight: "bold", top: 5 }}>
-            {name}
-          </Text>
-          <Text
-            style={{
-              fontSize: 14,
-              fontWeight: "400",
-              color: "gray",
-              bottom: 5,
-            }}
-          >
-            {id}
-          </Text>
-        </View>
-      </TouchableOpacity>
-    );
-  };
-
   const renderFriendList = ({ item }) => (
-    <IndividualFriend userID={item.userID} id={item.id} name={item.name} />
+    <IndividualFriend
+      userID={item.userID}
+      id={item.id}
+      name={item.name}
+      folderUserNameIDs={folderUserNameIDs}
+      setFolderUserNameIDs={(tmp) => setFolderUserNameIDs(tmp)}
+    />
   );
   const renderFolderUser = ({ item }) => {
     //이미 폴더에 속해있는 친구인 경우 -띄우지 않는다, 새로 추가되는 친구이름만 -띄운다
     //새 폴더 생성인 경우에는 내 이름을 -띄우지 않고, 기존 폴더에 멤버 추가인 경우에는 기존 멤버를 띄우지 않는다
+    //<IndividualFolderUser/>
     if (
       item.userID === myUID ||
       (originalFolderUserIDs != null &&
