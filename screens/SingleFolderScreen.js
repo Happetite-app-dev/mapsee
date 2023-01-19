@@ -24,7 +24,47 @@ const editImage = require("../assets/image/edit.png");
 const folder2Image = require("../assets/image/folder2.png");
 const goBackImage = require("../assets/image/goBack.png");
 const trashcanImage = require("../assets/image/trashcan.png");
-
+const gotoStorageScreen = (navigation) => {
+  navigation.pop();
+};
+const gotoMakeFolderBottomSheetScreen = ({
+  navigation,
+  folderID,
+  folderName,
+  folderColor,
+  folderUserIDs,
+  recordDataSource,
+}) => {
+  navigation.navigate("MakeFolderBottomSheetScreen", {
+    folderID,
+    folderName,
+    folderColor,
+    folderUserIDs,
+    recordDataSource,
+  });
+};
+const exitFolderPopUp = ({ myUID, folderID, navigation }) => {
+  return Alert.alert(
+    "정말 삭제하시겠습니까?",
+    "",
+    [
+      { text: "취소" },
+      {
+        text: "삭제",
+        onPress: () => exitFolder({ myUID, folderID, navigation }),
+        style: "default",
+      },
+    ],
+    {
+      cancelable: false,
+    }
+  );
+};
+const exitFolder = async ({ myUID, folderID, navigation }) => {
+  await exitData(myUID, folderID).then(
+    () => navigation.navigate("Storage") //realtimeDataBase가 모두 업데이트 된후
+  );
+};
 const exitData = async (myUID, folderID) => {
   const db = getDatabase();
   const reference1 = ref(db, "/users/" + myUID + "/folderIDs/" + folderID);
@@ -65,36 +105,6 @@ const SingleFolderScreen = ({ navigation, route }) => {
   const { recordDataSource, folderID, folderName, folderColor, folderUserIDs } =
     route.params;
 
-  const gotoStorageScreen = () => {
-    navigation.pop();
-  };
-  const gotoMakeFolderBottomSheetScreen = () => {
-    navigation.navigate("MakeFolderBottomSheetScreen", {
-      folderID,
-      folderName,
-      folderColor,
-      folderUserIDs,
-      recordDataSource,
-    });
-  };
-  const exitFolder = async () => {
-    await exitData(myUID, folderID).then(
-      () => navigation.navigate("Storage") //realtimeDataBase가 모두 업데이트 된후
-    );
-  };
-  const exitFolderPopUp = () => {
-    return Alert.alert(
-      "정말 삭제하시겠습니까?",
-      "",
-      [
-        { text: "취소" },
-        { text: "삭제", onPress: () => exitFolder(), style: "default" },
-      ],
-      {
-        cancelable: false,
-      }
-    );
-  };
   return (
     <SafeAreaView style={{ height: "100%", width: "100%" }}>
       <View
@@ -132,7 +142,16 @@ const SingleFolderScreen = ({ navigation, route }) => {
         </Text>
         <TouchableOpacity
           style={{ position: "absolute", right: 64 }}
-          onPress={gotoMakeFolderBottomSheetScreen}
+          onPress={() =>
+            gotoMakeFolderBottomSheetScreen({
+              navigation,
+              folderID,
+              folderName,
+              folderColor,
+              folderUserIDs,
+              recordDataSource,
+            })
+          }
         >
           <Image source={editImage} />
         </TouchableOpacity>
@@ -141,7 +160,7 @@ const SingleFolderScreen = ({ navigation, route }) => {
             position: "absolute",
             right: 26,
           }}
-          onPress={() => exitFolderPopUp()}
+          onPress={() => exitFolderPopUp({ myUID, folderID, navigation })}
         >
           <Image source={trashcanImage} />
         </TouchableOpacity>

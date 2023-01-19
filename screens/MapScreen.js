@@ -11,7 +11,6 @@ import {
   Button,
   Animated,
   TouchableOpacity,
-  Share,
 } from "react-native";
 import Geocoder from "react-native-geocoding";
 import MapView, { Marker } from "react-native-maps";
@@ -45,21 +44,126 @@ const getData = async () => {
   }
 };
 
+const gotoTutorial = ({ navigation, onChangeGetPermissions }) => {
+  navigation.navigate("TutorialScreen", {
+    onChangeGetPermissions,
+  });
+};
+
+const targetingFromLocation = ({
+  lctn,
+  name,
+  setOrigin,
+  setTarget,
+  setTargetShown,
+}) => {
+  Geocoder.from(lctn)
+    .then((json) => {
+      const addressComponent = json.results[0].formatted_address;
+      setOrigin({
+        latitude: lctn.latitude,
+        longitude: lctn.longitude,
+        latitudeDelta: 0.0016,
+        longitudeDelta: 0.0012,
+      });
+      setTarget({
+        name,
+        address: addressComponent,
+        id: json.results[0].place_id,
+        lctn: { latitude: lctn.latitude, longitude: lctn.longitude },
+      });
+      setTargetShown(true);
+    })
+    .catch((error) => console.warn(error));
+};
+
+async function getLocationPermission({ setCurrent, setOrigin }) {
+  const { status } = await Location.requestForegroundPermissionsAsync();
+  if (status !== "granted") {
+    alert("Permission denied");
+    return;
+  }
+  const location = await Location.getCurrentPositionAsync({});
+  setCurrent({
+    latitude: location.coords.latitude,
+    longitude: location.coords.longitude,
+  });
+  setOrigin((prev) => ({
+    latitude: location.coords.latitude,
+    longitude: location.coords.longitude,
+    latitudeDelta: 0.0016,
+    longitudeDelta: 0.0012,
+  }));
+}
+
+const rotateValueHolder = new Animated.Value(0);
+
+const CurrentRotate = (isFocused) => {
+  if (isFocused) {
+    rotateValueHolder.setValue(0);
+    Animated.loop(
+      Animated.timing(rotateValueHolder, {
+        toValue: 1,
+        duration: 3000,
+        easing: Easing.linear,
+        useNativeDriver: false,
+      }),
+      { iteration: 4 }
+    ).start();
+  }
+};
+
+const RotateData = rotateValueHolder.interpolate({
+  inputRange: [0, 1],
+  outputRange: ["0deg", "360deg"],
+});
+
 const MapScreen = ({ navigation }) => {
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
   const isFocused = useIsFocused();
   const [list1, setList1] = useState({});
   const [getPermissions, setGetPermissions] = useState(false);
+
+  const mapRef = React.createRef();
+  const [origin, setOrigin] = useState({
+    latitude: 0,
+    longitude: 0,
+    latitudeDelta: 0.0016,
+    longitudeDelta: 0.0012,
+  }); //현재 스크린에 나타나는 map의 중앙 좌표값
+  const [current, setCurrent] = useState({ latitude: 0, longitude: 0 }); //내 위치 좌표
+  const [target, setTarget] = useState({
+    name: "",
+    address: "",
+    id: "",
+    lctn: { latitude: 0, longitude: 0 },
+  }); //검색 target의 좌표
+  const [targetShown, setTargetShown] = useState(false);
   const onChangeGetPermissions = (b) => {
     setGetPermissions(b);
   };
-  const share = () => {
-    Share.share({
-      message: "hihi",
-    });
-  };
 
+  useEffect(() => {
+    if (getPermissions) {
+      Geocoder.init("AIzaSyDBq4tZ1QLm1R7iPH8O4dTvebVGWgkRPks", {
+        language: "kor",
+      });
+      GeneratePushToken(myUID);
+      getLocationPermission({ setCurrent, setOrigin });
+    }
+  }, [getPermissions]);
+
+  useEffect(() => {
+    if (targetShown) {
+      navigation.navigate("PlaceInfoBottomSheetScreen", {
+        targetName: target.name,
+        targetAddress: target.address,
+        targetId: target.id,
+        targetLctn: target.lctn,
+      });
+    }
+  }, [targetShown]);
   useEffect(() => {
     const db = getDatabase();
     onValue(ref(db, "/users/" + myUID + "/folderIDs"), (snapshot) => {
@@ -93,117 +197,15 @@ const MapScreen = ({ navigation }) => {
     });
   }, []);
 
-  const gotoTutorial = () => {
-    navigation.navigate("TutorialScreen", {
-      onChangeGetPermissions,
-    });
-  };
-
   useEffect(() => {
     if (getData == null) {
-      gotoTutorial();
+      gotoTutorial({ navigation, onChangeGetPermissions });
       storeData("true");
     } else {
       onChangeGetPermissions(true);
     }
+    CurrentRotate(isFocused); //나중에 혹시나 수정 필요
   }, []);
-
-  const mapRef = React.createRef();
-  const [origin, setOrigin] = useState({
-    latitude: 0,
-    longitude: 0,
-    latitudeDelta: 0.0016,
-    longitudeDelta: 0.0012,
-  }); //현재 스크린에 나타나는 map의 중앙 좌표값
-  const [current, setCurrent] = useState({ latitude: 0, longitude: 0 }); //내 위치 좌표
-  const [target, setTarget] = useState({
-    name: "",
-    address: "",
-    id: "",
-    lctn: { latitude: 0, longitude: 0 },
-  }); //검색 target의 좌표
-  const [targetShown, setTargetShown] = useState(false);
-
-  useEffect(() => {
-    if (getPermissions) {
-      Geocoder.init("AIzaSyDBq4tZ1QLm1R7iPH8O4dTvebVGWgkRPks", {
-        language: "kor",
-      });
-      GeneratePushToken(myUID);
-      getLocationPermission();
-    }
-  }, [getPermissions]);
-
-  useEffect(() => {
-    if (targetShown) {
-      navigation.navigate("PlaceInfoBottomSheetScreen", {
-        targetName: target.name,
-        targetAddress: target.address,
-        targetId: target.id,
-        targetLctn: target.lctn,
-      });
-    }
-  }, [targetShown]);
-
-  const targetingFromLocation = (lctn, name) => {
-    Geocoder.from(lctn)
-      .then((json) => {
-        const addressComponent = json.results[0].formatted_address;
-        setOrigin({
-          latitude: lctn.latitude,
-          longitude: lctn.longitude,
-          latitudeDelta: 0.0016,
-          longitudeDelta: 0.0012,
-        });
-        setTarget({
-          name,
-          address: addressComponent,
-          id: json.results[0].place_id,
-          lctn: { latitude: lctn.latitude, longitude: lctn.longitude },
-        });
-        setTargetShown(true);
-      })
-      .catch((error) => console.warn(error));
-  };
-
-  async function getLocationPermission() {
-    const { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== "granted") {
-      alert("Permission denied");
-      return;
-    }
-    const location = await Location.getCurrentPositionAsync({});
-    setCurrent({
-      latitude: location.coords.latitude,
-      longitude: location.coords.longitude,
-    });
-    setOrigin((prev) => ({
-      latitude: location.coords.latitude,
-      longitude: location.coords.longitude,
-      latitudeDelta: 0.0016,
-      longitudeDelta: 0.0012,
-    }));
-  }
-
-  const rotateValueHolder = new Animated.Value(0);
-
-  if (isFocused) {
-    rotateValueHolder.setValue(0);
-    Animated.loop(
-      Animated.timing(rotateValueHolder, {
-        toValue: 1,
-        duration: 3000,
-        easing: Easing.linear,
-        useNativeDriver: false,
-      }),
-      { iteration: 4 }
-    ).start();
-  }
-
-  const RotateData = rotateValueHolder.interpolate({
-    inputRange: [0, 1],
-    outputRange: ["0deg", "360deg"],
-  });
 
   return (
     <SafeAreaView style={styles.container}>
@@ -243,10 +245,13 @@ const MapScreen = ({ navigation }) => {
           }
         }}
         onPoiClick={(data) => {
-          targetingFromLocation(
-            data.nativeEvent.coordinate,
-            data.nativeEvent.name.split("\n")[0]
-          );
+          targetingFromLocation({
+            lctn: data.nativeEvent.coordinate,
+            name: data.nativeEvent.name.split("\n")[0],
+            setOrigin,
+            setTarget,
+            setTargetShown,
+          });
         }}
         onPress={({ nativeEvent }) => {
           if (

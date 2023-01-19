@@ -10,20 +10,17 @@ import {
 } from "react-native";
 
 const { height } = Dimensions.get("window");
-
+const handleSignUp = ({ navigation, email }) => {
+  navigation.navigate("RegisterScreen2", email);
+};
+const validate = (text) => {
+  const reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
+  //console.log(text, reg.test(text));
+  return reg.test(text);
+};
 const RegisterScreen1 = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [valid, setValid] = useState(false);
-
-  const handleSignUp = () => {
-    navigation.navigate("RegisterScreen2", email);
-  };
-
-  const validate = (text) => {
-    const reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
-    //console.log(text, reg.test(text));
-    return reg.test(text);
-  };
 
   const ContinueButton = () => {
     useEffect(() => {
@@ -39,7 +36,10 @@ const RegisterScreen1 = ({ navigation }) => {
     if (valid) {
       return (
         <View style={styles.buttonContainer}>
-          <TouchableOpacity onPress={handleSignUp} style={styles.button}>
+          <TouchableOpacity
+            onPress={() => handleSignUp({ navigation, email })}
+            style={styles.button}
+          >
             <View style={{ justifyContent: "center", alignItems: "center" }}>
               <Text style={styles.buttonText}>계속하기</Text>
             </View>

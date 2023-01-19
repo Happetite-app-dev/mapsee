@@ -19,11 +19,46 @@ import RecordFlatList from "../components/RecordFlatList";
 const addFolderImage = require("../assets/image/addFolder.png");
 const folderImage = require("../assets/image/folder.png");
 const searchImage = require("../assets/image/search.png");
-
+const gotoSingleFolderScreen = ({
+  navigation,
+  recordDataSource,
+  folderID,
+  folderName,
+  folderColor,
+  folderUserIDs,
+  setSelectedFolderIDNameColorUserIDs,
+}) => {
+  setSelectedFolderIDNameColorUserIDs(undefined);
+  navigation.navigate("SingleFolderScreen", {
+    recordDataSource,
+    folderID,
+    folderName,
+    folderColor,
+    folderUserIDs,
+  });
+};
+const gotoMakeFolderBottomSheetScreen = ({ navigation }) => {
+  navigation.navigate("MakeFolderBottomSheetScreen", {
+    folderID: "",
+    folderName: null,
+    folderColor: null,
+    recordDataSource: {},
+    folderUserIDs: null,
+  });
+};
 const StorageScreen = ({ navigation, route }) => {
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
   const isFocused = useIsFocused();
+  const [folderIDNameColorUserIDsList, setFolderIDNameColorUserIDsList] =
+    useState({}); //{folderID, folderName, folderColor, folderUserIDs}가 쌓여있음
+  const [
+    selectedFolderIDNameColorUserIDs,
+    setSelectedFolderIDNameColorUserIDs,
+  ] = useState(undefined);
+
+  const [masterDataSource, setMasterDataSource] = useState({}); //shortened record가 쌓여있음 {recordID, title, folderID, placeName, date, text, photos}
+
   //const {folderID, folderName, folderColor, folderUserID, recordDataSource}
   useEffect(() => {
     if (isFocused) {
@@ -96,42 +131,6 @@ const StorageScreen = ({ navigation, route }) => {
     }
   }, [isFocused]);
 
-  const [folderIDNameColorUserIDsList, setFolderIDNameColorUserIDsList] =
-    useState({}); //{folderID, folderName, folderColor, folderUserIDs}가 쌓여있음
-  const [
-    selectedFolderIDNameColorUserIDs,
-    setSelectedFolderIDNameColorUserIDs,
-  ] = useState(undefined);
-
-  const [masterDataSource, setMasterDataSource] = useState({}); //shortened record가 쌓여있음 {recordID, title, folderID, placeName, date, text, photos}
-
-  const gotoMakeFolderBottomSheetScreen = () => {
-    navigation.navigate("MakeFolderBottomSheetScreen", {
-      folderID: "",
-      folderName: null,
-      folderColor: null,
-      recordDataSource: {},
-      folderUserIDs: null,
-    });
-  };
-
-  const gotoSingleFolderScreen = (
-    recordDataSource,
-    folderID,
-    folderName,
-    folderColor,
-    folderUserIDs
-  ) => {
-    setSelectedFolderIDNameColorUserIDs(undefined);
-    navigation.navigate("SingleFolderScreen", {
-      recordDataSource,
-      folderID,
-      folderName,
-      folderColor,
-      folderUserIDs,
-    });
-  };
-
   //선택된 파일에 따라서 filter 변화 useEffect
   useEffect(() => {
     if (selectedFolderIDNameColorUserIDs != undefined) {
@@ -152,13 +151,15 @@ const StorageScreen = ({ navigation, route }) => {
       // Applying filter for the inserted text in search bar
       return item.recordData.folderID === folderID;
     });
-    gotoSingleFolderScreen(
+    gotoSingleFolderScreen({
+      navigation,
       filteredDataSource,
       folderID,
       folderName,
       folderColor,
-      folderUserIDs
-    );
+      folderUserIDs,
+      setSelectedFolderIDNameColorUserIDs,
+    });
   };
 
   const IndividualFolder = ({
@@ -214,7 +215,7 @@ const StorageScreen = ({ navigation, route }) => {
         </Text>
         <TouchableOpacity
           style={{ position: "absolute", right: 64 }}
-          onPress={gotoMakeFolderBottomSheetScreen}
+          onPress={() => gotoMakeFolderBottomSheetScreen({ navigation })}
         >
           <Image source={addFolderImage} />
         </TouchableOpacity>
