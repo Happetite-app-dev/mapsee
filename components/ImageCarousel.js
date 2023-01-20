@@ -1,22 +1,20 @@
 import { useState } from "react";
 import { View, Image } from "react-native";
 import Carousel from "react-native-snap-carousel";
-
+const _renderItem = ({ item, index }) => {
+  return (
+    <View
+      style={{
+        height: 148,
+        width: 148,
+      }}
+    >
+      <Image style={{ flex: 1 }} source={{ uri: item }} />
+    </View>
+  );
+};
 const ImageCarousel = ({ images }) => {
   const [carousel, setCarousel] = useState();
-
-  const _renderItem = ({ item, index }) => {
-    return (
-      <View
-        style={{
-          height: 148,
-          width: 148,
-        }}
-      >
-        <Image style={{ flex: 1 }} source={{ uri: item }} />
-      </View>
-    );
-  };
 
   return (
     <View

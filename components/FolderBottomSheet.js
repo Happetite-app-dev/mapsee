@@ -5,7 +5,15 @@ import { ScrollView } from "react-native-gesture-handler";
 
 import AppContext from "../components/AppContext";
 import AddFolderBottomSheet from "./AddFolderBottomSheet";
-
+const toggleAnimation = ({ show, showAnimation, setAnimationValue }) => {
+  const val = show ? 0 : -1000;
+  Animated.timing(showAnimation, {
+    useNativeDriver: false,
+    toValue: val,
+    duration: 350,
+  }).start();
+  setAnimationValue(val);
+};
 const FolderBottomSheet = ({
   stackNavigation,
   show,
@@ -16,6 +24,14 @@ const FolderBottomSheet = ({
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
 
+  const [folderIDNameList, setFolderIDNameList] = useState({}); //{folderID: folderName}가 쌓여있음
+  const [isSelectingFolder, setIsSelectingFolder] = useState(true); //folderlist 창과 폴더 추가창 중 무엇을 띄울지에 대한 bool
+  const [animationValue, setAnimationValue] = useState(-1000);
+  const showAnimation = useRef(new Animated.Value(animationValue)).current;
+  useEffect(() => {
+    toggleAnimation({ show, showAnimation, setAnimationValue });
+    setIsSelectingFolder(true);
+  }, [show]);
   useEffect(() => {
     const db = getDatabase();
     onValue(ref(db, "/users/" + myUID + "/folderIDs"), (snapshot) => {
@@ -36,26 +52,6 @@ const FolderBottomSheet = ({
       }
     });
   }, []);
-
-  const [folderIDNameList, setFolderIDNameList] = useState({}); //{folderID: folderName}가 쌓여있음
-  const [isSelectingFolder, setIsSelectingFolder] = useState(true); //folderlist 창과 폴더 추가창 중 무엇을 띄울지에 대한 bool
-
-  const [animationValue, setAnimationValue] = useState(-1000);
-  useEffect(() => {
-    toggleAnimation();
-    setIsSelectingFolder(true);
-  }, [show]);
-
-  const showAnimation = useRef(new Animated.Value(animationValue)).current;
-  const toggleAnimation = () => {
-    const val = show ? 0 : -1000;
-    Animated.timing(showAnimation, {
-      useNativeDriver: false,
-      toValue: val,
-      duration: 350,
-    }).start();
-    setAnimationValue(val);
-  };
 
   return (
     <Animated.View

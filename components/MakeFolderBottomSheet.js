@@ -13,7 +13,171 @@ import { ScrollView, Switch, TextInput } from "react-native-gesture-handler";
 
 import AppContext from "../components/AppContext";
 import SendPushNotification from "../modules/SendPushNotification";
-
+const db = getDatabase();
+const gotoStorageScreen = (stackNavigation) => {
+  stackNavigation.navigate("Storage");
+};
+const gotoSingleFolderScreen = ({
+  stackNavigation,
+  recordDataSource,
+  folderID,
+  newFolderName,
+  newFolderColor,
+  newFolderUserIDs,
+}) => {
+  stackNavigation.navigate("SingleFolderScreen", {
+    recordDataSource,
+    folderID,
+    folderName: newFolderName,
+    folderColor: newFolderColor,
+    folderUserIDs: newFolderUserIDs,
+  });
+};
+const gotoInviteFriendScreen = ({
+  stackNavigation,
+  newFolderUserIDs,
+  onChangeNewFolderUserIDs,
+  folderUserIDs_,
+}) => {
+  stackNavigation.navigate("InviteFriendScreen", {
+    folderUserIDs: newFolderUserIDs,
+    onChangeFolderUserIDs: onChangeNewFolderUserIDs,
+    originalFolderUserIDs: folderUserIDs_,
+  });
+};
+const renderFolderUser = ({ item }) => {
+  return (
+    <View
+      style={{
+        height: 32,
+        paddingHorizontal: 16,
+        paddingVertical: 8,
+        borderRadius: 16,
+        marginHorizontal: 8,
+        marginVertical: 20,
+        backgroundColor: "#F4F5F9",
+      }}
+    >
+      <Text
+        style={{
+          //width: 58,
+          height: 24,
+          fontWeight: "500",
+          fontSize: 16,
+          letterSpacing: -0.5,
+          color: "black",
+        }}
+      >
+        {item.name}
+      </Text>
+    </View>
+  );
+};
+const addNewFolder = async ({
+  folderID,
+  folderName,
+  folderColor,
+  folderUserIDs,
+  originalFolderUserIDs,
+  IsNewRecord,
+  myUID,
+  myID,
+  myFirstName,
+  myLastName,
+}) => {
+  if (IsNewRecord) {
+    //새 기록이면 친구초대한 모든 사람 대상으로 데이터베이스 수정(-->이건 나 말고 다른 사람에게는 해당X) 및 알림 보내기
+    //친구초대한 사람한테 push알림 보내는 함수
+    const reference1 = ref(db, "/folders"); //folders에 push
+    const newFolderID = push(reference1, {
+      initFolderName: folderName,
+      initFolderColor: folderColor,
+    }).key;
+    folderUserIDs.map((folderUserID) => {
+      if (folderUserID == myUID) {
+        //나는 폴더에 넣기
+        const reference2 = ref(
+          db,
+          `/folders/${newFolderID}/folderName/${folderUserID}`
+        ); //folderName 개인화
+        set(reference2, folderName);
+        const reference3 = ref(
+          db,
+          `/folders/${newFolderID}/folderColor/${folderUserID}`
+        ); //folderColor 개인화
+        set(reference3, folderColor);
+        const reference4 = ref(
+          db,
+          `/folders/${newFolderID}/userIDs/${folderUserID}`
+        ); //folders/newfolderID/userIDs에 userID:true를 넣기
+        set(reference4, true);
+        const reference5 = ref(
+          db,
+          `users/${folderUserID}/folderIDs/${newFolderID}`
+        ); //user에 folderID를 넣고
+        set(reference5, true);
+      } else {
+        const timeNow = new Date();
+        const reference = ref(db, "/notices/" + folderUserID);
+        push(reference, {
+          type: "recept_folderInvite_request",
+          requesterUID: myUID,
+          requesterID: myID,
+          requesterFirstName: myFirstName,
+          requesterLastName: myLastName,
+          time: timeNow.getTime(),
+          //여기서 부턴 "recept_folderInvite_request" type 알림만의 정보
+          folderID: newFolderID,
+          folderName,
+          folderColor,
+        });
+        SendPushNotification({
+          receiverUID: folderUserID,
+          title_: "새폴더초대타이틀",
+          body_: "새폴더초대바디",
+        });
+      }
+    });
+  } else {
+    //새 폴더가 아니라면 개인화폴더이름, 폴더색상만 데이터베이스상에서 수정
+    const reference1 = ref(db, `/folders/${folderID}/folderName/${myUID}`); //folderName 개인화
+    set(reference1, folderName);
+    const reference2 = ref(db, `/folders/${folderID}/folderColor/${myUID}`); //folderColor 개인화
+    set(reference2, folderColor);
+    //공통폴더이름, 색상 가져오기
+    onValue(ref(db, `/folders/${folderID}/initFolderName`), (snapshot) => {
+      const initFolderName = snapshot.val();
+      onValue(ref(db, `/folders/${folderID}/initFolderColor`), (snapshot2) => {
+        const initFolderColor = snapshot2.val();
+        folderUserIDs.map((folderUserID) => {
+          //새로 추가된 친구에 대해 공통폴더이름, 색상 부여 필요
+          //folderName 공통폴더이름 부여
+          if (!originalFolderUserIDs.includes(folderUserID)) {
+            const timeNow = new Date();
+            const reference = ref(db, "/notices/" + folderUserID);
+            push(reference, {
+              type: "recept_folderInvite_request",
+              requesterUID: myUID,
+              requesterID: myID,
+              requesterFirstName: myFirstName,
+              requesterLastName: myLastName,
+              time: timeNow.getTime(),
+              //여기서 부턴 "recept_folderInvite_request" type 알림만의 정보
+              folderID,
+              folderName: initFolderName,
+              folderColor: initFolderColor,
+            });
+            SendPushNotification({
+              receiverUID: folderUserID,
+              title_: "피어나 뭐해요?",
+              body_: "뉴진스 덕질해요",
+            });
+          }
+        });
+      });
+    });
+  }
+};
 const MakeFolderBottomSheet = ({
   stackNavigation,
   folderID,
@@ -27,161 +191,7 @@ const MakeFolderBottomSheet = ({
   const myID = myContext.myID;
   const myFirstName = myContext.myFirstName;
   const myLastName = myContext.myLastName;
-
   const IsNewRecord = folderName_ === null;
-  const gotoStorageScreen = () => {
-    stackNavigation.navigate("Storage");
-  };
-  const gotoSingleFolderScreen = () => {
-    stackNavigation.navigate("SingleFolderScreen", {
-      recordDataSource,
-      folderID,
-      folderName: newFolderName,
-      folderColor: newFolderColor,
-      folderUserIDs: newFolderUserIDs,
-    });
-  };
-  const gotoInviteFriendScreen = () => {
-    stackNavigation.navigate("InviteFriendScreen", {
-      folderUserIDs: newFolderUserIDs,
-      onChangeFolderUserIDs: onChangeNewFolderUserIDs,
-      originalFolderUserIDs: folderUserIDs_,
-    });
-  };
-
-  const renderFolderUser = ({ item }) => {
-    return (
-      <View
-        style={{
-          height: 32,
-          paddingHorizontal: 16,
-          paddingVertical: 8,
-          borderRadius: 16,
-          marginHorizontal: 8,
-          marginVertical: 20,
-          backgroundColor: "#F4F5F9",
-        }}
-      >
-        <Text
-          style={{
-            //width: 58,
-            height: 24,
-            fontWeight: "500",
-            fontSize: 16,
-            letterSpacing: -0.5,
-            color: "black",
-          }}
-        >
-          {item.name}
-        </Text>
-      </View>
-    );
-  };
-  const addNewFolder = async (
-    folderID,
-    folderName,
-    folderColor,
-    folderUserIDs,
-    originalFolderUserIDs
-  ) => {
-    const db = getDatabase();
-    if (IsNewRecord) {
-      //새 기록이면 친구초대한 모든 사람 대상으로 데이터베이스 수정(-->이건 나 말고 다른 사람에게는 해당X) 및 알림 보내기
-      //친구초대한 사람한테 push알림 보내는 함수
-      const reference1 = ref(db, "/folders"); //folders에 push
-      const newFolderID = push(reference1, {
-        initFolderName: folderName,
-        initFolderColor: folderColor,
-      }).key;
-      folderUserIDs.map((folderUserID) => {
-        if (folderUserID == myUID) {
-          //나는 폴더에 넣기
-          const reference2 = ref(
-            db,
-            `/folders/${newFolderID}/folderName/${folderUserID}`
-          ); //folderName 개인화
-          set(reference2, folderName);
-          const reference3 = ref(
-            db,
-            `/folders/${newFolderID}/folderColor/${folderUserID}`
-          ); //folderColor 개인화
-          set(reference3, folderColor);
-          const reference4 = ref(
-            db,
-            `/folders/${newFolderID}/userIDs/${folderUserID}`
-          ); //folders/newfolderID/userIDs에 userID:true를 넣기
-          set(reference4, true);
-          const reference5 = ref(
-            db,
-            `users/${folderUserID}/folderIDs/${newFolderID}`
-          ); //user에 folderID를 넣고
-          set(reference5, true);
-        } else {
-          const timeNow = new Date();
-          const reference = ref(db, "/notices/" + folderUserID);
-          push(reference, {
-            type: "recept_folderInvite_request",
-            requesterUID: myUID,
-            requesterID: myID,
-            requesterFirstName: myFirstName,
-            requesterLastName: myLastName,
-            time: timeNow.getTime(),
-            //여기서 부턴 "recept_folderInvite_request" type 알림만의 정보
-            folderID: newFolderID,
-            folderName,
-            folderColor,
-          });
-          SendPushNotification({
-            receiverUID: folderUserID,
-            title_: "새폴더초대타이틀",
-            body_: "새폴더초대바디",
-          });
-        }
-      });
-    } else {
-      //새 폴더가 아니라면 개인화폴더이름, 폴더색상만 데이터베이스상에서 수정
-      const reference1 = ref(db, `/folders/${folderID}/folderName/${myUID}`); //folderName 개인화
-      set(reference1, folderName);
-      const reference2 = ref(db, `/folders/${folderID}/folderColor/${myUID}`); //folderColor 개인화
-      set(reference2, folderColor);
-      //공통폴더이름, 색상 가져오기
-      onValue(ref(db, `/folders/${folderID}/initFolderName`), (snapshot) => {
-        const initFolderName = snapshot.val();
-        onValue(
-          ref(db, `/folders/${folderID}/initFolderColor`),
-          (snapshot2) => {
-            const initFolderColor = snapshot2.val();
-            folderUserIDs.map((folderUserID) => {
-              //새로 추가된 친구에 대해 공통폴더이름, 색상 부여 필요
-              //folderName 공통폴더이름 부여
-              if (!originalFolderUserIDs.includes(folderUserID)) {
-                const timeNow = new Date();
-                const reference = ref(db, "/notices/" + folderUserID);
-                push(reference, {
-                  type: "recept_folderInvite_request",
-                  requesterUID: myUID,
-                  requesterID: myID,
-                  requesterFirstName: myFirstName,
-                  requesterLastName: myLastName,
-                  time: timeNow.getTime(),
-                  //여기서 부턴 "recept_folderInvite_request" type 알림만의 정보
-                  folderID,
-                  folderName: initFolderName,
-                  folderColor: initFolderColor,
-                });
-                SendPushNotification({
-                  receiverUID: folderUserID,
-                  title_: "피어나 뭐해요?",
-                  body_: "뉴진스 덕질해요",
-                });
-              }
-            });
-          }
-        );
-      });
-    }
-  };
-
   const [newFolderName, setNewFolderName] = useState(folderName_ || "");
   const [newFolderColor, setNewFolderColor] = useState(
     folderColor_ || "#FF6363"
@@ -534,7 +544,12 @@ const MakeFolderBottomSheet = ({
         <View>
           <TouchableOpacity
             onPress={() => {
-              gotoInviteFriendScreen();
+              gotoInviteFriendScreen({
+                stackNavigation,
+                newFolderUserIDs,
+                onChangeNewFolderUserIDs,
+                folderUserIDs_,
+              });
             }}
             style={{
               marginLeft: 20,
@@ -558,14 +573,28 @@ const MakeFolderBottomSheet = ({
 
       <TouchableOpacity
         onPress={async () => {
-          await addNewFolder(
+          await addNewFolder({
             folderID,
-            newFolderName,
-            newFolderColor,
-            newFolderUserIDs,
-            folderUserIDs_
-          ).then(() => {
-            IsNewRecord ? gotoStorageScreen() : gotoSingleFolderScreen();
+            folderName: newFolderName,
+            folderColor: newFolderColor,
+            folderUserIDs: newFolderUserIDs,
+            originalFolderUserIDs: folderUserIDs_,
+            IsNewRecord,
+            myUID,
+            myID,
+            myFirstName,
+            myLastName,
+          }).then(() => {
+            IsNewRecord
+              ? gotoStorageScreen(stackNavigation)
+              : gotoSingleFolderScreen({
+                  stackNavigation,
+                  recordDataSource,
+                  folderID,
+                  newFolderName,
+                  newFolderColor,
+                  newFolderUserIDs,
+                });
           });
         }}
         style={{
