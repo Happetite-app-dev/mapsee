@@ -21,6 +21,7 @@ import {
 } from "react-native";
 
 import AppContext from "../components/AppContext";
+import GoBackHeader from "../components/GoBackHeader";
 import AddFriendModal from "./AddFriendModal";
 
 const addFriendImage = require("../assets/image/addFriend.png");
@@ -164,45 +165,14 @@ const FriendListScreen = ({ navigation }) => {
     />
   );
   return (
-    <SafeAreaView style={styles.container}>
-      <View
-        style={{
-          position: "absolute",
-          width: "100%",
-          height: 60,
-          top: 45,
-          flexDirection: "row",
-          paddingTop: 20,
-        }}
-      >
-        <TouchableOpacity
-          onPress={() => gotoMypageScreen({ navigation })}
-          style={{
-            left: 21,
-            width: 20,
-            alignItems: "center",
-            height: 20,
-            justifyContent: "center",
-          }}
-        >
-          <Image source={goBackImage} style={{ tintColor: "black" }} />
-        </TouchableOpacity>
-        <View style={{ left: 50, width: 260, height: 24 }}>
-          <Text style={{ fontSize: 16, fontWeight: "bold" }}>친구목록</Text>
-        </View>
-        <TouchableOpacity
-          onPress={() => modalHandler(true)}
-          style={{
-            left: 65,
-            width: 20,
-            alignItems: "center",
-            height: 20,
-            justifyContent: "center",
-          }}
-        >
-          <Image source={addFriendImage} />
-        </TouchableOpacity>
-      </View>
+    <View style={styles.container}>
+      <GoBackHeader
+        navigation={navigation}
+        text="친구목록"
+        rightButton="addFriend"
+        rightButtonFunction={() => modalHandler(true)}
+      />
+
       <View
         style={{ position: "absolute", width: "100%", height: 740, top: 105 }}
       >
@@ -217,7 +187,7 @@ const FriendListScreen = ({ navigation }) => {
         />
       </View>
       <AddFriendModal modalVisible={modalVisible} modalHandler={modalHandler} />
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -226,7 +196,6 @@ export default FriendListScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    backgroundColor: "white",
   },
 });

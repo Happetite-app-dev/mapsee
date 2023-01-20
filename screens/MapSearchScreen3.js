@@ -16,10 +16,8 @@ import {
 } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 
-import GoBack from "../assets/icons/goBack.svg";
-import GoHome1 from "../assets/icons/goHome1.svg";
-import GoHome2 from "../assets/icons/goHome2.svg";
 import SearchMarker from "../assets/icons/marker.svg";
+import GoBackHeader from "../components/GoBackHeader";
 
 const bottomSheetImage = require("../assets/image/bottomSheetScroll.png");
 const mapStyle = require("../assets/mapDesign.json");
@@ -218,32 +216,11 @@ const MapSearchScreen3 = ({ navigation, route }) => {
           longitudeDelta: delta[1],
         }}
       >
-        <View style={styles.buttons}>
-          <View
-            onTouchEndCapture={() => {
-              console.log("back");
-              navigation.goBack();
-            }}
-            style={styles.goBack}
-          >
-            <GoBack style={styles.goBackImage} />
-          </View>
-          <View style={styles.title}>
-            <Text style={styles.titleText}>{route.params[0]}</Text>
-          </View>
-          <View
-            onTouchEndCapture={() => {
-              console.log("close");
-              navigation.navigate("Map");
-            }}
-            style={styles.goHome}
-          >
-            <View style={{ position: "relative" }}>
-              <GoHome1 style={styles.goHomeImage} />
-              <GoHome2 style={styles.goHomeImage} />
-            </View>
-          </View>
-        </View>
+        <GoBackHeader
+          navigation={navigation}
+          text={route.params[0]}
+          RightButton="goHome"
+        />
         {latList.map((item, index) => {
           return (
             <Marker coordinate={{ latitude: item, longitude: lngList[index] }}>

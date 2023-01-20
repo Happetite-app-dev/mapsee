@@ -5,17 +5,138 @@ import { Image, StyleSheet, Text, View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 
+import Close from "../assets/icons/close.svg";
 import GoBack from "../assets/icons/goBack.svg";
-import GoHome1 from "../assets/icons/goHome1.svg";
-import GoHome2 from "../assets/icons/goHome2.svg";
 import SearchHistory from "../assets/icons/searchPlace.svg";
 
 const gotoSearch2Screen = ({ navigation, data }) => {
   navigation.navigate("MapSearchScreen2", data);
 };
 
+const onClick = ({ navigation, name, dataSource }) => {
+  gotoSearch3Screen({ navigation, data: [name, dataSource] });
+};
+
 const gotoSearch3Screen = ({ navigation, data }) => {
   navigation.navigate("MapSearchScreen3", data);
+};
+
+const InbetweenCompo = ({ name, history, setHistory, navigation }) => {
+  const renderHistoryItem = ({ item }) => {
+    return (
+      <View
+        style={styles.historyItem}
+        onTouchEndCapture={() => {
+          console.log("history page", item);
+          gotoSearch2Screen({ navigation, data: item });
+        }}
+      >
+        <SearchHistory />
+        <Text style={{ marginLeft: 20, fontSize: 14, lineHeight: 24 }}>
+          {item.name}
+        </Text>
+      </View>
+    );
+  };
+  return name === "" ? (
+    <View>
+      <View style={styles.inbetweenCompo}>
+        <View style={styles.recentSearch}>
+          <Text style={{ fontSize: 16 }}>최근검색</Text>
+        </View>
+        <View
+          onTouchEndCapture={() => {
+            storeData("");
+            setHistory([]);
+          }}
+          style={styles.eraseAll}
+        >
+          <Text style={{ fontSize: 14, color: "#5ED3CC" }}>전체삭제</Text>
+        </View>
+      </View>
+      <FlatList
+        data={history}
+        renderItem={renderHistoryItem}
+        extraData={history}
+        style={{ marginTop: 24 }}
+      />
+    </View>
+  ) : (
+    <></>
+  );
+};
+
+const SearchBox = ({
+  name,
+  setName,
+  history,
+  setHistory,
+  location,
+  navigation,
+}) => {
+  return (
+    <GooglePlacesAutocomplete
+      inbetweenCompo={
+        <InbetweenCompo
+          name={name}
+          history={history}
+          setHistory={setHistory}
+          navigation={navigation}
+        />
+      }
+      getSearchWord={(text) => {
+        setName(text);
+      }}
+      getResultArray={(dataSource) => {
+        gotoSearch3Screen({ navigation, data: [name, dataSource] });
+        //onClick(navigation, name, dataSource);
+      }}
+      textInputProps={{
+        autoFocus: true, // 커서 바로 이동
+        blurOnSubmit: false,
+        clearButtonMode: false,
+        returnKeyType: "search",
+      }}
+      listUnderlayColor="#DDDFE9"
+      placeholder="검색어를 입력하세요"
+      enablePoweredByContainer={false}
+      query={{
+        key: "AIzaSyA2FBudItIm0cVgwNOsuc8D9BKk0HUeUTs",
+        language: "kor",
+        location: location[0] + ", " + location[1],
+        radius: "1500",
+        rankby: "distance",
+      }}
+      fetchDetails
+      renderDescription={(data) => renderDescription(data)} // custom description render
+      onPress={async (data, details) => {
+        const newPlace = {
+          geometry: {
+            location: {
+              lat: details.geometry.location.lat,
+              lng: details.geometry.location.lng,
+            },
+          },
+          name: details.name,
+          address: details.formatted_address,
+          id: details.place_id,
+          structured_formatting: { main_text: details.name },
+        };
+
+        setHistory((prevList) => [...prevList, newPlace]);
+
+        const newArray =
+          JSON.parse(await AsyncStorage.getItem("search")) === null
+            ? []
+            : JSON.parse(await AsyncStorage.getItem("search"));
+        storeData([...newArray, newPlace]);
+
+        console.log("onPress", details);
+        gotoSearch2Screen({ navigation, data: details });
+      }}
+      styles={styles.GooglePlacesAutocomplete}
+    />
+  );
 };
 
 const renderDescription = (data) => {
@@ -66,10 +187,6 @@ const MapSearchScreen1 = ({ navigation, route }) => {
   const [name, setName] = useState("");
   const [history, setHistory] = useState([]);
 
-  const onClick = (dataSource) => {
-    gotoSearch3Screen({ navigation, data: [name, dataSource] });
-  };
-
   useEffect(() => {
     async function fetchData() {
       setHistory(
@@ -87,52 +204,6 @@ const MapSearchScreen1 = ({ navigation, route }) => {
     console.log("history changed", history);
   }, [history]);
 
-  const InbetweenCompo = () => {
-    return name === "" ? (
-      <View>
-        <View style={styles.inbetweenCompo}>
-          <View style={styles.recentSearch}>
-            <Text style={{ fontSize: 16 }}>최근검색</Text>
-          </View>
-          <View
-            onTouchEndCapture={() => {
-              storeData("");
-              setHistory([]);
-            }}
-            style={styles.eraseAll}
-          >
-            <Text style={{ fontSize: 14, color: "#5ED3CC" }}>전체삭제</Text>
-          </View>
-        </View>
-        <FlatList
-          data={history}
-          renderItem={renderHistoryItem}
-          extraData={history}
-          style={{ marginTop: 24 }}
-        />
-      </View>
-    ) : (
-      <></>
-    );
-  };
-
-  const renderHistoryItem = ({ item }) => {
-    return (
-      <View
-        style={styles.historyItem}
-        onTouchEndCapture={() => {
-          console.log("history page", item);
-          gotoSearch2Screen({ navigation, data: item });
-        }}
-      >
-        <SearchHistory />
-        <Text style={{ marginLeft: 20, fontSize: 14, lineHeight: 24 }}>
-          {item.name}
-        </Text>
-      </View>
-    );
-  };
-
   return (
     <View style={styles.container}>
       <View style={styles.buttons}>
@@ -144,6 +215,7 @@ const MapSearchScreen1 = ({ navigation, route }) => {
         >
           <GoBack style={styles.goBackImage} />
         </View>
+
         <View
           onTouchEndCapture={() => {
             navigation.navigate("Map");
@@ -151,63 +223,17 @@ const MapSearchScreen1 = ({ navigation, route }) => {
           style={styles.goHome}
         >
           <View style={{ position: "relative" }}>
-            <GoHome1 style={{ width: 15, height: 15, position: "absolute" }} />
-            <GoHome2 style={{ width: 15, height: 15, position: "absolute" }} />
+            <Close />
           </View>
         </View>
       </View>
-      <GooglePlacesAutocomplete
-        inbetweenCompo={<InbetweenCompo />}
-        getSearchWord={(text) => {
-          setName(text);
-        }}
-        getResultArray={(dataSource) => {
-          onClick(dataSource);
-        }}
-        textInputProps={{
-          autoFocus: true, // 커서 바로 이동
-          blurOnSubmit: false,
-          clearButtonMode: false,
-          returnKeyType: "search",
-        }}
-        listUnderlayColor="#DDDFE9"
-        placeholder="검색어를 입력하세요"
-        enablePoweredByContainer={false}
-        query={{
-          key: "AIzaSyA2FBudItIm0cVgwNOsuc8D9BKk0HUeUTs",
-          language: "kor",
-          location: route.params.latitude + ", " + route.params.longitude,
-          radius: "1500",
-          rankby: "distance",
-        }}
-        fetchDetails
-        renderDescription={(data) => renderDescription(data)} // custom description render
-        onPress={async (data, details) => {
-          const newPlace = {
-            geometry: {
-              location: {
-                lat: details.geometry.location.lat,
-                lng: details.geometry.location.lng,
-              },
-            },
-            name: details.name,
-            address: details.formatted_address,
-            id: details.place_id,
-            structured_formatting: { main_text: details.name },
-          };
-
-          setHistory((prevList) => [...prevList, newPlace]);
-
-          const newArray =
-            JSON.parse(await AsyncStorage.getItem("search")) === null
-              ? []
-              : JSON.parse(await AsyncStorage.getItem("search"));
-          storeData([...newArray, newPlace]);
-
-          console.log("onPress", details);
-          gotoSearch2Screen({ navigation, data: details });
-        }}
-        styles={styles.GooglePlacesAutocomplete}
+      <SearchBox
+        name={name}
+        setName={(name) => setName(name)}
+        history={history}
+        setHistory={(history) => setHistory(history)}
+        location={[route.params.latitude, route.params.longitude]}
+        navigation={navigation}
       />
     </View>
   );
@@ -225,8 +251,8 @@ const styles = StyleSheet.create({
   GooglePlacesAutocomplete: {
     position: "absolute",
     textInputContainer: {
-      marginLeft: 63,
       width: 280,
+      marginLeft: 63,
     },
     textInput: {
       height: 24,
@@ -244,6 +270,7 @@ const styles = StyleSheet.create({
   },
   inbetweenCompo: {
     height: 24,
+    width: "100%",
     alignItems: "center",
     flexDirection: "row",
     justifyContent: "space-between",

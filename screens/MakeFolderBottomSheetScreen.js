@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Animated, Text, View, TouchableOpacity, Button } from "react-native";
+import React, { useRef, useState } from "react";
+import { Animated, View } from "react-native";
 
 import MakeFolderBottomSheet from "../components/MakeFolderBottomSheet";
 

@@ -10,6 +10,7 @@ import {
 import { RotateOutUpLeft } from "react-native-reanimated";
 
 import AppContext from "../components/AppContext";
+import GoBackHeader from "../components/GoBackHeader";
 
 const goBackImage = require("../assets/image/goBack.png");
 
@@ -23,33 +24,8 @@ const ProfileScreen = ({ navigation }) => {
   const myEmail = myContext.myEmail;
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View
-        style={{
-          position: "absolute",
-          width: "100%",
-          height: 60,
-          top: 45,
-          flexDirection: "row",
-          paddingTop: 20,
-        }}
-      >
-        <TouchableOpacity
-          onPress={() => gotoMypageScreen({ navigation })}
-          style={{
-            left: 21,
-            width: 20,
-            alignItems: "center",
-            height: 20,
-            justifyContent: "center",
-          }}
-        >
-          <Image source={goBackImage} style={{ tintColor: "black" }} />
-        </TouchableOpacity>
-        <View style={{ left: 50, width: 260, height: 24 }}>
-          <Text style={{ fontSize: 16, fontWeight: "bold" }}>프로필</Text>
-        </View>
-      </View>
+    <View style={styles.container}>
+      <GoBackHeader navigation={navigation} text="프로필" rightButton="none" />
 
       <View
         style={{
@@ -94,23 +70,7 @@ const ProfileScreen = ({ navigation }) => {
         </Text>
         <Text style={{ marginLeft: 24, fontWeight: "400" }}>{myEmail}</Text>
       </View>
-
-      <TouchableOpacity
-        style={{
-          position: "absolute",
-          bottom: 50,
-          width: 344,
-          height: 48,
-          borderRadius: 8,
-          borderColor: "gray",
-          borderWidth: 1,
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Text style={{ fontSize: 14, fontWeight: "bold" }}>정보수정 요청</Text>
-      </TouchableOpacity>
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -118,8 +78,7 @@ export default ProfileScreen;
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: "white",
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
   },
 });

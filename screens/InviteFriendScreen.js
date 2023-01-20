@@ -21,6 +21,7 @@ import {
 } from "react-native";
 
 import AppContext from "../components/AppContext";
+import GoBackHeader from "../components/GoBackHeader";
 
 const goBackImage = require("../assets/image/goBack.png");
 
@@ -262,39 +263,27 @@ const InviteFriendScreen = ({ navigation, route }) => {
       />
     );
   };
-  return (
-    <SafeAreaView style={styles.container}>
-      <View
-        style={{
-          position: "absolute",
-          width: "100%",
-          height: 60,
-          top: 45,
-          flexDirection: "row",
-          paddingTop: 20,
-        }}
-      >
-        <TouchableOpacity
-          onPress={() => {
+
+  /**
+   * () => {
             onChangeFolderUserIDs(
               folderUserNameIDs.map(({ userID }) => userID)
             );
             gotoMakeFolderBottomSheetScreen({ navigation });
-          }}
-          style={{
-            left: 21,
-            width: 20,
-            alignItems: "center",
-            height: 20,
-            justifyContent: "center",
-          }}
-        >
-          <Image source={goBackImage} style={{ tintColor: "black" }} />
-        </TouchableOpacity>
-        <View style={{ left: 50, width: 260, height: 24 }}>
-          <Text style={{ fontSize: 16, fontWeight: "bold" }}>친구초대</Text>
-        </View>
-      </View>
+          }
+   */
+  return (
+    <View style={styles.container}>
+      <GoBackHeader
+        navigation={navigation}
+        text="친구초대"
+        rightButton="none"
+        goBackFunction={() => {
+          onChangeFolderUserIDs(folderUserNameIDs.map(({ userID }) => userID));
+          console.log("done");
+          gotoMakeFolderBottomSheetScreen({ navigation });
+        }}
+      />
       <View
         style={{ position: "absolute", width: "100%", height: 60, top: 90 }}
       >
@@ -321,7 +310,7 @@ const InviteFriendScreen = ({ navigation, route }) => {
           }}
         />
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 export default InviteFriendScreen;
@@ -329,8 +318,6 @@ export default InviteFriendScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
     backgroundColor: "white",
   },
 });
