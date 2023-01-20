@@ -59,9 +59,9 @@ const toggleAnimation3 = (showAnimation, setAnimationValue) => {
 };
 
 const BottomSheetScreen = ({
-  onDisplay,
-  onCancel,
+  showAnimation,
   animationVal,
+  setAnimationValue,
   targetName,
   targetAddress,
   targetId,
@@ -72,6 +72,7 @@ const BottomSheetScreen = ({
   const myUID = myContext.myUID;
 
   const gotoEditScreen = () => {
+    console.log(targetId);
     return navigation.push("EditScreen", {
       placeName: targetName,
       placeID: targetId,
@@ -136,7 +137,9 @@ const BottomSheetScreen = ({
             width: "75%",
             height: "100%",
           }}
-          onTouchEndCapture={() => onDisplay()}
+          onTouchEndCapture={() => {
+            toggleAnimation2(showAnimation, setAnimationValue);
+          }}
         >
           <Image
             source={bottomSheetImage}
@@ -183,7 +186,9 @@ const BottomSheetScreen = ({
             width: "25%",
             height: "8%",
           }}
-          onTouchEndCapture={() => onDisplay()}
+          onTouchEndCapture={() =>
+            toggleAnimation2(showAnimation, setAnimationValue)
+          }
         />
         <View
           style={{
@@ -226,31 +231,11 @@ const BottomSheetScreen = ({
           height: "100%",
         }}
       >
-        <View
-          style={styles.buttons}
-          onTouchEndCapture={() => {
-            console.log("back");
-            onCancel();
-          }}
-        >
-          <View style={styles.goBack}>
-            <GoBack style={styles.goBackImage} />
-          </View>
-          <View style={styles.title}>
-            <Text style={styles.titleText}>{targetName}</Text>
-          </View>
-          <View
-            onTouchEndCapture={() => {
-              console.log("close");
-              navigation.navigate("Map");
-            }}
-            style={styles.goHome}
-          >
-            <View style={{ position: "relative" }}>
-              <Close />
-            </View>
-          </View>
-        </View>
+        <GoBackHeader
+          navigation={navigation}
+          text={targetName}
+          rightButton="goHome"
+        />
         <View
           style={{
             position: "absolute",
@@ -291,11 +276,9 @@ const BottomSheetScreen = ({
 };
 
 const BottomSheet = ({
-  onRemove,
-  onDisplay,
-  onCancel,
-  animation,
+  showAnimation,
   animationVal,
+  setAnimationValue,
   targetName,
   targetAddress,
   targetId,
@@ -312,7 +295,7 @@ const BottomSheet = ({
           borderTopLeftRadius: 30,
           borderTopRightRadius: 30,
           position: "absolute",
-          bottom: animation,
+          bottom: showAnimation,
           zIndex: 1,
           alignItems: "center",
           justifyContent: "center",
@@ -323,10 +306,9 @@ const BottomSheet = ({
         }}
       >
         <BottomSheetScreen
-          onRemove={() => onRemove()}
-          onDisplay={() => onDisplay()}
-          onCancel={() => onCancel()}
+          showAnimation={showAnimation}
           animationVal={animationVal}
+          setAnimationValue={setAnimationValue}
           targetName={targetName}
           targetAddress={targetAddress}
           targetId={targetId}
@@ -352,10 +334,11 @@ const MapSearchScreen2 = ({ navigation, route }) => {
     latitudeDelta: 0.0016,
     longitudeDelta: 0.0012,
     name: route.params.name,
-    address: route.params.address,
-    id: route.params.id,
+    address: route.params.address || route.params.formatted_address,
+    id: route.params.id || route.params.place_id,
   });
 
+  console.log("route", route.params.id || route.params.place_id);
   const [targetShown, setTargetShown] = useState(true);
 
   useEffect(() => {
@@ -433,17 +416,9 @@ const MapSearchScreen2 = ({ navigation, route }) => {
       </MapView>
 
       <BottomSheet
-        onRemove={() => {
-          toggleAnimation1(showAnimation, setAnimationValue);
-        }}
-        onDisplay={() => {
-          toggleAnimation2(showAnimation, setAnimationValue);
-        }}
-        onCancel={() => {
-          toggleAnimation3(showAnimation, setAnimationValue);
-        }}
-        animation={showAnimation}
+        showAnimation={showAnimation}
         animationVal={animationValue}
+        setAnimationValue={(val) => setAnimationValue(val)}
         targetName={target.name}
         targetAddress={target.address}
         targetId={target.id}

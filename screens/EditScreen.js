@@ -30,22 +30,20 @@ import {
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
+import DateImage from "../assets/icons/date.svg";
+import DeleteFolder from "../assets/icons/delete.svg";
+import FolderImage from "../assets/icons/folder.svg";
+import EditFolder from "../assets/icons/folderEdit.svg";
+import FolderPrefix from "../assets/icons/folderPrefix.svg";
+import GoBack from "../assets/icons/goBack.svg";
+import LocationImage from "../assets/icons/location.svg";
+import WritingImage from "../assets/icons/writing.svg";
 import AppContext from "../components/AppContext";
 import DatePicker from "../components/DatePicker";
 import FolderBottomSheet from "../components/FolderBottomSheet";
 import ImgPicker from "../components/ImgPicker";
 import { storage, auth } from "../firebase";
 import SendPushNotification from "../modules/SendPushNotification";
-
-const RecordDateImage = require("../assets/image/RecordDate.png");
-const RecordFolderImage = require("../assets/image/RecordFolder.png");
-const RecordFolderNameImage = require("../assets/image/RecordFolderName.png");
-const RecordLocationImage = require("../assets/image/RecordLocation.png");
-const RecordPhotoImage = require("../assets/image/RecordPhoto.png");
-const RecordTextImage = require("../assets/image/RecordText.png");
-const editImage = require("../assets/image/edit.png");
-const goBackImage = require("../assets/image/goBack.png");
-const trashcanImage = require("../assets/image/trashcan.png");
 
 const defaultFolderID = "-NB6gdHZgh_liXbnuOLr";
 const defaultFolderName = "폴더1";
@@ -432,91 +430,102 @@ const EditScreen = ({ navigation, route }) => {
   const [text_, setText_] = useState(text || "");
 
   return (
-    <SafeAreaView
-      style={{ width: "100%", height: "100%", position: "absolute", top: 20 }}
+    <View
+      style={{
+        width: "100%",
+        height: "100%",
+        position: "absolute",
+        backgroundColor: "white",
+        flexDirection: "column",
+      }}
     >
       <View
         style={{
-          height: "8%",
+          height: 56,
+          top: 32,
           width: "100%",
           flexDirection: "row",
           alignItems: "center",
+          marginBottom: 16,
         }}
       >
-        <TouchableOpacity
-          style={{ left: 7, width: 20, height: 30, justifyContent: "center" }}
-          onPress={() => navigation.pop()}
-        >
-          <Image source={goBackImage} />
-        </TouchableOpacity>
-        <TextInput
-          editable={isEditable}
-          selectTextOnFocus={isEditable}
-          style={{
-            fontSize: 17,
-            fontWeight: "bold",
-            top: 7,
-            left: 1,
-            ...styles.textInput,
-            width: 280,
+        <View
+          onTouchEndCapture={() => {
+            navigation.goBack();
           }}
-          onChangeText={(tle) => setTitle_(tle)}
-          value={title_}
-          placeholder={`${timeNow2.getFullYear().toString()}_${(
-            timeNow2.getMonth() + 1
-          ).toString()}_${timeNow2.getDate().toString()}_기록`}
-          placeholderTextColor="grey"
-        />
+          style={styles.goBack}
+        >
+          <GoBack height={24} />
+        </View>
+        <View style={styles.title}>
+          <TextInput
+            editable={isEditable}
+            selectTextOnFocus={isEditable}
+            style={styles.titleText}
+            onChangeText={(tle) => setTitle_(tle)}
+            value={title_}
+            placeholder={`${timeNow2.getFullYear().toString()}_${(
+              timeNow2.getMonth() + 1
+            ).toString()}_${timeNow2.getDate().toString()}_기록`}
+          />
+        </View>
+
         {IsRecordOwner && !isEditable && (
-          <View
-            style={{
-              position: "absolute",
-              right: 11,
-              width: 70,
-              height: 30,
-            }}
-          >
-            <TouchableHighlight
-              style={{ left: 0, position: "absolute", width: 18, height: 18 }}
-              underlayColor="none"
-              onPress={() => setIsEditable(true)}
-            >
-              <Image source={editImage} />
-            </TouchableHighlight>
-            <TouchableHighlight
-              style={{ right: 14, position: "absolute", width: 18, height: 18 }}
-              onPress={() =>
-                removeRecordPopUp({ navigation, recordID, folderID_, placeID })
-              }
-            >
-              <Image source={trashcanImage} />
-            </TouchableHighlight>
+          <View style={styles.twoRightButtons}>
+            <View style={{ flexDirection: "row" }}>
+              <TouchableOpacity
+                onPress={() => setIsEditable(true)}
+                style={styles.firstButton}
+              >
+                <EditFolder />
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() =>
+                  removeRecordPopUp({
+                    navigation,
+                    recordID,
+                    folderID_,
+                    placeID,
+                  })
+                }
+                style={styles.secondButton}
+              >
+                <DeleteFolder />
+              </TouchableOpacity>
+            </View>
           </View>
         )}
       </View>
       <ScrollView
-        style={{ height: "90%", width: "100%" }}
+        style={{ width: "100%", marginTop: 32 }}
         showsVerticalScrollIndicator={false}
         scrollEnabled
       >
-        <View style={{ height: 210, ...styles.item }}>
-          {/* <Image source={RecordPhotoImage} /> */}
-          <ImgPicker
-            onImageTaken={(photo) => {
-              setSelectedPhotos((selectedPhotos) => [...selectedPhotos, photo]);
-            }}
-            onImageErased={(photos) => setSelectedPhotos(() => photos)}
-            defaultPhotos={selectedPhotos}
-            IsEditable={isEditable}
-          />
-        </View>
+        {selectedPhotos.length === 0 && !isEditable ? (
+          <></>
+        ) : (
+          <View style={{ height: 210, ...styles.imgPicker }}>
+            {/* <Image source={RecordPhotoImage} /> */}
+            <ImgPicker
+              onImageTaken={(photo) => {
+                setSelectedPhotos((selectedPhotos) => [
+                  ...selectedPhotos,
+                  photo,
+                ]);
+              }}
+              onImageErased={(photos) => setSelectedPhotos(() => photos)}
+              defaultPhotos={selectedPhotos}
+              IsEditable={isEditable}
+            />
+          </View>
+        )}
         <View
           onTouchEndCapture={() => {
             showFolderBottomSheet && setShowFolderBottomSheet(false);
           }}
-          style={{ height: 50, ...styles.item }}
+          style={{ height: 48, ...styles.item }}
         >
-          <Image source={RecordLocationImage} />
+          <LocationImage />
           <TextInput
             editable={isEditable}
             selectTextOnFocus={isEditable}
@@ -535,7 +544,7 @@ const EditScreen = ({ navigation, route }) => {
             ...styles.item,
           }}
         >
-          <Image source={RecordDateImage} />
+          <DateImage />
           <DatePicker
             date1={date_}
             setDate1={(date1) => setDate_(date1)}
@@ -545,24 +554,21 @@ const EditScreen = ({ navigation, route }) => {
           />
         </View>
         <View style={{ height: 50, ...styles.item }}>
-          <Image source={RecordFolderImage} />
+          <FolderImage />
           <TouchableOpacity
             onPress={() => {
               isEditable && setShowFolderBottomSheet(!showFolderBottomSheet);
             }}
             style={{
-              width: 76,
-              height: 32,
-              borderRadius: 16,
+              width: 100,
+              height: 40,
               left: 10,
               bottom: 7,
               alignItems: "center",
-              justifyContent: "center",
               flexDirection: "row",
-              backgroundColor: "grey",
             }}
           >
-            <Image source={RecordFolderNameImage} />
+            <FolderPrefix height={16} width={16} />
             <Text> {folderName_}</Text>
           </TouchableOpacity>
           <View
@@ -572,19 +578,24 @@ const EditScreen = ({ navigation, route }) => {
             style={{ flex: 1 }}
           />
         </View>
-        <View style={{ ...styles.item }}>
-          <Image source={RecordTextImage} />
-          <TextInput
-            editable={isEditable}
-            selectTextOnFocus={isEditable}
-            style={styles.record}
-            onChangeText={(txt) => setText_(txt)}
-            value={text_}
-            multiline
-            placeholder="내용을 입력해주세요"
-            placeholderTextColor="grey"
-          />
-        </View>
+        {!isEditable && (text === undefined || text.length === 0) ? (
+          <></>
+        ) : (
+          <View style={{ ...styles.item }}>
+            <WritingImage />
+            <TextInput
+              editable={isEditable}
+              selectTextOnFocus={isEditable}
+              style={styles.record}
+              onChangeText={(txt) => setText_(txt)}
+              value={text_}
+              multiline
+              placeholder="내용을 입력해주세요"
+              placeholderTextColor="grey"
+            />
+          </View>
+        )}
+
         {isEditable && (
           <View style={{ ...styles.button }}>
             <TouchableOpacity
@@ -640,17 +651,18 @@ const EditScreen = ({ navigation, route }) => {
         setFolderName={(f) => setFolderName_(f)}
         setFolderID={(f) => setFolderID_(f)}
       />
-    </SafeAreaView>
+    </View>
   );
 };
 
 export default EditScreen;
 
 const styles = StyleSheet.create({
+  imgPicker: { marginTop: 16, width: "100%" },
   item: {
-    marginLeft: 7,
     flex: 1,
     flexDirection: "row",
+    marginLeft: 23,
   },
   label: {
     fontSize: 17,
@@ -678,15 +690,49 @@ const styles = StyleSheet.create({
     marginBottom: 7,
     paddingVertical: 2,
     paddingHorizontal: 2,
+    lineHeight: 24,
     left: 10,
     bottom: 6,
   },
   button: {
-    flex: 1,
     justifyContent: "center",
     alignItems: "center",
     width: "100%",
     height: 60,
     flexDirection: "row",
+    position: "absolute",
+    marginTop: 661,
+  },
+
+  goBack: {
+    width: 32,
+    height: 24,
+    position: "absolute",
+    left: 31,
+  },
+  title: {
+    width: 304,
+    height: 24,
+    left: 63,
+  },
+  titleText: {
+    fontSize: 16,
+    lineHeight: 24,
+    fontWeight: "bold",
+  },
+  twoRightButtons: {
+    position: "absolute",
+    right: 0,
+    width: 86,
+    height: 30,
+  },
+  firstButton: {
+    width: 30,
+    height: 30,
+  },
+  secondButton: {
+    width: 30,
+    height: 30,
+    left: 10,
   },
 });

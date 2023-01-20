@@ -13,6 +13,8 @@ import {
   Image,
 } from "react-native";
 
+import AddFolder from "../assets/icons/addfolder.svg";
+import SearchData from "../assets/icons/searchData.svg";
 import AppContext from "../components/AppContext";
 import RecordFlatList from "../components/RecordFlatList";
 
@@ -213,27 +215,29 @@ const StorageScreen = ({ navigation, route }) => {
     />
   );
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <View
         style={{
           flexDirection: "row",
-          height: 40,
+          height: 56,
           marginBottom: 20,
           alignItems: "center",
         }}
       >
-        <Text style={{ fontWeight: "bold", fontSize: 16, left: 20 }}>
+        <Text style={{ fontWeight: "bold", fontSize: 16, left: 23 }}>
           보관함
         </Text>
-        <TouchableOpacity
-          style={{ position: "absolute", right: 64 }}
-          onPress={() => gotoMakeFolderBottomSheetScreen({ navigation })}
-        >
-          <Image source={addFolderImage} />
-        </TouchableOpacity>
-        <TouchableOpacity style={{ position: "absolute", right: 26 }}>
-          <Image source={searchImage} />
-        </TouchableOpacity>
+        <View style={styles.twoRightButtons}>
+          <TouchableOpacity
+            style={styles.firstButton}
+            onPress={() => gotoMakeFolderBottomSheetScreen({ navigation })}
+          >
+            <AddFolder />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.secondButton}>
+            <SearchData />
+          </TouchableOpacity>
+        </View>
       </View>
       <View style={{ height: 85 }}>
         <FlatList
@@ -250,7 +254,7 @@ const StorageScreen = ({ navigation, route }) => {
         recordDataSource={masterDataSource}
         stackNavigation={navigation}
       />
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -260,7 +264,8 @@ const styles = StyleSheet.create({
   container: {
     width: "100%",
     height: "89.5%",
-    marginTop: StatusBar.currentHeight || 0,
+    marginTop: 32,
+    backgroundColor: "white",
   },
   item: {
     flex: 0.5,
@@ -275,5 +280,22 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 16,
+  },
+  twoRightButtons: {
+    position: "absolute",
+    right: 0,
+    width: 86,
+    height: 30,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  firstButton: {
+    width: 30,
+    height: 30,
+  },
+  secondButton: {
+    width: 30,
+    height: 30,
+    left: 10,
   },
 });

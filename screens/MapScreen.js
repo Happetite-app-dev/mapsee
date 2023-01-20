@@ -20,6 +20,7 @@ import Marker1 from "../assets/markers/marker#4F92D9.svg";
 import NewMarker from "../assets/markers/newMarker.svg";
 import AppContext from "../components/AppContext";
 import PlaceInfoBottomSheet from "../components/PlaceInfoBottomSheet";
+import RecordMarker from "../components/RecordMarker";
 import GeneratePushToken from "../modules/GeneratePushToken";
 
 const currentLocationImage = require("../assets/image/currentLocation.png");
@@ -199,27 +200,34 @@ const MapScreen = ({ navigation }) => {
                               onValue(
                                 ref(db, "/records/" + recordID + "/writeDate"),
                                 (snapshotDate) => {
-                                  const date = new Date(
-                                    snapshotDate.val().year,
-                                    snapshotDate.val().month - 1,
-                                    snapshotDate.val().day,
-                                    snapshotDate.val().hour,
-                                    snapshotDate.val().minute
-                                  );
-                                  onValue(
-                                    ref(db, "/records/" + recordID + "/lctn"),
-                                    (snapshot3) => {
-                                      setList1((list1) => ({
-                                        ...list1,
-                                        [recordID]: {
-                                          recordID,
-                                          lctn: snapshot3.val(),
-                                          color,
-                                          date,
-                                        },
-                                      }));
-                                    }
-                                  );
+                                  if (
+                                    snapshotDate.val() != null &&
+                                    snapshotDate.val().year != null &&
+                                    snapshotDate.val().year !== undefined
+                                  ) {
+                                    const date = new Date(
+                                      snapshotDate.val().year,
+                                      snapshotDate.val().month - 1,
+                                      snapshotDate.val().day,
+                                      snapshotDate.val().hour,
+                                      snapshotDate.val().minute
+                                    );
+                                    onValue(
+                                      ref(db, "/records/" + recordID + "/lctn"),
+                                      (snapshot3) => {
+                                        console.log(snapshot3.val());
+                                        setList1((list1) => ({
+                                          ...list1,
+                                          [recordID]: {
+                                            recordID,
+                                            lctn: snapshot3.val(),
+                                            color,
+                                            date,
+                                          },
+                                        }));
+                                      }
+                                    );
+                                  }
                                 }
                               );
                             }
@@ -235,7 +243,7 @@ const MapScreen = ({ navigation }) => {
         });
       }
     });
-  }, []);
+  }, [isFocused]);
 
   useEffect(() => {
     if (getData == null) {
@@ -373,45 +381,7 @@ const MapScreen = ({ navigation }) => {
             }}
           />
         </View>
-        {list1 == null || list1 === undefined ? (
-          <></>
-        ) : (
-          Object.values(list1).map((record) => {
-            const showMarker = Math.random();
-            const dayDiff = (record.date - currentDate) / (1000 * 60 * 60 * 24);
-            const color = record.color;
-
-            return (
-              <Marker
-                // key={record.recordID}
-                key={record.recordID}
-                coordinate={record.lctn}
-                opacity={
-                  origin.latitudeDelta < 0.01 || showMarker > 0.5 ? 100 : 0
-                }
-                style={{ zIndex: 2 }}
-              >
-                {dayDiff <= 3 ? (
-                  <Image
-                    source={targetLocationImage}
-                    style={{
-                      width: 37,
-                      height: 37,
-                      resizeMode: "contain",
-                      tintColor: color,
-                      zIndex: 10,
-                    }}
-                  />
-                ) : (
-                  <Image
-                    source={{ targetLocationImage }}
-                    style={{ tintColor: color, backgroundColor: "red" }}
-                  />
-                )}
-              </Marker>
-            );
-          })
-        )}
+        <RecordMarker recordData={list1} origin={origin} />
       </MapView>
     </SafeAreaView>
   );

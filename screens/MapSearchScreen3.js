@@ -98,6 +98,49 @@ const _renderRow = ({ navigation, item }) => {
   );
 };
 
+const toggleAnimation = (navigation, results) => {
+  navigation.navigate("MapSearchScreen4", results);
+};
+
+const BottomSheet = ({ navigation, animation, name, data }) => {
+  return (
+    <Animated.View
+      style={{
+        width: "100%",
+        backgroundColor: "white",
+        borderTopLeftRadius: 30,
+        borderTopRightRadius: 30,
+        position: "absolute",
+        bottom: animation,
+        zIndex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+        maxHeight: 256,
+        borderWidth: 1,
+        borderColor: "#DDDFE9",
+        borderRadius: 16,
+        elevation: 24,
+      }}
+    >
+      <View
+        style={{ marginTop: 8, zIndex: 1 }}
+        onTouchEndCapture={() => {
+          const results = [name, data];
+          toggleAnimation(navigation, results);
+        }}
+      >
+        <Image source={bottomSheetImage} />
+      </View>
+      <FlatList
+        data={data}
+        renderItem={({ item }) => _renderRow({ navigation, item })}
+        style={{ width: "100%" }}
+        scrollEnabled={false}
+      />
+    </Animated.View>
+  );
+};
+
 const MapSearchScreen3 = ({ navigation, route }) => {
   const mapRef = React.createRef();
   const [origin, setOrigin] = useState([0, 0]);
@@ -108,10 +151,6 @@ const MapSearchScreen3 = ({ navigation, route }) => {
 
   const [latList, setLatList] = useState([]);
   const [lngList, setLngList] = useState([]);
-
-  const toggleAnimation = (navigation, results) => {
-    navigation.navigate("MapSearchScreen4", results);
-  };
 
   const onInsert = (data) => {
     data.map((item) => {
@@ -135,15 +174,12 @@ const MapSearchScreen3 = ({ navigation, route }) => {
   };
   useEffect(() => {
     onInsert(route.params[1]);
-    console.log(route.params[1].length);
   }, []);
 
   useEffect(() => {
     console.log("-----useEffect", lngList.length);
     if (lngList.length > 1) {
-      console.log("enter");
       setOrigin([getAverage(latList), getAverage(lngList)]);
-      console.log("done", getAverage(latList), getAverage(lngList));
     }
   }, [latList]);
 
@@ -158,51 +194,13 @@ const MapSearchScreen3 = ({ navigation, route }) => {
     }
   }, [origin]);
 
-  const BottomSheet = ({ navigation, animation, data }) => {
-    return (
-      <Animated.View
-        style={{
-          width: "100%",
-          backgroundColor: "white",
-          borderTopLeftRadius: 30,
-          borderTopRightRadius: 30,
-          position: "absolute",
-          bottom: animation,
-          zIndex: 1,
-          alignItems: "center",
-          justifyContent: "center",
-          maxHeight: 256,
-          borderWidth: 1,
-          borderColor: "#DDDFE9",
-          borderRadius: 16,
-          elevation: 24,
-        }}
-      >
-        <View
-          style={{ marginTop: 8, zIndex: 1 }}
-          onTouchEndCapture={() => {
-            const results = [route.params[0], data];
-            toggleAnimation(navigation, results);
-          }}
-        >
-          <Image source={bottomSheetImage} />
-        </View>
-        <FlatList
-          data={data}
-          renderItem={({ item }) => _renderRow({ navigation, item })}
-          style={{ width: "100%" }}
-          scrollEnabled={false}
-        />
-      </Animated.View>
-    );
-  };
-
   return (
     <View>
       <BottomSheet
         navigation={navigation}
         animation={showAnimation}
         data={route.params[1]}
+        name={route.params[0]}
       />
       <MapView
         customMapStyle={mapStyle}

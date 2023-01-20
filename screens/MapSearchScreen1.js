@@ -12,13 +12,17 @@ import SearchHistory from "../assets/icons/searchPlace.svg";
 const gotoSearch2Screen = ({ navigation, data }) => {
   navigation.navigate("MapSearchScreen2", data);
 };
-
-const onClick = ({ navigation, name, dataSource }) => {
-  gotoSearch3Screen({ navigation, data: [name, dataSource] });
-};
-
 const gotoSearch3Screen = ({ navigation, data }) => {
   navigation.navigate("MapSearchScreen3", data);
+};
+
+const storeData = async (value) => {
+  try {
+    const jsonValue = JSON.stringify(value);
+    await AsyncStorage.setItem("search", jsonValue);
+  } catch (e) {
+    // saving error
+  }
 };
 
 const InbetweenCompo = ({ name, history, setHistory, navigation }) => {
@@ -118,8 +122,8 @@ const SearchBox = ({
             },
           },
           name: details.name,
-          address: details.formatted_address,
-          id: details.place_id,
+          formatted_address: details.formatted_address,
+          place_id: details.place_id,
           structured_formatting: { main_text: details.name },
         };
 
@@ -171,16 +175,6 @@ const renderDescription = (data) => {
       </View>
     </View>
   );
-};
-
-// Store Current Search Data
-const storeData = async (value) => {
-  try {
-    const jsonValue = JSON.stringify(value);
-    await AsyncStorage.setItem("search", jsonValue);
-  } catch (e) {
-    // saving error
-  }
 };
 
 const MapSearchScreen1 = ({ navigation, route }) => {
