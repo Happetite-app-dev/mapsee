@@ -232,7 +232,7 @@ const saveData = async (
       ); //folder에 recordID를 넣고
       set(reference4, true);
     }
-
+    // storage 관련 저장/삭제
     selectedPhotos.map(async (image) => {
       const referenceImage = ref(db, "/records/" + recordID + "/photos");
       const imageID = push(referenceImage, image).key;
@@ -243,6 +243,24 @@ const saveData = async (
         "/records/" + recordID + "/photos/" + imageID
       );
       set(referenceUrl, url);
+    });
+
+    const folderRef = ref_storage(storage, `images/${recordID}/`);
+    onValue(ref(db, "/records/" + recordID + "/photos/"), (snapshot) => {
+      if (snapshot.val() != null) {
+        const keys = Object.keys(snapshot.val());
+
+        listAll(folderRef)
+          .then(function (result) {
+            result.items.forEach(function (imageRef) {
+              // And finally display them
+              if (!keys.includes(imageRef.name)) deleteObject(imageRef);
+            });
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+      }
     });
 
     //기존 기록의 수정이나 삭제는 알림 없어도 됨.
@@ -305,17 +323,7 @@ const removeData = async ({ recordID, folderID, placeID }) => {
     .catch(function (error) {
       console.log(error);
     });
-  /*
-  onValue(folderRef, (snapshot) => {
-    if (snapshot.val() != null) {
-      const imageList = snapshot.val();
-      imageList.map((name) => {
-        const imageRef = ref_storage(storage, `images/${recordID}/${name}`);
-        deleteObject(imageRef);
-      });
-    }
-  });
-*/
+
   // remove from database
   const db = getDatabase();
   const reference1 = ref(db, "/records/" + recordID);
@@ -497,9 +505,7 @@ const EditScreen = ({ navigation, route }) => {
             }}
             onImageErased={(photos) => setSelectedPhotos(() => photos)}
             defaultPhotos={selectedPhotos}
-            fullPhotoData={photos}
             IsEditable={isEditable}
-            recordID={recordID}
           />
         </View>
         <View
