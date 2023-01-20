@@ -1,5 +1,5 @@
 import { getDatabase, onValue, ref } from "@firebase/database";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Pressable,
   SafeAreaView,
@@ -14,6 +14,8 @@ const gotoSingleFolderScreen = ({
   recordDataSource,
   setRecordDataSource,
   folderName,
+  folderColor,
+  folderUserIDs,
 }) => {
   const db = getDatabase();
   onValue(ref(db, "/folders/" + folderID), (snapshot) => {
@@ -23,7 +25,6 @@ const gotoSingleFolderScreen = ({
       myUID in snapshot.child("userIDs").val()
     ) {
       if (snapshot.child("placeRecords").val() != (null || undefined)) {
-        console.log(folderID);
         //폴더는 있지만 빈폴더라서 record가 안에 없을 수 있어!!
         //recordIDList_.push(...Object.keys(snapshot2.child('placeRecords').val()))  //해당 user가 소속된 각 폴더에 들어있는 recordIDList들을 합쳐서 하나로 만들어주기(버림)
         Object.values(snapshot.child("placeRecords").val()).map(
@@ -54,19 +55,39 @@ const gotoSingleFolderScreen = ({
     recordDataSource,
     folderID,
     folderName,
-    folderColor: "red",
-    folderUserIDs: ["KOEewtx6vlbFIgJHaXnjIVJA6993"],
+    folderColor,
+    folderUserIDs,
   });
 };
 const DispatchFolderInviteRequestList = ({
-  approverID,
-  approverFirstName,
-  approverLastName,
-  folderName,
+  approverObject,
+  folderObject,
   folderID,
   navigation,
   myUID,
 }) => {
+  const [approverObj, setApproverObj] = useState(
+    approverObject || { id: "", firstName: "", lastName: "" }
+  );
+  useEffect(() => {
+    if (approverObject != undefined) {
+      setApproverObj(approverObject);
+    }
+  }, [approverObject]);
+  const approverID = JSON.stringify(approverObj.id).slice(1, -1);
+  const approverFirstName = JSON.stringify(approverObj.firstName).slice(1, -1);
+  const approverLastName = JSON.stringify(approverObj.lastName).slice(1, -1);
+  const [folderObj, setFolderObj] = useState(
+    folderObject || { folderName: "", folderColor: "", folderUserIDs: [] }
+  );
+  useEffect(() => {
+    if (folderObject != undefined) {
+      setFolderObj(folderObject);
+    }
+  }, [folderObject]);
+  const folderName = JSON.stringify(folderObj.folderName).slice(1, -1);
+  const folderColor = JSON.stringify(folderObj.folderColor).slice(1, -1);
+  const folderUserIDs = folderObj.folderUserIDs;
   const [recordDataSource, setRecordDataSource] = useState({});
   return (
     <TouchableOpacity
@@ -78,6 +99,8 @@ const DispatchFolderInviteRequestList = ({
           recordDataSource,
           setRecordDataSource,
           folderName,
+          folderColor,
+          folderUserIDs,
         });
       }}
       style={{ flex: 1, alignItems: "center", marginBottom: 40 }}

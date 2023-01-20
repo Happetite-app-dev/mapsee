@@ -160,14 +160,11 @@ const saveData = async (
       if (snapshot.val() != null) {
         const folderUserIDs = Object.keys(snapshot.val());
         folderUserIDs.map((folderUserID) => {
-          if (folderUserID != myUID) {
+          if (folderUserID == myUID) {
             const reference = ref(db, "/notices/" + folderUserID);
             push(reference, {
               type: "recept_recordAdd_done",
               performerUID: myUID,
-              performerID: myID, //-->수정 필요
-              performerFirstName: myFirstName,
-              performerLastName: myLastName,
               time: timeNow.getTime(),
               //여기서 부턴 "recept_recordAdd_done" type 알림만의 정보
               folderID,

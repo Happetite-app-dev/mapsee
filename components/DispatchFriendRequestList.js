@@ -1,10 +1,18 @@
+import { useEffect, useState } from "react";
 import { Pressable, SafeAreaView, Text, View } from "react-native";
 
-const DispatchFriendRequestList = ({
-  approverID,
-  approverFirstName,
-  approverLastName,
-}) => {
+const DispatchFriendRequestList = ({ approverObject }) => {
+  const [approverObj, setApproverObj] = useState(
+    approverObject || { id: "", firstName: "", lastName: "" }
+  );
+  useEffect(() => {
+    if (approverObject != undefined) {
+      setApproverObj(approverObject);
+    }
+  }, [approverObject]);
+  const approverID = JSON.stringify(approverObj.id).slice(1, -1);
+  const approverFirstName = JSON.stringify(approverObj.firstName).slice(1, -1);
+  const approverLastName = JSON.stringify(approverObj.lastName).slice(1, -1);
   return (
     <View style={{ flex: 1, alignItems: "center", marginBottom: 40 }}>
       <View
