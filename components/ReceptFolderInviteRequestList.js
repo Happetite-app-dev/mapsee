@@ -1,9 +1,11 @@
 import { getDatabase, onValue, ref } from "@firebase/database";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Text, View, TouchableOpacity } from "react-native";
 const gotoSingleFolderScreen = ({
   navigation,
   folderID,
+  folderColor,
+  folderUserIDs,
   myUID,
   recordDataSource,
   setRecordDataSource,
@@ -47,19 +49,43 @@ const gotoSingleFolderScreen = ({
     recordDataSource,
     folderID,
     folderName,
-    folderColor: "red",
-    folderUserIDs: ["KOEewtx6vlbFIgJHaXnjIVJA6993"],
+    folderColor,
+    folderUserIDs,
   });
 };
 const ReceptFolderInviteRequestList = ({
-  requesterID,
-  requesterFirstName,
-  requesterLastName,
-  folderName,
+  requesterObject,
+  folderObject,
   folderID,
   navigation,
   myUID,
 }) => {
+  const [requesterObj, setRequesterObj] = useState(
+    requesterObject || { id: "", firstName: "", lastName: "" }
+  );
+  useEffect(() => {
+    if (requesterObject != undefined) {
+      setRequesterObj(requesterObject);
+    }
+  }, [requesterObject]);
+  const requesterID = JSON.stringify(requesterObj.id).slice(1, -1);
+  const requesterFirstName = JSON.stringify(requesterObj.firstName).slice(
+    1,
+    -1
+  );
+  const requesterLastName = JSON.stringify(requesterObj.lastName).slice(1, -1);
+  const [folderObj, setFolderObj] = useState(
+    folderObject || { folderName: "", folderColor: "", folderUserIDs: [] }
+  );
+  useEffect(() => {
+    if (folderObject != undefined) {
+      setFolderObj(folderObject);
+    }
+  }, [folderObject]);
+  const folderName = JSON.stringify(folderObj.folderName).slice(1, -1);
+  const folderColor = JSON.stringify(folderObj.folderColor).slice(1, -1);
+  const folderUserIDs = folderObj.folderUserIDs;
+  //console.log(folderColor);
   const [recordDataSource, setRecordDataSource] = useState({});
   return (
     <TouchableOpacity
@@ -67,6 +93,8 @@ const ReceptFolderInviteRequestList = ({
         gotoSingleFolderScreen({
           navigation,
           folderID,
+          folderColor,
+          folderUserIDs,
           myUID,
           recordDataSource,
           setRecordDataSource,

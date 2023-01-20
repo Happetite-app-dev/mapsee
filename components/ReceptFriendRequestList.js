@@ -1,10 +1,22 @@
+import { useEffect, useState } from "react";
 import { Pressable, SafeAreaView, Text, View } from "react-native";
 
-const ReceptFriendRequestList = ({
-  requesterID,
-  requesterFirstName,
-  requesterLastName,
-}) => {
+const ReceptFriendRequestList = ({ requesterObject }) => {
+  const [requesterObj, setRequesterObj] = useState(
+    requesterObject || { id: "", firstName: "", lastName: "" }
+  );
+  useEffect(() => {
+    if (requesterObject != undefined) {
+      setRequesterObj(requesterObject);
+    }
+  }, [requesterObject]);
+  const requesterID = JSON.stringify(requesterObj.id).slice(1, -1);
+  const requesterFirstName = JSON.stringify(requesterObj.firstName).slice(
+    1,
+    -1
+  );
+  const requesterLastName = JSON.stringify(requesterObj.lastName).slice(1, -1);
+
   return (
     <View style={{ flex: 1, alignItems: "center", marginBottom: 40 }}>
       <View
