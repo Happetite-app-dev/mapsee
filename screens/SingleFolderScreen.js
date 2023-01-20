@@ -104,7 +104,6 @@ const SingleFolderScreen = ({ navigation, route }) => {
 
   const { recordDataSource, folderID, folderName, folderColor, folderUserIDs } =
     route.params;
-
   return (
     <SafeAreaView style={{ height: "100%", width: "100%" }}>
       <View
@@ -123,7 +122,7 @@ const SingleFolderScreen = ({ navigation, route }) => {
             height: 30,
             justifyContent: "center",
           }}
-          onPress={gotoStorageScreen}
+          onPress={() => gotoStorageScreen(navigation)}
         >
           <Image source={goBackImage} />
         </TouchableOpacity>

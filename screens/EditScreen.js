@@ -75,7 +75,6 @@ const uploadImage = async (image, imageName, newRecordID) => {
   }).then((snapshot) => {});
 
   blob.close();
-
   return await getDownloadURL(imageRef);
 };
 
