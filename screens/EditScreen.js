@@ -12,6 +12,8 @@ import {
   ref as ref_storage,
   uploadBytes,
   getDownloadURL,
+  deleteObject,
+  listAll,
 } from "firebase/storage";
 import React, { useContext, createFactory, useEffect, useState } from "react";
 import {
@@ -50,6 +52,7 @@ const defaultFolderName = "폴더1";
 
 const uploadImage = async (image, imageName, newRecordID) => {
   const imageRef = ref_storage(storage, `images/${newRecordID}/${imageName}`);
+
   // `images === 참조값이름(폴더이름), / 뒤에는 파일이름 어떻게 지을지
   const blob = await new Promise((resolve, reject) => {
     // image 불러오기 위한 XML 만든다
@@ -75,41 +78,7 @@ const uploadImage = async (image, imageName, newRecordID) => {
   }).then((snapshot) => {});
 
   blob.close();
-
   return await getDownloadURL(imageRef);
-};
-
-const uploadImages = (imageArray, imageNameArray, newRecordID) => {
-  imageArray.map(async (image, index) => {
-    const imageName = imageNameArray[index];
-    console.log("image Name", index, imageName);
-    const imageRef = ref_storage(storage, `images/${newRecordID}/${imageName}`);
-    // `images === 참조값이름(폴더이름), / 뒤에는 파일이름 어떻게 지을지
-    const blob = await new Promise((resolve, reject) => {
-      // image 불러오기 위한 XML 만든다
-      const xhr = new XMLHttpRequest();
-      // imagePicker통해 선택된 사진을 blob형태로 가져온다
-      xhr.open("GET", image, true);
-      xhr.responseType = "blob";
-      // XML 상태 확인
-      xhr.onload = function () {
-        // 성공하면 Promise의 값으로 xhr.response 반환
-        resolve(xhr.response);
-      };
-      xhr.onerror = function () {
-        // 실패하면 Promise의 값으로 Error 반환
-        reject(new TypeError("Network request failed"));
-      };
-      // "GET" 인 경우에는 서버에 데이터를 보낼 필요 없음
-      xhr.send(null);
-    });
-
-    await uploadBytes(imageRef, blob, {
-      connectType: "image/png",
-    }).then((snapshot) => {});
-
-    blob.close();
-  });
 };
 
 const saveData = async (
@@ -176,6 +145,7 @@ const saveData = async (
       const imageID = push(referenceImage, image).key;
 
       const url = await uploadImage(image, imageID, newRecordID);
+
       const referenceUrl = ref(
         db,
         "/records/" + newRecordID + "/photos/" + imageID
@@ -234,7 +204,6 @@ const saveData = async (
         day: date.getDate(),
       },
       folderName,
-      photos: selectedPhotos,
       text,
     });
     if (folderID != originalfolderID) {
@@ -242,6 +211,7 @@ const saveData = async (
         db,
         `/folders/${originalfolderID}/placeRecords/${placeID}/${recordID}`
       );
+
       await remove(reference2).then(
         onValue(
           ref(db, "/folders/" + originalfolderID + "/placeRecords/" + placeID),
@@ -261,21 +231,21 @@ const saveData = async (
         `/folders/${folderID}/placeRecords/${placeID}/${recordID}`
       ); //folder에 recordID를 넣고
       set(reference4, true);
-
-      selectedPhotos.map(async (image) => {
-        const referenceImage = ref(db, "/records/" + recordID + "/photos");
-        const imageID = push(referenceImage, image).key;
-
-        const url = await uploadImage(image, imageID, recordID);
-        const referenceUrl = ref(
-          db,
-          "/records/" + recordID + "/photos/" + imageID
-        );
-        set(referenceUrl, url);
-      });
-
-      //기존 기록의 수정이나 삭제는 알림 없어도 됨.
     }
+
+    selectedPhotos.map(async (image) => {
+      const referenceImage = ref(db, "/records/" + recordID + "/photos");
+      const imageID = push(referenceImage, image).key;
+
+      const url = await uploadImage(image, imageID, recordID);
+      const referenceUrl = ref(
+        db,
+        "/records/" + recordID + "/photos/" + imageID
+      );
+      set(referenceUrl, url);
+    });
+
+    //기존 기록의 수정이나 삭제는 알림 없어도 됨.
   }
 };
 const storeRecord = async ({
@@ -322,6 +292,31 @@ const storeRecord = async ({
   });
 };
 const removeData = async ({ recordID, folderID, placeID }) => {
+  //remove from storage
+  const folderRef = ref_storage(storage, `images/${recordID}/`);
+
+  listAll(folderRef)
+    .then(function (result) {
+      result.items.forEach(function (imageRef) {
+        // And finally display them
+        deleteObject(imageRef);
+      });
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  /*
+  onValue(folderRef, (snapshot) => {
+    if (snapshot.val() != null) {
+      const imageList = snapshot.val();
+      imageList.map((name) => {
+        const imageRef = ref_storage(storage, `images/${recordID}/${name}`);
+        deleteObject(imageRef);
+      });
+    }
+  });
+*/
+  // remove from database
   const db = getDatabase();
   const reference1 = ref(db, "/records/" + recordID);
   await remove(reference1)
@@ -420,27 +415,9 @@ const EditScreen = ({ navigation, route }) => {
   );
   const [showFolderBottomSheet, setShowFolderBottomSheet] = useState(false);
 
-  const [selectedPhotos, setSelectedPhotos] = useState(photos || []);
-  const [imageUrls, setImageUrls] = useState([]);
-
-  useEffect(() => {
-    console.log("selectedPhotos", selectedPhotos);
-    Object.values(selectedPhotos).map(async (photo) => {
-      const name = photo.split("/").at(-1);
-      //console.log("photo updating", `images/${recordID}/${name}`);
-
-      const url = await getDownloadURL(
-        ref_storage(storage, `images/${recordID}/${name}`)
-      );
-      //console.log("url", url);
-      setImageUrls([...imageUrls, url]);
-      //console.log("imageUrls changed");
-    });
-  }, [selectedPhotos]);
-
-  useEffect(() => {
-    //console.log("imageUrls", imageUrls);
-  }, [imageUrls]);
+  const [selectedPhotos, setSelectedPhotos] = useState(
+    photos !== undefined && photos !== null ? Object.values(photos) : []
+  );
 
   const [text_, setText_] = useState(text || "");
 
@@ -518,8 +495,11 @@ const EditScreen = ({ navigation, route }) => {
             onImageTaken={(photo) => {
               setSelectedPhotos((selectedPhotos) => [...selectedPhotos, photo]);
             }}
+            onImageErased={(photos) => setSelectedPhotos(() => photos)}
             defaultPhotos={selectedPhotos}
+            fullPhotoData={photos}
             IsEditable={isEditable}
+            recordID={recordID}
           />
         </View>
         <View

@@ -15,7 +15,6 @@ import {
 
 import AppContext from "../components/AppContext";
 import RecordFlatList from "../components/RecordFlatList";
-import { storage } from "../firebase";
 
 const addFolderImage = require("../assets/image/addFolder.png");
 const folderImage = require("../assets/image/folder.png");

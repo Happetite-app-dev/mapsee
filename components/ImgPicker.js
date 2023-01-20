@@ -1,5 +1,13 @@
 import * as ImagePicker from "expo-image-picker";
 import * as Permissions from "expo-permissions";
+import { getDatabase, ref, remove } from "firebase/database";
+import {
+  ref as ref_storage,
+  uploadBytes,
+  getDownloadURL,
+  child,
+  deleteObject,
+} from "firebase/storage";
 import React, { useEffect, useState } from "react";
 import {
   View,
@@ -15,72 +23,102 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { storage } from "../firebase";
 import ImageCarousel from "./ImageCarousel";
 
-const ImgPicker = ({ onImageTaken, defaultPhotos, IsEditable }) => {
-  const [pickedImages, setPickedImages] = useState(defaultPhotos);
-  useEffect(() => {
-    console.log("ImgPicker pickedImages", pickedImages);
-  }, [pickedImages]);
+function getKeyByValue(object, value) {
+  return Object.keys(object).find((key) => object[key] === value);
+}
 
-  const verifyPermissionsCam = async () => {
-    const result = await Permissions.askAsync(Permissions.CAMERA);
-    if (result.status !== "granted") {
-      Alert.alert(
-        "Insufficient permissions!",
-        "You need to grant camera permissions to use this app.",
-        [{ text: "Okay" }]
-      );
-      return false;
-    }
-    return true;
-  };
+const verifyPermissionsCam = async () => {
+  const result = await Permissions.askAsync(Permissions.CAMERA);
+  if (result.status !== "granted") {
+    Alert.alert(
+      "Insufficient permissions!",
+      "You need to grant camera permissions to use this app.",
+      [{ text: "Okay" }]
+    );
+    return false;
+  }
+  return true;
+};
 
-  const verifyPermissionsLib = async () => {
-    const result = await Permissions.askAsync(Permissions.MEDIA_LIBRARY);
-    if (result.status !== "granted") {
-      Alert.alert(
-        "Insufficient permissions!",
-        "You need to grant camera permissions to use this app.",
-        [{ text: "Okay" }]
-      );
-      return false;
-    }
-    return true;
-  };
+const verifyPermissionsLib = async () => {
+  const result = await Permissions.askAsync(Permissions.MEDIA_LIBRARY);
+  if (result.status !== "granted") {
+    Alert.alert(
+      "Insufficient permissions!",
+      "You need to grant camera permissions to use this app.",
+      [{ text: "Okay" }]
+    );
+    return false;
+  }
+  return true;
+};
 
-  const deleteImage = (image) => {
-    console.log(deleteImage, image);
-  };
+const takeImageHandlerLib = async (setPickedImages, onImageTaken) => {
+  const hasPermission = await verifyPermissionsLib();
+  if (!hasPermission) {
+    return;
+  }
 
-  const takeImageHandlerCam = async () => {
-    const hasPermission = await verifyPermissionsCam();
-    if (!hasPermission) {
-      return;
-    }
-
-    const image = await ImagePicker.launchCameraAsync({
-      allowsEditing: true,
-      quality: 0.5,
-    });
-
+  const image = await ImagePicker.launchImageLibraryAsync({
+    allowsEditing: true,
+    quality: 0.5,
+  });
+  if (!image.cancelled) {
     setPickedImages((images) => [...images, image.uri]);
     onImageTaken(image.uri);
-  };
-  const takeImageHandlerLib = async () => {
-    const hasPermission = await verifyPermissionsLib();
-    if (!hasPermission) {
-      return;
-    }
+  }
+};
 
-    const image = await ImagePicker.launchImageLibraryAsync({
-      allowsEditing: true,
-      quality: 0.5,
+const takeImageHandlerCam = async (setPickedImages, onImageTaken) => {
+  const hasPermission = await verifyPermissionsCam();
+  if (!hasPermission) {
+    return;
+  }
+
+  const image = await ImagePicker.launchCameraAsync({
+    allowsEditing: true,
+    quality: 0.5,
+  });
+
+  setPickedImages((images) => [...images, image.uri]);
+  onImageTaken(image.uri);
+};
+
+const deleteImage = (
+  image,
+  fullPhotoData,
+  pickedImages,
+  setPickedImages,
+  onImageErased,
+  recordID
+) => {
+  const key = Object.entries(fullPhotoData).find(
+    ([key, val]) => val === image
+  )[0];
+  const idx = pickedImages.indexOf(image); // findIndex = find + indexOf
+  pickedImages.splice(idx, 1);
+
+  setPickedImages((prev) => pickedImages);
+  onImageErased(pickedImages);
+
+  const imageRef = ref_storage(storage, `images/${recordID}/${key}`);
+
+  deleteObject(imageRef)
+    .then(() => {})
+    .catch((err) => {
+      console.log(err);
     });
-    if (!image.cancelled) {
-      setPickedImages((images) => [...images, image.uri]);
-      onImageTaken(image.uri);
-    }
-  };
+};
 
+const ImgPicker = ({
+  onImageTaken,
+  onImageErased,
+  defaultPhotos,
+  fullPhotoData,
+  IsEditable,
+  recordID,
+}) => {
+  const [pickedImages, setPickedImages] = useState(defaultPhotos);
   return (
     <View style={styles.imagePicker}>
       {IsEditable ? (
@@ -89,22 +127,42 @@ const ImgPicker = ({ onImageTaken, defaultPhotos, IsEditable }) => {
             <ScrollView
               showsHorizontalScrollIndicator={false}
               horizontal
-              style={{ height: 110 }}
+              style={{ height: 148 }}
             >
               <TouchableOpacity
-                onPress={takeImageHandlerLib}
+                onPress={() => {
+                  takeImageHandlerLib(setPickedImages, onImageTaken);
+                }}
                 style={styles.imagePreview}
               >
                 <Text style={{ fontSize: 35, color: "grey" }}>+</Text>
               </TouchableOpacity>
-              {pickedImages.map((image) => {
+              {Object.values(pickedImages).map((image) => {
                 return (
-                  <View>
-                    <Button
-                      title="사진 제거거거걱"
-                      onPress={deleteImage(image)}
-                    />
+                  <View style={{ position: "relative" }}>
                     <Image style={styles.image} source={{ uri: image }} />
+                    <Button
+                      title="누ㄹ러"
+                      onPress={() => {
+                        deleteImage(
+                          image,
+                          fullPhotoData,
+                          pickedImages,
+                          setPickedImages,
+                          onImageErased,
+                          recordID
+                        );
+                      }}
+                      style={{
+                        width: 24,
+                        height: 24,
+                        marginTop: 8,
+                        marginLeft: 116,
+                        position: "absolute",
+                      }}
+                    >
+                      <></>
+                    </Button>
                   </View>
                 );
               })}
@@ -113,14 +171,13 @@ const ImgPicker = ({ onImageTaken, defaultPhotos, IsEditable }) => {
         </View>
       ) : (
         <View style={{ height: 148, width: 360 }}>
-          {pickedImages.length == 0 ? (
+          {pickedImages.length === 0 ? (
             <Text style={{ fontSize: 35, color: "grey" }}>
               저장된 사진이 없습니다
             </Text>
           ) : (
-            <ImageCarousel images={pickedImages} />
+            <ImageCarousel images={Object.values(pickedImages)} />
           )}
-
         </View>
       )}
     </View>
@@ -135,8 +192,8 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
   },
   imagePreview: {
-    width: 100,
-    height: 100,
+    width: 148,
+    height: 148,
     borderRadius: 10,
     //marginBottom:10,
     marginRight: 15,
@@ -146,8 +203,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   image: {
-    width: 100,
-    height: 100,
+    width: 148,
+    height: 148,
     borderRadius: 10,
     //marginBottom:10,
     marginRight: 15,
@@ -155,6 +212,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderColor: "#ccc",
     borderWidth: 1,
+    position: "absolute",
   },
 });
 
