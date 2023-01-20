@@ -18,6 +18,7 @@ import {
 } from "react-native";
 
 import AppContext from "../components/AppContext";
+import GoBackHeader from "../components/GoBackHeader";
 import RecordFlatList from "../components/RecordFlatList";
 
 const editImage = require("../assets/image/edit.png");
@@ -105,70 +106,32 @@ const SingleFolderScreen = ({ navigation, route }) => {
   const { recordDataSource, folderID, folderName, folderColor, folderUserIDs } =
     route.params;
   return (
-    <SafeAreaView style={{ height: "100%", width: "100%" }}>
-      <View
-        style={{
-          flexDirection: "row",
-          height: 40,
-          marginBottom: 20,
-          alignItems: "center",
-        }}
-      >
-        <TouchableOpacity
-          style={{
-            position: "absolute",
-            left: 29,
-            width: 20,
-            height: 30,
-            justifyContent: "center",
-          }}
-          onPress={() => gotoStorageScreen(navigation)}
-        >
-          <Image source={goBackImage} />
-        </TouchableOpacity>
-        <View style={{ position: "absolute", left: 65 }}>
-          <Image source={folder2Image} style={{ tintColor: folderColor }} />
-        </View>
-        <Text
-          style={{
-            position: "absolute",
-            fontWeight: "bold",
-            fontSize: 16,
-            left: 95,
-          }}
-        >
-          {folderName}
-        </Text>
-        <TouchableOpacity
-          style={{ position: "absolute", right: 64 }}
-          onPress={() =>
-            gotoMakeFolderBottomSheetScreen({
-              navigation,
-              folderID,
-              folderName,
-              folderColor,
-              folderUserIDs,
-              recordDataSource,
-            })
-          }
-        >
-          <Image source={editImage} />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={{
-            position: "absolute",
-            right: 26,
-          }}
-          onPress={() => exitFolderPopUp({ myUID, folderID, navigation })}
-        >
-          <Image source={trashcanImage} />
-        </TouchableOpacity>
-      </View>
+    <View style={{ height: "100%", width: "100%", backgroundColor: "white" }}>
+      <GoBackHeader
+        navigation={navigation}
+        text={folderName}
+        folderColor={folderColor}
+        isShareFolder
+        rightButton="edit"
+        rightButtonFunction={() =>
+          gotoMakeFolderBottomSheetScreen({
+            navigation,
+            folderID,
+            folderName,
+            folderColor,
+            folderUserIDs,
+            recordDataSource,
+          })
+        }
+        rightButtonFunction2={() =>
+          exitFolderPopUp({ myUID, folderID, navigation })
+        }
+      />
       <RecordFlatList
         recordDataSource={recordDataSource}
         stackNavigation={navigation}
       />
-    </SafeAreaView>
+    </View>
   );
 };
 

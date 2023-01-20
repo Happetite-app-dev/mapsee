@@ -3,7 +3,6 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React, { useState } from "react";
 
 import AppContext from "./components/AppContext";
-import SearchTabs from "./navigation/searchTabs";
 import Tabs from "./navigation/tabs";
 import AfterLoginScreen from "./screens/AfterLoginScreen";
 import BeforeLoginScreen from "./screens/BeforeLoginScreen";
@@ -22,6 +21,7 @@ import RegisterScreen1 from "./screens/RegisterScreen1";
 import RegisterScreen2 from "./screens/RegisterScreen2";
 import RegisterScreen3 from "./screens/RegisterScreen3";
 import SingleFolderScreen from "./screens/SingleFolderScreen";
+import SuggestScreen from "./screens/SuggestScreen";
 import TutorialScreen from "./screens/TutorialScreen";
 
 const Stack = createNativeStackNavigator();
@@ -173,6 +173,11 @@ const App = () => {
               gestureEnabled: true,
               presentation: "fullScreenModal",
             }}
+          />
+          <Stack.Screen
+            name="SuggestScreen"
+            component={SuggestScreen}
+            options={{ headerShown: false, gestureEnabled: false }}
           />
         </Stack.Navigator>
       </NavigationContainer>

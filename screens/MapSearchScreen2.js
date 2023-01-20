@@ -18,13 +18,13 @@ import {
 import Geocoder from "react-native-geocoding";
 import MapView, { Marker } from "react-native-maps";
 
+import Close from "../assets/icons/close.svg";
 import CreateNote from "../assets/icons/createNote.svg";
 import GoBack from "../assets/icons/goBack.svg";
-import GoHome1 from "../assets/icons/goHome1.svg";
-import GoHome2 from "../assets/icons/goHome2.svg";
 import SelectedMarker1 from "../assets/icons/selectedMarker1.svg";
 import SelectedMarker2 from "../assets/icons/selectedMarker2.svg";
 import AppContext from "../components/AppContext";
+import GoBackHeader from "../components/GoBackHeader";
 import RecordFlatList from "../components/RecordFlatList";
 
 const bottomSheetImage = require("../assets/image/bottomSheetScroll.png");
@@ -247,8 +247,7 @@ const BottomSheetScreen = ({
             style={styles.goHome}
           >
             <View style={{ position: "relative" }}>
-              <GoHome1 style={styles.goHomeImage2} />
-              <GoHome2 style={styles.goHomeImage2} />
+              <Close />
             </View>
           </View>
         </View>
@@ -411,32 +410,12 @@ const MapSearchScreen2 = ({ navigation, route }) => {
           }
         }}
       >
-        <View style={styles.buttons}>
-          <View
-            onTouchEndCapture={() => {
-              console.log("back");
-              navigation.goBack();
-            }}
-            style={styles.goBack}
-          >
-            <GoBack style={styles.goBackImage} />
-          </View>
-          <View style={styles.title}>
-            <Text style={styles.titleText}>{target.name}</Text>
-          </View>
-          <View
-            onTouchEndCapture={() => {
-              console.log("close");
-              navigation.navigate("Map");
-            }}
-            style={styles.goHome}
-          >
-            <View style={{ position: "relative" }}>
-              <GoHome1 style={styles.goHomeImage} />
-              <GoHome2 style={styles.goHomeImage} />
-            </View>
-          </View>
-        </View>
+        <GoBackHeader
+          navigation={navigation}
+          text={target.name}
+          RightButton="goHome"
+        />
+
         <Marker
           coordinate={target.lctn}
           opacity={targetShown ? 100 : 0}
@@ -444,7 +423,11 @@ const MapSearchScreen2 = ({ navigation, route }) => {
         >
           <SelectedMarker1 style={{ position: "absolute" }} />
           <SelectedMarker2
-            style={{ position: "absolute", marginLeft: 8.89, marginTop: 8.89 }}
+            style={{
+              position: "absolute",
+              marginLeft: 8.89,
+              marginTop: 8.89,
+            }}
           />
         </Marker>
       </MapView>
@@ -495,7 +478,6 @@ const styles = StyleSheet.create({
     width: 30,
     height: 18,
     position: "absolute",
-
     marginTop: 51,
     marginLeft: 31,
   },
@@ -508,14 +490,14 @@ const styles = StyleSheet.create({
   title: {
     width: 280,
     height: 24,
+    marginTop: 48,
+    marginLeft: 63,
     position: "absolute",
   },
   titleText: {
     height: 24,
     fontSize: 16,
     lineHeight: 24,
-    marginTop: 48,
-    marginLeft: 63,
   },
   goHome: {
     width: 15,

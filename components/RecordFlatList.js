@@ -9,6 +9,8 @@ import {
   Image,
 } from "react-native";
 
+import NoImageRecord1 from "../assets/image/noImageRecord1.svg";
+import NoImageRecord2 from "../assets/image/noImageRecord2.svg";
 import { storage } from "../firebase";
 
 const noImageRecord = require("../assets/image/noImageRecord.png");
@@ -46,10 +48,13 @@ const IndividualRecord = ({ item, stackNavigation }) => {
                   source={{ uri: Object.values(item.recordData.photos)[0] }}
                 />
               </View>
-            ) : (
-              <Image
+            ) : Math.random() < 0.5 ? (
+              <NoImageRecord1
                 style={{ width: 80, height: 99, marginTop: 30 }}
-                source={noImageRecord}
+              />
+            ) : (
+              <NoImageRecord2
+                style={{ width: 80, height: 99, marginTop: 30 }}
               />
             )}
           </View>
@@ -78,7 +83,7 @@ const RecordFlatList = ({ recordDataSource, stackNavigation }) => {
       numColumns={2}
       initialNumToRender={6}
       style={{
-        flex: 1,
+        width: "100%",
         left: 10,
       }}
     />
@@ -90,7 +95,7 @@ export default RecordFlatList;
 const styles = StyleSheet.create({
   item: {
     flex: 0.5,
-    borderColor: "grey",
+    borderColor: "#DDDFE9",
     borderRadius: 8,
     borderWidth: 1,
     padding: 0,
@@ -106,6 +111,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
     fontSize: 14,
     textAlign: "center",
+    fontWeight: "bold",
   },
   placeName: {
     width: 136,
@@ -113,6 +119,7 @@ const styles = StyleSheet.create({
     marginLeft: 12,
     fontSize: 12,
     textAlign: "center",
+    color: "#545766",
   },
   date: {
     width: 136,
@@ -120,5 +127,6 @@ const styles = StyleSheet.create({
     marginLeft: 12,
     fontSize: 10,
     textAlign: "center",
+    color: "#ADB1C5",
   },
 });

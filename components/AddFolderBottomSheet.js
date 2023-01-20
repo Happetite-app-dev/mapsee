@@ -142,6 +142,7 @@ const AddFolderBottomSheet = ({
         stackNavigation={stackNavigation}
         newFolderUserIDs={newFolderUserIDs}
         onChangeNewFolderUserIDs={onChangeNewFolderUserIDs}
+        newFolderUserNameIDs={newFolderUserNameIDs}
         folderUserIDs={undefined}
       />
     </View>

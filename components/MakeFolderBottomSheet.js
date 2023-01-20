@@ -216,6 +216,7 @@ const MakeFolderBottomSheet = ({
         onPressFunction={onPressFunction}
         stackNavigation={stackNavigation}
         newFolderUserIDs={newFolderUserIDs}
+        newFolderUserNameIDs={newFolderUserNameIDs}
         onChangeNewFolderUserIDs={onChangeNewFolderUserIDs}
         folderUserIDs={folderUserIDs_}
       />

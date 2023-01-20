@@ -27,6 +27,9 @@ const gotoBeforeLoginScreen = ({ navigation }) => {
   navigation.navigate("BeforeLoginScreen");
 };
 
+const gotoSuggestScreen = ({ navigation }) => {
+  navigation.navigate("SuggestScreen");
+};
 const MypageScreen = ({ navigation }) => {
   const myContext = useContext(AppContext);
   const myID = myContext.myID;
@@ -203,6 +206,7 @@ const MypageScreen = ({ navigation }) => {
           top: 525,
           justifyContent: "center",
         }}
+        onPress={() => gotoSuggestScreen({ navigation })}
       >
         <Text style={{ left: 20, fontSize: 14, fontWeight: "400" }}>
           의견 보내기

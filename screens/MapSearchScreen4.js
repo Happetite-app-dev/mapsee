@@ -9,9 +9,9 @@ import {
   Image,
 } from "react-native";
 
+import Close from "../assets/icons/close.svg";
 import GoBack from "../assets/icons/goBack.svg";
-import GoHome1 from "../assets/icons/goHome1.svg";
-import GoHome2 from "../assets/icons/goHome2.svg";
+import GoBackHeader from "../components/GoBackHeader";
 Geocode.setApiKey("AIzaSyDBq4tZ1QLm1R7iPH8O4dTvebVGWgkRPks");
 Geocode.setLanguage("ko");
 
@@ -71,32 +71,11 @@ const _renderRow = ({ navigation, item }) => {
 const MapSearchScreen4 = ({ navigation, route }) => {
   return (
     <View style={{ height: "100%", backgroundColor: "white" }}>
-      <View style={styles.buttons}>
-        <View
-          onTouchEndCapture={() => {
-            console.log("back");
-            navigation.goBack();
-          }}
-          style={styles.goBack}
-        >
-          <GoBack style={styles.goBackImage} />
-        </View>
-        <View style={styles.title}>
-          <Text style={styles.titleText}>{route.params[0]}</Text>
-        </View>
-        <View
-          onTouchEndCapture={() => {
-            console.log("close");
-            navigation.navigate("Map");
-          }}
-          style={styles.goHome}
-        >
-          <View style={{ position: "relative" }}>
-            <GoHome1 style={styles.goHomeImage} />
-            <GoHome2 style={styles.goHomeImage} />
-          </View>
-        </View>
-      </View>
+      <GoBackHeader
+        navigation={navigation}
+        text={route.params[0]}
+        RightButton="goHome"
+      />
       <FlatList
         data={route.params[1]}
         renderItem={({ item }) => _renderRow({ navigation, item })}
