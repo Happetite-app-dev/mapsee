@@ -13,7 +13,114 @@ import { ScrollView, Switch, TextInput } from "react-native-gesture-handler";
 
 import AppContext from "../components/AppContext";
 import SendPushNotification from "../modules/SendPushNotification";
-
+const db = getDatabase();
+const addNewFolder = ({
+  myUID,
+  myID,
+  myFirstName,
+  myLastName,
+  setFolderIDNameList,
+  setFolderID,
+  setFolderName,
+  folderName,
+  folderColor,
+  folderUserIDs,
+}) => {
+  //친구초대한 사람한테 push알림 보내는 함수
+  const reference1 = ref(db, "/folders"); //folders에 push
+  const newFolderID = push(reference1, {
+    initFolderName: folderName,
+    initFolderColor: folderColor,
+  }).key;
+  folderUserIDs.map((folderUserID) => {
+    if (folderUserID == myUID) {
+      const reference2 = ref(
+        db,
+        `/folders/${newFolderID}/folderName/${folderUserID}`
+      ); //folderName 개인화
+      set(reference2, folderName);
+      const reference3 = ref(
+        db,
+        `/folders/${newFolderID}/folderColor/${folderUserID}`
+      ); //folderColor 개인화
+      set(reference3, folderColor);
+      const reference4 = ref(
+        db,
+        `/folders/${newFolderID}/userIDs/${folderUserID}`
+      ); //folders/newfolderID/userIDs에 userID:true를 넣기
+      set(reference4, true);
+      const reference5 = ref(
+        db,
+        `users/${folderUserID}/folderIDs/${newFolderID}`
+      ); //user에 folderID를 넣고
+      set(reference5, true);
+    } else {
+      const timeNow = new Date();
+      const reference = ref(db, "/notices/" + folderUserID);
+      push(reference, {
+        type: "recept_folderInvite_request",
+        requesterUID: myUID,
+        requesterID: myID,
+        requesterFirstName: myFirstName,
+        requesterLastName: myLastName,
+        time: timeNow.getTime(),
+        //여기서 부턴 "recept_folderInvite_request" type 알림만의 정보
+        folderID: newFolderID,
+        folderName,
+        folderColor,
+      });
+      SendPushNotification({
+        receiverUID: folderUserID,
+        title_: "새폴더초대타이틀",
+        body_: "새폴더초대바디",
+      });
+    }
+  });
+  setFolderIDNameList((prev) => ({
+    ...prev,
+    [newFolderID]: { folderID: newFolderID, folderName },
+  }));
+  setFolderID(newFolderID);
+  setFolderName(folderName);
+};
+const gotoInviteFriendScreen = ({
+  stackNavigation,
+  newFolderUserIDs,
+  onChangeNewFolderUserIDs,
+}) => {
+  stackNavigation.navigate("InviteFriendScreen", {
+    folderUserIDs: newFolderUserIDs,
+    onChangeFolderUserIDs: onChangeNewFolderUserIDs,
+  });
+};
+const renderFolderUser = ({ item }) => {
+  return (
+    <View
+      style={{
+        height: 32,
+        paddingHorizontal: 16,
+        paddingVertical: 8,
+        borderRadius: 16,
+        marginHorizontal: 8,
+        marginVertical: 20,
+        backgroundColor: "#F4F5F9",
+      }}
+    >
+      <Text
+        style={{
+          //width: 58,
+          height: 24,
+          fontWeight: "500",
+          fontSize: 16,
+          letterSpacing: -0.5,
+          color: "black",
+        }}
+      >
+        {item.name}
+      </Text>
+    </View>
+  );
+};
 const AddFolderBottomSheet = ({
   stackNavigation,
   setFolderName,
@@ -26,99 +133,7 @@ const AddFolderBottomSheet = ({
   const myID = myContext.myID;
   const myFirstName = myContext.myFirstName;
   const myLastName = myContext.myLastName;
-  const gotoInviteFriendScreen = () => {
-    stackNavigation.navigate("InviteFriendScreen", {
-      folderUserIDs: newFolderUserIDs,
-      onChangeFolderUserIDs: onChangeNewFolderUserIDs,
-    });
-  };
-  const renderFolderUser = ({ item }) => {
-    return (
-      <View
-        style={{
-          height: 32,
-          paddingHorizontal: 16,
-          paddingVertical: 8,
-          borderRadius: 16,
-          marginHorizontal: 8,
-          marginVertical: 20,
-          backgroundColor: "#F4F5F9",
-        }}
-      >
-        <Text
-          style={{
-            //width: 58,
-            height: 24,
-            fontWeight: "500",
-            fontSize: 16,
-            letterSpacing: -0.5,
-            color: "black",
-          }}
-        >
-          {item.name}
-        </Text>
-      </View>
-    );
-  };
-  const addNewFolder = (folderName, folderColor, folderUserIDs) => {
-    const db = getDatabase();
-    //친구초대한 사람한테 push알림 보내는 함수
-    const reference1 = ref(db, "/folders"); //folders에 push
-    const newFolderID = push(reference1, {
-      initFolderName: folderName,
-      initFolderColor: folderColor,
-    }).key;
-    folderUserIDs.map((folderUserID) => {
-      if (folderUserID == myUID) {
-        const reference2 = ref(
-          db,
-          `/folders/${newFolderID}/folderName/${folderUserID}`
-        ); //folderName 개인화
-        set(reference2, folderName);
-        const reference3 = ref(
-          db,
-          `/folders/${newFolderID}/folderColor/${folderUserID}`
-        ); //folderColor 개인화
-        set(reference3, folderColor);
-        const reference4 = ref(
-          db,
-          `/folders/${newFolderID}/userIDs/${folderUserID}`
-        ); //folders/newfolderID/userIDs에 userID:true를 넣기
-        set(reference4, true);
-        const reference5 = ref(
-          db,
-          `users/${folderUserID}/folderIDs/${newFolderID}`
-        ); //user에 folderID를 넣고
-        set(reference5, true);
-      } else {
-        const timeNow = new Date();
-        const reference = ref(db, "/notices/" + folderUserID);
-        push(reference, {
-          type: "recept_folderInvite_request",
-          requesterUID: myUID,
-          requesterID: myID,
-          requesterFirstName: myFirstName,
-          requesterLastName: myLastName,
-          time: timeNow.getTime(),
-          //여기서 부턴 "recept_folderInvite_request" type 알림만의 정보
-          folderID: newFolderID,
-          folderName,
-          folderColor,
-        });
-        SendPushNotification({
-          receiverUID: folderUserID,
-          title_: "새폴더초대타이틀",
-          body_: "새폴더초대바디",
-        });
-      }
-    });
-    setFolderIDNameList((prev) => ({
-      ...prev,
-      [newFolderID]: { folderID: newFolderID, folderName: newFolderName },
-    }));
-    setFolderID(newFolderID);
-    setFolderName(newFolderName);
-  };
+
   const [newFolderName, setNewFolderName] = useState("");
   const [newFolderColor, setNewFolderColor] = useState("red");
   const [newFolderUserIDs, setNewFolderUserIDs] = useState([myUID]);
@@ -127,7 +142,6 @@ const AddFolderBottomSheet = ({
     setNewFolderUserIDs(newFolderUserIDs_);
   };
   useEffect(() => {
-    const db = getDatabase();
     setNewFolderUserNameIDs([]);
     newFolderUserIDs.map((userID) => {
       onValue(ref(db, "/users/" + userID), (snapshot) => {
@@ -446,49 +460,6 @@ const AddFolderBottomSheet = ({
           </View>
         </View>
       </View>
-      {/* <View
-        style={{
-          top: 30,
-          width: 344,
-          height: 24,
-          left: 23,
-          marginBottom: 24,
-          flexDirection: "row",
-          justifyContent: "space-between",
-        }}
-      >
-        <Text style={{ fontSize: 14, fontWeight: "700" }}>공유 폴더</Text>
-        <Switch
-          trackColor={{ false: "#767577", true: "#81b0ff" }}
-          thumbColor="#f5dd4b"
-          ios_backgroundColor="#3e3e3e"
-        />
-      </View>
-      <View
-        style={{
-          top: 30,
-          width: 344,
-          height: 48,
-          left: 23,
-          marginBottom: 24,
-          flexDirection: "column",
-        }}
-      >
-        <Text style={{ fontSize: 14, fontWeight: "700" }}>친구 추가</Text>
-        <TouchableOpacity
-          style={{
-            top: 20,
-            width: 24,
-            height: 24,
-            borderRadius: 12,
-            borderWidth: 1,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        > 
-          <Text>+</Text>
-        </TouchableOpacity>
-      </View> */}
       <View
         style={{
           top: 30,
@@ -503,7 +474,11 @@ const AddFolderBottomSheet = ({
         <View>
           <TouchableOpacity
             onPress={() => {
-              gotoInviteFriendScreen();
+              gotoInviteFriendScreen({
+                stackNavigation,
+                newFolderUserIDs,
+                onChangeNewFolderUserIDs,
+              });
             }}
             style={{
               marginLeft: 20,
@@ -527,7 +502,18 @@ const AddFolderBottomSheet = ({
 
       <TouchableOpacity
         onPress={() => {
-          addNewFolder(newFolderName, newFolderColor, newFolderUserIDs);
+          addNewFolder({
+            myUID,
+            myID,
+            myFirstName,
+            myLastName,
+            setFolderIDNameList,
+            setFolderID,
+            setFolderName,
+            folderName: newFolderName,
+            folderColor: newFolderColor,
+            folderUserIDs: newFolderUserIDs,
+          });
           setShow(false);
         }}
         style={{

@@ -19,7 +19,16 @@ const getday = (day) => {
     return "토";
   }
 };
-
+const showDatepicker = ({ show, setDate1, setShow, date, IsEditable }) => {
+  if (show) {
+    setDate1(date);
+    setShow(false);
+  } else {
+    if (IsEditable) {
+      setShow(true);
+    }
+  }
+};
 const DatePicker = ({ date1, setDate1, show, setShow, IsEditable }) => {
   const [date, setDate] = useState(date1);
   const onChange = (event, selectedDate) => {
@@ -27,23 +36,14 @@ const DatePicker = ({ date1, setDate1, show, setShow, IsEditable }) => {
     setDate(currentDate);
   };
 
-  const showDatepicker = () => {
-    if (show) {
-      setDate1(date);
-      setShow(false);
-    } else {
-      if (IsEditable) {
-        setShow(true);
-      }
-    }
-  };
-
   return (
     <View style={{ position: "absolute", left: -55, bottom: 21, width: 330 }}>
       <View>
         <Button
           color="black"
-          onPress={showDatepicker}
+          onPress={() =>
+            showDatepicker({ show, setDate1, setShow, date, IsEditable })
+          }
           title={`${date.getFullYear().toString()}년 ${(
             date.getMonth() + 1
           ).toString()}월 ${date.getDate().toString()}일 (${getday(

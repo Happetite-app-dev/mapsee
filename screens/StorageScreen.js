@@ -47,6 +47,64 @@ const gotoMakeFolderBottomSheetScreen = ({ navigation }) => {
     folderUserIDs: null,
   });
 };
+const filterFunction = ({
+  navigation,
+  masterDataSource,
+  setSelectedFolderIDNameColorUserIDs,
+  selectedFolderIDNameColorUserIDs: {
+    folderID,
+    folderName,
+    folderColor,
+    folderUserIDs,
+  },
+}) => {
+  // Filter the masterDataSource and update FilteredDataSource
+  const filteredDataSource = Object.values(masterDataSource).filter(function (
+    item
+  ) {
+    // Applying filter for the inserted text in search bar
+    return item.recordData.folderID === folderID;
+  });
+  gotoSingleFolderScreen({
+    navigation,
+    recordDataSource: filteredDataSource,
+    folderID,
+    folderName,
+    folderColor,
+    folderUserIDs,
+    setSelectedFolderIDNameColorUserIDs,
+  });
+};
+const IndividualFolder = ({
+  folderID,
+  folderName,
+  folderColor,
+  folderUserIDs,
+  setSelectedFolderIDNameColorUserIDs,
+}) => {
+  return (
+    <TouchableOpacity
+      onPress={() => {
+        setSelectedFolderIDNameColorUserIDs({
+          folderID,
+          folderName,
+          folderColor,
+          folderUserIDs,
+        });
+        //gotoSingleFolderScreen()
+      }}
+      style={{ height: 65 }}
+      activeOpacity={0.2}
+    >
+      <View style={{ marginLeft: 10, marginRight: 10 }}>
+        <Image source={folderImage} style={{ tintColor: folderColor }} />
+        {/* Image source path changes depending on fileColor */}
+        {/* <Image source={} style={{width: 50, height:50}}/> */}
+        <Text style={{ alignSelf: "center", top: 8 }}>{folderName}</Text>
+      </View>
+    </TouchableOpacity>
+  );
+};
 const StorageScreen = ({ navigation, route }) => {
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
@@ -135,63 +193,14 @@ const StorageScreen = ({ navigation, route }) => {
   //선택된 파일에 따라서 filter 변화 useEffect
   useEffect(() => {
     if (selectedFolderIDNameColorUserIDs != undefined) {
-      filterFunction(selectedFolderIDNameColorUserIDs);
+      filterFunction({
+        navigation,
+        masterDataSource,
+        setSelectedFolderIDNameColorUserIDs,
+        selectedFolderIDNameColorUserIDs,
+      });
     }
   }, [selectedFolderIDNameColorUserIDs]);
-
-  const filterFunction = ({
-    folderID,
-    folderName,
-    folderColor,
-    folderUserIDs,
-  }) => {
-    // Filter the masterDataSource and update FilteredDataSource
-    const filteredDataSource = Object.values(masterDataSource).filter(function (
-      item
-    ) {
-      // Applying filter for the inserted text in search bar
-      return item.recordData.folderID === folderID;
-    });
-    gotoSingleFolderScreen({
-      navigation,
-      filteredDataSource,
-      folderID,
-      folderName,
-      folderColor,
-      folderUserIDs,
-      setSelectedFolderIDNameColorUserIDs,
-    });
-  };
-
-  const IndividualFolder = ({
-    folderID,
-    folderName,
-    folderColor,
-    folderUserIDs,
-  }) => {
-    return (
-      <TouchableOpacity
-        onPress={() => {
-          setSelectedFolderIDNameColorUserIDs({
-            folderID,
-            folderName,
-            folderColor,
-            folderUserIDs,
-          });
-          //gotoSingleFolderScreen()
-        }}
-        style={{ height: 65 }}
-        activeOpacity={0.2}
-      >
-        <View style={{ marginLeft: 10, marginRight: 10 }}>
-          <Image source={folderImage} style={{ tintColor: folderColor }} />
-          {/* Image source path changes depending on fileColor */}
-          {/* <Image source={} style={{width: 50, height:50}}/> */}
-          <Text style={{ alignSelf: "center", top: 8 }}>{folderName}</Text>
-        </View>
-      </TouchableOpacity>
-    );
-  };
 
   const renderFolder = ({ item }) => (
     <IndividualFolder
@@ -199,6 +208,9 @@ const StorageScreen = ({ navigation, route }) => {
       folderName={item.folderName}
       folderColor={item.folderColor}
       folderUserIDs={item.folderUserIDs}
+      setSelectedFolderIDNameColorUserIDs={(tmp) =>
+        setSelectedFolderIDNameColorUserIDs(tmp)
+      }
     />
   );
   return (

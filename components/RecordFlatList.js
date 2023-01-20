@@ -29,13 +29,12 @@ const gotoEditScreen = (stackNavigation, item) => {
 
 const RecordFlatList = ({ recordDataSource, stackNavigation }) => {
   const IndividualRecord = ({ item }) => {
-    console.log("item", Object.values(item.recordData.photos)[0]);
     return (
       <View style={styles.item}>
         <TouchableOpacity onPress={() => gotoEditScreen(stackNavigation, item)}>
           <View style={{ flexDirection: "column", justifyContent: "center" }}>
             <View style={{ width: 158, height: 148, alignItems: "center" }}>
-              {Object.values(item.recordData.photos) !== undefined &&
+              {item.recordData.photos !== undefined &&
               Object.values(item.recordData.photos).length >= 1 ? (
                 <View>
                   <Image
