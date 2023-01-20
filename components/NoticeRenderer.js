@@ -7,7 +7,7 @@ import {
   push,
   get,
 } from "firebase/database";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 
 import AppContext from "../components/AppContext";
 import SendPushNotification from "../modules/SendPushNotification";
@@ -101,6 +101,7 @@ const acceptFolderInviteRequest = ({
     requesterFirstName,
     requesterLastName,
     folderName,
+    folderID,
   });
   push(ref(db, "/notices/" + requesterUID), {
     type: "dispatch_folderInvite_request_accept_act",
@@ -109,6 +110,7 @@ const acceptFolderInviteRequest = ({
     approverFirstName: myFirstName,
     approverLastName: myLastName,
     folderName,
+    folderID,
   });
   //notice/myUID/noticeKey에 접근해서 type 바꾸기 -> remove 할지 추후에 고려 필요
   set(
@@ -126,14 +128,24 @@ const denyFolderInviteRequest = ({ myUID, noticeKey, onToggleSnackBar }) => {
   onToggleSnackBar();
 };
 
-const getFolderName = ({ folderID, userID }) => {
+const getFolderName = ({
+  folderID,
+  userID,
+  folderNameIDs,
+  setFolderNameIDs,
+}) => {
   const db = getDatabase();
-  let folderName;
-  onValue(
-    ref(db, `/folders/${folderID}/folderName/${userID}`),
-    (snapshot) => (folderName = snapshot.val())
-  );
-  return folderName;
+  if (folderNameIDs[folderID] == undefined) {
+    onValue(
+      ref(db, `/folders/${folderID}/folderName/${userID}`),
+      (snapshot) => {
+        if (snapshot.val() !== null) {
+          setFolderNameIDs((prev) => ({ ...prev, [folderID]: snapshot.val() }));
+        }
+      }
+    );
+  }
+  return folderNameIDs[folderID];
 };
 const NoticeRenderer = ({ navigation, item, onToggleSnackBar }) => {
   const myContext = useContext(AppContext);
@@ -141,6 +153,7 @@ const NoticeRenderer = ({ navigation, item, onToggleSnackBar }) => {
   const myID = myContext.myID;
   const myFirstName = myContext.myFirstName;
   const myLastName = myContext.myLastName;
+  const [folderNameIDs, setFolderNameIDs] = useState({});
 
   switch (item.val.type) {
     case "recept_friend_request": //친구 요청 수신 - 수락 거절 안 한 활성화된 새로운 알림
@@ -233,6 +246,9 @@ const NoticeRenderer = ({ navigation, item, onToggleSnackBar }) => {
           requesterFirstName={item.val.requesterFirstName}
           requesterLastName={item.val.requesterLastName}
           folderName={item.val.folderName}
+          folderID={item.val.folderID}
+          navigation={navigation}
+          myUID={myUID}
         />
       );
     case "dispatch_folderInvite_request_accept_act": //공유폴더초대 요청 발신 - 수락하여 활성화된 새로운 알림
@@ -242,6 +258,9 @@ const NoticeRenderer = ({ navigation, item, onToggleSnackBar }) => {
           approverFirstName={item.val.approverFirstName}
           approverLastName={item.val.approverLastName}
           folderName={item.val.folderName}
+          folderID={item.val.folderID}
+          navigation={navigation}
+          myUID={myUID}
         />
       );
     case "recept_folderInvite_request_accept_inact": //공유폴더초대 요청 수신 - 수락하여 비활성화된 알림
@@ -257,6 +276,8 @@ const NoticeRenderer = ({ navigation, item, onToggleSnackBar }) => {
           folderName={getFolderName({
             folderID: item.val.folderID,
             userID: myUID,
+            folderNameIDs,
+            setFolderNameIDs,
           })}
           recordID={item.val.recordID}
           navigation={navigation}
