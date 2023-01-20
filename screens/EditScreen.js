@@ -34,6 +34,7 @@ import AppContext from "../components/AppContext";
 import DatePicker from "../components/DatePicker";
 import FolderBottomSheet from "../components/FolderBottomSheet";
 import ImgPicker from "../components/ImgPicker";
+import { PopUpType1 } from "../components/PopUp";
 import { storage, auth } from "../firebase";
 import SendPushNotification from "../modules/SendPushNotification";
 
@@ -356,25 +357,6 @@ const removeRecord = async ({ navigation, recordID, folderID_, placeID }) => {
   );
 };
 
-const removeRecordPopUp = ({ navigation, recordID, folderID_, placeID }) => {
-  return Alert.alert(
-    "정말 삭제하시겠습니까?",
-    "",
-    [
-      { text: "취소" },
-      {
-        text: "삭제",
-        onPress: () =>
-          removeRecord({ navigation, recordID, folderID_, placeID }),
-        style: "default",
-      },
-    ],
-    {
-      cancelable: false,
-    }
-  );
-};
-
 const EditScreen = ({ navigation, route }) => {
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
@@ -427,7 +409,10 @@ const EditScreen = ({ navigation, route }) => {
   );
 
   const [text_, setText_] = useState(text || "");
-
+  const [modalVisible, setModalVisible] = useState(false);
+  const modalHandler = (isVisible) => {
+    setModalVisible(isVisible);
+  };
   return (
     <SafeAreaView
       style={{ width: "100%", height: "100%", position: "absolute", top: 20 }}
@@ -482,9 +467,7 @@ const EditScreen = ({ navigation, route }) => {
             </TouchableHighlight>
             <TouchableHighlight
               style={{ right: 14, position: "absolute", width: 18, height: 18 }}
-              onPress={() =>
-                removeRecordPopUp({ navigation, recordID, folderID_, placeID })
-              }
+              onPress={() => modalHandler(true)}
             >
               <Image source={trashcanImage} />
             </TouchableHighlight>
@@ -636,6 +619,14 @@ const EditScreen = ({ navigation, route }) => {
         }}
         setFolderName={(f) => setFolderName_(f)}
         setFolderID={(f) => setFolderID_(f)}
+      />
+      <PopUpType1
+        modalVisible={modalVisible}
+        modalHandler={modalHandler}
+        action={() =>
+          removeRecord({ navigation, recordID, folderID_, placeID })
+        }
+        askValue="정말 삭제하시겠습니까?"
       />
     </SafeAreaView>
   );
