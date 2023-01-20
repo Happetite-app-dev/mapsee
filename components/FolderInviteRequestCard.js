@@ -53,101 +53,106 @@ const FolderInviteRequestCard = ({
     }
   }, [folderObject]);
   const folderName = JSON.stringify(folderObj.folderName).slice(1, -1);
-  return (
-    <View style={{ flex: 1, alignItems: "center", marginBottom: 40 }}>
-      <View
-        style={{
-          width: 344,
-          height: 112,
-          borderRadius: 16,
-          backgroundColor: "#F4F5F9",
-        }}
-      >
-        <View style={{ height: 72 }}>
-          <Text
-            style={{
-              left: 16,
-              top: 16,
-              fontWeight: "400",
-              fontSize: 14,
-              lineHeight: 16,
-              letterSpacing: -0.5,
-            }}
-          >
-            <Text style={{ fontWeight: "700" }}>
-              {requesterLastName}
-              {requesterFirstName}(@{requesterID})
-            </Text>
-            님이
-            <Text style={{ fontWeight: "700" }}> {folderName}</Text>에 회원님을
-            초대했습니다.
-          </Text>
-          <Text
-            style={{
-              left: 16,
-              top: 16,
-              fontWeight: "700",
-              fontSize: 12,
-              lineHeight: 16,
-              letterSpacing: -0.5,
-              color: "#545766",
-            }}
-          >
-            {DisplayTime(time)}
-          </Text>
-        </View>
+
+  if (folderObj == { folderName: "", folderColor: "", folderUserIDs: [] }) {
+    return <></>;
+  } else {
+    return (
+      <View style={{ flex: 1, alignItems: "center", marginBottom: 40 }}>
         <View
           style={{
-            flex: 1,
-            flexDirection: "row",
-            justifyContent: "center",
-            alignItems: "center",
+            width: 344,
+            height: 112,
+            borderRadius: 16,
+            backgroundColor: "#F4F5F9",
           }}
         >
-          <Pressable
-            onPress={denyRequest}
-            style={{
-              right: 22,
-              width: 128,
-              height: 24,
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
+          <View style={{ height: 72 }}>
             <Text
-              style={{ fontWeight: "700", fontSize: 14, letterSpacing: 1.2 }}
+              style={{
+                left: 16,
+                top: 16,
+                fontWeight: "400",
+                fontSize: 14,
+                lineHeight: 16,
+                letterSpacing: -0.5,
+              }}
             >
-              거절
+              <Text style={{ fontWeight: "700" }}>
+                {requesterLastName}
+                {requesterFirstName}(@{requesterID})
+              </Text>
+              님이
+              <Text style={{ fontWeight: "700" }}> {folderName}</Text>에
+              회원님을 초대했습니다.
             </Text>
-          </Pressable>
+            <Text
+              style={{
+                left: 16,
+                top: 16,
+                fontWeight: "700",
+                fontSize: 12,
+                lineHeight: 16,
+                letterSpacing: -0.5,
+                color: "#545766",
+              }}
+            >
+              {DisplayTime(time)}
+            </Text>
+          </View>
           <View
             style={{
-              height: 16,
-              width: 0,
-              borderColor: "#DDDFE9",
-              borderWidh: 1,
-            }}
-          />
-          <Pressable
-            onPress={acceptRequest}
-            style={{
-              left: 22,
-              width: 128,
-              height: 24,
-              alignItems: "center",
+              flex: 1,
+              flexDirection: "row",
               justifyContent: "center",
+              alignItems: "center",
             }}
           >
-            <Text
-              style={{ fontWeight: "700", fontSize: 14, letterSpacing: 1.2 }}
+            <Pressable
+              onPress={denyRequest}
+              style={{
+                right: 22,
+                width: 128,
+                height: 24,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
             >
-              수락
-            </Text>
-          </Pressable>
+              <Text
+                style={{ fontWeight: "700", fontSize: 14, letterSpacing: 1.2 }}
+              >
+                거절
+              </Text>
+            </Pressable>
+            <View
+              style={{
+                height: 16,
+                width: 0,
+                borderColor: "#DDDFE9",
+                borderWidh: 1,
+              }}
+            />
+            <Pressable
+              onPress={acceptRequest}
+              style={{
+                left: 22,
+                width: 128,
+                height: 24,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Text
+                style={{ fontWeight: "700", fontSize: 14, letterSpacing: 1.2 }}
+              >
+                수락
+              </Text>
+            </Pressable>
+          </View>
         </View>
       </View>
-    </View>
-  );
+    );
+  }
 };
 
 export default FolderInviteRequestCard;

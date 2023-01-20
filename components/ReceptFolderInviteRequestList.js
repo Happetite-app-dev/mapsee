@@ -85,53 +85,56 @@ const ReceptFolderInviteRequestList = ({
   const folderName = JSON.stringify(folderObj.folderName).slice(1, -1);
   const folderColor = JSON.stringify(folderObj.folderColor).slice(1, -1);
   const folderUserIDs = folderObj.folderUserIDs;
-  //console.log(folderColor);
   const [recordDataSource, setRecordDataSource] = useState({});
-  return (
-    <TouchableOpacity
-      onPress={() => {
-        gotoSingleFolderScreen({
-          navigation,
-          folderID,
-          folderColor,
-          folderUserIDs,
-          myUID,
-          recordDataSource,
-          setRecordDataSource,
-          folderName,
-        });
-      }}
-      style={{ flex: 1, alignItems: "center", marginBottom: 40 }}
-    >
-      <View
-        style={{
-          width: 344,
-          height: 24,
-          borderRadius: 16,
-          flexDirection: "row",
+  if (folderObj == { folderName: "", folderColor: "", folderUserIDs: [] }) {
+    return <></>;
+  } else {
+    return (
+      <TouchableOpacity
+        onPress={() => {
+          gotoSingleFolderScreen({
+            navigation,
+            folderID,
+            folderColor,
+            folderUserIDs,
+            myUID,
+            recordDataSource,
+            setRecordDataSource,
+            folderName,
+          });
         }}
+        style={{ flex: 1, alignItems: "center", marginBottom: 40 }}
       >
-        <Text
+        <View
           style={{
-            left: 16,
-            top: 5,
-            fontWeight: "400",
-            fontSize: 14,
-            lineHeight: 16,
-            letterSpacing: -0.5,
+            width: 344,
+            height: 24,
+            borderRadius: 16,
+            flexDirection: "row",
           }}
         >
-          <Text style={{ fontWeight: "700" }}>
-            {requesterLastName}
-            {requesterFirstName}(@{requesterID})
+          <Text
+            style={{
+              left: 16,
+              top: 5,
+              fontWeight: "400",
+              fontSize: 14,
+              lineHeight: 16,
+              letterSpacing: -0.5,
+            }}
+          >
+            <Text style={{ fontWeight: "700" }}>
+              {requesterLastName}
+              {requesterFirstName}(@{requesterID})
+            </Text>
+            님의
+            <Text style={{ fontWeight: "700" }}> {folderName} </Text>
+            초대를 수락했습니다.
           </Text>
-          님의
-          <Text style={{ fontWeight: "700" }}> {folderName} </Text>
-          초대를 수락했습니다.
-        </Text>
-      </View>
-    </TouchableOpacity>
-  );
+        </View>
+      </TouchableOpacity>
+    );
+  }
 };
 
 export default ReceptFolderInviteRequestList;
