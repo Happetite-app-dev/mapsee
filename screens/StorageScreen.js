@@ -258,7 +258,8 @@ export default StorageScreen;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    width: "100%",
+    height: "89.5%",
     marginTop: StatusBar.currentHeight || 0,
   },
   item: {
