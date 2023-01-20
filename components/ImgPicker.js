@@ -18,14 +18,10 @@ import {
   Alert,
   ScrollView,
 } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
 
 import { storage } from "../firebase";
 import ImageCarousel from "./ImageCarousel";
-
-function getKeyByValue(object, value) {
-  return Object.keys(object).find((key) => object[key] === value);
-}
 
 const verifyPermissionsCam = async () => {
   const result = await Permissions.askAsync(Permissions.CAMERA);
@@ -63,6 +59,7 @@ const takeImageHandlerLib = async (setPickedImages, onImageTaken) => {
     allowsEditing: true,
     quality: 0.5,
   });
+
   if (!image.cancelled) {
     setPickedImages((images) => [...images, image.uri]);
     onImageTaken(image.uri);
@@ -84,46 +81,29 @@ const takeImageHandlerCam = async (setPickedImages, onImageTaken) => {
   onImageTaken(image.uri);
 };
 
-const deleteImage = (
-  image,
-  fullPhotoData,
-  pickedImages,
-  setPickedImages,
-  onImageErased,
-  recordID
-) => {
-  const key = Object.entries(fullPhotoData).find(
-    ([key, val]) => val === image
-  )[0];
+const deleteImage = (image, pickedImages, setPickedImages, onImageErased) => {
   const idx = pickedImages.indexOf(image); // findIndex = find + indexOf
   pickedImages.splice(idx, 1);
-
-  setPickedImages((prev) => pickedImages);
+  setPickedImages((prev) => prev.splice(idx, 1));
   onImageErased(pickedImages);
-
-  const imageRef = ref_storage(storage, `images/${recordID}/${key}`);
-
-  deleteObject(imageRef)
-    .then(() => {})
-    .catch((err) => {
-      console.log(err);
-    });
 };
 
 const ImgPicker = ({
   onImageTaken,
   onImageErased,
   defaultPhotos,
-  fullPhotoData,
   IsEditable,
-  recordID,
 }) => {
   const [pickedImages, setPickedImages] = useState(defaultPhotos);
+  useEffect(() => {
+    console.log("picked Images", pickedImages);
+    if (pickedImages === undefined) setPickedImages([]);
+  }, [pickedImages]);
   return (
     <View style={styles.imagePicker}>
       {IsEditable ? (
         <View>
-          <View style={{ height: 110, width: 360 }}>
+          <View style={{ height: 148, width: 360 }}>
             <ScrollView
               showsHorizontalScrollIndicator={false}
               horizontal
@@ -137,35 +117,41 @@ const ImgPicker = ({
               >
                 <Text style={{ fontSize: 35, color: "grey" }}>+</Text>
               </TouchableOpacity>
-              {Object.values(pickedImages).map((image) => {
-                return (
-                  <View style={{ position: "relative" }}>
-                    <Image style={styles.image} source={{ uri: image }} />
-                    <Button
-                      title="누ㄹ러"
-                      onPress={() => {
-                        deleteImage(
-                          image,
-                          fullPhotoData,
-                          pickedImages,
-                          setPickedImages,
-                          onImageErased,
-                          recordID
-                        );
-                      }}
+
+              {pickedImages != null && pickedImages !== undefined ? (
+                pickedImages.map((image) => {
+                  return (
+                    <View
                       style={{
-                        width: 24,
-                        height: 24,
-                        marginTop: 8,
-                        marginLeft: 116,
-                        position: "absolute",
+                        position: "relative",
+                        marginRight: 164,
                       }}
                     >
-                      <></>
-                    </Button>
-                  </View>
-                );
-              })}
+                      <Image style={styles.image} source={{ uri: image }} />
+                      <View
+                        onTouchEndCapture={() => {
+                          deleteImage(
+                            image,
+                            pickedImages,
+                            setPickedImages,
+                            onImageErased
+                          );
+                        }}
+                        style={{
+                          width: 24,
+                          height: 24,
+                          marginTop: 8,
+                          marginLeft: 116,
+                          position: "absolute",
+                          backgroundColor: "blue",
+                        }}
+                      />
+                    </View>
+                  );
+                })
+              ) : (
+                <></>
+              )}
             </ScrollView>
           </View>
         </View>
