@@ -160,7 +160,7 @@ const saveData = async (
       if (snapshot.val() != null) {
         const folderUserIDs = Object.keys(snapshot.val());
         folderUserIDs.map((folderUserID) => {
-          if (folderUserID == myUID) {
+          if (folderUserID != myUID) {
             const reference = ref(db, "/notices/" + folderUserID);
             push(reference, {
               type: "recept_recordAdd_done",

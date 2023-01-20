@@ -39,57 +39,75 @@ export const fetchFolderObject = ({
   const db = getDatabase();
   if (!folderObject[folderID]) {
     onValue(ref(db, `/folders/${folderID}/userIDs/`), (snapshot) => {
-      if (snapshot.val()) {
-        const folderUserIDs = Object.keys(snapshot.val());
+      const folderUserIDs = snapshot.val() ? Object.keys(snapshot.val()) : [];
+      onValue(
+        ref(db, `/folders/${folderID}/userIDs/${userID}`),
+        (snapshot1) => {
+          if (!snapshot1.val()) {
+            setFolderObject((prev) => ({
+              ...prev,
+              [folderID]: {
+                folderName: "",
+                folderColor: "",
+                folderUserIDs,
+              },
+            }));
+          } else {
+            onValue(
+              ref(db, `/folders/${folderID}/folderName/${userID}`),
+              (snapshot1) => {
+                const folderName = snapshot1.val();
+                onValue(
+                  ref(db, `/folders/${folderID}/folderColor/${userID}`),
+                  (snapshot2) => {
+                    const folderColor = snapshot2.val();
+                    setFolderObject((prev) => ({
+                      ...prev,
+                      [folderID]: {
+                        folderName,
+                        folderColor,
+                        folderUserIDs,
+                      },
+                    }));
+                  }
+                );
+              }
+            );
+          }
+        }
+      );
+    });
+  }
+  return folderObject[folderID];
+};
+
+//folderInviteCard에서만 사용
+export const fetchInitFolderObject = ({
+  folderObject,
+  setFolderObject,
+  folderID,
+}) => {
+  const db = getDatabase();
+  if (!folderObject[folderID]) {
+    onValue(ref(db, `/folders/${folderID}/userIDs/`), (snapshot) => {
+      const folderUserIDs = snapshot.val() ? Object.keys(snapshot.val()) : [];
+      onValue(ref(db, `/folders/${folderID}/initFolderName`), (snapshot2) => {
+        const folderName = snapshot2.val() ? snapshot2.val() : "";
         onValue(
-          ref(db, `/folders/${folderID}/userIDs/${userID}`),
-          (snapshot1) => {
-            if (!snapshot1.val()) {
-              onValue(
-                ref(db, `/folders/${folderID}/initFolderName`),
-                (snapshot2) => {
-                  const folderName = snapshot2.val();
-                  onValue(
-                    ref(db, `/folders/${folderID}/initFolderColor`),
-                    (snapshot3) => {
-                      const folderColor = snapshot3.val();
-                      setFolderObject((prev) => ({
-                        ...prev,
-                        [folderID]: {
-                          folderName,
-                          folderColor,
-                          folderUserIDs,
-                        },
-                      }));
-                    }
-                  );
-                }
-              );
-            } else {
-              onValue(
-                ref(db, `/folders/${folderID}/folderName/${userID}`),
-                (snapshot1) => {
-                  const folderName = snapshot1.val();
-                  onValue(
-                    ref(db, `/folders/${folderID}/folderColor/${userID}`),
-                    (snapshot2) => {
-                      const folderColor = snapshot2.val();
-                      setFolderObject((prev) => ({
-                        ...prev,
-                        [folderID]: {
-                          folderName,
-                          folderColor,
-                          folderUserIDs,
-                        },
-                      }));
-                    }
-                  );
-                }
-              );
-            }
+          ref(db, `/folders/${folderID}/initFolderColor`),
+          (snapshot3) => {
+            const folderColor = snapshot3.val() ? snapshot3.val() : "";
+            setFolderObject((prev) => ({
+              ...prev,
+              [folderID]: {
+                folderName,
+                folderColor,
+                folderUserIDs,
+              },
+            }));
           }
         );
-      }
+      });
     });
   }
   return folderObject[folderID];

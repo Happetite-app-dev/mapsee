@@ -10,8 +10,11 @@ import {
 import { useContext, useState } from "react";
 
 import AppContext from "../components/AppContext";
-//import { AcceptFolderInviteRequest } from "../modules/ChangeDatabase";
-import { fetchFolderObject, fetchUserObject } from "../modules/FetchDatabase";
+import {
+  fetchFolderObject,
+  fetchInitFolderObject,
+  fetchUserObject,
+} from "../modules/FetchDatabase";
 import SendPushNotification from "../modules/SendPushNotification";
 import DispatchFolderInviteRequestList from "./DispatchFolderInviteRequestList";
 import DispatchFriendRequestList from "./DispatchFriendRequestList";
@@ -23,6 +26,23 @@ import ReceptRecordAddDoneList from "./ReceptRecordAddDoneList";
 //NoticeRenderer에서는 각 내부 알림을 그 type에 따라 분류하여 알맞은 모양의 컴포넌트를 return한다
 //이때, 이 컴포넌트가 수행해야되는 함수 또한 여기서 처리한다
 //ID를 UID에서 갖고 오는 식으로 바꿔야 될수도
+const acceptFriendRequest = ({ myUID, noticeKey, requesterUID }) => {
+  const db = getDatabase();
+  set(
+    ref(db, "/notices/" + myUID + "/" + noticeKey + "/type/"), //remove할지 추후에 고려 필요
+    "recept_friend_request_accept_inact"
+  );
+  push(ref(db, "/notices/" + myUID), {
+    type: "recept_friend_request_accept_act",
+    requesterUID,
+  });
+  push(ref(db, "/notices/" + requesterUID), {
+    type: "dispatch_friend_request_accept_act",
+    approverUID: myUID,
+  });
+  set(ref(db, "/users/" + myUID + "/friendUIDs/" + requesterUID), true);
+  set(ref(db, "/users/" + requesterUID + "/friendUIDs/" + myUID), true);
+};
 const acceptFolderInviteRequest = ({
   myUID,
   noticeKey,
@@ -150,19 +170,12 @@ const NoticeRenderer = ({ navigation, item, onToggleSnackBar }) => {
             userID: item.val.requesterUID,
           })}
           time={item.val.time}
-          folderObject={fetchFolderObject({
+          folderObject={fetchInitFolderObject({
             folderObject,
             setFolderObject,
             folderID: item.val.folderID,
-            userID: myUID,
           })}
           acceptRequest={() => {
-            console.log({
-              myUID,
-              noticeKey: item.key,
-              requesterUID: item.val.requesterUID,
-              folderID: item.val.folderID,
-            });
             acceptFolderInviteRequest({
               myUID,
               noticeKey: item.key,
