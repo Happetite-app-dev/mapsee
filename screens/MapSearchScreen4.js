@@ -23,7 +23,7 @@ const gotoSearch2Screen = ({ navigation, item }) => {
       const newPlace = {
         geometry: { location: { lat, lng } },
         name: item.structured_formatting.main_text,
-        formatted_address: item.structured_formatting.secondary_text,
+        address: item.structured_formatting.secondary_text,
         id: item.place_id,
       };
 
