@@ -194,7 +194,7 @@ const MakeFolderBottomSheet = ({
   const IsNewRecord = folderName_ === null;
   const [newFolderName, setNewFolderName] = useState(folderName_ || "");
   const [newFolderColor, setNewFolderColor] = useState(
-    folderColor_ || "#FF6363"
+    folderColor_ || "#EB7A7C"
   );
   const [newFolderUserIDs, setNewFolderUserIDs] = useState(
     folderUserIDs_ || [myUID]
@@ -262,12 +262,12 @@ const MakeFolderBottomSheet = ({
         <View style={{ top: 24, flexDirection: "column" }}>
           <View style={{ top: 0, flexDirection: "row", paddingBottom: 16 }}>
             <TouchableOpacity
-              onPress={() => setNewFolderColor("#FF6363")}
+              onPress={() => setNewFolderColor("#EB7A7C")}
               style={{
                 width: 32,
                 height: 32,
                 borderRadius: 16,
-                backgroundColor: "#FF6363",
+                backgroundColor: "#EB7A7C",
                 justifyContent: "center",
                 marginRight: 31,
               }}
@@ -278,18 +278,18 @@ const MakeFolderBottomSheet = ({
                   height: 16,
                   borderRadius: 8,
                   backgroundColor:
-                    newFolderColor == "#FF6363" ? "#FF6363" : "white",
+                    newFolderColor == "#EB7A7C" ? "#EB7A7C" : "white",
                   alignSelf: "center",
                 }}
               />
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => setNewFolderColor("#FD7CA9")}
+              onPress={() => setNewFolderColor("#EFB4AC")}
               style={{
                 width: 32,
                 height: 32,
                 borderRadius: 16,
-                backgroundColor: "#FD7CA9",
+                backgroundColor: "#EFB4AC",
                 justifyContent: "center",
                 marginRight: 31,
               }}
@@ -300,18 +300,18 @@ const MakeFolderBottomSheet = ({
                   height: 16,
                   borderRadius: 8,
                   backgroundColor:
-                    newFolderColor == "#FD7CA9" ? "#FD7CA9" : "white",
+                    newFolderColor == "#EFB4AC" ? "#EFB4AC" : "white",
                   alignSelf: "center",
                 }}
               />
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => setNewFolderColor("#FFA8A3")}
+              onPress={() => setNewFolderColor("#9BC97E")}
               style={{
                 width: 32,
                 height: 32,
                 borderRadius: 16,
-                backgroundColor: "#FFA8A3",
+                backgroundColor: "#9BC97E",
                 justifyContent: "center",
                 marginRight: 31,
               }}
@@ -322,18 +322,18 @@ const MakeFolderBottomSheet = ({
                   height: 16,
                   borderRadius: 8,
                   backgroundColor:
-                    newFolderColor == "#FFA8A3" ? "#FFA8A3" : "white",
+                    newFolderColor == "#9BC97E" ? "#9BC97E" : "white",
                   alignSelf: "center",
                 }}
               />
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => setNewFolderColor("#FFC700")}
+              onPress={() => setNewFolderColor("#F3D17A")}
               style={{
                 width: 32,
                 height: 32,
                 borderRadius: 16,
-                backgroundColor: "#FFC700",
+                backgroundColor: "#F3D17A",
                 justifyContent: "center",
                 marginRight: 31,
               }}
@@ -344,18 +344,18 @@ const MakeFolderBottomSheet = ({
                   height: 16,
                   borderRadius: 8,
                   backgroundColor:
-                    newFolderColor == "#FFC700" ? "#FFC700" : "white",
+                    newFolderColor == "#F3D17A" ? "#F3D17A" : "white",
                   alignSelf: "center",
                 }}
               />
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => setNewFolderColor("#FF9D66")}
+              onPress={() => setNewFolderColor("#F09F83")}
               style={{
                 width: 32,
                 height: 32,
                 borderRadius: 16,
-                backgroundColor: "#FF9D66",
+                backgroundColor: "#F09F83",
                 justifyContent: "center",
                 marginRight: 31,
               }}
@@ -366,7 +366,7 @@ const MakeFolderBottomSheet = ({
                   height: 16,
                   borderRadius: 8,
                   backgroundColor:
-                    newFolderColor == "#FF9D66" ? "#FF9D66" : "white",
+                    newFolderColor == "#F09F83" ? "#F09F83" : "white",
                   alignSelf: "center",
                 }}
               />
@@ -396,12 +396,12 @@ const MakeFolderBottomSheet = ({
           </View>
           <View style={{ top: 0, flexDirection: "row" }}>
             <TouchableOpacity
-              onPress={() => setNewFolderColor("#AB69ED")}
+              onPress={() => setNewFolderColor("#8E86C4")}
               style={{
                 width: 32,
                 height: 32,
                 borderRadius: 16,
-                backgroundColor: "#AB69ED",
+                backgroundColor: "#8E86C4",
                 justifyContent: "center",
                 marginRight: 31,
               }}
@@ -412,18 +412,18 @@ const MakeFolderBottomSheet = ({
                   height: 16,
                   borderRadius: 8,
                   backgroundColor:
-                    newFolderColor == "#AB69ED" ? "#AB69ED" : "white",
+                    newFolderColor == "#8E86C4" ? "#8E86C4" : "white",
                   alignSelf: "center",
                 }}
               />
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => setNewFolderColor("#C4B6FF")}
+              onPress={() => setNewFolderColor("#B8B0DA")}
               style={{
                 width: 32,
                 height: 32,
                 borderRadius: 16,
-                backgroundColor: "#C4B6FF",
+                backgroundColor: "#B8B0DA",
                 justifyContent: "center",
                 marginRight: 31,
               }}
@@ -434,18 +434,18 @@ const MakeFolderBottomSheet = ({
                   height: 16,
                   borderRadius: 8,
                   backgroundColor:
-                    newFolderColor == "#C4B6FF" ? "#C4B6FF" : "white",
+                    newFolderColor == "#B8B0DA" ? "#B8B0DA" : "white",
                   alignSelf: "center",
                 }}
               />
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => setNewFolderColor("#69C2F4")}
+              onPress={() => setNewFolderColor("#6DB8B8")}
               style={{
                 width: 32,
                 height: 32,
                 borderRadius: 16,
-                backgroundColor: "#69C2F4",
+                backgroundColor: "#6DB8B8",
                 justifyContent: "center",
                 marginRight: 31,
               }}
@@ -456,18 +456,18 @@ const MakeFolderBottomSheet = ({
                   height: 16,
                   borderRadius: 8,
                   backgroundColor:
-                    newFolderColor == "#69C2F4" ? "#69C2F4" : "white",
+                    newFolderColor == "#6DB8B8" ? "#6DB8B8" : "white",
                   alignSelf: "center",
                 }}
               />
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => setNewFolderColor("#4D74FD")}
+              onPress={() => setNewFolderColor("#A0D3CB")}
               style={{
                 width: 32,
                 height: 32,
                 borderRadius: 16,
-                backgroundColor: "#4D74FD",
+                backgroundColor: "#A0D3CB",
                 justifyContent: "center",
                 marginRight: 31,
               }}
@@ -478,18 +478,18 @@ const MakeFolderBottomSheet = ({
                   height: 16,
                   borderRadius: 8,
                   backgroundColor:
-                    newFolderColor == "#4D74FD" ? "#4D74FD" : "white",
+                    newFolderColor == "#A0D3CB" ? "#A0D3CB" : "white",
                   alignSelf: "center",
                 }}
               />
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => setNewFolderColor("#0DBA09")}
+              onPress={() => setNewFolderColor("#4F92D9")}
               style={{
                 width: 32,
                 height: 32,
                 borderRadius: 16,
-                backgroundColor: "#0DBA09",
+                backgroundColor: "#4F92D9",
                 justifyContent: "center",
                 marginRight: 31,
               }}
@@ -500,18 +500,18 @@ const MakeFolderBottomSheet = ({
                   height: 16,
                   borderRadius: 8,
                   backgroundColor:
-                    newFolderColor == "#0DBA09" ? "#0DBA09" : "white",
+                    newFolderColor == "#4F92D9" ? "#4F92D9" : "white",
                   alignSelf: "center",
                 }}
               />
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => setNewFolderColor("#42E83F")}
+              onPress={() => setNewFolderColor("#82B0DB")}
               style={{
                 width: 32,
                 height: 32,
                 borderRadius: 16,
-                backgroundColor: "#42E83F",
+                backgroundColor: "#82B0DB",
                 justifyContent: "center",
                 marginRight: 31,
               }}
@@ -522,7 +522,7 @@ const MakeFolderBottomSheet = ({
                   height: 16,
                   borderRadius: 8,
                   backgroundColor:
-                    newFolderColor == "#42E83F" ? "#42E83F" : "white",
+                    newFolderColor == "#82B0DB" ? "#82B0DB" : "white",
                   alignSelf: "center",
                 }}
               />

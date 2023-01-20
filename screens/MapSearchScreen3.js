@@ -35,7 +35,7 @@ const gotoSearch2Screen = ({ navigation, item }) => {
       const newPlace = {
         geometry: { location: { lat, lng } },
         name: item.structured_formatting.main_text,
-        formatted_address: item.structured_formatting.secondary_text,
+        address: item.structured_formatting.secondary_text,
         id: item.place_id,
       };
 
@@ -179,12 +179,14 @@ const MapSearchScreen3 = ({ navigation, route }) => {
           borderRadius: 16,
           elevation: 24,
         }}
-        onTouchEndCapture={() => {
-          const results = [route.params[0], data];
-          toggleAnimation(navigation, results);
-        }}
       >
-        <View style={{ marginTop: 8, zIndex: 1 }}>
+        <View
+          style={{ marginTop: 8, zIndex: 1 }}
+          onTouchEndCapture={() => {
+            const results = [route.params[0], data];
+            toggleAnimation(navigation, results);
+          }}
+        >
           <Image source={bottomSheetImage} />
         </View>
         <FlatList

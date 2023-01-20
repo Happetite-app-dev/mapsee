@@ -30,6 +30,34 @@ import RecordFlatList from "../components/RecordFlatList";
 const bottomSheetImage = require("../assets/image/bottomSheetScroll.png");
 const mapStyle = require("../assets/mapDesign.json");
 
+const toggleAnimation1 = (showAnimation, setAnimationValue) => {
+  const val = -1000;
+  Animated.timing(showAnimation, {
+    useNativeDriver: false,
+    toValue: val,
+    duration: 350,
+  }).start();
+  setAnimationValue(val);
+};
+const toggleAnimation2 = (showAnimation, setAnimationValue) => {
+  const val2 = 0;
+  Animated.timing(showAnimation, {
+    useNativeDriver: false,
+    toValue: val2,
+    duration: 350,
+  }).start();
+  setAnimationValue(val2);
+};
+const toggleAnimation3 = (showAnimation, setAnimationValue) => {
+  const val3 = -692;
+  Animated.timing(showAnimation, {
+    useNativeDriver: false,
+    toValue: val3,
+    duration: 350,
+  }).start();
+  setAnimationValue(val3);
+};
+
 const BottomSheetScreen = ({
   onDisplay,
   onCancel,
@@ -70,25 +98,12 @@ const BottomSheetScreen = ({
                 Object.keys(snapshot2.val()).map((recordID) => {
                   //folders의 placeRecord 속에 있는 각 placeID에 대응되는 recordIDObject들에 대하여....
                   onValue(ref(db, "/records/" + recordID), (snapshot3) => {
-                    // console.log('----------------------------')
-                    // console.log(recordID)
-                    // console.log(snapshot3.val().address)
-                    //   console.log('placeName', snapshot3.val().placeName)
-                    //   console.log('targetName', targetName)
-                    //   console.log(snapshot3.val().placeName.includes(targetName))
-                    //   console.log(targetName.includes(snapshot3.val().placeName))
                     if (
                       snapshot3.val() != (null || undefined) &&
                       (snapshot3.val().placeName.includes(targetName) ||
                         targetName.includes(snapshot3.val().placeName) ||
                         snapshot3.val().placeName == targetName)
                     ) {
-                      //masterDataSource 채워주기 --> 기존 record를 지웠을 때, 없는 recordID를 찾아서 null이 masterDataSource에 들어가는 경우를 방지하고자 함
-                      // console.log('----------------------------')
-                      // console.log('placeName', snapshot3.val().placeName)
-                      // console.log('targetName', targetName)
-                      // console.log(snapshot3.val().placeName.includes(targetName))
-                      // console.log(targetName.includes(snapshot3.val().placeName))
                       setMasterDataSource((prev) => ({
                         ...prev,
                         [recordID]: { recordID, recordData: snapshot3.val() },
@@ -338,43 +353,15 @@ const MapSearchScreen2 = ({ navigation, route }) => {
     latitudeDelta: 0.0016,
     longitudeDelta: 0.0012,
     name: route.params.name,
-    address: route.params.formatted_address,
-    id: route.params.place_id,
+    address: route.params.address,
+    id: route.params.id,
   });
 
   const [targetShown, setTargetShown] = useState(true);
 
   useEffect(() => {
-    toggleAnimation3();
+    toggleAnimation3(showAnimation, setAnimationValue);
   }, []);
-  const toggleAnimation1 = () => {
-    const val = -1000;
-    Animated.timing(showAnimation, {
-      useNativeDriver: false,
-      toValue: val,
-      duration: 350,
-    }).start();
-    setAnimationValue(val);
-  };
-  const toggleAnimation2 = () => {
-    const val2 = 0;
-    Animated.timing(showAnimation, {
-      useNativeDriver: false,
-      toValue: val2,
-      duration: 350,
-    }).start();
-    setAnimationValue(val2);
-  };
-  const toggleAnimation3 = () => {
-    const val3 = -692;
-    Animated.timing(showAnimation, {
-      useNativeDriver: false,
-      toValue: val3,
-      duration: 350,
-    }).start();
-    setAnimationValue(val3);
-  };
-
   const targetingFromLocation = (lctn, name) => {
     Geocoder.from(lctn)
       .then((json) => {
@@ -390,7 +377,7 @@ const MapSearchScreen2 = ({ navigation, route }) => {
         setTargetShown(true);
       })
       .catch((error) => console.warn(error));
-    toggleAnimation3();
+    toggleAnimation3(showAnimation, setAnimationValue);
   };
 
   return (
@@ -464,13 +451,13 @@ const MapSearchScreen2 = ({ navigation, route }) => {
 
       <BottomSheet
         onRemove={() => {
-          toggleAnimation1();
+          toggleAnimation1(showAnimation, setAnimationValue);
         }}
         onDisplay={() => {
-          toggleAnimation2();
+          toggleAnimation2(showAnimation, setAnimationValue);
         }}
         onCancel={() => {
-          toggleAnimation3();
+          toggleAnimation3(showAnimation, setAnimationValue);
         }}
         animation={showAnimation}
         animationVal={animationValue}

@@ -16,6 +16,8 @@ import Geocoder from "react-native-geocoding";
 import MapView, { Marker } from "react-native-maps";
 import { Easing } from "react-native-reanimated";
 
+import Marker1 from "../assets/markers/marker#4F92D9.svg";
+import NewMarker from "../assets/markers/newMarker.svg";
 import AppContext from "../components/AppContext";
 import PlaceInfoBottomSheet from "../components/PlaceInfoBottomSheet";
 import GeneratePushToken from "../modules/GeneratePushToken";
@@ -24,6 +26,10 @@ const currentLocationImage = require("../assets/image/currentLocation.png");
 const findCurrentLocationImage = require("../assets/image/findCurrentLocation.png");
 const targetLocationImage = require("../assets/image/targetLocation.png");
 const mapStyle = require("../assets/mapDesign.json");
+
+// date & colors array
+const now = new Date();
+const currentDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
 // Tutorial Reload
 const storeData = async (value) => {
@@ -179,12 +185,46 @@ const MapScreen = ({ navigation }) => {
                   const recordIDList1 = Object.keys(placeRecord1);
                   recordIDList1.map((recordID) => {
                     onValue(
-                      ref(db, "/records/" + recordID + "/lctn"),
-                      (snapshot3) => {
-                        setList1((list1) => ({
-                          ...list1,
-                          [recordID]: { recordID, lctn: snapshot3.val() },
-                        }));
+                      ref(db, "/records/" + recordID + "/folderID"),
+                      (snapshotFolder) => {
+                        const folderID = snapshotFolder.val();
+                        onValue(
+                          ref(db, "/folders/" + folderID + "/folderColor"),
+                          (snapshotColor) => {
+                            if (snapshotColor.val() != null) {
+                              const color = Object.values(
+                                snapshotColor.val()
+                              )[0];
+
+                              onValue(
+                                ref(db, "/records/" + recordID + "/writeDate"),
+                                (snapshotDate) => {
+                                  const date = new Date(
+                                    snapshotDate.val().year,
+                                    snapshotDate.val().month - 1,
+                                    snapshotDate.val().day,
+                                    snapshotDate.val().hour,
+                                    snapshotDate.val().minute
+                                  );
+                                  onValue(
+                                    ref(db, "/records/" + recordID + "/lctn"),
+                                    (snapshot3) => {
+                                      setList1((list1) => ({
+                                        ...list1,
+                                        [recordID]: {
+                                          recordID,
+                                          lctn: snapshot3.val(),
+                                          color,
+                                          date,
+                                        },
+                                      }));
+                                    }
+                                  );
+                                }
+                              );
+                            }
+                          }
+                        );
                       }
                     );
                   });
@@ -272,6 +312,7 @@ const MapScreen = ({ navigation }) => {
               width: 25,
               height: 25,
               resizeMode: "contain",
+              zIndex: 5,
             }}
           />
         </Marker>
@@ -283,6 +324,7 @@ const MapScreen = ({ navigation }) => {
               height: 37,
               resizeMode: "contain",
               tintColor: "blue",
+              zIndex: 10,
             }}
           />
         </Marker>
@@ -331,30 +373,45 @@ const MapScreen = ({ navigation }) => {
             }}
           />
         </View>
-        {Object.values(list1).map((record) => {
-          // console.log(record);
-          const showMarker = Math.random();
-          return (
-            <Marker
-              // key={record.recordID}
-              key={record.recordID}
-              coordinate={record.lctn}
-              opacity={
-                origin.latitudeDelta < 0.01 || showMarker > 0.5 ? 100 : 0
-              }
-            >
-              <Image
-                source={targetLocationImage}
-                style={{
-                  width: 37,
-                  height: 37,
-                  resizeMode: "contain",
-                  tintColor: "red",
-                }}
-              />
-            </Marker>
-          );
-        })}
+        {list1 == null || list1 === undefined ? (
+          <></>
+        ) : (
+          Object.values(list1).map((record) => {
+            const showMarker = Math.random();
+            const dayDiff = (record.date - currentDate) / (1000 * 60 * 60 * 24);
+            const color = record.color;
+
+            return (
+              <Marker
+                // key={record.recordID}
+                key={record.recordID}
+                coordinate={record.lctn}
+                opacity={
+                  origin.latitudeDelta < 0.01 || showMarker > 0.5 ? 100 : 0
+                }
+                style={{ zIndex: 2 }}
+              >
+                {dayDiff <= 3 ? (
+                  <Image
+                    source={targetLocationImage}
+                    style={{
+                      width: 37,
+                      height: 37,
+                      resizeMode: "contain",
+                      tintColor: color,
+                      zIndex: 10,
+                    }}
+                  />
+                ) : (
+                  <Image
+                    source={{ targetLocationImage }}
+                    style={{ tintColor: color, backgroundColor: "red" }}
+                  />
+                )}
+              </Marker>
+            );
+          })
+        )}
       </MapView>
     </SafeAreaView>
   );

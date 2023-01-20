@@ -157,28 +157,30 @@ const saveData = async (
     //push 알림과 내부 알림 보내기(나에게는 스낵바만 띄우기)
     onValue(ref(db, `/folders/${folderID}/userIDs`), (snapshot) => {
       console.log(snapshot);
-      const folderUserIDs = Object.keys(snapshot.val());
-      folderUserIDs.map((folderUserID) => {
-        if (folderUserID != myUID) {
-          const reference = ref(db, "/notices/" + folderUserID);
-          push(reference, {
-            type: "recept_recordAdd_done",
-            performerUID: myUID,
-            performerID: myID, //-->수정 필요
-            performerFirstName: myFirstName,
-            performerLastName: myLastName,
-            time: timeNow.getTime(),
-            //여기서 부턴 "recept_recordAdd_done" type 알림만의 정보
-            folderID,
-            recordID: newRecordID,
-          });
-          SendPushNotification({
-            receiverUID: folderUserID,
-            title_: "기록추가타이틀",
-            body_: "기록추가바디",
-          });
-        }
-      });
+      if (snapshot.val() != null) {
+        const folderUserIDs = Object.keys(snapshot.val());
+        folderUserIDs.map((folderUserID) => {
+          if (folderUserID != myUID) {
+            const reference = ref(db, "/notices/" + folderUserID);
+            push(reference, {
+              type: "recept_recordAdd_done",
+              performerUID: myUID,
+              performerID: myID, //-->수정 필요
+              performerFirstName: myFirstName,
+              performerLastName: myLastName,
+              time: timeNow.getTime(),
+              //여기서 부턴 "recept_recordAdd_done" type 알림만의 정보
+              folderID,
+              recordID: newRecordID,
+            });
+            SendPushNotification({
+              receiverUID: folderUserID,
+              title_: "기록추가타이틀",
+              body_: "기록추가바디",
+            });
+          }
+        });
+      }
     });
   } //새 기록이 아니라면
   else {

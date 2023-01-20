@@ -135,7 +135,7 @@ const AddFolderBottomSheet = ({
   const myLastName = myContext.myLastName;
 
   const [newFolderName, setNewFolderName] = useState("");
-  const [newFolderColor, setNewFolderColor] = useState("red");
+  const [newFolderColor, setNewFolderColor] = useState("#EB7A7C");
   const [newFolderUserIDs, setNewFolderUserIDs] = useState([myUID]);
   const [newFolderUserNameIDs, setNewFolderUserNameIDs] = useState([]);
   const onChangeNewFolderUserIDs = (newFolderUserIDs_) => {
