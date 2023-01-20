@@ -9,28 +9,6 @@ import ShareFolder from "../assets/icons/shareFolder.svg";
 
 const folder2Image = require("../assets/image/folder2.png");
 
-const GoHome = ({ navigation }) => {
-  return (
-    <View
-      onTouchEndCapture={() => {
-        console.log("close");
-        navigation.navigate("Map");
-      }}
-      style={styles.goHome}
-    >
-      <View
-        style={{
-          position: "relative",
-          width: 15,
-          height: 15,
-        }}
-      >
-        <Close />
-      </View>
-    </View>
-  );
-};
-
 const GoBackHeader = ({
   navigation,
   goBackFunction,

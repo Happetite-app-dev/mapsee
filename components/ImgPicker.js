@@ -155,15 +155,11 @@ const ImgPicker = ({
             </ScrollView>
           </View>
         </View>
+      ) : pickedImages.length === 0 ? (
+        <></>
       ) : (
         <View style={{ height: 148, width: 360 }}>
-          {pickedImages.length === 0 ? (
-            <Text style={{ fontSize: 35, color: "grey" }}>
-              저장된 사진이 없습니다
-            </Text>
-          ) : (
-            <ImageCarousel images={Object.values(pickedImages)} />
-          )}
+          <ImageCarousel images={Object.values(pickedImages)} />
         </View>
       )}
     </View>

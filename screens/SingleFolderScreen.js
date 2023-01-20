@@ -111,7 +111,7 @@ const SingleFolderScreen = ({ navigation, route }) => {
         navigation={navigation}
         text={folderName}
         folderColor={folderColor}
-        isShareFolder
+        isShareFolder={folderUserIDs.length >= 2}
         rightButton="edit"
         rightButtonFunction={() =>
           gotoMakeFolderBottomSheetScreen({
