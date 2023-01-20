@@ -27,45 +27,47 @@ const gotoEditScreen = (stackNavigation, item) => {
   });
 };
 
-const RecordFlatList = ({ recordDataSource, stackNavigation }) => {
-  const IndividualRecord = ({ item }) => {
-    return (
-      <View style={styles.item}>
-        <TouchableOpacity onPress={() => gotoEditScreen(stackNavigation, item)}>
-          <View style={{ flexDirection: "column", justifyContent: "center" }}>
-            <View style={{ width: 158, height: 148, alignItems: "center" }}>
-              {item.recordData.photos !== undefined &&
-              Object.values(item.recordData.photos).length >= 1 ? (
-                <View>
-                  <Image
-                    style={{
-                      width: 160,
-                      height: 148,
-                      borderTopLeftRadius: 8,
-                      borderTopRightRadius: 8,
-                    }}
-                    source={{ uri: Object.values(item.recordData.photos)[0] }}
-                  />
-                </View>
-              ) : (
+const IndividualRecord = ({ item, stackNavigation }) => {
+  return (
+    <View style={styles.item}>
+      <TouchableOpacity onPress={() => gotoEditScreen(stackNavigation, item)}>
+        <View style={{ flexDirection: "column", justifyContent: "center" }}>
+          <View style={{ width: 158, height: 148, alignItems: "center" }}>
+            {item.recordData.photos !== undefined &&
+            Object.values(item.recordData.photos).length >= 1 ? (
+              <View>
                 <Image
-                  style={{ width: 80, height: 99, marginTop: 30 }}
-                  source={noImageRecord}
+                  style={{
+                    width: 160,
+                    height: 148,
+                    borderTopLeftRadius: 8,
+                    borderTopRightRadius: 8,
+                  }}
+                  source={{ uri: Object.values(item.recordData.photos)[0] }}
                 />
-              )}
-            </View>
-            <Text style={styles.title}>{item.recordData.title}</Text>
-            <Text style={styles.placeName}>{item.recordData.placeName}</Text>
-            <Text
-              style={styles.date}
-            >{`${item.recordData.date.year}.${item.recordData.date.month}.${item.recordData.date.day}`}</Text>
+              </View>
+            ) : (
+              <Image
+                style={{ width: 80, height: 99, marginTop: 30 }}
+                source={noImageRecord}
+              />
+            )}
           </View>
-        </TouchableOpacity>
-      </View>
-    );
-  };
+          <Text style={styles.title}>{item.recordData.title}</Text>
+          <Text style={styles.placeName}>{item.recordData.placeName}</Text>
+          <Text
+            style={styles.date}
+          >{`${item.recordData.date.year}.${item.recordData.date.month}.${item.recordData.date.day}`}</Text>
+        </View>
+      </TouchableOpacity>
+    </View>
+  );
+};
 
-  const renderItem = ({ item }) => <IndividualRecord item={item} />;
+const RecordFlatList = ({ recordDataSource, stackNavigation }) => {
+  const renderItem = ({ item }) => (
+    <IndividualRecord item={item} stackNavigation={stackNavigation} />
+  );
 
   return (
     <FlatList

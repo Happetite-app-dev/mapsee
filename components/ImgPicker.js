@@ -96,9 +96,8 @@ const deleteImage = (
     ([key, val]) => val === image
   )[0];
   const idx = pickedImages.indexOf(image); // findIndex = find + indexOf
-  pickedImages.splice(idx, 1);
 
-  setPickedImages((prev) => pickedImages);
+  setPickedImages((prev) => prev.splice(idx, 1));
   onImageErased(pickedImages);
 
   const imageRef = ref_storage(storage, `images/${recordID}/${key}`);
