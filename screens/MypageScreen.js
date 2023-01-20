@@ -12,6 +12,7 @@ import {
 
 import NoticeOn from "../assets/icons/notice_on.svg";
 import AppContext from "../components/AppContext";
+import { PopUpType1 } from "../components/PopUp";
 
 const fontImage = require("../assets/image/font.png");
 const friendListImage = require("../assets/image/friendList.png");
@@ -34,7 +35,10 @@ const MypageScreen = ({ navigation }) => {
   const myContext = useContext(AppContext);
   const myID = myContext.myID;
   const myName = myContext.myLastName + myContext.myFirstName;
-
+  const [modalVisible, setModalVisible] = useState(false);
+  const modalHandler = (isVisible) => {
+    setModalVisible(isVisible);
+  };
   return (
     <SafeAreaView style={styles.container}>
       <View
@@ -213,7 +217,7 @@ const MypageScreen = ({ navigation }) => {
         </Text>
       </TouchableOpacity>
       <TouchableOpacity
-        onPress={() => gotoBeforeLoginScreen({ navigation })}
+        onPress={() => modalHandler(true)}
         style={{
           position: "absolute",
           width: "100%",
@@ -226,6 +230,12 @@ const MypageScreen = ({ navigation }) => {
           로그아웃
         </Text>
       </TouchableOpacity>
+      <PopUpType1
+        modalVisible={modalVisible}
+        modalHandler={modalHandler}
+        action={() => gotoBeforeLoginScreen({ navigation })}
+        askValue="정말 로그아웃을 하시겠습니까?"
+      />
     </SafeAreaView>
   );
 };
