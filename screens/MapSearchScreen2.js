@@ -30,6 +30,15 @@ import RecordFlatList from "../components/RecordFlatList";
 const bottomSheetImage = require("../assets/image/bottomSheetScroll.png");
 const mapStyle = require("../assets/mapDesign.json");
 
+const toggleAnimation1 = (showAnimation, setAnimationValue) => {
+  const val = -1000;
+  Animated.timing(showAnimation, {
+    useNativeDriver: false,
+    toValue: val,
+    duration: 350,
+  }).start();
+  setAnimationValue(val);
+};
 const toggleAnimation2 = (showAnimation, setAnimationValue) => {
   const val2 = 0;
   Animated.timing(showAnimation, {
@@ -63,6 +72,7 @@ const BottomSheetScreen = ({
   const myUID = myContext.myUID;
 
   const gotoEditScreen = () => {
+    console.log(targetId);
     return navigation.push("EditScreen", {
       placeName: targetName,
       placeID: targetId,
@@ -200,14 +210,6 @@ const BottomSheetScreen = ({
               borderRadius: 24,
               zIndex: 1,
               bottom: 23,
-
-              shadowColor: "black",
-              shadowOffset: {
-                width: 0,
-                height: 5,
-              },
-              shadowOpacity: 0.25,
-              shadowRadius: 3.5,
             }}
             underlayColor="white"
             onPress={gotoEditScreen}
@@ -233,7 +235,6 @@ const BottomSheetScreen = ({
           navigation={navigation}
           text={targetName}
           rightButton="goHome"
-          goBackFunction={toggleAnimation3(showAnimation, setAnimationValue)}
         />
         <View
           style={{
@@ -263,14 +264,6 @@ const BottomSheetScreen = ({
             height: 48,
             borderRadius: 24,
             zIndex: 1,
-
-            shadowColor: "black",
-            shadowOffset: {
-              width: 0,
-              height: 5,
-            },
-            shadowOpacity: 0.25,
-            shadowRadius: 3.5,
           }}
           underlayColor="blue"
           onPress={gotoEditScreen}
@@ -345,6 +338,7 @@ const MapSearchScreen2 = ({ navigation, route }) => {
     id: route.params.id || route.params.place_id,
   });
 
+  console.log("route", route.params.id || route.params.place_id);
   const [targetShown, setTargetShown] = useState(true);
 
   useEffect(() => {

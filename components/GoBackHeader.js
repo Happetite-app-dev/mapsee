@@ -6,7 +6,8 @@ import DeleteFolder from "../assets/icons/delete.svg";
 import EditFolder from "../assets/icons/folderEdit.svg";
 import GoBack from "../assets/icons/goBack.svg";
 import ShareFolder from "../assets/icons/shareFolder.svg";
-import SingleFolder from "../assets/icons/singleFolder.svg";
+
+const folder2Image = require("../assets/image/folder2.png");
 
 const GoBackHeader = ({
   navigation,
@@ -38,10 +39,12 @@ const GoBackHeader = ({
         >
           <GoBack height={24} />
         </View>
-
         <View style={styles.title}>
           {folderColor !== undefined ? (
-            <SingleFolder color={folderColor} />
+            <Image
+              source={folder2Image}
+              style={{ tintColor: folderColor, marginRight: 11, top: 3 }}
+            />
           ) : (
             <></>
           )}
@@ -120,10 +123,9 @@ const styles = StyleSheet.create({
     height: 24,
     position: "absolute",
     left: 31,
-    //backgroundColor: "red",
   },
   title: {
-    width: 280,
+    width: 304,
     height: 24,
     left: 63,
     position: "absolute",
@@ -137,9 +139,8 @@ const styles = StyleSheet.create({
   goHome: {
     width: 24,
     height: 24,
-    left: 347.5,
+    right: 18.5,
     position: "absolute",
-    //backgroundColor: "blue",
   },
 });
 

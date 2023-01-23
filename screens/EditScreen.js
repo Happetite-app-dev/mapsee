@@ -452,6 +452,7 @@ const EditScreen = ({ navigation, route }) => {
           />
         </View>
         {IsRecordOwner && !isEditable && (
+
           <View style={styles.twoRightButtons}>
             <View style={{ flexDirection: "row" }}>
               <TouchableOpacity
@@ -461,7 +462,9 @@ const EditScreen = ({ navigation, route }) => {
                 <EditFolder />
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => modalHandler(true)}
+                onPress={() =>
+                  modalHandler(true)
+                }
                 style={styles.secondButton}
               >
                 <DeleteFolder />
@@ -634,6 +637,7 @@ const EditScreen = ({ navigation, route }) => {
         askValue="정말 삭제하시겠습니까?"
       />
     </View>
+
   );
 };
 

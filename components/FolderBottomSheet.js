@@ -3,10 +3,8 @@ import React, { useEffect, useRef, useState, useContext } from "react";
 import { Animated, Text, View, TouchableOpacity, Button } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
-import ListEcllipse from "../assets/icons/ecllipse102.svg";
 import AppContext from "../components/AppContext";
 import AddFolderBottomSheet from "./AddFolderBottomSheet";
-import BottomButton from "./BottomButton";
 const toggleAnimation = ({ show, showAnimation, setAnimationValue }) => {
   const val = show ? 0 : -1000;
   Animated.timing(showAnimation, {
@@ -59,7 +57,7 @@ const FolderBottomSheet = ({
     <Animated.View
       style={{
         width: "100%",
-        backgroundColor: "white",
+        backgroundColor: "#fff",
         borderTopLeftRadius: 30,
         borderTopRightRadius: 30,
         padding: 0,
@@ -67,13 +65,16 @@ const FolderBottomSheet = ({
         zIndex: 3,
         alignItems: "center",
         justifyContent: "center",
-        height: 728,
+        height: 630,
+        shadowOffset: {
+          width: 0,
+          height: 12,
+        },
         alignSelf: "center",
+        shadowOpacity: 0.58,
+        shadowRadius: 16.0,
         bottom: showAnimation,
         elevation: 24,
-        borderWidth: 1,
-        borderColor: "#DDDFE9",
-        paddingBottom: 40,
       }}
     >
       {isSelectingFolder ? (
@@ -97,31 +98,53 @@ const FolderBottomSheet = ({
                       }}
                       style={{
                         width: 350,
-                        alignItems: "center",
-                        flexDirection: "row",
+                        borderWidth: 1,
+                        borderRadius: 8,
                       }}
                     >
-                      <ListEcllipse style={{ marginRight: 16 }} />
                       <View
                         style={{
+                          alignItems: "center",
                           justifyContent: "center",
                           height: 40,
+                          marginBottom: 0,
+                          top: 0,
                         }}
                       >
-                        <Text style={{ fontSize: 16 }}>{folderName}</Text>
+                        <Text style={{ fontSize: 16, fontWeight: "bold" }}>
+                          {folderName}
+                        </Text>
                       </View>
                     </TouchableOpacity>
                   </View>
                 );
             })}
           </ScrollView>
-          <BottomButton
-            onPressFunction={() => {
+          <TouchableOpacity
+            onPress={() => {
               setIsSelectingFolder(false);
-              console.log("onpress");
             }}
-            text="새 폴더 추가"
-          />
+            style={{
+              bottom: 40,
+              width: 350,
+              borderColor: "black",
+              borderWidth: 1,
+              borderRadius: 8,
+              alignSelf: "center",
+            }}
+          >
+            <View
+              style={{
+                alignItems: "center",
+                justifyContent: "center",
+                height: 40,
+              }}
+            >
+              <Text style={{ fontSize: 16, fontWeight: "bold" }}>
+                새 폴더 추가
+              </Text>
+            </View>
+          </TouchableOpacity>
         </View>
       ) : (
         <AddFolderBottomSheet

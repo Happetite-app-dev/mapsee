@@ -9,8 +9,8 @@ import {
 } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 
+import Marker1 from "../assets/markers/marker#4F92D9.svg";
 import NewMarker from "../assets/markers/newMarker.svg";
-import SimpleMarker from "../assets/markers/simpleMarker.svg";
 
 const now = new Date();
 const currentDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -32,7 +32,19 @@ const RecordMarker = ({ recordData, origin }) => {
           opacity={origin.latitudeDelta < 0.01 || showMarker > 0.5 ? 100 : 0}
           style={{ zIndex: Math.round(dayDiff * 1000) }}
         >
-          {dayDiff <= 3 ? <NewMarker /> : <SimpleMarker color={color} />}
+          {dayDiff <= 3 ? (
+            <NewMarker />
+          ) : (
+            <Image
+              source={targetLocationImage}
+              style={{
+                width: 37,
+                height: 37,
+                resizeMode: "contain",
+                tintColor: color,
+              }}
+            />
+          )}
         </Marker>
       );
     })

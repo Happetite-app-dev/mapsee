@@ -7,17 +7,16 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Button,
 } from "react-native";
 
-import Rate from "../assets/icons/Rate.svg";
-import SNS from "../assets/icons/SNS.svg";
-import Suggest from "../assets/icons/folderEdit.svg";
 import NoticeOn from "../assets/icons/notice_on.svg";
-import SuggestBox from "../assets/icons/suggestBox.svg";
 import AppContext from "../components/AppContext";
 import { PopUpType1 } from "../components/PopUp";
 
+const fontImage = require("../assets/image/font.png");
 const friendListImage = require("../assets/image/friendList.png");
+const themeImage = require("../assets/image/theme.png");
 
 const gotoProfileScreen = ({ navigation }) => {
   navigation.navigate("ProfileScreen");
@@ -25,7 +24,6 @@ const gotoProfileScreen = ({ navigation }) => {
 const gotoFriendListSreen = ({ navigation }) => {
   navigation.navigate("FriendListScreen");
 };
-
 const gotoBeforeLoginScreen = ({ navigation }) => {
   navigation.navigate("BeforeLoginScreen");
 };
@@ -64,7 +62,7 @@ const MypageScreen = ({ navigation }) => {
         <Text style={{ top: 20, left: 20, fontSize: 16, fontWeight: "bold" }}>
           {myName}
         </Text>
-        <Text style={{ top: 30, left: 20, fontSize: 14, color: "#ADB1C5" }}>
+        <Text style={{ top: 30, left: 20, fontSize: 14, fontWeight: "bold" }}>
           {myID}
         </Text>
       </TouchableOpacity>
@@ -77,11 +75,14 @@ const MypageScreen = ({ navigation }) => {
           height: 250,
           justifyContent: "space-between",
           flexDirection: "column",
+          paddingHorizontal: 23,
+          paddingVertical: 13,
         }}
       >
         <View
           style={{
-            flexDirection: "column",
+            alignItems: "center",
+            flexDirection: "row",
             justifyContent: "space-between",
           }}
         >
@@ -89,101 +90,146 @@ const MypageScreen = ({ navigation }) => {
             activeOpacity={0.6}
             onPress={() => gotoFriendListSreen({ navigation })}
             style={{
-              height: 48,
-              width: "100%",
+              height: 104,
+              width: 160,
+              borderWidth: 1,
+              borderColor: "gray",
+              borderRadius: 8,
               flexDirection: "row",
-              paddingTop: 24,
+              paddingTop: 16,
               paddingLeft: 18,
             }}
           >
             <Image source={friendListImage} />
-            <Text style={{ fontSize: 14, left: 14, top: 3 }}>친구 목록</Text>
+            <Text
+              style={{ fontSize: 14, fontWeight: "bold", left: 14, top: 3 }}
+            >
+              친구 목록
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity
-            activeOpacity={0.6}
             style={{
-              height: 48,
-              width: "100%",
+              height: 104,
+              width: 160,
+              borderWidth: 1,
+              borderColor: "gray",
+              borderRadius: 8,
               flexDirection: "row",
-              paddingTop: 24,
+              paddingTop: 16,
               paddingLeft: 18,
             }}
           >
-            <NoticeOn />
-            <Text style={{ fontSize: 14, left: 14, top: 3 }}>알림</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            activeOpacity={0.6}
-            style={{
-              height: 48,
-              width: "100%",
-              flexDirection: "row",
-              paddingTop: 24,
-              paddingLeft: 18,
-            }}
-          >
-            <Rate />
-            <Text style={{ fontSize: 14, left: 14, top: 3 }}>별점주기</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            activeOpacity={0.6}
-            style={{
-              height: 48,
-              width: "100%",
-              flexDirection: "row",
-              paddingTop: 24,
-              paddingLeft: 18,
-            }}
-          >
-            <SNS />
-            <Text style={{ fontSize: 14, left: 14, top: 3 }}>인스타그램</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            activeOpacity={0.6}
-            style={{
-              height: 48,
-              width: "100%",
-              flexDirection: "row",
-              paddingTop: 24,
-              paddingLeft: 18,
-            }}
-          >
-            <Text style={{ fontSize: 14, top: 3 }}>로그아웃</Text>
+            <NoticeOn width={24} height={24} />
+            <Text
+              style={{ fontSize: 14, fontWeight: "bold", left: 14, top: 3 }}
+            >
+              알림
+            </Text>
           </TouchableOpacity>
         </View>
-        <Text
+        <View
           style={{
-            fontSize: 12,
-            color: "#ADB1C5",
-            width: 344,
-            left: 23,
-            top: 24,
-            textAlign: "center",
+            alignItems: "center",
+            flexDirection: "row",
+            justifyContent: "space-between",
           }}
         >
-          버전 00.00.01
-        </Text>
+          <TouchableOpacity
+            style={{
+              height: 104,
+              width: 160,
+              borderWidth: 1,
+              borderColor: "gray",
+              borderRadius: 8,
+              flexDirection: "row",
+              paddingTop: 16,
+              paddingLeft: 18,
+            }}
+          >
+            <Image source={themeImage} />
+            <Text
+              style={{ fontSize: 14, fontWeight: "bold", left: 14, top: 3 }}
+            >
+              테마
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              height: 104,
+              width: 160,
+              borderWidth: 1,
+              borderColor: "gray",
+              borderRadius: 8,
+              flexDirection: "row",
+              paddingTop: 16,
+              paddingLeft: 18,
+            }}
+          >
+            <Image source={fontImage} />
+            <Text
+              style={{ fontSize: 14, fontWeight: "bold", left: 14, top: 3 }}
+            >
+              폰트
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
+
       <TouchableOpacity
         style={{
-          height: 48,
+          position: "absolute",
           width: "100%",
-          alignItems: "center",
-          flexDirection: "row",
-          left: 23,
-          top: 600,
+          height: 35,
+          top: 435,
+          justifyContent: "center",
+          marginTop: 10,
         }}
-        onPress={() => navigation.navigate("SuggestScreen")}
       >
-        <SuggestBox style={{ position: "absolute" }} />
-        <Suggest style={{ position: "relative", left: 16 }} />
-        <Text style={{ left: 37, color: "#5ED3CC", fontSize: 14 }}>
-          더 나은 맵시를 위해 의견을 주세요!
+        <Text style={{ left: 20, fontSize: 14, fontWeight: "400" }}>
+          앱정보
         </Text>
       </TouchableOpacity>
-
+      <TouchableOpacity
+        style={{
+          position: "absolute",
+          width: "100%",
+          height: 35,
+          top: 485,
+          justifyContent: "center",
+        }}
+      >
+        <Text style={{ left: 20, fontSize: 14, fontWeight: "400" }}>
+          맵시 응원하기
+        </Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={{
+          position: "absolute",
+          width: "100%",
+          height: 35,
+          top: 525,
+          justifyContent: "center",
+        }}
+        onPress={() => gotoSuggestScreen({ navigation })}
+      >
+        <Text style={{ left: 20, fontSize: 14, fontWeight: "400" }}>
+          의견 보내기
+        </Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => modalHandler(true)}
+        style={{
+          position: "absolute",
+          width: "100%",
+          height: 35,
+          top: 565,
+          justifyContent: "center",
+        }}
+      >
+        <Text style={{ left: 20, fontSize: 14, fontWeight: "400" }}>
+          로그아웃
+        </Text>
+      </TouchableOpacity>
       <PopUpType1
         modalVisible={modalVisible}
         modalHandler={modalHandler}
@@ -199,6 +245,8 @@ export default MypageScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
     backgroundColor: "white",
   },
 });
