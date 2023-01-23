@@ -36,6 +36,9 @@ const MypageScreen = ({ navigation }) => {
   const myID = myContext.myID;
   const myName = myContext.myLastName + myContext.myFirstName;
   const [modalVisible, setModalVisible] = useState(false);
+  const modalHandler = (isVisible) => {
+    setModalVisible(isVisible);
+  };
   return (
     <SafeAreaView style={styles.container}>
       <View
@@ -214,7 +217,7 @@ const MypageScreen = ({ navigation }) => {
         </Text>
       </TouchableOpacity>
       <TouchableOpacity
-        onPress={() => setModalVisible(true)}
+        onPress={() => modalHandler(true)}
         style={{
           position: "absolute",
           width: "100%",
@@ -229,10 +232,9 @@ const MypageScreen = ({ navigation }) => {
       </TouchableOpacity>
       <PopUpType1
         modalVisible={modalVisible}
-        modalHandler={setModalVisible}
+        modalHandler={modalHandler}
         action={() => gotoBeforeLoginScreen({ navigation })}
-        askValue="정말 로그아웃을 하시겠어요?"
-        actionValue="로그아웃"
+        askValue="정말 로그아웃을 하시겠습니까?"
       />
     </SafeAreaView>
   );
