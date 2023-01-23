@@ -146,7 +146,6 @@ const MypageScreen = ({ navigation }) => {
               paddingTop: 24,
               paddingLeft: 18,
             }}
-            onPress={() => modalHandler(true)}
           >
             <Text style={{ fontSize: 14, top: 3 }}>로그아웃</Text>
           </TouchableOpacity>
@@ -165,7 +164,6 @@ const MypageScreen = ({ navigation }) => {
         </Text>
       </View>
       <TouchableOpacity
-        onPress={() => setModalVisible(true)}
         style={{
           height: 48,
           width: "100%",
