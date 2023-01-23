@@ -38,21 +38,22 @@ const MypageScreen = ({ navigation }) => {
   const myName = myContext.myLastName + myContext.myFirstName;
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View
-        style={{
-          position: "absolute",
-          width: "100%",
-          height: 60,
-          top: 45,
-          paddingTop: 20,
-        }}
-      >
-        <Text style={{ left: 20, fontSize: 16, fontWeight: "bold" }}>
-          마이페이지
-        </Text>
+    <View style={styles.container}>
+      <View style={{ width: "100%", height: 88 }}>
+        <View
+          style={{
+            position: "absolute",
+            width: "100%",
+            height: 60,
+            left: "5.88%",
+            top: "54.55%",
+            right: "75.7%",
+            bottom: "18.18%",
+          }}
+        >
+          <Text style={{ fontSize: 16, fontWeight: "bold" }}>마이페이지</Text>
+        </View>
       </View>
-
       <TouchableOpacity
         onPress={() => gotoProfileScreen({ navigation })}
         style={{ position: "absolute", width: "100%", height: 80, top: 105 }}
@@ -179,7 +180,7 @@ const MypageScreen = ({ navigation }) => {
           더 나은 맵시를 위해 의견을 주세요!
         </Text>
       </TouchableOpacity>
-    </SafeAreaView>
+    </View>
   );
 };
 
