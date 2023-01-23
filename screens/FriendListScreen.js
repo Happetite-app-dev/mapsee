@@ -22,11 +22,31 @@ import {
 
 import AppContext from "../components/AppContext";
 import GoBackHeader from "../components/GoBackHeader";
-import { PopUpType1 } from "../components/PopUp";
 import AddFriendModal from "./AddFriendModal";
 
 const db = getDatabase();
 
+const gotoMypageScreen = ({ navigation }) => {
+  navigation.pop();
+};
+
+const deleteFriendPopUp = (myUID, friendUID) => {
+  return Alert.alert(
+    "정말 차단하시겠습니까?",
+    "",
+    [
+      { text: "취소" },
+      {
+        text: "삭제",
+        onPress: () => deleteFriend(myUID, friendUID),
+        style: "default",
+      },
+    ],
+    {
+      cancelable: false,
+    }
+  );
+};
 const deleteFriend = async (myUID, friendUID) => {
   const reference1 = ref(db, "/users/" + myUID + "/friendUIDs/" + friendUID);
   await remove(reference1).then(() => {
@@ -35,13 +55,7 @@ const deleteFriend = async (myUID, friendUID) => {
   });
 };
 
-const IndividualFriend = ({
-  userID,
-  id,
-  name,
-  setDelFriendUID,
-  setDelModalVisible,
-}) => {
+const IndividualFriend = ({ myUID, userID, id, name }) => {
   return (
     <View
       style={{
@@ -75,8 +89,7 @@ const IndividualFriend = ({
       <View style={{ flex: 0.5, justifyContent: "center" }}>
         <TouchableOpacity
           onPress={() => {
-            setDelFriendUID(userID);
-            setDelModalVisible(true);
+            deleteFriendPopUp(myUID, userID);
           }}
           style={{
             position: "absolute",
@@ -95,14 +108,16 @@ const IndividualFriend = ({
     </View>
   );
 };
+
 const FriendListScreen = ({ navigation }) => {
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
 
   const [friendIDNameList, setFriendIDNameList] = useState([]);
-  const [addModalVisible, setAddModalVisible] = useState(false);
-  const [delModalVisible, setDelModalVisible] = useState(false);
-  const [delFriendUID, setDelFriendUID] = useState(undefined);
+  const [modalVisible, setModalVisible] = useState(false);
+  const modalHandler = (isVisible) => {
+    setModalVisible(isVisible);
+  };
   const isFocused = useIsFocused();
   useEffect(() => {
     if (isFocused) {
@@ -142,11 +157,10 @@ const FriendListScreen = ({ navigation }) => {
   }, []);
   const renderFriendList = ({ item }) => (
     <IndividualFriend
+      myUID={myUID}
       userID={item.userID}
       id={item.id}
       name={item.name}
-      setDelFriendUID={setDelFriendUID}
-      setDelModalVisible={setDelModalVisible}
     />
   );
   return (
@@ -155,16 +169,11 @@ const FriendListScreen = ({ navigation }) => {
         navigation={navigation}
         text="친구목록"
         rightButton="addFriend"
-        rightButtonFunction={() => setAddModalVisible(true)}
+        rightButtonFunction={() => modalHandler(true)}
       />
 
       <View
-        style={{
-          position: "absolute",
-          width: "100%",
-          height: 740,
-          top: 105,
-        }}
+        style={{ position: "absolute", width: "100%", height: 740, top: 105 }}
       >
         <FlatList
           data={friendIDNameList}
@@ -175,20 +184,8 @@ const FriendListScreen = ({ navigation }) => {
             flex: 1,
           }}
         />
-        <PopUpType1
-          modalVisible={delModalVisible}
-          modalHandler={setDelModalVisible}
-          action={() => {
-            deleteFriend(myUID, delFriendUID);
-          }}
-          askValue="정말 차단하시겠어요?"
-          actionValue="차단"
-        />
-        <AddFriendModal
-          modalVisible={addModalVisible}
-          modalHandler={setAddModalVisible}
-        />
       </View>
+      <AddFriendModal modalVisible={modalVisible} modalHandler={modalHandler} />
     </View>
   );
 };

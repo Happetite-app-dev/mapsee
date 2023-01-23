@@ -42,7 +42,7 @@ import AppContext from "../components/AppContext";
 import DatePicker from "../components/DatePicker";
 import FolderBottomSheet from "../components/FolderBottomSheet";
 import ImgPicker from "../components/ImgPicker";
-import { PopUpType1, PopUpType2 } from "../components/PopUp";
+import { PopUpType1 } from "../components/PopUp";
 import { storage, auth } from "../firebase";
 import SendPushNotification from "../modules/SendPushNotification";
 
@@ -407,8 +407,10 @@ const EditScreen = ({ navigation, route }) => {
   );
 
   const [text_, setText_] = useState(text || "");
-  const [removeModalVisible, setRemoveModalVisible] = useState(false);
-  const [goBackModalVisible, setGoBackModalVisible] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const modalHandler = (isVisible) => {
+    setModalVisible(isVisible);
+  };
   return (
     <View
       style={{
@@ -431,7 +433,7 @@ const EditScreen = ({ navigation, route }) => {
       >
         <View
           onTouchEndCapture={() => {
-            setGoBackModalVisible(true);
+            navigation.goBack();
           }}
           style={styles.goBack}
         >
@@ -459,7 +461,7 @@ const EditScreen = ({ navigation, route }) => {
                 <EditFolder />
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => setRemoveModalVisible(true)}
+                onPress={() => modalHandler(true)}
                 style={styles.secondButton}
               >
                 <DeleteFolder />
@@ -624,46 +626,12 @@ const EditScreen = ({ navigation, route }) => {
         setFolderID={(f) => setFolderID_(f)}
       />
       <PopUpType1
-        modalVisible={removeModalVisible}
-        modalHandler={setRemoveModalVisible}
+        modalVisible={modalVisible}
+        modalHandler={modalHandler}
         action={() =>
           removeRecord({ navigation, recordID, folderID_, placeID })
         }
-        askValue="정말 삭제하시겠어요?"
-        actionValue="삭제"
-      />
-      <PopUpType2
-        modalVisible={goBackModalVisible}
-        modalHandler={setGoBackModalVisible}
-        action1={() => {
-          navigation.goBack();
-        }}
-        action2={() => {
-          storeRecord({
-            navigation,
-            myUID,
-            myID,
-            myFirstName,
-            myLastName,
-            title_,
-            place,
-            placeID,
-            address,
-            lctn,
-            date_,
-            folderID_,
-            folderName_,
-            selectedPhotos,
-            text_,
-            writeDate,
-            recordID,
-            originalfolderID,
-            IsNewRecord,
-          });
-        }}
-        askValue="변경 사항을 저장하시겠어요?"
-        actionValue1="저장 안함"
-        actionValue2="저장"
+        askValue="정말 삭제하시겠습니까?"
       />
     </View>
   );
