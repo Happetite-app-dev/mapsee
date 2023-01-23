@@ -15,7 +15,6 @@ import Suggest from "../assets/icons/folderEdit.svg";
 import NoticeOn from "../assets/icons/notice_on.svg";
 import SuggestBox from "../assets/icons/suggestBox.svg";
 import AppContext from "../components/AppContext";
-import { PopUpType1 } from "../components/PopUp";
 
 const friendListImage = require("../assets/image/friendList.png");
 
@@ -37,23 +36,24 @@ const MypageScreen = ({ navigation }) => {
   const myContext = useContext(AppContext);
   const myID = myContext.myID;
   const myName = myContext.myLastName + myContext.myFirstName;
-  const [modalVisible, setModalVisible] = useState(false);
-  return (
-    <SafeAreaView style={styles.container}>
-      <View
-        style={{
-          position: "absolute",
-          width: "100%",
-          height: 60,
-          top: 45,
-          paddingTop: 20,
-        }}
-      >
-        <Text style={{ left: 20, fontSize: 16, fontWeight: "bold" }}>
-          마이페이지
-        </Text>
-      </View>
 
+  return (
+    <View style={styles.container}>
+      <View style={{ width: "100%", height: 88 }}>
+        <View
+          style={{
+            position: "absolute",
+            width: "100%",
+            height: 60,
+            left: "5.88%",
+            top: "54.55%",
+            right: "75.7%",
+            bottom: "18.18%",
+          }}
+        >
+          <Text style={{ fontSize: 16, fontWeight: "bold" }}>마이페이지</Text>
+        </View>
+      </View>
       <TouchableOpacity
         onPress={() => gotoProfileScreen({ navigation })}
         style={{ position: "absolute", width: "100%", height: 80, top: 105 }}
@@ -164,7 +164,6 @@ const MypageScreen = ({ navigation }) => {
         </Text>
       </View>
       <TouchableOpacity
-        onPress={() => setModalVisible(true)}
         style={{
           height: 48,
           width: "100%",
@@ -181,14 +180,7 @@ const MypageScreen = ({ navigation }) => {
           더 나은 맵시를 위해 의견을 주세요!
         </Text>
       </TouchableOpacity>
-      <PopUpType1
-        modalVisible={modalVisible}
-        modalHandler={setModalVisible}
-        action={() => gotoBeforeLoginScreen({ navigation })}
-        askValue="정말 로그아웃을 하시겠어요?"
-        actionValue="로그아웃"
-      />
-    </SafeAreaView>
+    </View>
   );
 };
 

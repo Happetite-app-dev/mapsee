@@ -27,10 +27,7 @@ import AppContext from "../components/AppContext";
 import { PopUpType4 } from "../components/PopUp";
 import RecordFlatList from "../components/RecordFlatList";
 
-
-const addFolderImage = require("../assets/image/addFolder.png");
 const folderImage = require("../assets/image/folder.png");
-const searchImage = require("../assets/image/search.png");
 const exitFolder = async ({ myUID, folderID, navigation }) => {
   await exitData(myUID, folderID).then(
     () => navigation.navigate("Storage") //realtimeDataBase가 모두 업데이트 된후
