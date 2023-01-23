@@ -47,8 +47,8 @@ const Tabs = ({ navigation }) => {
           right: 0,
           elevation: 0,
           backgroundColor: "#ffffff",
-          borderRadius: 15,
-          height: 90,
+          borderRadius: 16,
+          height: 88,
           opacity: 100,
           zIndex: 1,
         },
@@ -63,14 +63,9 @@ const Tabs = ({ navigation }) => {
               style={{
                 alignItems: "center",
                 justifyContent: "center",
-                top: 10,
               }}
             >
-              {focused ? (
-                <MapOn width={24} height={24} />
-              ) : (
-                <MapOff width={24} height={24} />
-              )}
+              {focused ? <MapOn /> : <MapOff />}
             </View>
           ),
         }}
@@ -84,7 +79,6 @@ const Tabs = ({ navigation }) => {
               style={{
                 alignItems: "center",
                 justifyContent: "center",
-                top: 10,
               }}
             >
               {focused ? (
@@ -105,7 +99,6 @@ const Tabs = ({ navigation }) => {
               style={{
                 alignItems: "center",
                 justifyContent: "center",
-                top: 10,
               }}
             >
               {focused ? (
@@ -126,7 +119,6 @@ const Tabs = ({ navigation }) => {
               style={{
                 alignItems: "center",
                 justifyContent: "center",
-                top: 10,
               }}
             >
               {focused ? (

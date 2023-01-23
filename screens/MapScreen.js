@@ -24,13 +24,10 @@ import Marker1 from "../assets/markers/marker#4F92D9.svg";
 import NewMarker from "../assets/markers/newMarker.svg";
 import TargetMarker from "../assets/markers/selectedMarker.svg";
 import AppContext from "../components/AppContext";
-import PlaceInfoBottomSheet from "../components/PlaceInfoBottomSheet";
 import RecordMarker from "../components/RecordMarker";
 import GeneratePushToken from "../modules/GeneratePushToken";
 
-const currentLocationImage = require("../assets/image/currentLocation.png");
-const findCurrentLocationImage = require("../assets/image/findCurrentLocation.png");
-const targetLocationImage = require("../assets/image/targetLocation.png");
+const myLocationImage = require("../assets/icons/myLocation.png");
 const mapStyle = require("../assets/mapDesign.json");
 
 const SearchView = ({ navigation, origin }) => {
@@ -190,6 +187,7 @@ const MapScreen = ({ navigation }) => {
   }, [getPermissions]);
 
   useEffect(() => {
+    // go to place info bottom sheet
     if (targetShown) {
       navigation.navigate("PlaceInfoBottomSheetScreen", {
         targetName: target.name,
@@ -206,6 +204,11 @@ const MapScreen = ({ navigation }) => {
   }, [isFocused]);
 
   useEffect(() => {
+    // earse Target marker when come back from other screen
+    if (targetShown && isFocused) setTargetShown(false);
+  }, [isFocused]);
+  useEffect(() => {
+    // get record data
     const db = getDatabase();
     onValue(ref(db, "/users/" + myUID + "/folderIDs"), (snapshot) => {
       if (snapshot.val() != null) {
@@ -249,7 +252,6 @@ const MapScreen = ({ navigation }) => {
                                     onValue(
                                       ref(db, "/records/" + recordID + "/lctn"),
                                       (snapshot3) => {
-                                        console.log(snapshot3.val());
                                         setList1((list1) => ({
                                           ...list1,
                                           [recordID]: {
@@ -313,6 +315,7 @@ const MapScreen = ({ navigation }) => {
           }
         }}
         onPoiClick={(data) => {
+          console.log("Poi click");
           targetingFromLocation({
             lctn: data.nativeEvent.coordinate,
             name: data.nativeEvent.name.split("\n")[0],
@@ -336,6 +339,30 @@ const MapScreen = ({ navigation }) => {
         <Marker coordinate={target.lctn} opacity={targetShown ? 100 : 0}>
           <TargetMarker />
         </Marker>
+
+        <View
+          style={{
+            position: "absolute",
+            width: 48,
+            height: 48,
+            borderRadius: 24,
+            zIndex: 1,
+            shadowColor: "black",
+            shadowOffset: {
+              width: 0,
+              height: 5,
+            },
+            shadowOpacity: 0.25,
+            shadowRadius: 3.5,
+            left: 319,
+            bottom: 112,
+          }}
+          onTouchEndCapture={() => {
+            console.log("create note !!");
+          }}
+        >
+          <CreateNote />
+        </View>
         <View
           style={{
             position: "absolute",
@@ -356,16 +383,13 @@ const MapScreen = ({ navigation }) => {
           }}
         >
           <Animated.Image
-            source={findCurrentLocationImage}
+            source={myLocationImage}
             resizeMode="contain"
             style={{
               position: "absolute",
-              width: 30,
-              height: 30,
+              width: 48,
+              height: 48,
               borderRadius: 15,
-              left: 330,
-              top: 608,
-              tintColor: "grey",
               transform: [{ rotate: RotateData }],
             }}
           />

@@ -9,6 +9,9 @@ import {
 } from "react-native";
 import { ScrollView, Switch, TextInput } from "react-native-gesture-handler";
 
+import ArrowRight from "../assets/icons/arrowRight.svg";
+import BottomButton from "./BottomButton";
+
 const BottomSheetTitle = ({ IsNewRecord }) => {
   return (
     <View
@@ -17,7 +20,7 @@ const BottomSheetTitle = ({ IsNewRecord }) => {
       {IsNewRecord ? (
         <Text style={{ fontSize: 16, fontWeight: "700" }}>폴더 추가</Text>
       ) : (
-        <Text style={{ fontSize: 16, fontWeight: "700" }}>폴더 수정</Text>
+        <Text style={{ fontSize: 16, fontWeight: "700" }}>폴더 관리</Text>
       )}
     </View>
   );
@@ -330,33 +333,13 @@ const BottomSheetColor = ({ newFolderColor, setNewFolderColor }) => {
 
 const BottomSheetSave = ({ onPressFunction, IsNewRecord }) => {
   return (
-    <TouchableOpacity
-      onPress={onPressFunction}
-      style={{
-        position: "absolute",
-        width: 350,
-        height: 48,
-        borderColor: "black",
-        borderWidth: 1,
-        borderRadius: 8,
-        alignSelf: "center",
-        marginTop: 500,
+    <BottomButton
+      onPressFunction={() => {
+        onPressFunction();
+        console.log("default bottom button");
       }}
-    >
-      <View
-        style={{
-          alignItems: "center",
-          justifyContent: "center",
-          height: 40,
-        }}
-      >
-        {IsNewRecord ? (
-          <Text style={{ fontSize: 16, fontWeight: "bold" }}>추가</Text>
-        ) : (
-          <Text style={{ fontSize: 16, fontWeight: "bold" }}>수정</Text>
-        )}
-      </View>
-    </TouchableOpacity>
+      text={IsNewRecord ? "추가" : "수정"}
+    />
   );
 };
 
@@ -388,27 +371,25 @@ const BottomSheetInvite = ({
         left: 23,
         marginBottom: 24,
         flexDirection: "row",
+        alignItems: "center",
       }}
     >
       <Text style={{ fontSize: 14, fontWeight: "400" }}>친구초대</Text>
-      <View>
-        <TouchableOpacity
-          onPress={() => {
-            gotoInviteFriendScreen({
-              stackNavigation,
-              newFolderUserIDs,
-              onChangeNewFolderUserIDs,
-              folderUserIDs_,
-            });
-          }}
-          style={{
-            marginLeft: 20,
-            backgroundColor: "red",
-          }}
-        >
-          <Text>친구초대 버튼</Text>
-        </TouchableOpacity>
-      </View>
+      <TouchableOpacity
+        onPress={() => {
+          gotoInviteFriendScreen({
+            stackNavigation,
+            newFolderUserIDs,
+            onChangeNewFolderUserIDs,
+            folderUserIDs_,
+          });
+        }}
+        style={{
+          marginLeft: 20,
+        }}
+      >
+        <ArrowRight />
+      </TouchableOpacity>
     </View>
   );
 };
@@ -456,7 +437,7 @@ const DefaultFolderBottomSheet = ({
   folderUserIDs_,
 }) => {
   return (
-    <View>
+    <View style={{ height: 700 }}>
       <BottomSheetTitle IsNewRecord={IsNewRecord} />
       <BottomSheetName
         newFolderName={newFolderName}

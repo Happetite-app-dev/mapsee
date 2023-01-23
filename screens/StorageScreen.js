@@ -22,6 +22,7 @@ import {
 
 import AddFolder from "../assets/icons/addfolder.svg";
 import SearchData from "../assets/icons/searchData.svg";
+import SingleFolder from "../assets/icons/singleFolder.svg";
 import AppContext from "../components/AppContext";
 import { PopUpType4 } from "../components/PopUp";
 import RecordFlatList from "../components/RecordFlatList";
@@ -80,6 +81,7 @@ const gotoMakeFolderBottomSheetScreen = ({
     recordDataSource,
   });
 };
+
 const gotoSingleFolderScreen = ({
   navigation,
   recordDataSource,
@@ -159,7 +161,7 @@ const IndividualFolder = ({
       activeOpacity={0.2}
     >
       <View style={{ marginLeft: 10, marginRight: 10 }}>
-        <Image source={folderImage} style={{ tintColor: folderColor }} />
+        <SingleFolder color={folderColor} />
         {/* Image source path changes depending on fileColor */}
         {/* <Image source={} style={{width: 50, height:50}}/> */}
         <Text style={{ alignSelf: "center", top: 8 }}>{folderName}</Text>
@@ -284,7 +286,7 @@ const StorageScreen = ({ navigation, route }) => {
     />
   );
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View
         style={{
           flexDirection: "row",
@@ -360,7 +362,7 @@ const StorageScreen = ({ navigation, route }) => {
         actionValue2="폴더 편집"
         actionValue3="나가기"
       />
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -370,7 +372,7 @@ const styles = StyleSheet.create({
   container: {
     width: "100%",
     height: "89.5%",
-    marginTop: 32,
+    marginTop: 0,
     backgroundColor: "white",
   },
   item: {

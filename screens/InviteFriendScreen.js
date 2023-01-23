@@ -23,8 +23,6 @@ import {
 import AppContext from "../components/AppContext";
 import GoBackHeader from "../components/GoBackHeader";
 
-const goBackImage = require("../assets/image/goBack.png");
-
 const db = getDatabase();
 
 const gotoMakeFolderBottomSheetScreen = ({ navigation }) => {
