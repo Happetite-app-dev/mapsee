@@ -21,13 +21,6 @@ import AppContext from "../components/AppContext";
 import GoBackHeader from "../components/GoBackHeader";
 import RecordFlatList from "../components/RecordFlatList";
 
-const editImage = require("../assets/image/edit.png");
-const folder2Image = require("../assets/image/folder2.png");
-const goBackImage = require("../assets/image/goBack.png");
-const trashcanImage = require("../assets/image/trashcan.png");
-const gotoStorageScreen = (navigation) => {
-  navigation.pop();
-};
 const gotoMakeFolderBottomSheetScreen = ({
   navigation,
   folderID,

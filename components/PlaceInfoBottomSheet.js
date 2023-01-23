@@ -16,18 +16,47 @@ import {
   Image,
 } from "react-native";
 
+import CreateNote from "../assets/icons/createNote.svg";
 import AppContext from "../components/AppContext";
 import RecordFlatList from "../components/RecordFlatList";
+import GoBackHeader from "./GoBackHeader";
 
-const CreateNoteImage = require("../assets/image/CreateNote.png");
+const toggleAnimation1 = (showAnimation, setAnimationValue) => {
+  //bottomsheet가 -650일 때  안 보이게 하기
+  const val = -1000;
+  Animated.timing(showAnimation, {
+    useNativeDriver: false,
+    toValue: val,
+    duration: 350,
+  }).start();
+  setAnimationValue(val);
+};
+const toggleAnimation2 = (showAnimation, setAnimationValue) => {
+  //bottomsheet가 -650일 때 터치해서 전체 화면으로 올리기
+  const val2 = 0;
+  Animated.timing(showAnimation, {
+    useNativeDriver: false,
+    toValue: val2,
+    duration: 350,
+  }).start();
+  setAnimationValue(val2);
+};
+const toggleAnimation3 = (showAnimation, setAnimationValue) => {
+  //bottomsheet가 -1000일 때 보이게 하기, bottomsheet가 0일 때 뒤로 가기 버튼 눌러서 보이게만 하기
+  const val3 = -692;
+  Animated.timing(showAnimation, {
+    useNativeDriver: false,
+    toValue: val3,
+    duration: 350,
+  }).start();
+  setAnimationValue(val3);
+};
+
 const bottomSheetImage = require("../assets/image/bottomSheetScroll.png");
-const closeImage = require("../assets/image/close.png");
-const closeImage1 = require("../assets/image/close_1.png");
-const goBackImage = require("../assets/image/goBack.png");
 
 const BottomSheetScreen = ({
-  onDisplay,
-  onCancel,
+  setAnimationValue,
+  showAnimation,
   animationVal,
   targetName,
   targetAddress,
@@ -116,7 +145,9 @@ const BottomSheetScreen = ({
             width: "75%",
             height: "100%",
           }}
-          onTouchEndCapture={() => onDisplay()}
+          onTouchEndCapture={() =>
+            toggleAnimation2(showAnimation, setAnimationValue)
+          }
         >
           <Image
             source={bottomSheetImage}
@@ -163,7 +194,9 @@ const BottomSheetScreen = ({
             width: "25%",
             height: "8%",
           }}
-          onTouchEndCapture={() => onDisplay()}
+          onTouchEndCapture={() =>
+            toggleAnimation2(showAnimation, setAnimationValue)
+          }
         />
         <View
           style={{
@@ -185,11 +218,19 @@ const BottomSheetScreen = ({
               borderRadius: 24,
               zIndex: 1,
               bottom: 23,
+              shadowColor: "black",
+              shadowOffset: {
+                width: 0,
+                height: 5,
+              },
+              shadowOpacity: 0.25,
+              shadowRadius: 3.5,
+              elevation: 5, //only for ios
             }}
             underlayColor="white"
             onPress={gotoEditScreen}
           >
-            <Image source={CreateNoteImage} resizeMode="contain" />
+            <CreateNote />
           </TouchableHighlight>
         </View>
       </View>
@@ -206,32 +247,14 @@ const BottomSheetScreen = ({
           height: "100%",
         }}
       >
-        <View
-          style={styles.buttons}
-          onTouchEndCapture={() => {
-            console.log("back");
-            onCancel();
-          }}
-        >
-          <View style={styles.goBack}>
-            <Image source={goBackImage} style={styles.goBackImage} />
-          </View>
-          <View style={styles.title}>
-            <Text style={styles.titleText}>{targetName}</Text>
-          </View>
-          <View
-            onTouchEndCapture={() => {
-              console.log("close");
-              navigation.navigate("Map");
-            }}
-            style={styles.goHome}
-          >
-            <View style={{ position: "relative" }}>
-              <Image style={styles.goHomeImage} source={closeImage} />
-              <Image style={styles.goHomeImage} source={closeImage1} />
-            </View>
-          </View>
-        </View>
+        <GoBackHeader
+          text={targetName}
+          rightButton="goHome"
+          navigation={navigation}
+          goBackFunction={() =>
+            toggleAnimation3(showAnimation, setAnimationValue)
+          }
+        />
         <View
           style={{
             position: "absolute",
@@ -260,11 +283,19 @@ const BottomSheetScreen = ({
             height: 48,
             borderRadius: 24,
             zIndex: 1,
+
+            shadowColor: "black",
+            shadowOffset: {
+              width: 0,
+              height: 5,
+            },
+            shadowOpacity: 0.25,
+            shadowRadius: 3.5,
           }}
           underlayColor="blue"
           onPress={gotoEditScreen}
         >
-          <Image source={CreateNoteImage} resizeMode="contain" />
+          <CreateNote />
         </TouchableHighlight>
       </View>
     );
@@ -272,9 +303,8 @@ const BottomSheetScreen = ({
 };
 
 const BottomSheet = ({
-  onRemove,
-  onDisplay,
-  onCancel,
+  showAnimation,
+  setAnimationValue,
   animation,
   animationVal,
   targetName,
@@ -296,7 +326,7 @@ const BottomSheet = ({
           height: 692,
         }}
         onTouchEndCapture={() => {
-          onRemove();
+          toggleAnimation1(showAnimation, setAnimationValue);
           navigation.goBack();
         }}
       />
@@ -319,9 +349,8 @@ const BottomSheet = ({
         }}
       >
         <BottomSheetScreen
-          onRemove={() => onRemove()}
-          onDisplay={() => onDisplay()}
-          onCancel={() => onCancel()}
+          showAnimation={showAnimation}
+          setAnimationValue={setAnimationValue}
           animationVal={animationVal}
           targetName={targetName}
           targetAddress={targetAddress}
@@ -339,50 +368,13 @@ const PlaceInfoBottomSheet = ({ navigation, route }) => {
   const [animationValue, setAnimationValue] = useState(-1000);
   const showAnimation = useRef(new Animated.Value(animationValue)).current;
   useEffect(() => {
-    toggleAnimation3();
+    toggleAnimation3(showAnimation, setAnimationValue);
   }, []);
-  const toggleAnimation1 = () => {
-    //bottomsheet가 -650일 때  안 보이게 하기
-    const val = -1000;
-    Animated.timing(showAnimation, {
-      useNativeDriver: false,
-      toValue: val,
-      duration: 350,
-    }).start();
-    setAnimationValue(val);
-  };
-  const toggleAnimation2 = () => {
-    //bottomsheet가 -650일 때 터치해서 전체 화면으로 올리기
-    const val2 = 0;
-    Animated.timing(showAnimation, {
-      useNativeDriver: false,
-      toValue: val2,
-      duration: 350,
-    }).start();
-    setAnimationValue(val2);
-  };
-  const toggleAnimation3 = () => {
-    //bottomsheet가 -1000일 때 보이게 하기, bottomsheet가 0일 때 뒤로 가기 버튼 눌러서 보이게만 하기
-    const val3 = -692;
-    Animated.timing(showAnimation, {
-      useNativeDriver: false,
-      toValue: val3,
-      duration: 350,
-    }).start();
-    setAnimationValue(val3);
-  };
   return (
     <View>
       <BottomSheet
-        onRemove={() => {
-          toggleAnimation1();
-        }}
-        onDisplay={() => {
-          toggleAnimation2();
-        }}
-        onCancel={() => {
-          toggleAnimation3();
-        }}
+        showAnimation={showAnimation}
+        setAnimationValue={setAnimationValue}
         animation={showAnimation}
         animationVal={animationValue}
         targetName={targetName}

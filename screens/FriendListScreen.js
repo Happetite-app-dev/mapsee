@@ -24,9 +24,6 @@ import AppContext from "../components/AppContext";
 import GoBackHeader from "../components/GoBackHeader";
 import AddFriendModal from "./AddFriendModal";
 
-const addFriendImage = require("../assets/image/addFriend.png");
-const goBackImage = require("../assets/image/goBack.png");
-
 const db = getDatabase();
 
 const gotoMypageScreen = ({ navigation }) => {
@@ -91,7 +88,9 @@ const IndividualFriend = ({ myUID, userID, id, name }) => {
       </View>
       <View style={{ flex: 0.5, justifyContent: "center" }}>
         <TouchableOpacity
-          onPress={() => deleteFriendPopUp(myUID, userID)}
+          onPress={() => {
+            deleteFriendPopUp(myUID, userID);
+          }}
           style={{
             position: "absolute",
             right: 0,
