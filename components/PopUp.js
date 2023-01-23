@@ -6,7 +6,6 @@ export const PopUpType1 = ({
   modalHandler,
   action,
   askValue,
-  actionValue,
 }) => {
   return (
     <View style={styles.centeredView}>
@@ -45,153 +44,7 @@ export const PopUpType1 = ({
                   action();
                 }}
               >
-                <Text style={styles.modalText}>{actionValue} </Text>
-              </Pressable>
-            </View>
-          </View>
-        </View>
-      </Modal>
-    </View>
-  );
-};
-
-export const PopUpType2 = ({
-  modalVisible,
-  modalHandler,
-  action1,
-  action2,
-  askValue,
-  actionValue1,
-  actionValue2,
-}) => {
-  return (
-    <View style={styles.centeredView}>
-      <Modal
-        animationType="none"
-        transparent
-        visible={modalVisible}
-        onRequestClose={() => {
-          modalHandler(!modalVisible);
-        }}
-      >
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <View style={styles.askView}>
-              <Text style={styles.askText}>{askValue}</Text>
-            </View>
-            <View style={styles.buttonView}>
-              <Pressable
-                style={{
-                  marginTop: 8,
-                  ...styles.button,
-                  ...styles.buttonClose,
-                }}
-                onPress={() => modalHandler(!modalVisible)}
-              >
-                <Text style={styles.modalText}>취소</Text>
-              </Pressable>
-              <Pressable
-                style={{
-                  marginTop: 8,
-                  ...styles.button,
-                  ...styles.buttonClose,
-                }}
-                onPress={() => {
-                  modalHandler(!modalVisible);
-                  action1();
-                }}
-              >
-                <Text style={styles.modalText}>{actionValue1} </Text>
-              </Pressable>
-              <Pressable
-                style={{
-                  marginTop: 8,
-                  ...styles.button,
-                  ...styles.buttonClose,
-                }}
-                onPress={() => {
-                  modalHandler(!modalVisible);
-                  action2();
-                }}
-              >
-                <Text style={styles.modalText}>{actionValue2} </Text>
-              </Pressable>
-            </View>
-          </View>
-        </View>
-      </Modal>
-    </View>
-  );
-};
-//PopUpType3는 AddFirendModal로 대체함
-export const PopUpType4 = ({
-  modalVisible,
-  modalHandler,
-  action1,
-  action2,
-  action3,
-  askValue,
-  actionValue1,
-  actionValue2,
-  actionValue3,
-}) => {
-  return (
-    <View
-      style={{ ...styles.centeredView }}
-      onTouchEnd={() => modalHandler(!modalVisible)}
-    >
-      <Modal
-        animationType="none"
-        transparent
-        visible={modalVisible}
-        onRequestClose={() => {
-          modalHandler(!modalVisible);
-        }}
-      >
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <View style={styles.askView}>
-              <Text style={styles.askText}>{askValue}</Text>
-            </View>
-            <View style={styles.buttonView}>
-              <Pressable
-                style={{
-                  marginTop: 8,
-                  ...styles.button,
-                  ...styles.buttonClose,
-                }}
-                onPress={() => {
-                  modalHandler(!modalVisible);
-                  action1();
-                }}
-              >
-                <Text style={styles.modalText}>{actionValue1} </Text>
-              </Pressable>
-              <Pressable
-                style={{
-                  marginTop: 8,
-                  ...styles.button,
-                  ...styles.buttonClose,
-                }}
-                onPress={() => {
-                  modalHandler(!modalVisible);
-                  action2();
-                }}
-              >
-                <Text style={styles.modalText}>{actionValue2} </Text>
-              </Pressable>
-              <Pressable
-                style={{
-                  marginTop: 8,
-                  ...styles.button,
-                  ...styles.buttonClose,
-                }}
-                onPress={() => {
-                  modalHandler(!modalVisible);
-                  action3();
-                }}
-              >
-                <Text style={styles.modalText}>{actionValue3} </Text>
+                <Text style={styles.modalText}>삭제 </Text>
               </Pressable>
             </View>
           </View>
@@ -228,7 +81,7 @@ const styles = StyleSheet.create({
     height: 48,
   },
   button: {
-    width: 104,
+    width: 128,
     height: 24,
   },
   buttonOpen: {
