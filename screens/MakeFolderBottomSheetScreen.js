@@ -35,23 +35,19 @@ const MakeFolderBottomSheetScreen = ({ navigation, route }) => {
         style={{
           width: "100%",
           backgroundColor: "#fff",
-          borderTopLeftRadius: 30,
-          borderTopRightRadius: 30,
+          borderTopLeftRadius: 16,
+          borderTopRightRadius: 16,
           padding: 0,
           position: "absolute",
           zIndex: 3,
           alignItems: "center",
           justifyContent: "center",
-          height: 630,
-          shadowOffset: {
-            width: 0,
-            height: 12,
-          },
+          height: 728,
           alignSelf: "center",
-          shadowOpacity: 0.58,
-          shadowRadius: 16.0,
           bottom: showAnimation,
           elevation: 24,
+          borderWidth: 1,
+          borderColor: "#DDDFE9",
         }}
       >
         <MakeFolderBottomSheet
