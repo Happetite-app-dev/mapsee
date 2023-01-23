@@ -379,7 +379,6 @@ const MapScreen = ({ navigation }) => {
             source={myLocationImage}
             resizeMode="contain"
             style={{
-              position: "absolute",
               width: 48,
               height: 48,
               borderRadius: 15,
