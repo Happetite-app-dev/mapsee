@@ -15,6 +15,7 @@ import Suggest from "../assets/icons/folderEdit.svg";
 import NoticeOn from "../assets/icons/notice_on.svg";
 import SuggestBox from "../assets/icons/suggestBox.svg";
 import AppContext from "../components/AppContext";
+import { PopUpType1 } from "../components/PopUp";
 
 const friendListImage = require("../assets/image/friendList.png");
 
@@ -36,7 +37,7 @@ const MypageScreen = ({ navigation }) => {
   const myContext = useContext(AppContext);
   const myID = myContext.myID;
   const myName = myContext.myLastName + myContext.myFirstName;
-
+  const [modalVisible, setModalVisible] = useState(false);
   return (
     <SafeAreaView style={styles.container}>
       <View
@@ -179,6 +180,13 @@ const MypageScreen = ({ navigation }) => {
           더 나은 맵시를 위해 의견을 주세요!
         </Text>
       </TouchableOpacity>
+      <PopUpType1
+        modalVisible={modalVisible}
+        modalHandler={setModalVisible}
+        action={() => gotoBeforeLoginScreen({ navigation })}
+        askValue="정말 로그아웃을 하시겠어요?"
+        actionValue="로그아웃"
+      />
     </SafeAreaView>
   );
 };

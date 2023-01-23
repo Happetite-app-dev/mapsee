@@ -42,6 +42,7 @@ import AppContext from "../components/AppContext";
 import DatePicker from "../components/DatePicker";
 import FolderBottomSheet from "../components/FolderBottomSheet";
 import ImgPicker from "../components/ImgPicker";
+import { PopUpType1, PopUpType2 } from "../components/PopUp";
 import { storage, auth } from "../firebase";
 import SendPushNotification from "../modules/SendPushNotification";
 
@@ -163,9 +164,6 @@ const saveData = async (
             push(reference, {
               type: "recept_recordAdd_done",
               performerUID: myUID,
-              performerID: myID, //-->수정 필요
-              performerFirstName: myFirstName,
-              performerLastName: myLastName,
               time: timeNow.getTime(),
               //여기서 부턴 "recept_recordAdd_done" type 알림만의 정보
               folderID,
@@ -357,25 +355,6 @@ const removeRecord = async ({ navigation, recordID, folderID_, placeID }) => {
   );
 };
 
-const removeRecordPopUp = ({ navigation, recordID, folderID_, placeID }) => {
-  return Alert.alert(
-    "정말 삭제하시겠습니까?",
-    "",
-    [
-      { text: "취소" },
-      {
-        text: "삭제",
-        onPress: () =>
-          removeRecord({ navigation, recordID, folderID_, placeID }),
-        style: "default",
-      },
-    ],
-    {
-      cancelable: false,
-    }
-  );
-};
-
 const EditScreen = ({ navigation, route }) => {
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
@@ -428,7 +407,8 @@ const EditScreen = ({ navigation, route }) => {
   );
 
   const [text_, setText_] = useState(text || "");
-
+  const [removeModalVisible, setRemoveModalVisible] = useState(false);
+  const [goBackModalVisible, setGoBackModalVisible] = useState(false);
   return (
     <View
       style={{
@@ -451,7 +431,7 @@ const EditScreen = ({ navigation, route }) => {
       >
         <View
           onTouchEndCapture={() => {
-            navigation.goBack();
+            setGoBackModalVisible(true);
           }}
           style={styles.goBack}
         >
@@ -469,7 +449,6 @@ const EditScreen = ({ navigation, route }) => {
             ).toString()}_${timeNow2.getDate().toString()}_기록`}
           />
         </View>
-
         {IsRecordOwner && !isEditable && (
           <View style={styles.twoRightButtons}>
             <View style={{ flexDirection: "row" }}>
@@ -480,14 +459,7 @@ const EditScreen = ({ navigation, route }) => {
                 <EditFolder />
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() =>
-                  removeRecordPopUp({
-                    navigation,
-                    recordID,
-                    folderID_,
-                    placeID,
-                  })
-                }
+                onPress={() => setRemoveModalVisible(true)}
                 style={styles.secondButton}
               >
                 <DeleteFolder />
@@ -650,6 +622,48 @@ const EditScreen = ({ navigation, route }) => {
         }}
         setFolderName={(f) => setFolderName_(f)}
         setFolderID={(f) => setFolderID_(f)}
+      />
+      <PopUpType1
+        modalVisible={removeModalVisible}
+        modalHandler={setRemoveModalVisible}
+        action={() =>
+          removeRecord({ navigation, recordID, folderID_, placeID })
+        }
+        askValue="정말 삭제하시겠어요?"
+        actionValue="삭제"
+      />
+      <PopUpType2
+        modalVisible={goBackModalVisible}
+        modalHandler={setGoBackModalVisible}
+        action1={() => {
+          navigation.goBack();
+        }}
+        action2={() => {
+          storeRecord({
+            navigation,
+            myUID,
+            myID,
+            myFirstName,
+            myLastName,
+            title_,
+            place,
+            placeID,
+            address,
+            lctn,
+            date_,
+            folderID_,
+            folderName_,
+            selectedPhotos,
+            text_,
+            writeDate,
+            recordID,
+            originalfolderID,
+            IsNewRecord,
+          });
+        }}
+        askValue="변경 사항을 저장하시겠어요?"
+        actionValue1="저장 안함"
+        actionValue2="저장"
       />
     </View>
   );

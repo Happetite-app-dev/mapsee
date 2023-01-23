@@ -1,4 +1,6 @@
+import { useEffect, useState } from "react";
 import { Pressable, SafeAreaView, Text, View } from "react-native";
+import { isObject } from "util";
 const DisplayTime = (time) => {
   const timeNow = new Date();
   const timePast = new Date(time);
@@ -22,13 +24,26 @@ const DisplayTime = (time) => {
 };
 //오로지 display만을 위한 함수
 const FriendRequestCard = ({
-  requesterID,
-  requesterFirstName,
-  requesterLastName,
+  requesterObject,
   time,
   acceptRequest,
   denyRequest,
 }) => {
+  const [requesterObj, setRequesterObj] = useState(
+    requesterObject || { id: "", firstName: "", lastName: "" }
+  );
+  useEffect(() => {
+    if (requesterObject != undefined) {
+      setRequesterObj(requesterObject);
+    }
+  }, [requesterObject]);
+  const requesterID = JSON.stringify(requesterObj.id).slice(1, -1);
+  const requesterFirstName = JSON.stringify(requesterObj.firstName).slice(
+    1,
+    -1
+  );
+  const requesterLastName = JSON.stringify(requesterObj.lastName).slice(1, -1);
+
   return (
     <View style={{ flex: 1, alignItems: "center", marginBottom: 40 }}>
       <View
