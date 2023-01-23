@@ -27,6 +27,7 @@ import AppContext from "../components/AppContext";
 import { PopUpType4 } from "../components/PopUp";
 import RecordFlatList from "../components/RecordFlatList";
 
+
 const exitFolder = async ({ myUID, folderID, navigation }) => {
   await exitData(myUID, folderID).then(
     () => navigation.navigate("Storage") //realtimeDataBase가 모두 업데이트 된후
@@ -360,7 +361,8 @@ const StorageScreen = ({ navigation, route }) => {
         actionValue2="폴더 편집"
         actionValue3="나가기"
       />
-    </SafeAreaView>
+    </View>
+
   );
 };
 
