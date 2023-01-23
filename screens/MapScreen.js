@@ -11,13 +11,18 @@ import {
   Button,
   Animated,
   TouchableOpacity,
+  Text,
 } from "react-native";
 import Geocoder from "react-native-geocoding";
 import MapView, { Marker } from "react-native-maps";
 import { Easing } from "react-native-reanimated";
 
+import CreateNote from "../assets/icons/createNote.svg";
+import SearchMain from "../assets/icons/searchMain.svg";
+import SearchBox from "../assets/image/searchBox.svg";
 import Marker1 from "../assets/markers/marker#4F92D9.svg";
 import NewMarker from "../assets/markers/newMarker.svg";
+import TargetMarker from "../assets/markers/selectedMarker.svg";
 import AppContext from "../components/AppContext";
 import PlaceInfoBottomSheet from "../components/PlaceInfoBottomSheet";
 import RecordMarker from "../components/RecordMarker";
@@ -28,10 +33,33 @@ const findCurrentLocationImage = require("../assets/image/findCurrentLocation.pn
 const targetLocationImage = require("../assets/image/targetLocation.png");
 const mapStyle = require("../assets/mapDesign.json");
 
-// date & colors array
-const now = new Date();
-const currentDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-
+const SearchView = ({ navigation, origin }) => {
+  return (
+    <View
+      style={{
+        width: 344,
+        height: 48,
+        flexDirection: "row",
+        left: 23,
+        top: 36,
+        position: "absolute",
+        alignItems: "center",
+      }}
+      onTouchEndCapture={() =>
+        navigation.navigate("MapSearchScreen1", {
+          latitude: origin.latitude,
+          longitude: origin.longitude,
+        })
+      }
+    >
+      <SearchBox style={{ position: "absolute" }} />
+      <SearchMain style={{ position: "relative", left: 12 }} />
+      <Text style={{ left: 20, fontSize: 16, color: "#DDDFE9" }}>
+        열람하고 싶은 장소를 검색하세요
+      </Text>
+    </View>
+  );
+};
 // Tutorial Reload
 const storeData = async (value) => {
   try {
@@ -171,6 +199,12 @@ const MapScreen = ({ navigation }) => {
       });
     }
   }, [targetShown]);
+
+  useEffect(() => {
+    // earse Target marker when come back from other screen
+    if (targetShown && isFocused) setTargetShown(false);
+  }, [isFocused]);
+
   useEffect(() => {
     const db = getDatabase();
     onValue(ref(db, "/users/" + myUID + "/folderIDs"), (snapshot) => {
@@ -257,20 +291,6 @@ const MapScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Button
-        onPress={() =>
-          navigation.navigate("MapSearchScreen1", {
-            latitude: origin.latitude,
-            longitude: origin.longitude,
-          })
-        }
-        title="Search"
-        style={{
-          position: "absolute",
-          bottom: 100,
-          left: 50,
-        }}
-      />
       <MapView
         provider="google"
         ref={mapRef}
@@ -313,59 +333,28 @@ const MapScreen = ({ navigation }) => {
           }
         }}
       >
-        <Marker coordinate={current}>
-          <Image
-            source={currentLocationImage}
-            style={{
-              width: 25,
-              height: 25,
-              resizeMode: "contain",
-              zIndex: 5,
-            }}
-          />
-        </Marker>
         <Marker coordinate={target.lctn} opacity={targetShown ? 100 : 0}>
-          <Image
-            source={targetLocationImage}
-            style={{
-              width: 37,
-              height: 37,
-              resizeMode: "contain",
-              tintColor: "blue",
-              zIndex: 10,
-            }}
-          />
+          <TargetMarker />
         </Marker>
         <View
           style={{
             position: "absolute",
-            width: 40,
-            height: 40,
-            borderRadius: 20,
-            right: 25,
-            bottom: 120,
+            width: 48,
+            height: 48,
+            borderRadius: 24,
+            left: 23,
+            bottom: 112,
             backgroundColor: "white",
           }}
+          onTouchEndCapture={() => {
+            mapRef.current.animateToRegion({
+              latitude: current.latitude,
+              longitude: current.longitude,
+              latitudeDelta: 0.0016,
+              longitudeDelta: 0.0012,
+            });
+          }}
         >
-          <TouchableOpacity
-            style={{
-              position: "absolute",
-              width: 40,
-              height: 40,
-              borderRadius: 20,
-              left: 325,
-              top: 603,
-            }}
-            activeOpacity={1}
-            onPress={() => {
-              mapRef.current.animateToRegion({
-                latitude: current.latitude,
-                longitude: current.longitude,
-                latitudeDelta: 0.0016,
-                longitudeDelta: 0.0012,
-              });
-            }}
-          />
           <Animated.Image
             source={findCurrentLocationImage}
             resizeMode="contain"
@@ -381,8 +370,33 @@ const MapScreen = ({ navigation }) => {
             }}
           />
         </View>
+        <View
+          style={{
+            position: "absolute",
+            width: 48,
+            height: 48,
+            borderRadius: 24,
+            zIndex: 1,
+            shadowColor: "black",
+            shadowOffset: {
+              width: 0,
+              height: 5,
+            },
+            shadowOpacity: 0.25,
+            shadowRadius: 3.5,
+            left: 319,
+            bottom: 112,
+            backgroundColor: "red",
+          }}
+          onTouchEndCapture={() => {
+            console.log("create note !!");
+          }}
+        >
+          <CreateNote />
+        </View>
         <RecordMarker recordData={list1} origin={origin} />
       </MapView>
+      <SearchView navigation={navigation} origin={origin} />
     </SafeAreaView>
   );
 };
