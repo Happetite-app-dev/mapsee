@@ -15,6 +15,7 @@ import Suggest from "../assets/icons/folderEdit.svg";
 import NoticeOn from "../assets/icons/notice_on.svg";
 import SuggestBox from "../assets/icons/suggestBox.svg";
 import AppContext from "../components/AppContext";
+import { PopUpType1 } from "../components/PopUp";
 
 const friendListImage = require("../assets/image/friendList.png");
 
@@ -36,7 +37,10 @@ const MypageScreen = ({ navigation }) => {
   const myContext = useContext(AppContext);
   const myID = myContext.myID;
   const myName = myContext.myLastName + myContext.myFirstName;
-
+  const [modalVisible, setModalVisible] = useState(false);
+  const modalHandler = (isVisible) => {
+    setModalVisible(isVisible);
+  };
   return (
     <View style={styles.container}>
       <View style={{ width: "100%", height: 88 }}>
@@ -146,6 +150,7 @@ const MypageScreen = ({ navigation }) => {
               paddingTop: 24,
               paddingLeft: 18,
             }}
+            onPress={() => modalHandler(true)}
           >
             <Text style={{ fontSize: 14, top: 3 }}>로그아웃</Text>
           </TouchableOpacity>
@@ -180,6 +185,13 @@ const MypageScreen = ({ navigation }) => {
           더 나은 맵시를 위해 의견을 주세요!
         </Text>
       </TouchableOpacity>
+
+      <PopUpType1
+        modalVisible={modalVisible}
+        modalHandler={modalHandler}
+        action={() => gotoBeforeLoginScreen({ navigation })}
+        askValue="정말 로그아웃을 하시겠습니까?"
+      />
     </View>
   );
 };

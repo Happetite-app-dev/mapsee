@@ -1,5 +1,5 @@
 import { getDatabase, onValue, ref } from "@firebase/database";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Pressable,
   SafeAreaView,
@@ -14,6 +14,8 @@ const gotoSingleFolderScreen = ({
   recordDataSource,
   setRecordDataSource,
   folderName,
+  folderColor,
+  folderUserIDs,
 }) => {
   const db = getDatabase();
   onValue(ref(db, "/folders/" + folderID), (snapshot) => {
@@ -23,7 +25,6 @@ const gotoSingleFolderScreen = ({
       myUID in snapshot.child("userIDs").val()
     ) {
       if (snapshot.child("placeRecords").val() != (null || undefined)) {
-        console.log(folderID);
         //폴더는 있지만 빈폴더라서 record가 안에 없을 수 있어!!
         //recordIDList_.push(...Object.keys(snapshot2.child('placeRecords').val()))  //해당 user가 소속된 각 폴더에 들어있는 recordIDList들을 합쳐서 하나로 만들어주기(버림)
         Object.values(snapshot.child("placeRecords").val()).map(
@@ -54,63 +55,89 @@ const gotoSingleFolderScreen = ({
     recordDataSource,
     folderID,
     folderName,
-    folderColor: "red",
-    folderUserIDs: ["KOEewtx6vlbFIgJHaXnjIVJA6993"],
+    folderColor,
+    folderUserIDs,
   });
 };
 const DispatchFolderInviteRequestList = ({
-  approverID,
-  approverFirstName,
-  approverLastName,
-  folderName,
+  approverObject,
+  folderObject,
   folderID,
   navigation,
   myUID,
 }) => {
+  const [approverObj, setApproverObj] = useState(
+    approverObject || { id: "", firstName: "", lastName: "" }
+  );
+  useEffect(() => {
+    if (approverObject != undefined) {
+      setApproverObj(approverObject);
+    }
+  }, [approverObject]);
+  const approverID = JSON.stringify(approverObj.id).slice(1, -1);
+  const approverFirstName = JSON.stringify(approverObj.firstName).slice(1, -1);
+  const approverLastName = JSON.stringify(approverObj.lastName).slice(1, -1);
+  const [folderObj, setFolderObj] = useState(
+    folderObject || { folderName: "", folderColor: "", folderUserIDs: [] }
+  );
+  useEffect(() => {
+    if (folderObject != undefined) {
+      setFolderObj(folderObject);
+    }
+  }, [folderObject]);
+  const folderName = JSON.stringify(folderObj.folderName).slice(1, -1);
+  const folderColor = JSON.stringify(folderObj.folderColor).slice(1, -1);
+  const folderUserIDs = folderObj.folderUserIDs;
   const [recordDataSource, setRecordDataSource] = useState({});
-  return (
-    <TouchableOpacity
-      onPress={() => {
-        gotoSingleFolderScreen({
-          navigation,
-          folderID,
-          myUID,
-          recordDataSource,
-          setRecordDataSource,
-          folderName,
-        });
-      }}
-      style={{ flex: 1, alignItems: "center", marginBottom: 40 }}
-    >
-      <View
-        style={{
-          width: 344,
-          height: 24,
-          borderRadius: 16,
-          flexDirection: "row",
+  if (folderObj == { folderName: "", folderColor: "", folderUserIDs: [] }) {
+    return <></>;
+  } else {
+    return (
+      <TouchableOpacity
+        onPress={() => {
+          gotoSingleFolderScreen({
+            navigation,
+            folderID,
+            myUID,
+            recordDataSource,
+            setRecordDataSource,
+            folderName,
+            folderColor,
+            folderUserIDs,
+          });
         }}
+        style={{ flex: 1, alignItems: "center", marginBottom: 40 }}
       >
-        <Text
+        <View
           style={{
-            left: 16,
-            top: 5,
-            fontWeight: "400",
-            fontSize: 14,
-            lineHeight: 16,
-            letterSpacing: -0.5,
+            width: 344,
+            height: 24,
+            borderRadius: 16,
+            flexDirection: "row",
           }}
         >
-          <Text style={{ fontWeight: "700" }}>
-            {approverLastName}
-            {approverFirstName}(@{approverID})
+          <Text
+            style={{
+              left: 16,
+              top: 5,
+              fontWeight: "400",
+              fontSize: 14,
+              lineHeight: 16,
+              letterSpacing: -0.5,
+            }}
+          >
+            <Text style={{ fontWeight: "700" }}>
+              {approverLastName}
+              {approverFirstName}(@{approverID})
+            </Text>
+            님이
+            <Text style={{ fontWeight: "700" }}> {folderName} </Text>
+            초대를 수락했습니다.
           </Text>
-          님이
-          <Text style={{ fontWeight: "700" }}> {folderName} </Text>
-          초대를 수락했습니다.
-        </Text>
-      </View>
-    </TouchableOpacity>
-  );
+        </View>
+      </TouchableOpacity>
+    );
+  }
 };
 
 export default DispatchFolderInviteRequestList;
