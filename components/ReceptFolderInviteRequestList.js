@@ -1,9 +1,11 @@
 import { getDatabase, onValue, ref } from "@firebase/database";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Text, View, TouchableOpacity } from "react-native";
 const gotoSingleFolderScreen = ({
   navigation,
   folderID,
+  folderColor,
+  folderUserIDs,
   myUID,
   recordDataSource,
   setRecordDataSource,
@@ -47,63 +49,92 @@ const gotoSingleFolderScreen = ({
     recordDataSource,
     folderID,
     folderName,
-    folderColor: "red",
-    folderUserIDs: ["KOEewtx6vlbFIgJHaXnjIVJA6993"],
+    folderColor,
+    folderUserIDs,
   });
 };
 const ReceptFolderInviteRequestList = ({
-  requesterID,
-  requesterFirstName,
-  requesterLastName,
-  folderName,
+  requesterObject,
+  folderObject,
   folderID,
   navigation,
   myUID,
 }) => {
+  const [requesterObj, setRequesterObj] = useState(
+    requesterObject || { id: "", firstName: "", lastName: "" }
+  );
+  useEffect(() => {
+    if (requesterObject != undefined) {
+      setRequesterObj(requesterObject);
+    }
+  }, [requesterObject]);
+  const requesterID = JSON.stringify(requesterObj.id).slice(1, -1);
+  const requesterFirstName = JSON.stringify(requesterObj.firstName).slice(
+    1,
+    -1
+  );
+  const requesterLastName = JSON.stringify(requesterObj.lastName).slice(1, -1);
+  const [folderObj, setFolderObj] = useState(
+    folderObject || { folderName: "", folderColor: "", folderUserIDs: [] }
+  );
+  useEffect(() => {
+    if (folderObject != undefined) {
+      setFolderObj(folderObject);
+    }
+  }, [folderObject]);
+  const folderName = JSON.stringify(folderObj.folderName).slice(1, -1);
+  const folderColor = JSON.stringify(folderObj.folderColor).slice(1, -1);
+  const folderUserIDs = folderObj.folderUserIDs;
   const [recordDataSource, setRecordDataSource] = useState({});
-  return (
-    <TouchableOpacity
-      onPress={() => {
-        gotoSingleFolderScreen({
-          navigation,
-          folderID,
-          myUID,
-          recordDataSource,
-          setRecordDataSource,
-          folderName,
-        });
-      }}
-      style={{ flex: 1, alignItems: "center", marginBottom: 40 }}
-    >
-      <View
-        style={{
-          width: 344,
-          height: 24,
-          borderRadius: 16,
-          flexDirection: "row",
+  if (folderObj == { folderName: "", folderColor: "", folderUserIDs: [] }) {
+    return <></>;
+  } else {
+    return (
+      <TouchableOpacity
+        onPress={() => {
+          gotoSingleFolderScreen({
+            navigation,
+            folderID,
+            folderColor,
+            folderUserIDs,
+            myUID,
+            recordDataSource,
+            setRecordDataSource,
+            folderName,
+          });
         }}
+        style={{ flex: 1, alignItems: "center", marginBottom: 40 }}
       >
-        <Text
+        <View
           style={{
-            left: 16,
-            top: 5,
-            fontWeight: "400",
-            fontSize: 14,
-            lineHeight: 16,
-            letterSpacing: -0.5,
+            width: 344,
+            height: 24,
+            borderRadius: 16,
+            flexDirection: "row",
           }}
         >
-          <Text style={{ fontWeight: "700" }}>
-            {requesterLastName}
-            {requesterFirstName}(@{requesterID})
+          <Text
+            style={{
+              left: 16,
+              top: 5,
+              fontWeight: "400",
+              fontSize: 14,
+              lineHeight: 16,
+              letterSpacing: -0.5,
+            }}
+          >
+            <Text style={{ fontWeight: "700" }}>
+              {requesterLastName}
+              {requesterFirstName}(@{requesterID})
+            </Text>
+            님의
+            <Text style={{ fontWeight: "700" }}> {folderName} </Text>
+            초대를 수락했습니다.
           </Text>
-          님의
-          <Text style={{ fontWeight: "700" }}> {folderName} </Text>
-          초대를 수락했습니다.
-        </Text>
-      </View>
-    </TouchableOpacity>
-  );
+        </View>
+      </TouchableOpacity>
+    );
+  }
 };
 
 export default ReceptFolderInviteRequestList;

@@ -7,7 +7,7 @@ import {
   remove,
   off,
 } from "firebase/database";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   SafeAreaView,
   Text,
@@ -19,6 +19,7 @@ import {
 
 import AppContext from "../components/AppContext";
 import GoBackHeader from "../components/GoBackHeader";
+import { PopUpType1 } from "../components/PopUp";
 import RecordFlatList from "../components/RecordFlatList";
 
 const gotoMakeFolderBottomSheetScreen = ({
@@ -37,23 +38,23 @@ const gotoMakeFolderBottomSheetScreen = ({
     recordDataSource,
   });
 };
-const exitFolderPopUp = ({ myUID, folderID, navigation }) => {
-  return Alert.alert(
-    "정말 삭제하시겠습니까?",
-    "",
-    [
-      { text: "취소" },
-      {
-        text: "삭제",
-        onPress: () => exitFolder({ myUID, folderID, navigation }),
-        style: "default",
-      },
-    ],
-    {
-      cancelable: false,
-    }
-  );
-};
+// const exitFolderPopUp = ({ myUID, folderID, navigation }) => {
+//   return Alert.alert(
+//     "정말 삭제하시겠습니까?",
+//     "",
+//     [
+//       { text: "취소" },
+//       {
+//         text: "삭제",
+//         onPress: () => exitFolder({ myUID, folderID, navigation }),
+//         style: "default",
+//       },
+//     ],
+//     {
+//       cancelable: false,
+//     }
+//   );
+// };
 const exitFolder = async ({ myUID, folderID, navigation }) => {
   await exitData(myUID, folderID).then(
     () => navigation.navigate("Storage") //realtimeDataBase가 모두 업데이트 된후
@@ -98,6 +99,7 @@ const SingleFolderScreen = ({ navigation, route }) => {
 
   const { recordDataSource, folderID, folderName, folderColor, folderUserIDs } =
     route.params;
+  const [modalVisible, setModalVisible] = useState(false);
   return (
     <View style={{ height: "100%", width: "100%", backgroundColor: "white" }}>
       <GoBackHeader
@@ -116,13 +118,18 @@ const SingleFolderScreen = ({ navigation, route }) => {
             recordDataSource,
           })
         }
-        rightButtonFunction2={() =>
-          exitFolderPopUp({ myUID, folderID, navigation })
-        }
+        rightButtonFunction2={() => setModalVisible(true)}
       />
       <RecordFlatList
         recordDataSource={recordDataSource}
         stackNavigation={navigation}
+      />
+      <PopUpType1
+        modalVisible={modalVisible}
+        modalHandler={setModalVisible}
+        action={() => exitFolder({ myUID, folderID, navigation })}
+        askValue="정말 삭제하시겠어요?"
+        actionValue="삭제"
       />
     </View>
   );

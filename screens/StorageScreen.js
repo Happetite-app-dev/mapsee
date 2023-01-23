@@ -1,6 +1,13 @@
 import { useIsFocused } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
-import { getDatabase, ref, onValue, set, push } from "firebase/database";
+import {
+  getDatabase,
+  ref,
+  onValue,
+  set,
+  push,
+  remove,
+} from "firebase/database";
 import { useEffect, useState, useContext } from "react";
 import {
   StyleSheet,
@@ -17,7 +24,66 @@ import AddFolder from "../assets/icons/addfolder.svg";
 import SearchData from "../assets/icons/searchData.svg";
 import SingleFolder from "../assets/icons/singleFolder.svg";
 import AppContext from "../components/AppContext";
+import { PopUpType4 } from "../components/PopUp";
 import RecordFlatList from "../components/RecordFlatList";
+
+
+const addFolderImage = require("../assets/image/addFolder.png");
+const folderImage = require("../assets/image/folder.png");
+const searchImage = require("../assets/image/search.png");
+const exitFolder = async ({ myUID, folderID, navigation }) => {
+  await exitData(myUID, folderID).then(
+    () => navigation.navigate("Storage") //realtimeDataBase가 모두 업데이트 된후
+  );
+};
+const exitData = async (myUID, folderID) => {
+  const db = getDatabase();
+  const reference1 = ref(db, "/users/" + myUID + "/folderIDs/" + folderID);
+  await remove(reference1)
+    .then(() => {
+      const reference2 = ref(db, "/folders/" + folderID + "/userIDs/" + myUID);
+      remove(reference2);
+    })
+    .then(() => {
+      const reference3 = ref(
+        db,
+        "/folders/" + folderID + "/folderName/" + myUID
+      );
+      remove(reference3);
+    })
+    .then(() => {
+      const reference4 = ref(
+        db,
+        "/folders/" + folderID + "/folderColor/" + myUID
+      );
+      remove(reference4);
+    })
+    .then(
+      //지울 필요가 없음
+      onValue(ref(db, "/folders/" + folderID + "/userIDs"), (snapshot) => {
+        if (!snapshot.hasChildren()) {
+          const reference3 = ref(db, "/folders/" + folderID);
+          remove(reference3);
+        }
+      })
+    );
+};
+const gotoMakeFolderBottomSheetScreen = ({
+  navigation,
+  folderID,
+  folderName,
+  folderColor,
+  folderUserIDs,
+  recordDataSource,
+}) => {
+  navigation.navigate("MakeFolderBottomSheetScreen", {
+    folderID,
+    folderName,
+    folderColor,
+    folderUserIDs,
+    recordDataSource,
+  });
+};
 
 const gotoSingleFolderScreen = ({
   navigation,
@@ -35,15 +101,6 @@ const gotoSingleFolderScreen = ({
     folderName,
     folderColor,
     folderUserIDs,
-  });
-};
-const gotoMakeFolderBottomSheetScreen = ({ navigation }) => {
-  navigation.navigate("MakeFolderBottomSheetScreen", {
-    folderID: "",
-    folderName: null,
-    folderColor: null,
-    recordDataSource: {},
-    folderUserIDs: null,
   });
 };
 const filterFunction = ({
@@ -80,6 +137,8 @@ const IndividualFolder = ({
   folderColor,
   folderUserIDs,
   setSelectedFolderIDNameColorUserIDs,
+  setLongPressedFolder,
+  setModalVisible,
 }) => {
   return (
     <TouchableOpacity
@@ -91,6 +150,15 @@ const IndividualFolder = ({
           folderUserIDs,
         });
         //gotoSingleFolderScreen()
+      }}
+      onLongPress={() => {
+        setLongPressedFolder({
+          folderID,
+          folderName,
+          folderColor,
+          folderUserIDs,
+        });
+        setModalVisible(true);
       }}
       style={{ height: 65 }}
       activeOpacity={0.2}
@@ -116,7 +184,13 @@ const StorageScreen = ({ navigation, route }) => {
   ] = useState(undefined);
 
   const [masterDataSource, setMasterDataSource] = useState({}); //shortened record가 쌓여있음 {recordID, title, folderID, placeName, date, text, photos}
-
+  const [modalVisible, setModalVisible] = useState(false);
+  const [longPressedFolder, setLongPressedFolder] = useState({
+    folderID: undefined,
+    folderName: undefined,
+    folderColor: undefined,
+    folderUserIDs: [],
+  });
   //const {folderID, folderName, folderColor, folderUserID, recordDataSource}
   useEffect(() => {
     if (isFocused) {
@@ -210,6 +284,8 @@ const StorageScreen = ({ navigation, route }) => {
       setSelectedFolderIDNameColorUserIDs={(tmp) =>
         setSelectedFolderIDNameColorUserIDs(tmp)
       }
+      setLongPressedFolder={setLongPressedFolder}
+      setModalVisible={setModalVisible}
     />
   );
   return (
@@ -228,7 +304,16 @@ const StorageScreen = ({ navigation, route }) => {
         <View style={styles.twoRightButtons}>
           <TouchableOpacity
             style={styles.firstButton}
-            onPress={() => gotoMakeFolderBottomSheetScreen({ navigation })}
+            onPress={() =>
+              gotoMakeFolderBottomSheetScreen({
+                navigation,
+                folderID: "",
+                folderName: null,
+                folderColor: null,
+                recordDataSource: {},
+                folderUserIDs: null,
+              })
+            }
           >
             <AddFolder />
           </TouchableOpacity>
@@ -251,6 +336,34 @@ const StorageScreen = ({ navigation, route }) => {
       <RecordFlatList
         recordDataSource={masterDataSource}
         stackNavigation={navigation}
+      />
+      <PopUpType4
+        modalVisible={modalVisible}
+        modalHandler={setModalVisible}
+        action1={() => {
+          console.log("Action1");
+        }}
+        action2={() => {
+          gotoMakeFolderBottomSheetScreen({
+            navigation,
+            folderID: longPressedFolder.folderID,
+            folderName: longPressedFolder.folderName,
+            folderColor: longPressedFolder.folderColor,
+            folderUserIDs: longPressedFolder.folderUserIDs,
+            recordDataSource: {},
+          });
+        }}
+        action3={() => {
+          exitFolder({
+            myUID,
+            folderID: longPressedFolder.folderID,
+            navigation,
+          });
+        }}
+        askValue={longPressedFolder.folderName}
+        actionValue1="좌측 폴더 고정"
+        actionValue2="폴더 편집"
+        actionValue3="나가기"
       />
     </SafeAreaView>
   );
