@@ -100,6 +100,9 @@ const SingleFolderScreen = ({ navigation, route }) => {
   const { recordDataSource, folderID, folderName, folderColor, folderUserIDs } =
     route.params;
   const [modalVisible, setModalVisible] = useState(false);
+  const modalHandler = (isVisible) => {
+    setModalVisible(isVisible);
+  };
   return (
     <View style={{ height: "100%", width: "100%", backgroundColor: "white" }}>
       <GoBackHeader
@@ -118,7 +121,7 @@ const SingleFolderScreen = ({ navigation, route }) => {
             recordDataSource,
           })
         }
-        rightButtonFunction2={() => setModalVisible(true)}
+        rightButtonFunction2={() => modalHandler(true)}
       />
       <RecordFlatList
         recordDataSource={recordDataSource}
@@ -126,10 +129,9 @@ const SingleFolderScreen = ({ navigation, route }) => {
       />
       <PopUpType1
         modalVisible={modalVisible}
-        modalHandler={setModalVisible}
+        modalHandler={modalHandler}
         action={() => exitFolder({ myUID, folderID, navigation })}
-        askValue="정말 삭제하시겠어요?"
-        actionValue="삭제"
+        askValue="정말 삭제하시겠습니까?"
       />
     </View>
   );

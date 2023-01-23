@@ -2,7 +2,6 @@ import React, { useRef, useState } from "react";
 import { Animated, View } from "react-native";
 
 import MakeFolderBottomSheet from "../components/MakeFolderBottomSheet";
-import { PopUpType1 } from "../components/PopUp";
 
 const toggleAnimation = ({ showAnimation, setAnimationValue }) => {
   const val = -1000;
@@ -20,7 +19,7 @@ const MakeFolderBottomSheetScreen = ({ navigation, route }) => {
   const [animationValue, setAnimationValue] = useState(0);
 
   const showAnimation = useRef(new Animated.Value(animationValue)).current;
-  const [modalVisible, setModalVisible] = useState(false);
+
   return (
     <View
       style={{ width: "100%", height: "100%", backgroundColor: "transparent" }}
@@ -28,7 +27,8 @@ const MakeFolderBottomSheetScreen = ({ navigation, route }) => {
       <View
         style={{ width: "100%", height: "26%", backgroundColor: "transparent" }}
         onTouchEndCapture={() => {
-          setModalVisible(true);
+          toggleAnimation({ showAnimation, setAnimationValue });
+          navigation.goBack();
         }}
       />
       <Animated.View
@@ -59,16 +59,6 @@ const MakeFolderBottomSheetScreen = ({ navigation, route }) => {
           recordDataSource={recordDataSource}
         />
       </Animated.View>
-      <PopUpType1
-        modalVisible={modalVisible}
-        modalHandler={setModalVisible}
-        action={() => {
-          toggleAnimation({ showAnimation, setAnimationValue });
-          navigation.goBack();
-        }}
-        askValue="정말 폴더 생성을 그만두시겠어요?"
-        actionValue="그만두기"
-      />
     </View>
   );
 };
