@@ -10,9 +10,11 @@ import {
   FlatList,
 } from "react-native";
 import { ScrollView, Switch, TextInput } from "react-native-gesture-handler";
+import { useQueryClient } from "react-query";
 
 import AppContext from "../components/AppContext";
 import SendPushNotification from "../modules/SendPushNotification";
+
 import DefaultFolderBottomSheet from "./defaultFolderBottomSheet";
 const db = getDatabase();
 const gotoStorageScreen = (stackNavigation) => {
@@ -45,6 +47,34 @@ const gotoInviteFriendScreen = ({
     onChangeFolderUserIDs: onChangeNewFolderUserIDs,
     originalFolderUserIDs: folderUserIDs_,
   });
+};
+const renderFolderUser = ({ item }) => {
+  return (
+    <View
+      style={{
+        height: 32,
+        paddingHorizontal: 16,
+        paddingVertical: 8,
+        borderRadius: 16,
+        marginHorizontal: 8,
+        marginVertical: 20,
+        backgroundColor: "#F4F5F9",
+      }}
+    >
+      <Text
+        style={{
+          //width: 58,
+          height: 24,
+          fontWeight: "500",
+          fontSize: 16,
+          letterSpacing: -0.5,
+          color: "black",
+        }}
+      >
+        {item.name}
+      </Text>
+    </View>
+  );
 };
 const addNewFolder = async ({
   folderID,
@@ -87,6 +117,7 @@ const addNewFolder = async ({
         ); //user에 folderID를 넣고
         set(reference5, true);
 
+
         const referenceDate = ref(db, `/folders/${newFolderID}/updateDate`);
         const now = new Date();
         console.log(now.toString());
@@ -114,6 +145,7 @@ const addNewFolder = async ({
     set(reference1, folderName);
     const reference2 = ref(db, `/folders/${folderID}/folderColor/${myUID}`); //folderColor 개인화
     set(reference2, folderColor);
+
 
     const referenceDate = ref(db, `/folders/${folderID}/updateDate`);
     const now = new Date();
@@ -155,6 +187,7 @@ const MakeFolderBottomSheet = ({
   folderUserIDs_,
   recordDataSource,
 }) => {
+  const queryClient = useQueryClient();
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
   const myID = myContext.myID;
@@ -173,7 +206,6 @@ const MakeFolderBottomSheet = ({
     setNewFolderUserIDs(newFolderUserIDs_);
   };
   //폴더에 속한 친구이름 목록을 바텀쉬트에 띄우는 함수
-
   const onPressFunction = async () => {
     await addNewFolder({
       folderID,
@@ -187,6 +219,7 @@ const MakeFolderBottomSheet = ({
       myFirstName,
       myLastName,
     }).then(() => {
+      queryClient.invalidateQueries(["users", myUID]);
       IsNewRecord
         ? gotoStorageScreen(stackNavigation)
         : gotoSingleFolderScreen({

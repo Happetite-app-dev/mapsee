@@ -22,6 +22,9 @@ import {
 } from "react-native";
 
 import AddFolder from "../assets/icons/addfolder.svg";
+import IndividualFolder from "../components/IndividualFolder";
+import { useUserQuery } from "../queries";
+
 import PinFolder from "../assets/icons/pinFolder.svg";
 import SearchData from "../assets/icons/searchData.svg";
 import ShareFolder from "../assets/icons/shareFolder2.svg";
@@ -130,67 +133,7 @@ const filterFunction = ({
     setSelectedFolderIDNameColorUserIDs,
   });
 };
-const IndividualFolder = ({
-  folderID,
-  folderName,
-  folderColor,
-  folderUserIDs,
-  folderFixedDate,
-  setSelectedFolderIDNameColorUserIDs,
-  setLongPressedFolder,
-  setModalVisible,
-}) => {
-  return (
-    <TouchableOpacity
-      onPress={() => {
-        setSelectedFolderIDNameColorUserIDs({
-          folderID,
-          folderName,
-          folderColor,
-          folderUserIDs,
-          folderFixedDate,
-        });
-        //gotoSingleFolderScreen()
-      }}
-      onLongPress={() => {
-        setLongPressedFolder({
-          folderID,
-          folderName,
-          folderColor,
-          folderUserIDs,
-          folderFixedDate,
-        });
-        setModalVisible(true);
-      }}
-      style={{ height: 65 }}
-      activeOpacity={0.2}
-    >
-      <View style={{ marginLeft: 10, marginRight: 10 }}>
-        <SingleFolder color={folderColor} style={{ position: "relative" }} />
-        {folderUserIDs.length > 1 ? (
-          <ShareFolder style={{ position: "absolute", top: 17, left: 26 }} />
-        ) : (
-          <></>
-        )}
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            top: 8,
-            justifyContent: "ceneter",
-          }}
-        >
-          <Text>{folderName}</Text>
-          {folderFixedDate != null ? (
-            <PinFolder style={{ right: 0, position: "absolute" }} />
-          ) : (
-            <></>
-          )}
-        </View>
-      </View>
-    </TouchableOpacity>
-  );
-};
+
 const StorageScreen = ({ navigation, route }) => {
   const [visible, setVisible] = useState(false); // Snackbar
   const onToggleSnackBar = () => setVisible(!visible); // SnackbarButton -> 나중에는 없애기
@@ -204,6 +147,7 @@ const StorageScreen = ({ navigation, route }) => {
     selectedFolderIDNameColorUserIDs,
     setSelectedFolderIDNameColorUserIDs,
   ] = useState(undefined);
+
   const [masterDataSource, setMasterDataSource] = useState({}); //shortened record가 쌓여있음 {recordID, title, folderID, placeName, date, text, photos}
   const [modalVisible, setModalVisible] = useState(false);
   const [longPressedFolder, setLongPressedFolder] = useState({
@@ -212,6 +156,60 @@ const StorageScreen = ({ navigation, route }) => {
     folderColor: undefined,
     folderUserIDs: [],
   });
+  const userQuery = useUserQuery(myUID);
+  //const {folderID, folderName, folderColor, folderUserID, recordDataSource}
+  useEffect(() => {
+    if (isFocused & userQuery.data) {
+      const db = getDatabase();
+      setMasterDataSource({}); //initializing masterDataSource
+      console.log(userQuery.data);
+      // userQuery.data.folderIDs?.forEach((folderID) => {
+      // //각 폴더에 대하여....
+      // onValue(ref(db, "/folders/" + folderID), (snapshot2) => {
+      //   //폴더 삭제 시 삭제된 폴더가 display되는 오류 방지를 위한 체크용 코드
+      //   if (
+      //     snapshot2.child("userIDs").val() &&
+      //     myUID in snapshot2.child("userIDs").val()
+      //   ) {
+      //     setFolderIDNameColorUserIDsList((prev) => ({
+      //       ...prev,
+      //       [folderID]: {
+      //         folderID,
+      //         folderName: snapshot2.child("folderName").child(myUID).val(),
+      //         folderColor: snapshot2.child("folderColor").child(myUID).val(),
+      //         folderUserIDs: Object.keys(snapshot2.child("userIDs").val()),
+      //       },
+      //     }));
+      //     if (snapshot2.child("placeRecords").val() != (null || undefined)) {
+      //       //폴더는 있지만 빈폴더라서 record가 안에 없을 수 있어!!
+      //       //recordIDList_.push(...Object.keys(snapshot2.child('placeRecords').val()))  //해당 user가 소속된 각 폴더에 들어있는 recordIDList들을 합쳐서 하나로 만들어주기(버림)
+      //       Object.values(snapshot2.child("placeRecords").val()).map(
+      //         (recordIDObject) => {
+      //           //folders의 placeRecord 속에 있는 각 placeID에 대응되는 recordIDObject들에 대하여....
+      //           Object.keys(recordIDObject).map((recordID) => {
+      //             //각 recordObject에 있는 recordID에 대하여
+      //             onValue(ref(db, "/records/" + recordID), (snapshot3) => {
+      //               if (snapshot3.val() != (null || undefined)) {
+      //                 //masterDataSource 채워주기 --> 기존 record를 지웠을 때, 없는 recordID를 찾아서 null이 masterDataSource에 들어가는 경우를 방지하고자 함
+      //                 setMasterDataSource((prev) => ({
+      //                   ...prev,
+      //                   [recordID]: {
+      //                     recordID,
+      //                     recordData: snapshot3.val(),
+      //                   },
+      //                 })); //{recordID: recordID, recordData:{title: ~~, date: ~~, lctn: ~~, text: ~~, placeName: ~~}}가 쌓여있음
+      //               }
+      //             });
+      //           });
+      //         }
+      //       );
+      //     }
+      //   }
+      // });
+      // });
+    }
+  }, [isFocused, userQuery.data]);
+
   //const {folderID, folderName, folderColor, folderUserID, recordDataSource}
   useEffect(() => {
     if (isFocused) {
@@ -300,13 +298,9 @@ const StorageScreen = ({ navigation, route }) => {
     }
   }, [selectedFolderIDNameColorUserIDs]);
 
-  const renderFolder = ({ item }) => (
+  const renderFolder = ({ item: folderID }) => (
     <IndividualFolder
-      folderID={item.folderID}
-      folderName={item.folderName}
-      folderColor={item.folderColor}
-      folderUserIDs={item.folderUserIDs}
-      folderFixedDate={item.folderFixedDate}
+      folderID={folderID}
       setSelectedFolderIDNameColorUserIDs={(tmp) =>
         setSelectedFolderIDNameColorUserIDs(tmp)
       }
@@ -357,7 +351,14 @@ const StorageScreen = ({ navigation, route }) => {
       </View>
       <View style={{ height: 85 }}>
         <FlatList
-          data={Object.values(folderIDNameColorUserIDsList).sort(function (
+          data={
+            userQuery.data?.folderIDs
+              ? Object.keys(userQuery.data?.folderIDs)
+              : []
+          }
+          renderItem={renderFolder}
+          keyExtractor={(item) => item}
+/*          data={Object.values(folderIDNameColorUserIDsList).sort(function (
             a,
             b
           ) {
@@ -371,13 +372,14 @@ const StorageScreen = ({ navigation, route }) => {
               );
           })}
           renderItem={renderFolder}
-          keyExtractor={(item) => item.folderID}
+          keyExtractor={(item) => item.folderID}*/
           horizontal
           style={{
             flex: 1,
           }}
         />
       </View>
+
       <RecordFlatList
         recordDataSource={masterDataSource}
         stackNavigation={navigation}
@@ -443,7 +445,7 @@ export default StorageScreen;
 const styles = StyleSheet.create({
   container: {
     width: "100%",
-    height: "88.5%",
+    height: "89.5%",
     marginTop: 32,
     backgroundColor: "white",
   },
