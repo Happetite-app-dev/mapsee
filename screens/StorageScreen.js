@@ -29,7 +29,7 @@ import SingleFolder from "../assets/icons/singleFolder.svg";
 import AppContext from "../components/AppContext";
 import { PopUpType4 } from "../components/PopUp";
 import RecordFlatList from "../components/RecordFlatList";
-import SnackBar from "../components/Snackbar";
+import SnackBar from "../components/SnackBar";
 
 const exitFolder = async ({ myUID, folderID, navigation }) => {
   await exitData(myUID, folderID).then(
