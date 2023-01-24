@@ -6,6 +6,11 @@ import { useFolderQuery } from "../queries";
 import AppContext from "./AppContext";
 
 const folderImage = require("../assets/image/folder.png");
+
+import PinFolder from "../assets/icons/pinFolder.svg";
+import SearchData from "../assets/icons/searchData.svg";
+import ShareFolder from "../assets/icons/shareFolder2.svg";
+import SingleFolder from "../assets/icons/singleFolder.svg";
 const IndividualFolder = ({
   folderID,
   setSelectedFolderIDNameColorUserIDs,
@@ -17,7 +22,6 @@ const IndividualFolder = ({
   const query = useFolderQuery(folderID);
   if (query.isLoading) return <Text>강해린 로딩중이다</Text>;
   else if (query.error) return <Text>강해린 이상하다</Text>;
-
   return (
     query.data && (
       <TouchableOpacity
@@ -45,15 +49,28 @@ const IndividualFolder = ({
         activeOpacity={0.2}
       >
         <View style={{ marginLeft: 10, marginRight: 10 }}>
-          <Image
-            source={folderImage}
-            style={{ tintColor: query.data.folderColor[myUID] }}
+          <SingleFolder
+            color={query.data.folderColor[myUID] || query.data.initFolderColor}
           />
-          {/* Image source path changes depending on fileColor */}
-          {/* <Image source={} style={{width: 50, height:50}}/> */}
-          <Text style={{ alignSelf: "center", top: 8 }}>
-            {query.data.folderName[myUID]}
-          </Text>
+          {query.data.userIDs.length > 1 ? <ShareFolder /> : <></>}
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              top: 8,
+              justifyContent: "center",
+            }}
+          >
+            <Text style={{ position: "relative" }}>
+              {query.data.folderName[myUID]}
+            </Text>
+            {query.data.fixedDate !== undefined &&
+            query.data.fixedDate[myUID] !== undefined ? (
+              <PinFolder style={{ position: "relative", left: 3 }} />
+            ) : (
+              <></>
+            )}
+          </View>
         </View>
       </TouchableOpacity>
     )

@@ -30,13 +30,14 @@ const gotoEditScreen = (stackNavigation, item) => {
 };
 
 const IndividualRecord = ({ item, stackNavigation }) => {
+  console.log("IndividualRecord", item);
   return (
     <View style={styles.item}>
       <TouchableOpacity onPress={() => gotoEditScreen(stackNavigation, item)}>
         <View style={{ flexDirection: "column", justifyContent: "center" }}>
           <View style={{ width: 158, height: 148, alignItems: "center" }}>
-            {item.recordData.photos !== undefined &&
-            Object.values(item.recordData.photos).length >= 1 ? (
+            {item.photos !== undefined &&
+            Object.values(item.photos).length >= 1 ? (
               <View>
                 <Image
                   style={{
@@ -45,7 +46,7 @@ const IndividualRecord = ({ item, stackNavigation }) => {
                     borderTopLeftRadius: 8,
                     borderTopRightRadius: 8,
                   }}
-                  source={{ uri: Object.values(item.recordData.photos)[0] }}
+                  source={{ uri: Object.values(item.photos)[0] }}
                 />
               </View>
             ) : Math.random() < 0.5 ? (
@@ -58,40 +59,36 @@ const IndividualRecord = ({ item, stackNavigation }) => {
               />
             )}
           </View>
-          <Text style={styles.title}>{item.recordData.title}</Text>
-          <Text style={styles.placeName}>{item.recordData.placeName}</Text>
+          <Text style={styles.title}>{item.title}</Text>
+          <Text style={styles.placeName}>{item.placeName}</Text>
           <Text
             style={styles.date}
-          >{`${item.recordData.date.year}.${item.recordData.date.month}.${item.recordData.date.day}`}</Text>
+          >{`${item.date.year}.${item.date.month}.${item.date.day}`}</Text>
         </View>
       </TouchableOpacity>
     </View>
   );
 };
 
-const RecordFlatList = ({ recordDataSource, stackNavigation }) => {
+const RecordFlatList = ({ recordList, stackNavigation }) => {
   const renderItem = ({ item }) => (
     <IndividualRecord item={item} stackNavigation={stackNavigation} />
   );
 
   return (
     <FlatList
-      data={Object.values(recordDataSource).sort(function (a, b) {
-        const date1 = new Date(
-          a.recordData.date.year,
-          a.recordData.date.month,
-          a.recordData.date.day
-        );
-        const date2 = new Date(
-          b.recordData.date.year,
-          b.recordData.date.month,
-          b.recordData.date.day
-        );
-        return date2 - date1;
-      })}
+      data={
+        recordList
+          ? recordList.sort(function (a, b) {
+              const date1 = new Date(a.date.year, a.date.month, a.date.day);
+              const date2 = new Date(b.date.year, b.date.month, b.date.day);
+              return date2 - date1;
+            })
+          : []
+      }
       renderItem={renderItem}
-      extraData={recordDataSource}
-      keyExtractor={(item) => item.recordID}
+      extraData={recordList}
+      keyExtractor={(item) => item}
       numColumns={2}
       initialNumToRender={6}
       style={{

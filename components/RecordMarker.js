@@ -1,50 +1,43 @@
-import {
-  Image,
-  StyleSheet,
-  View,
-  SafeAreaView,
-  Button,
-  Animated,
-  TouchableOpacity,
-} from "react-native";
-import MapView, { Marker } from "react-native-maps";
+import { Image } from "react-native";
+import { Marker } from "react-native-maps";
 
 import Marker1 from "../assets/markers/marker#4F92D9.svg";
 import NewMarker from "../assets/markers/newMarker.svg";
+import { useAllFolderQuery } from "../queries";
+import get from "lodash/get";
+import { useContext } from "react";
+import AppContext from "./AppContext";
 
 const now = new Date();
 const currentDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-const targetLocationImage = require("../assets/image/targetLocation.png");
+
 const RecordMarker = ({ recordData, origin }) => {
+  const myContext = useContext(AppContext);
+  const myUID = myContext.myUID;
+  const { isLoading, error, data } = useAllFolderQuery();
   return recordData == null || recordData === undefined ? (
     <></>
   ) : (
-    Object.values(recordData).map((record) => {
+    recordData.map((record) => {
       const showMarker = Math.random();
-      const dayDiff = (record.date - currentDate) / (1000 * 60 * 60 * 24);
-      const color = record.color;
+      const recordDate = new Date(
+        record?.date?.year,
+        record?.date?.month - 1,
+        record?.date?.day
+      );
+      const dayDiff = (recordDate - currentDate) / (1000 * 60 * 60 * 24);
+      const color =
+        get(data, [record.folderID, "folderColor", myUID]) ||
+        get(data, [record.folderID, "initFoldercolor"]);
 
       return (
         <Marker
-          // key={record.recordID}
-          key={record.recordID}
+          key={record.placeID}
           coordinate={record.lctn}
           opacity={origin.latitudeDelta < 0.01 || showMarker > 0.5 ? 100 : 0}
           style={{ zIndex: Math.round(dayDiff * 1000) }}
         >
-          {dayDiff <= 3 ? (
-            <NewMarker />
-          ) : (
-            <Image
-              source={targetLocationImage}
-              style={{
-                width: 37,
-                height: 37,
-                resizeMode: "contain",
-                tintColor: color,
-              }}
-            />
-          )}
+          {dayDiff <= 3 ? <NewMarker /> : <Marker1 color={color} />}
         </Marker>
       );
     })
