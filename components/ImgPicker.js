@@ -1,13 +1,5 @@
 import * as ImagePicker from "expo-image-picker";
 import * as Permissions from "expo-permissions";
-import { getDatabase, ref, remove } from "firebase/database";
-import {
-  ref as ref_storage,
-  uploadBytes,
-  getDownloadURL,
-  child,
-  deleteObject,
-} from "firebase/storage";
 import React, { useEffect, useState } from "react";
 import {
   View,
@@ -18,10 +10,9 @@ import {
   Alert,
   ScrollView,
 } from "react-native";
-import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 import DeletePhoto from "../assets/icons/deletePhoto";
-import { storage } from "../firebase";
 import ImageCarousel from "./ImageCarousel";
 const verifyPermissionsCam = async () => {
   const result = await Permissions.askAsync(Permissions.CAMERA);

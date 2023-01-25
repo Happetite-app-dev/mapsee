@@ -1,18 +1,11 @@
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
-import {
-  getDatabase,
-  ref,
-  onValue,
-  set,
-  push,
-  remove,
-  off,
-} from "firebase/database";
+import { ref, onValue, set, push, remove, off } from "firebase/database";
 import { Platform } from "react-native";
 
+import database from "../firebase";
+const db = database;
 const saveToken = async (token, myUID) => {
-  const db = getDatabase();
   const reference1 = ref(db, "/users/" + myUID + "/pushToken");
   set(reference1, token);
 };

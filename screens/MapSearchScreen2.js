@@ -1,4 +1,3 @@
-import { getDatabase, ref, onValue } from "firebase/database";
 import React, {
   useEffect,
   useRef,
@@ -18,9 +17,9 @@ import {
 import Geocoder from "react-native-geocoding";
 import MapView, { Marker } from "react-native-maps";
 
-import Close from "../assets/icons/close.svg";
+import { useUserQuery, useAllRecordQuery } from "../queries";
+
 import CreateNote from "../assets/icons/createNote.svg";
-import GoBack from "../assets/icons/goBack.svg";
 import SelectedMarker1 from "../assets/icons/selectedMarker1.svg";
 import SelectedMarker2 from "../assets/icons/selectedMarker2.svg";
 import AppContext from "../components/AppContext";
@@ -70,6 +69,8 @@ const BottomSheetScreen = ({
 }) => {
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
+  const userQuery = useUserQuery(myUID);
+  const allRecordQuery = useAllRecordQuery();
 
   const gotoEditScreen = () => {
     console.log(targetId);
@@ -80,45 +81,6 @@ const BottomSheetScreen = ({
       lctn: targetLctn,
     });
   };
-
-  const [masterDataSource, setMasterDataSource] = useState({}); //shortened record가 쌓여있음 {recordID, title, folderID, placeName, date, text, photos}
-  useEffect(() => {
-    const db = getDatabase();
-    onValue(ref(db, "/users/" + myUID + "/folderIDs"), (snapshot) => {
-      if (snapshot.val() != null) {
-        //한 user가 folder를 갖고 있지 않을 수 있어!!
-        const folderIDList = Object.keys(snapshot.val()); //folderIDList 만들기
-        setMasterDataSource({}); //initializing masterDataSource
-        folderIDList.map((folderID) => {
-          //각 폴더에 대하여...
-          onValue(
-            ref(db, "/folders/" + folderID + "/placeRecords/" + targetId),
-            (snapshot2) => {
-              if (snapshot2.val() != (null || undefined)) {
-                //폴더는 있지만 빈폴더라서 record가 안에 없을 수 있어!!
-                Object.keys(snapshot2.val()).map((recordID) => {
-                  //folders의 placeRecord 속에 있는 각 placeID에 대응되는 recordIDObject들에 대하여....
-                  onValue(ref(db, "/records/" + recordID), (snapshot3) => {
-                    if (
-                      snapshot3.val() != (null || undefined) &&
-                      (snapshot3.val().placeName.includes(targetName) ||
-                        targetName.includes(snapshot3.val().placeName) ||
-                        snapshot3.val().placeName == targetName)
-                    ) {
-                      setMasterDataSource((prev) => ({
-                        ...prev,
-                        [recordID]: { recordID, recordData: snapshot3.val() },
-                      })); //{recordID: recordID, recordData:{title: ~~, date: ~~, lctn: ~~, text: ~~, placeName: ~~}}가 쌓여있음
-                    }
-                  });
-                });
-              }
-            }
-          );
-        });
-      }
-    });
-  }, []);
 
   if (animationVal < 0) {
     return (
@@ -176,7 +138,16 @@ const BottomSheetScreen = ({
               color: "#ADB1C5",
             }}
           >
-            기록 {Object.values(masterDataSource).length}
+            기록{" "}
+            {
+              Object.values(
+                allRecordQuery.data
+                  ? Object.values(allRecordQuery.data).filter((record) => {
+                      return record.folderID in userQuery.data?.folderIDs;
+                    })
+                  : []
+              ).length
+            }
           </Text>
         </View>
         <View
@@ -250,7 +221,13 @@ const BottomSheetScreen = ({
           style={{ position: "absolute", top: 85, width: "100%", height: 600 }}
         >
           <RecordFlatList
-            recordDataSource={Object.values(masterDataSource)}
+            recordDataSource={Object.values(
+              allRecordQuery.data
+                ? Object.values(allRecordQuery.data).filter((record) => {
+                    return record.folderID in userQuery.data?.folderIDs;
+                  })
+                : []
+            )}
             stackNavigation={navigation}
           />
         </View>

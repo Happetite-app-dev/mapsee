@@ -3,15 +3,7 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "firebase/auth";
-import {
-  getDatabase,
-  ref,
-  onValue,
-  set,
-  push,
-  remove,
-  off,
-} from "firebase/database";
+import { ref, onValue, set, push, remove, off } from "firebase/database";
 import React, { useEffect, useState, useContext } from "react";
 import {
   StyleSheet,
@@ -24,11 +16,11 @@ import {
 } from "react-native";
 
 import AppContext from "../components/AppContext";
-import { auth } from "../firebase";
+import { auth, database } from "../firebase";
 
 const { height } = Dimensions.get("window");
 
-const db = getDatabase();
+const db = database;
 
 const gotoApp = ({
   myUID_,

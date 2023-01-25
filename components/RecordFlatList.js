@@ -1,5 +1,4 @@
-import { getStorage, ref, getDownloadURL } from "firebase/storage";
-import React, { useState, useEffect } from "react";
+import React from "react";
 import {
   FlatList,
   StyleSheet,
@@ -11,16 +10,6 @@ import {
 
 import NoImageRecord1 from "../assets/image/noImageRecord1.svg";
 import NoImageRecord2 from "../assets/image/noImageRecord2.svg";
-import { storage } from "../firebase";
-
-const noImageRecord = require("../assets/image/noImageRecord.png");
-
-const getImage = async (recordID, photo, set) => {
-  const image = await getDownloadURL(
-    ref(storage, `images/${recordID}/${photo.split("/").at(-1)}`)
-  );
-  set(image);
-};
 
 const gotoEditScreen = (stackNavigation, item) => {
   stackNavigation.navigate("EditScreen", {

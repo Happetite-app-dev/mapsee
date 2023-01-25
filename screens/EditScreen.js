@@ -1,13 +1,5 @@
 import { useIsFocused } from "@react-navigation/native";
-import {
-  getDatabase,
-  ref,
-  onValue,
-  set,
-  push,
-  remove,
-  off,
-} from "firebase/database";
+import { ref, onValue, set, push, remove, off } from "firebase/database";
 import {
   ref as ref_storage,
   uploadBytes,
@@ -44,8 +36,10 @@ import FolderBottomSheet from "../components/FolderBottomSheet";
 import ImgPicker from "../components/ImgPicker";
 import { PopUpType1, PopUpType2 } from "../components/PopUp";
 import SnackBar from "../components/SnackBar";
-import { storage, auth } from "../firebase";
+import { storage, auth, database } from "../firebase";
 import SendPushNotification from "../modules/SendPushNotification";
+
+const db = database;
 
 const defaultFolderID = "-NB6gdHZgh_liXbnuOLr";
 const defaultFolderName = "폴더1";
@@ -108,7 +102,6 @@ const saveData = async (
     hour: timeNow.getHours(),
     minute: timeNow.getMinutes(),
   };
-  const db = getDatabase();
   if (recordID == undefined) {
     //새 기록이라면
     const reference1 = ref(db, "/records");
@@ -330,7 +323,6 @@ const removeData = async ({ recordID, folderID, placeID }) => {
     });
 
   // remove from database
-  const db = getDatabase();
   const reference1 = ref(db, "/records/" + recordID);
   await remove(reference1)
     .then(() => {

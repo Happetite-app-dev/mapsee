@@ -1,4 +1,4 @@
-import { getDatabase, ref, onValue, set, push } from "firebase/database";
+import { ref, onValue, set, push } from "firebase/database";
 import React, { useEffect, useRef, useState, useContext } from "react";
 import {
   Animated,
@@ -10,13 +10,16 @@ import {
   FlatList,
 } from "react-native";
 import { ScrollView, Switch, TextInput } from "react-native-gesture-handler";
-import { useQueryClient } from "react-query";
+import { useQueryClient, useAllFolderQuery } from "react-query";
 
 import AppContext from "../components/AppContext";
 import SendPushNotification from "../modules/SendPushNotification";
+import { useFolderQuery } from "../queries";
 
 import DefaultFolderBottomSheet from "./defaultFolderBottomSheet";
-const db = getDatabase();
+import database from "../firebase";
+const db = database;
+
 const gotoStorageScreen = (stackNavigation) => {
   stackNavigation.navigate("Storage");
 };
@@ -36,46 +39,6 @@ const gotoSingleFolderScreen = ({
     folderUserIDs: newFolderUserIDs,
   });
 };
-const gotoInviteFriendScreen = ({
-  stackNavigation,
-  newFolderUserIDs,
-  onChangeNewFolderUserIDs,
-  folderUserIDs_,
-}) => {
-  stackNavigation.navigate("InviteFriendScreen", {
-    folderUserIDs: newFolderUserIDs,
-    onChangeFolderUserIDs: onChangeNewFolderUserIDs,
-    originalFolderUserIDs: folderUserIDs_,
-  });
-};
-const renderFolderUser = ({ item }) => {
-  return (
-    <View
-      style={{
-        height: 32,
-        paddingHorizontal: 16,
-        paddingVertical: 8,
-        borderRadius: 16,
-        marginHorizontal: 8,
-        marginVertical: 20,
-        backgroundColor: "#F4F5F9",
-      }}
-    >
-      <Text
-        style={{
-          //width: 58,
-          height: 24,
-          fontWeight: "500",
-          fontSize: 16,
-          letterSpacing: -0.5,
-          color: "black",
-        }}
-      >
-        {item.name}
-      </Text>
-    </View>
-  );
-};
 const addNewFolder = async ({
   folderID,
   folderName,
@@ -84,6 +47,7 @@ const addNewFolder = async ({
   originalFolderUserIDs,
   IsNewRecord,
   myUID,
+  allFolderQuery,
 }) => {
   if (IsNewRecord) {
     //새 기록이면 친구초대한 모든 사람 대상으로 데이터베이스 수정(-->이건 나 말고 다른 사람에게는 해당X) 및 알림 보내기
@@ -117,7 +81,6 @@ const addNewFolder = async ({
         ); //user에 folderID를 넣고
         set(reference5, true);
 
-
         const referenceDate = ref(db, `/folders/${newFolderID}/updateDate`);
         const now = new Date();
         console.log(now.toString());
@@ -145,7 +108,6 @@ const addNewFolder = async ({
     set(reference1, folderName);
     const reference2 = ref(db, `/folders/${folderID}/folderColor/${myUID}`); //folderColor 개인화
     set(reference2, folderColor);
-
 
     const referenceDate = ref(db, `/folders/${folderID}/updateDate`);
     const now = new Date();
@@ -205,6 +167,9 @@ const MakeFolderBottomSheet = ({
   const onChangeNewFolderUserIDs = (newFolderUserIDs_) => {
     setNewFolderUserIDs(newFolderUserIDs_);
   };
+
+  const allFolderQuery = useAllFolderQuery();
+
   //폴더에 속한 친구이름 목록을 바텀쉬트에 띄우는 함수
   const onPressFunction = async () => {
     await addNewFolder({
@@ -218,8 +183,10 @@ const MakeFolderBottomSheet = ({
       myID,
       myFirstName,
       myLastName,
+      allFolderQuery,
     }).then(() => {
       queryClient.invalidateQueries(["users", myUID]);
+
       IsNewRecord
         ? gotoStorageScreen(stackNavigation)
         : gotoSingleFolderScreen({
@@ -234,7 +201,6 @@ const MakeFolderBottomSheet = ({
   };
 
   useEffect(() => {
-    const db = getDatabase();
     setNewFolderUserNameIDs([]);
     newFolderUserIDs.map((userID) => {
       onValue(ref(db, "/users/" + userID), (snapshot) => {

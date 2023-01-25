@@ -1,13 +1,4 @@
-import { initializeApp } from "firebase/app";
-import {
-  getDatabase,
-  ref,
-  onValue,
-  set,
-  push,
-  remove,
-  off,
-} from "firebase/database";
+import { ref, onValue, set, push, remove, off } from "firebase/database";
 import React, { useEffect, useContext } from "react";
 import {
   View,
@@ -19,22 +10,12 @@ import {
 } from "react-native";
 
 import AppContext from "../components/AppContext";
-import { auth } from "../firebase";
+import { auth, database } from "../firebase";
 
 const mapseeLogoImage = require("../assets/image/mapsee_logo.png");
 const { height } = Dimensions.get("window");
 
-const firebaseConfig = {
-  apiKey: "AIzaSyDBq4tZ1QLm1R7iPH8O4dTvebVGWgkRPks",
-  authDomain: "mapseedemo1.firebaseapp.com",
-  projectId: "mapseedemo1",
-  storageBucket: "mapseedemo1.appspot.com",
-  messagingSenderId: "839335870793",
-  appId: "1:839335870793:web:75004c5d43270610411a98",
-  measurementId: "G-8L1MD1CGN2",
-};
-const app = initializeApp(firebaseConfig);
-const db = getDatabase();
+const db = database;
 const gotoApp = ({
   myUID_,
   initMyUID,

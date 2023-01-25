@@ -1,4 +1,4 @@
-import { getDatabase, ref, onValue, set, remove } from "firebase/database";
+import { ref, onValue, set, remove } from "firebase/database";
 import { useEffect, useState, useContext } from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 
@@ -11,6 +11,8 @@ import { PopUpType4 } from "../components/PopUp";
 import RecordFlatList from "../components/RecordFlatList";
 import SnackBar from "../components/SnackBar";
 import FolderList from "../components/FolderList";
+import { database } from "../firebase";
+const db = database;
 
 const exitFolder = async ({ myUID, folderID, navigation }) => {
   await exitData(myUID, folderID).then(
@@ -19,7 +21,6 @@ const exitFolder = async ({ myUID, folderID, navigation }) => {
 };
 
 const exitData = async (myUID, folderID) => {
-  const db = getDatabase();
   const reference1 = ref(db, "/users/" + myUID + "/folderIDs/" + folderID);
   await remove(reference1)
     .then(() => {
@@ -215,7 +216,7 @@ const StorageScreen = ({ navigation, route }) => {
         action1={() => {
           if (longPressedFolder.folderFixedDate == null) {
             const referenceFix = ref(
-              getDatabase(),
+              db,
               "/folders/" + longPressedFolder.folderID + "/fixedDate/" + myUID
             );
 
@@ -223,7 +224,7 @@ const StorageScreen = ({ navigation, route }) => {
             set(referenceFix, now.toString());
           } else {
             const referenceFix = ref(
-              getDatabase(),
+              db,
               "/folders/" + longPressedFolder.folderID + "/fixedDate/" + myUID
             );
             remove(referenceFix);

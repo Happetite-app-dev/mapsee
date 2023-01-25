@@ -1,7 +1,8 @@
-import { set, getDatabase, ref, onValue, push } from "firebase/database";
+import { set, ref, onValue, push } from "firebase/database";
 import React, { useEffect, useRef, useState, useContext } from "react";
 import { Animated, Text, View, TouchableOpacity, Button } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
+import database from "../firebase";
 
 import AppContext from "../components/AppContext";
 import AddFolderBottomSheet from "./AddFolderBottomSheet";
@@ -39,7 +40,8 @@ const FolderBottomSheet = ({
     setIsSelectingFolder(true);
   }, [show]);
   useEffect(() => {
-    const db = getDatabase();
+    const db = database;
+
     onValue(ref(db, "/users/" + myUID + "/folderIDs"), (snapshot) => {
       if (snapshot.val() != null) {
         const folderIDList = Object.keys(snapshot.val());

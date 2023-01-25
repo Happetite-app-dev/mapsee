@@ -1,4 +1,5 @@
-import { getDatabase, ref, onValue, set, push } from "firebase/database";
+import { ref, onValue, set, push } from "firebase/database";
+import database from "../firebase";
 import React, { useEffect, useRef, useState, useContext } from "react";
 import { View } from "react-native";
 
@@ -6,7 +7,7 @@ import AppContext from "../components/AppContext";
 import SendPushNotification from "../modules/SendPushNotification";
 import DefaultFolderBottomSheet from "./defaultFolderBottomSheet";
 
-const db = getDatabase();
+const db = database;
 
 const addNewFolder = ({
   myUID,

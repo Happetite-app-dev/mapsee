@@ -1,17 +1,11 @@
-import {
-  Database,
-  getDatabase,
-  ref,
-  onValue,
-  set,
-  push,
-} from "firebase/database";
+import { ref, onValue, set, push } from "firebase/database";
 import { useEffect, useState, useContext } from "react";
 import { SafeAreaView, Text, View, FlatList } from "react-native";
 import { Snackbar } from "react-native-paper";
 
 import AppContext from "../components/AppContext";
 import NoticeRenderer from "../components/NoticeRenderer";
+import { database } from "../firebase";
 
 const NoticeScreen = ({ navigation }) => {
   const myContext = useContext(AppContext);
@@ -22,7 +16,7 @@ const NoticeScreen = ({ navigation }) => {
   const onToggleSnackBar = () => setVisible(!visible); // SnackbarButton -> 나중에는 없애기
   const onDismissSnackBar = () => setVisible(false); // Snackbar
 
-  const db = getDatabase();
+  const db = database();
   useEffect(() => {
     onValue(ref(db, "/notices/" + myUID), (snapshot) => {
       setNoticeList([]);

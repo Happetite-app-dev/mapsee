@@ -1,4 +1,4 @@
-import { getDatabase, ref, onValue } from "firebase/database";
+import { ref, onValue } from "firebase/database";
 import React, {
   useEffect,
   useRef,
@@ -15,6 +15,9 @@ import {
   Button,
   Image,
 } from "react-native";
+
+import database from "../firebase";
+const db = database;
 
 import AppContext from "../components/AppContext";
 import RecordFlatList from "../components/RecordFlatList";
@@ -49,7 +52,6 @@ const BottomSheetScreen = ({
 
   const [masterDataSource, setMasterDataSource] = useState({}); //shortened record가 쌓여있음 {recordID, title, folderID, placeName, date, text, photos}
   useEffect(() => {
-    const db = getDatabase();
     onValue(ref(db, "/users/" + myUID + "/folderIDs"), (snapshot) => {
       if (snapshot.val() != null) {
         //한 user가 folder를 갖고 있지 않을 수 있어!!

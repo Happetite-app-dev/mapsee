@@ -1,34 +1,13 @@
-import {
-  getDatabase,
-  ref,
-  onValue,
-  set,
-  push,
-  remove,
-  off,
-} from "firebase/database";
-import { useContext, useEffect, useState } from "react";
-import {
-  SafeAreaView,
-  Text,
-  View,
-  TouchableOpacity,
-  Image,
-  Alert,
-} from "react-native";
+import { ref, onValue, remove } from "firebase/database";
+import { useContext, useState } from "react";
+import { View } from "react-native";
 
 import AppContext from "../components/AppContext";
 import GoBackHeader from "../components/GoBackHeader";
 import { PopUpType1 } from "../components/PopUp";
 import RecordFlatList from "../components/RecordFlatList";
+import { database } from "../firebase";
 
-const editImage = require("../assets/image/edit.png");
-const folder2Image = require("../assets/image/folder2.png");
-const goBackImage = require("../assets/image/goBack.png");
-const trashcanImage = require("../assets/image/trashcan.png");
-const gotoStorageScreen = (navigation) => {
-  navigation.pop();
-};
 const gotoMakeFolderBottomSheetScreen = ({
   navigation,
   folderID,
@@ -45,30 +24,13 @@ const gotoMakeFolderBottomSheetScreen = ({
     recordDataSource,
   });
 };
-// const exitFolderPopUp = ({ myUID, folderID, navigation }) => {
-//   return Alert.alert(
-//     "정말 삭제하시겠습니까?",
-//     "",
-//     [
-//       { text: "취소" },
-//       {
-//         text: "삭제",
-//         onPress: () => exitFolder({ myUID, folderID, navigation }),
-//         style: "default",
-//       },
-//     ],
-//     {
-//       cancelable: false,
-//     }
-//   );
-// };
 const exitFolder = async ({ myUID, folderID, navigation }) => {
   await exitData(myUID, folderID).then(
     () => navigation.navigate("Storage") //realtimeDataBase가 모두 업데이트 된후
   );
 };
 const exitData = async (myUID, folderID) => {
-  const db = getDatabase();
+  const db = database;
   const reference1 = ref(db, "/users/" + myUID + "/folderIDs/" + folderID);
   await remove(reference1)
     .then(() => {

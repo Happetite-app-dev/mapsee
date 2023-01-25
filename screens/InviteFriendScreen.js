@@ -1,13 +1,5 @@
 import { useIsFocused } from "@react-navigation/native";
-import {
-  getDatabase,
-  ref,
-  onValue,
-  set,
-  push,
-  remove,
-  off,
-} from "firebase/database";
+import { ref, onValue, set, push, remove, off } from "firebase/database";
 import { useContext, useEffect, useState } from "react";
 import {
   SafeAreaView,
@@ -22,10 +14,11 @@ import {
 
 import AppContext from "../components/AppContext";
 import GoBackHeader from "../components/GoBackHeader";
+import { database } from "../firebase";
 
 const goBackImage = require("../assets/image/goBack.png");
 
-const db = getDatabase();
+const db = database;
 
 const gotoMakeFolderBottomSheetScreen = ({ navigation }) => {
   navigation.pop();
@@ -187,7 +180,6 @@ const InviteFriendScreen = ({ navigation, route }) => {
   const isFocused = useIsFocused();
 
   useEffect(() => {
-    const db = getDatabase();
     folderUserIDs.map((userID) => {
       onValue(ref(db, "/users/" + userID), (snapshot) => {
         setFolderUserNameIDs((prev) => [

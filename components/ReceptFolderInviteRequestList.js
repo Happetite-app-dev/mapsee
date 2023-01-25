@@ -1,6 +1,9 @@
-import { getDatabase, onValue, ref } from "@firebase/database";
+import { onValue, ref } from "@firebase/database";
 import { useEffect, useState } from "react";
 import { Text, View, TouchableOpacity } from "react-native";
+
+import database from "../firebase";
+const db = database;
 const gotoSingleFolderScreen = ({
   navigation,
   folderID,
@@ -11,7 +14,6 @@ const gotoSingleFolderScreen = ({
   setRecordDataSource,
   folderName,
 }) => {
-  const db = getDatabase();
   onValue(ref(db, "/folders/" + folderID), (snapshot) => {
     //폴더 삭제 시 삭제된 폴더가 display되는 오류 방지를 위한 체크용 코드
     if (

@@ -1,13 +1,5 @@
 import { useIsFocused } from "@react-navigation/native";
-import {
-  getDatabase,
-  ref,
-  onValue,
-  set,
-  push,
-  remove,
-  off,
-} from "firebase/database";
+import { ref, onValue, set, push, remove, off } from "firebase/database";
 import { useContext, useEffect, useState } from "react";
 import {
   SafeAreaView,
@@ -24,9 +16,10 @@ import AppContext from "../components/AppContext";
 import GoBackHeader from "../components/GoBackHeader";
 import { PopUpType1 } from "../components/PopUp";
 import SnackBar from "../components/SnackBar";
+import { database } from "../firebase";
 import AddFriendModal from "./AddFriendModal";
 
-const db = getDatabase();
+const db = database;
 
 const deleteFriend = async (myUID, friendUID) => {
   const reference1 = ref(db, "/users/" + myUID + "/friendUIDs/" + friendUID);
