@@ -2,12 +2,12 @@ import { set, ref, onValue, push } from "firebase/database";
 import React, { useEffect, useRef, useState, useContext } from "react";
 import { Animated, Text, View, TouchableOpacity, Button } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import database from "../firebase";
+import database from "../../firebase";
 
-import AppContext from "../components/AppContext";
+import AppContext from "../AppContext";
 import AddFolderBottomSheet from "./AddFolderBottomSheet";
-import BottomButton from "./BottomButton";
-import SnackBar from "./SnackBar";
+import BottomButton from "../BottomButton";
+import SnackBar from "../SnackBar";
 const toggleAnimation = ({ show, showAnimation, setAnimationValue }) => {
   const val = show ? 0 : -1000;
   Animated.timing(showAnimation, {

@@ -16,17 +16,17 @@ import {
   Image,
 } from "react-native";
 
-import database from "../firebase";
+import database from "../../firebase";
 const db = database;
 
-import AppContext from "../components/AppContext";
-import RecordFlatList from "../components/RecordFlatList";
+import AppContext from "../AppContext";
+import RecordFlatList from "../StorageScreen/RecordFlatList";
 
-const CreateNoteImage = require("../assets/image/CreateNote.png");
-const bottomSheetImage = require("../assets/image/bottomSheetScroll.png");
-const closeImage = require("../assets/image/close.png");
-const closeImage1 = require("../assets/image/close_1.png");
-const goBackImage = require("../assets/image/goBack.png");
+const CreateNoteImage = require("../../assets/image/CreateNote.png");
+const bottomSheetImage = require("../../assets/image/bottomSheetScroll.png");
+const closeImage = require("../../assets/image/close.png");
+const closeImage1 = require("../../assets/image/close_1.png");
+const goBackImage = require("../../assets/image/goBack.png");
 
 const BottomSheetScreen = ({
   onDisplay,

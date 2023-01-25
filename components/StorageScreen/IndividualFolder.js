@@ -2,15 +2,14 @@ import { useContext } from "react";
 import { Image, Text, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
-import { useFolderQuery } from "../queries";
-import AppContext from "./AppContext";
+import { useFolderQuery } from "../../queries";
+import AppContext from "../AppContext";
 
-const folderImage = require("../assets/image/folder.png");
 
-import PinFolder from "../assets/icons/pinFolder.svg";
-import SearchData from "../assets/icons/searchData.svg";
-import ShareFolder from "../assets/icons/shareFolder2.svg";
-import SingleFolder from "../assets/icons/singleFolder.svg";
+import PinFolder from "../../assets/icons/pinFolder.svg";
+import SearchData from "../../assets/icons/searchData.svg";
+import ShareFolder from "../../assets/icons/shareFolder2.svg";
+import SingleFolder from "../../assets/icons/singleFolder.svg";
 const IndividualFolder = ({
   folderID,
   setSelectedFolderIDNameColorUserIDs,

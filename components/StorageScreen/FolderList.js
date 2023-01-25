@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { FlatList, Text } from "react-native";
-import { useAllFolderQuery } from "../queries";
-import AppContext from "./AppContext";
+import { useAllFolderQuery } from "../../queries";
+import AppContext from "../AppContext";
 import IndividualFolder from "./IndividualFolder";
 import get from "lodash/get";
 

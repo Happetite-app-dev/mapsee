@@ -24,7 +24,7 @@ import SelectedMarker1 from "../assets/icons/selectedMarker1.svg";
 import SelectedMarker2 from "../assets/icons/selectedMarker2.svg";
 import AppContext from "../components/AppContext";
 import GoBackHeader from "../components/GoBackHeader";
-import RecordFlatList from "../components/RecordFlatList";
+import RecordFlatList from "../components/StorageScreen/RecordFlatList";
 
 const bottomSheetImage = require("../assets/image/bottomSheetScroll.png");
 const mapStyle = require("../assets/mapDesign.json");

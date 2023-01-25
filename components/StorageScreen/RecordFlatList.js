@@ -8,8 +8,8 @@ import {
   Image,
 } from "react-native";
 
-import NoImageRecord1 from "../assets/image/noImageRecord1.svg";
-import NoImageRecord2 from "../assets/image/noImageRecord2.svg";
+import NoImageRecord1 from "../../assets/image/noImageRecord1.svg";
+import NoImageRecord2 from "../../assets/image/noImageRecord2.svg";
 
 const gotoEditScreen = (stackNavigation, item) => {
   stackNavigation.navigate("EditScreen", {

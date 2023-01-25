@@ -8,9 +8,9 @@ import { useUserQuery, useAllRecordQuery } from "../queries";
 import SearchData from "../assets/icons/searchData.svg";
 import AppContext from "../components/AppContext";
 import { PopUpType4 } from "../components/PopUp";
-import RecordFlatList from "../components/RecordFlatList";
+import RecordFlatList from "../components/StorageScreen/RecordFlatList";
 import SnackBar from "../components/SnackBar";
-import FolderList from "../components/FolderList";
+import FolderList from "../components/StorageScreen/FolderList";
 import { database } from "../firebase";
 const db = database;
 

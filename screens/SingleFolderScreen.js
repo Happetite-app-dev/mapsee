@@ -5,7 +5,7 @@ import { View } from "react-native";
 import AppContext from "../components/AppContext";
 import GoBackHeader from "../components/GoBackHeader";
 import { PopUpType1 } from "../components/PopUp";
-import RecordFlatList from "../components/RecordFlatList";
+import RecordFlatList from "../components/StorageScreen/RecordFlatList";
 import { database } from "../firebase";
 
 const gotoMakeFolderBottomSheetScreen = ({

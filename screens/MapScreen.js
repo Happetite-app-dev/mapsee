@@ -22,7 +22,7 @@ import SearchMain from "../assets/icons/searchMain.svg";
 import SearchBox from "../assets/image/searchBox.svg";
 import TargetMarker from "../assets/markers/selectedMarker.svg";
 import AppContext from "../components/AppContext";
-import RecordMarker from "../components/RecordMarker";
+import RecordMarker from "../components/MapScreen/RecordMarker";
 import GeneratePushToken from "../modules/GeneratePushToken";
 const findCurrentLocationImage = require("../assets/image/findCurrentLocation.png");
 const mapStyle = require("../assets/mapDesign.json");

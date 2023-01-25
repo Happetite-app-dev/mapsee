@@ -12,12 +12,12 @@ import {
 import { ScrollView, Switch, TextInput } from "react-native-gesture-handler";
 import { useQueryClient, useAllFolderQuery } from "react-query";
 
-import AppContext from "../components/AppContext";
-import SendPushNotification from "../modules/SendPushNotification";
-import { useFolderQuery } from "../queries";
+import AppContext from "../AppContext";
+import SendPushNotification from "../../modules/SendPushNotification";
+import { useFolderQuery } from "../../queries";
 
 import DefaultFolderBottomSheet from "./defaultFolderBottomSheet";
-import database from "../firebase";
+import database from "../../firebase";
 const db = database;
 
 const gotoStorageScreen = (stackNavigation) => {
