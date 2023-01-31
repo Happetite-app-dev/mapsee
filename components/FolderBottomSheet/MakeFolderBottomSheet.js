@@ -10,14 +10,13 @@ import {
   FlatList,
 } from "react-native";
 import { ScrollView, Switch, TextInput } from "react-native-gesture-handler";
-import { useQueryClient, useAllFolderQuery } from "react-query";
 
 import AppContext from "../AppContext";
 import SendPushNotification from "../../modules/SendPushNotification";
-import { useFolderQuery } from "../../queries";
+import { useUserQuery, useAllFolderQuery } from "../../queries";
 
 import DefaultFolderBottomSheet from "./defaultFolderBottomSheet";
-import database from "../../firebase";
+import { database } from "../../firebase";
 const db = database;
 
 const gotoStorageScreen = (stackNavigation) => {
@@ -83,7 +82,6 @@ const addNewFolder = async ({
 
         const referenceDate = ref(db, `/folders/${newFolderID}/updateDate`);
         const now = new Date();
-        console.log(now.toString());
         set(referenceDate, now.toString());
       } else {
         const timeNow = new Date();
@@ -104,6 +102,7 @@ const addNewFolder = async ({
     });
   } else {
     //새 폴더가 아니라면 개인화폴더이름, 폴더색상만 데이터베이스상에서 수정
+    const folder = allFolderQuery.data[folderID];
     const reference1 = ref(db, `/folders/${folderID}/folderName/${myUID}`); //folderName 개인화
     set(reference1, folderName);
     const reference2 = ref(db, `/folders/${folderID}/folderColor/${myUID}`); //folderColor 개인화
@@ -111,7 +110,6 @@ const addNewFolder = async ({
 
     const referenceDate = ref(db, `/folders/${folderID}/updateDate`);
     const now = new Date();
-    console.log(now.toString());
     set(referenceDate, now.toString());
     //공통폴더이름, 색상 가져오기
     onValue(ref(db, `/folders/${folderID}/initFolderName`), (snapshot) => {
@@ -149,9 +147,10 @@ const MakeFolderBottomSheet = ({
   folderUserIDs_,
   recordDataSource,
 }) => {
-  const queryClient = useQueryClient();
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
+  const queryClient = useUserQuery(myUID);
+
   const myID = myContext.myID;
   const myFirstName = myContext.myFirstName;
   const myLastName = myContext.myLastName;

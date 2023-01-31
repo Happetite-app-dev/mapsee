@@ -1,9 +1,16 @@
 import { ref, onValue, set, remove } from "firebase/database";
 import { useEffect, useState, useContext } from "react";
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  SafeAreaView,
+} from "react-native";
+import { useQueryClient } from "react-query";
 
 import AddFolder from "../assets/icons/addfolder.svg";
-import { useUserQuery, useAllRecordQuery } from "../queries";
+import { useUserQuery, useAllRecordQuery, useAllFolderQuery } from "../queries";
 
 import SearchData from "../assets/icons/searchData.svg";
 import AppContext from "../components/AppContext";
@@ -119,6 +126,7 @@ const StorageScreen = ({ navigation, route }) => {
   const myUID = myContext.myUID;
   const userQuery = useUserQuery(myUID);
   const allRecordQuery = useAllRecordQuery();
+  const queryClient = useQueryClient();
 
   const [visible, setVisible] = useState(false); // Snackbar
   const onToggleSnackBar = () => setVisible(!visible); // SnackbarButton -> 나중에는 없애기
@@ -135,6 +143,7 @@ const StorageScreen = ({ navigation, route }) => {
     folderName: undefined,
     folderColor: undefined,
     folderUserIDs: [],
+    folderFixedDate: undefined,
   });
 
   useEffect(() => {
@@ -149,18 +158,9 @@ const StorageScreen = ({ navigation, route }) => {
   }, [selectedFolderIDNameColorUserIDs]);
 
   return (
-    <View style={styles.container}>
-      <View
-        style={{
-          flexDirection: "row",
-          height: 56,
-          marginBottom: 20,
-          alignItems: "center",
-        }}
-      >
-        <Text style={{ fontWeight: "bold", fontSize: 16, left: 23 }}>
-          보관함
-        </Text>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.screenTitleView}>
+        <Text style={styles.screenTitle}>보관함</Text>
         <View style={styles.twoRightButtons}>
           <TouchableOpacity
             style={styles.firstButton}
@@ -214,7 +214,7 @@ const StorageScreen = ({ navigation, route }) => {
         modalVisible={modalVisible}
         modalHandler={setModalVisible}
         action1={() => {
-          if (longPressedFolder.folderFixedDate == null) {
+          if (longPressedFolder.folderFixedDate === undefined) {
             const referenceFix = ref(
               db,
               "/folders/" + longPressedFolder.folderID + "/fixedDate/" + myUID
@@ -222,6 +222,11 @@ const StorageScreen = ({ navigation, route }) => {
 
             const now = new Date();
             set(referenceFix, now.toString());
+            queryClient.invalidateQueries([
+              "folders",
+              longPressedFolder.folderID,
+            ]);
+            queryClient.invalidateQueries(["all-Folders"]);
           } else {
             const referenceFix = ref(
               db,
@@ -229,6 +234,12 @@ const StorageScreen = ({ navigation, route }) => {
             );
             remove(referenceFix);
           }
+
+          queryClient.invalidateQueries([
+            "folders",
+            longPressedFolder.folderID,
+          ]);
+          queryClient.invalidateQueries(["all-Folders"]);
         }}
         action2={() => {
           gotoMakeFolderBottomSheetScreen({
@@ -249,7 +260,7 @@ const StorageScreen = ({ navigation, route }) => {
         }}
         askValue={longPressedFolder.folderName}
         actionValue1={
-          longPressedFolder.folderFixedDate == null
+          longPressedFolder.folderFixedDate === undefined
             ? "좌측 폴더 고정"
             : "좌측 폴더 해제"
         }
@@ -262,7 +273,7 @@ const StorageScreen = ({ navigation, route }) => {
         onDismissSnackBar={onDismissSnackBar}
         text="최대 16개까지 폴더를 만들 수 있습니다."
       />
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -272,8 +283,14 @@ const styles = StyleSheet.create({
   container: {
     width: "100%",
     height: "89.5%",
-    marginTop: 32,
     backgroundColor: "white",
+  },
+  screenTitle: { fontWeight: "bold", fontSize: 16, left: 23 },
+  screenTitleView: {
+    flexDirection: "row",
+    height: 56,
+    marginBottom: 20,
+    alignItems: "center",
   },
   item: {
     flex: 0.5,

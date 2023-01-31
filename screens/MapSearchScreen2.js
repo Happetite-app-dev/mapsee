@@ -20,10 +20,11 @@ import MapView, { Marker } from "react-native-maps";
 import { useUserQuery, useAllRecordQuery } from "../queries";
 
 import CreateNote from "../assets/icons/createNote.svg";
-import SelectedMarker1 from "../assets/icons/selectedMarker1.svg";
-import SelectedMarker2 from "../assets/icons/selectedMarker2.svg";
+import TargetMarker from "../assets/markers/selectedMarker.svg";
+
 import AppContext from "../components/AppContext";
 import GoBackHeader from "../components/GoBackHeader";
+import RecordMarker from "../components/MapScreen/RecordMarker";
 import RecordFlatList from "../components/StorageScreen/RecordFlatList";
 
 const bottomSheetImage = require("../assets/image/bottomSheetScroll.png");
@@ -73,7 +74,6 @@ const BottomSheetScreen = ({
   const allRecordQuery = useAllRecordQuery();
 
   const gotoEditScreen = () => {
-    console.log(targetId);
     return navigation.push("EditScreen", {
       placeName: targetName,
       placeID: targetId,
@@ -192,7 +192,7 @@ const BottomSheetScreen = ({
     );
   } else {
     // TODO (@KhoDongwook) hook 루트로 빼기
-
+    console.log("else");
     return (
       //bottomsheet가 전체 화면을 덮은 후
       <View
@@ -206,6 +206,10 @@ const BottomSheetScreen = ({
           navigation={navigation}
           text={targetName}
           rightButton="goHome"
+          goBackFunction={() => {
+            console.log("done");
+            toggleAnimation1(showAnimation, setAnimationValue);
+          }}
         />
         <View
           style={{
@@ -221,13 +225,13 @@ const BottomSheetScreen = ({
           style={{ position: "absolute", top: 85, width: "100%", height: 600 }}
         >
           <RecordFlatList
-            recordDataSource={Object.values(
+            recordList={
               allRecordQuery.data
                 ? Object.values(allRecordQuery.data).filter((record) => {
-                    return record.folderID in userQuery.data?.folderIDs;
+                    return record.placeID == targetId;
                   })
                 : []
-            )}
+            } /// 수정필요
             stackNavigation={navigation}
           />
         </View>
@@ -315,12 +319,15 @@ const MapSearchScreen2 = ({ navigation, route }) => {
     id: route.params.id || route.params.place_id,
   });
 
-  console.log("route", route.params.id || route.params.place_id);
   const [targetShown, setTargetShown] = useState(true);
 
   useEffect(() => {
     toggleAnimation3(showAnimation, setAnimationValue);
   }, []);
+  useEffect(() => {
+    if (targetShown === false)
+      toggleAnimation1(showAnimation, setAnimationValue);
+  }, [targetShown]);
   const targetingFromLocation = (lctn, name) => {
     Geocoder.from(lctn)
       .then((json) => {
@@ -341,6 +348,11 @@ const MapSearchScreen2 = ({ navigation, route }) => {
 
   return (
     <View>
+      <GoBackHeader
+        navigation={navigation}
+        text={target.name}
+        rightButton="goHome"
+      />
       <MapView
         customMapStyle={mapStyle}
         provider="google"
@@ -370,25 +382,12 @@ const MapSearchScreen2 = ({ navigation, route }) => {
           }
         }}
       >
-        <GoBackHeader
-          navigation={navigation}
-          text={target.name}
-          RightButton="goHome"
-        />
-
         <Marker
           coordinate={target.lctn}
           opacity={targetShown ? 100 : 0}
           style={{ position: "relative" }}
         >
-          <SelectedMarker1 style={{ position: "absolute" }} />
-          <SelectedMarker2
-            style={{
-              position: "absolute",
-              marginLeft: 8.89,
-              marginTop: 8.89,
-            }}
-          />
+          <TargetMarker />
         </Marker>
       </MapView>
 
@@ -417,56 +416,10 @@ const styles = StyleSheet.create({
   },
   map: {
     width: "100%",
-    height: "100%",
-  },
-  buttons: {
-    height: 88,
-    width: "100%",
-    backgroundColor: "#fff",
-    flexDirection: "row",
-    position: "absolute",
-  },
-  goBack: {
-    width: 30,
-    height: 18,
-    position: "absolute",
-    marginTop: 51,
-    marginLeft: 31,
-  },
-  goBackImage: {
-    width: 9,
-    height: 18,
-    resizeMode: "contain",
-    tintColor: "black",
-  },
-  title: {
-    width: 280,
-    height: 24,
-    marginTop: 48,
-    marginLeft: 63,
-    position: "absolute",
-  },
-  titleText: {
-    height: 24,
-    fontSize: 16,
-    lineHeight: 24,
-  },
-  goHome: {
-    width: 15,
-    height: 15,
-    marginLeft: 347.5,
-    marginTop: 52.5,
-  },
-  goHomeImage: {
-    width: 15,
-    height: 15,
-    position: "absolute",
-  },
-  goHomeImage2: {
-    width: 15,
-    height: 15,
-    position: "absolute",
+    height: 756,
+    marginTop: 0,
   },
 });
 
 export default MapSearchScreen2;
+/** */

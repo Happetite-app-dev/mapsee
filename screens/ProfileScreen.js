@@ -7,16 +7,10 @@ import {
   Image,
   TouchableOpacity,
 } from "react-native";
-import { RotateOutUpLeft } from "react-native-reanimated";
 
 import AppContext from "../components/AppContext";
 import GoBackHeader from "../components/GoBackHeader";
 
-const goBackImage = require("../assets/image/goBack.png");
-
-const gotoMypageScreen = ({ navigation }) => {
-  navigation.pop();
-};
 const ProfileScreen = ({ navigation }) => {
   const myContext = useContext(AppContext);
   const myName = myContext.myLastName + myContext.myFirstName;

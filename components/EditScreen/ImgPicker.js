@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
-import DeletePhoto from "../../assets/icons/deletePhoto";
+import DeletePhoto from "../../assets/icons/deletePhoto.svg";
 import ImageCarousel from "./ImageCarousel";
 const verifyPermissionsCam = async () => {
   const result = await Permissions.askAsync(Permissions.CAMERA);
@@ -88,7 +88,6 @@ const ImgPicker = ({
 }) => {
   const [pickedImages, setPickedImages] = useState(defaultPhotos);
   useEffect(() => {
-    console.log("picked Images", pickedImages);
     if (pickedImages === undefined) setPickedImages([]);
   }, [pickedImages]);
   return (

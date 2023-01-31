@@ -1,5 +1,5 @@
 import { onValue, ref } from "@firebase/database";
-import database from "../firebase";
+import { database } from "../firebase";
 import { useEffect, useState } from "react";
 import {
   Pressable,

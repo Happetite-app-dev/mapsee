@@ -9,7 +9,7 @@ Notifications.setNotificationHandler({
   }),
 });
 
-import database from "../firebase";
+import { database } from "../firebase";
 const db = database;
 
 const SendPushNotification = ({ receiverUID, title_, body_ }) => {

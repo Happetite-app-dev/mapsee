@@ -19,7 +19,6 @@ const gotoEditScreen = (stackNavigation, item) => {
 };
 
 const IndividualRecord = ({ item, stackNavigation }) => {
-  console.log("IndividualRecord", item);
   return (
     <View style={styles.item}>
       <TouchableOpacity onPress={() => gotoEditScreen(stackNavigation, item)}>

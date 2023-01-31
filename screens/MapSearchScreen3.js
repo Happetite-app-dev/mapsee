@@ -29,7 +29,6 @@ const gotoSearch2Screen = ({ navigation, item }) => {
   Geocode.fromAddress(item.structured_formatting.main_text).then(
     (response) => {
       const { lat, lng } = response.results[0].geometry.location;
-      console.log("gotoSearch2Screen");
       const newPlace = {
         geometry: { location: { lat, lng } },
         name: item.structured_formatting.main_text,
@@ -54,14 +53,12 @@ const getAverage = (numbers) => {
 const getLatDelta = (numbers, average) => {
   if (numbers.length === 0) return 0.016;
   const diff = numbers.map((el) => el - average);
-  console.log("in functionnnn", diff);
   return 3 * Math.max(...diff);
 };
 
 const getLngDelta = (numbers, average) => {
   if (numbers.length === 0) return 0.012;
   const diff = numbers.map((el) => el - average);
-  console.log("in functionnnn", diff);
   return 3 * Math.max(...diff);
 };
 
@@ -157,7 +154,6 @@ const MapSearchScreen3 = ({ navigation, route }) => {
       Geocode.fromAddress(item.structured_formatting.main_text).then(
         (response) => {
           const { lat, lng } = response.results[0].geometry.location;
-          console.log("Geocoding ", lat, lng);
 
           setLatList((latList) => {
             return [...latList, lat];
@@ -177,25 +173,27 @@ const MapSearchScreen3 = ({ navigation, route }) => {
   }, []);
 
   useEffect(() => {
-    console.log("-----useEffect", lngList.length);
     if (lngList.length > 1) {
       setOrigin([getAverage(latList), getAverage(lngList)]);
     }
   }, [latList]);
 
   useEffect(() => {
-    console.log("origin", origin[0], origin[1]);
     if (origin[0] !== 0) {
       setDelta([
         getLatDelta(latList, origin[0]),
         getLngDelta(lngList, origin[1]),
       ]);
-      console.log("delta", getLatDelta(latList, origin[0]));
     }
   }, [origin]);
 
   return (
     <View>
+      <GoBackHeader
+        navigation={navigation}
+        text={route.params[0]}
+        rightButton="goHome"
+      />
       <BottomSheet
         navigation={navigation}
         animation={showAnimation}
@@ -214,11 +212,6 @@ const MapSearchScreen3 = ({ navigation, route }) => {
           longitudeDelta: delta[1],
         }}
       >
-        <GoBackHeader
-          navigation={navigation}
-          text={route.params[0]}
-          RightButton="goHome"
-        />
         {latList.map((item, index) => {
           return (
             <Marker coordinate={{ latitude: item, longitude: lngList[index] }}>

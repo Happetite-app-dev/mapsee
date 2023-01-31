@@ -5,7 +5,6 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { useFolderQuery } from "../../queries";
 import AppContext from "../AppContext";
 
-
 import PinFolder from "../../assets/icons/pinFolder.svg";
 import SearchData from "../../assets/icons/searchData.svg";
 import ShareFolder from "../../assets/icons/shareFolder2.svg";
@@ -41,6 +40,7 @@ const IndividualFolder = ({
             folderName: query.data.folderName[myUID],
             folderColor: query.data.folderColor[myUID],
             folderUserIDs: query.data.userIDs,
+            folderFixedDate: query.data.fixedDate?.[myUID],
           });
           setModalVisible(true);
         }}

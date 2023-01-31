@@ -199,11 +199,9 @@ const InviteFriendScreen = ({ navigation, route }) => {
     if (isFocused) {
       setFriendIDNameList([]);
       onValue(ref(db, "/users/" + myUID + "/friendUIDs"), (snapshot) => {
-        //console.log(snapshot.val())
         if (snapshot.val() != null) {
           //한 user가 folder를 갖고 있지 않을 수 있어!!
           Object.keys(snapshot.val()).map((friendUID) => {
-            //console.log(friendUID)
             onValue(ref(db, "/users/" + friendUID), (snapshot2) => {
               if (
                 !friendIDNameList.includes({

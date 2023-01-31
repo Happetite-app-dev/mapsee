@@ -2,7 +2,7 @@ import { onValue, ref } from "@firebase/database";
 import { useEffect, useState } from "react";
 import { Text, View, TouchableOpacity } from "react-native";
 
-import database from "../firebase";
+import { database } from "../firebase";
 const db = database;
 const gotoSingleFolderScreen = ({
   navigation,

@@ -6,7 +6,7 @@
 
 import { onValue, ref } from "@firebase/database";
 
-import database from "../firebase";
+import { database } from "../firebase";
 const db = database;
 // 친구인 사람들은 모두 한 번에 uid 정리
 // 아닌 사람들은

@@ -23,9 +23,9 @@ const FolderList = ({
       setModalVisible={setModalVisible}
     />
   );
-  const { data } = useAllFolderQuery();
-  //if (isLoading) return <Text>로딩중</Text>;
-  //else if (error) return <Text>에러 발생</Text>;
+  const { isLoading, error, data } = useAllFolderQuery();
+  if (isLoading) return <Text>로딩중</Text>;
+  else if (error) return <Text>에러 발생</Text>;
   return (
     data && (
       <FlatList

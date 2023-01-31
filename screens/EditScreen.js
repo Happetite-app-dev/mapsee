@@ -149,7 +149,6 @@ const saveData = async (
     //uploadImages(selectedPhotos, imageIDs, newRecordID);
     //push 알림과 내부 알림 보내기(나에게는 스낵바만 띄우기)
     onValue(ref(db, `/folders/${folderID}/userIDs`), (snapshot) => {
-      console.log(snapshot);
       if (snapshot.val() != null) {
         const folderUserIDs = Object.keys(snapshot.val());
         folderUserIDs.map((folderUserID) => {
@@ -227,7 +226,6 @@ const saveData = async (
 
     const referenceDate = ref(db, `/folders/${folderID}/updateDate`);
     const now = new Date();
-    console.log(now.toString());
     set(referenceDate, now.toString());
 
     // storage 관련 저장/삭제

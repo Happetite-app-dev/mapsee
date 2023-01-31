@@ -19,7 +19,7 @@ import ReceptRecordAddDoneList from "./ReceptRecordAddDoneList";
 //이때, 이 컴포넌트가 수행해야되는 함수 또한 여기서 처리한다
 //ID를 UID에서 갖고 오는 식으로 바꿔야 될수도
 
-import database from "../firebase";
+import { database } from "../firebase";
 const db = database;
 const acceptFriendRequest = ({ myUID, noticeKey, requesterUID }) => {
   set(

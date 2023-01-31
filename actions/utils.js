@@ -5,7 +5,6 @@ export const onValueAsync = (query) =>
     onValue(
       query,
       (snapshot) => {
-        console.log("snapshot", snapshot);
         resolve(snapshot.val());
       },
       (error) => reject(error)

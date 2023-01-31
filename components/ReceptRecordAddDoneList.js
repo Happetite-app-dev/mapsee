@@ -8,7 +8,7 @@ import {
   View,
 } from "react-native";
 
-import database from "../firebase";
+import { database } from "../firebase";
 const db = database;
 const gotoEditScreen = ({ navigation, recordID }) => {
   let recordData;

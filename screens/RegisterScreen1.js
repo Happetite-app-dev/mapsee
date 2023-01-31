@@ -15,7 +15,6 @@ const handleSignUp = ({ navigation, email }) => {
 };
 const validate = (text) => {
   const reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
-  //console.log(text, reg.test(text));
   return reg.test(text);
 };
 const RegisterScreen1 = ({ navigation }) => {

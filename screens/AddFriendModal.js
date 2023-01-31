@@ -14,7 +14,7 @@ import {
 import AppContext from "../components/AppContext";
 import SendPushNotification from "../modules/SendPushNotification";
 
-import database from "../firebase";
+import { database } from "../firebase";
 const db = database;
 
 const getFriendUID = (newFriend, handleFriendUID, handleFriendName) => {
@@ -47,7 +47,6 @@ const callFriendRequest = (friendUID, myUID, myID, myFirstName, myLastName) => {
       body_: "친구추가바디",
     });
   } else {
-    console.log("no such uid");
   }
 };
 
@@ -80,11 +79,9 @@ const AddFriendModal = ({
   };
   useEffect(() => {
     if (friendUID !== undefined) {
-      console.log(friendList.includes(friendUID));
       if (containsUID(friendUID)) {
         setRequestSent(false);
         onToggleSnackBar();
-        console.log("true");
       } else {
         callFriendRequest(friendUID, myUID, myID, myFirstName, myLastName);
         setRequestSent(true);

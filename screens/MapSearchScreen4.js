@@ -19,15 +19,12 @@ const gotoSearch2Screen = ({ navigation, item }) => {
   Geocode.fromAddress(item.structured_formatting.main_text).then(
     (response) => {
       const { lat, lng } = response.results[0].geometry.location;
-      console.log("gotoSearch2Screen");
       const newPlace = {
         geometry: { location: { lat, lng } },
         name: item.structured_formatting.main_text,
         address: item.structured_formatting.secondary_text,
         id: item.place_id,
       };
-
-      navigation.navigate("MapSearchScreen2", newPlace);
     },
     (error) => {
       console.error("cannot move to MapSearchScreen2", error);
@@ -74,7 +71,7 @@ const MapSearchScreen4 = ({ navigation, route }) => {
       <GoBackHeader
         navigation={navigation}
         text={route.params[0]}
-        RightButton="goHome"
+        rightButton="goHome"
       />
       <FlatList
         data={route.params[1]}

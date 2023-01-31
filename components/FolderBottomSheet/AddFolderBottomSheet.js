@@ -1,5 +1,5 @@
 import { ref, onValue, set, push } from "firebase/database";
-import database from "../../firebase";
+import { database } from "../../firebase";
 import React, { useEffect, useRef, useState, useContext } from "react";
 import { View } from "react-native";
 
