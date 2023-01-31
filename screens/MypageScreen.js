@@ -14,9 +14,8 @@ import SNS from "../assets/icons/SNS.svg";
 import Suggest from "../assets/icons/folderEdit.svg";
 import NoticeOn from "../assets/icons/notice_on.svg";
 import SuggestBox from "../assets/icons/suggestBox.svg";
+import FriendList from "../assets/icons/friendsList.svg";
 import AppContext from "../components/AppContext";
-
-const friendListImage = require("../assets/image/friendList.png");
 
 const gotoProfileScreen = ({ navigation }) => {
   navigation.navigate("ProfileScreen");
@@ -38,20 +37,10 @@ const MypageScreen = ({ navigation }) => {
   const myName = myContext.myLastName + myContext.myFirstName;
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={{ width: "100%", height: 88 }}>
-        <View
-          style={{
-            position: "absolute",
-            width: "100%",
-            height: 60,
-            left: "5.88%",
-            top: "54.55%",
-            right: "75.7%",
-            bottom: "18.18%",
-          }}
-        >
-          <Text style={{ fontSize: 16, fontWeight: "bold" }}>마이페이지</Text>
+        <View style={styles.screenTitleView}>
+          <Text style={styles.screenTitle}>마이페이지</Text>
         </View>
       </View>
       <TouchableOpacity
@@ -93,7 +82,7 @@ const MypageScreen = ({ navigation }) => {
               paddingLeft: 18,
             }}
           >
-            <Image source={friendListImage} />
+            <FriendList />
             <Text style={{ fontSize: 14, left: 14, top: 3 }}>친구 목록</Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -146,6 +135,7 @@ const MypageScreen = ({ navigation }) => {
               paddingTop: 24,
               paddingLeft: 18,
             }}
+            onPress={()=>{gotoBeforeLoginScreen({navigation})}}
           >
             <Text style={{ fontSize: 14, top: 3 }}>로그아웃</Text>
           </TouchableOpacity>
@@ -170,7 +160,7 @@ const MypageScreen = ({ navigation }) => {
           alignItems: "center",
           flexDirection: "row",
           left: 23,
-          top: 600,
+          top: 550,
         }}
         onPress={() => navigation.navigate("SuggestScreen")}
       >
@@ -180,7 +170,7 @@ const MypageScreen = ({ navigation }) => {
           더 나은 맵시를 위해 의견을 주세요!
         </Text>
       </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -190,5 +180,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "white",
+  },
+  screenTitle: { fontWeight: "bold", fontSize: 16, left: 23 },
+  screenTitleView: {
+    flexDirection: "row",
+    height: 56,
+    marginBottom: 20,
+    alignItems: "center",
   },
 });

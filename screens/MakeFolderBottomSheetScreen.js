@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import { Animated, View } from "react-native";
 
-import MakeFolderBottomSheet from "../components/MakeFolderBottomSheet";
+import MakeFolderBottomSheet from "../components/FolderBottomSheet/MakeFolderBottomSheet";
 import { PopUpType1 } from "../components/PopUp";
 
 const toggleAnimation = ({ showAnimation, setAnimationValue }) => {

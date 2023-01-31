@@ -1,6 +1,4 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { initializeApp } from "firebase/app";
-import { useState, useContext } from "react";
 import {
   StyleSheet,
   Text,
@@ -23,16 +21,6 @@ import NoticeScreen from "../screens/NoticeScreen";
 import StorageScreen from "../screens/StorageScreen";
 
 const Tab = createBottomTabNavigator();
-const firebaseConfig = {
-  apiKey: "AIzaSyDBq4tZ1QLm1R7iPH8O4dTvebVGWgkRPks",
-  authDomain: "mapseedemo1.firebaseapp.com",
-  projectId: "mapseedemo1",
-  storageBucket: "mapseedemo1.appspot.com",
-  messagingSenderId: "839335870793",
-  appId: "1:839335870793:web:75004c5d43270610411a98",
-  measurementId: "G-8L1MD1CGN2",
-};
-const app = initializeApp(firebaseConfig);
 const Tabs = ({ navigation }) => {
   return (
     <Tab.Navigator

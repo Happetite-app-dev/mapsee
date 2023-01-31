@@ -1,13 +1,5 @@
 import * as Notifications from "expo-notifications";
-import {
-  getDatabase,
-  ref,
-  onValue,
-  set,
-  push,
-  remove,
-  off,
-} from "firebase/database";
+import { ref, onValue, set, push, remove, off } from "firebase/database";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -17,8 +9,10 @@ Notifications.setNotificationHandler({
   }),
 });
 
+import { database } from "../firebase";
+const db = database;
+
 const SendPushNotification = ({ receiverUID, title_, body_ }) => {
-  const db = getDatabase();
   onValue(ref(db, "/users/" + receiverUID + "/pushToken"), (snapshot) => {
     sendPushNotification(snapshot.val());
   });

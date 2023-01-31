@@ -1,13 +1,5 @@
 import { useIsFocused } from "@react-navigation/native";
-import {
-  getDatabase,
-  ref,
-  onValue,
-  set,
-  push,
-  remove,
-  off,
-} from "firebase/database";
+import { ref, onValue, set, push, remove, off } from "firebase/database";
 import {
   ref as ref_storage,
   uploadBytes,
@@ -39,13 +31,15 @@ import GoBack from "../assets/icons/goBack.svg";
 import LocationImage from "../assets/icons/location.svg";
 import WritingImage from "../assets/icons/writing.svg";
 import AppContext from "../components/AppContext";
-import DatePicker from "../components/DatePicker";
-import FolderBottomSheet from "../components/FolderBottomSheet";
-import ImgPicker from "../components/ImgPicker";
+import DatePicker from "../components/EditScreen/DatePicker";
+import FolderBottomSheet from "../components/FolderBottomSheet/FolderBottomSheet";
+import ImgPicker from "../components/EditScreen/ImgPicker";
 import { PopUpType1, PopUpType2 } from "../components/PopUp";
 import SnackBar from "../components/SnackBar";
-import { storage, auth } from "../firebase";
+import { storage, auth, database } from "../firebase";
 import SendPushNotification from "../modules/SendPushNotification";
+
+const db = database;
 
 const defaultFolderID = "-NB6gdHZgh_liXbnuOLr";
 const defaultFolderName = "폴더1";
@@ -108,7 +102,6 @@ const saveData = async (
     hour: timeNow.getHours(),
     minute: timeNow.getMinutes(),
   };
-  const db = getDatabase();
   if (recordID == undefined) {
     //새 기록이라면
     const reference1 = ref(db, "/records");
@@ -156,7 +149,6 @@ const saveData = async (
     //uploadImages(selectedPhotos, imageIDs, newRecordID);
     //push 알림과 내부 알림 보내기(나에게는 스낵바만 띄우기)
     onValue(ref(db, `/folders/${folderID}/userIDs`), (snapshot) => {
-      console.log(snapshot);
       if (snapshot.val() != null) {
         const folderUserIDs = Object.keys(snapshot.val());
         folderUserIDs.map((folderUserID) => {
@@ -234,7 +226,6 @@ const saveData = async (
 
     const referenceDate = ref(db, `/folders/${folderID}/updateDate`);
     const now = new Date();
-    console.log(now.toString());
     set(referenceDate, now.toString());
 
     // storage 관련 저장/삭제
@@ -330,7 +321,6 @@ const removeData = async ({ recordID, folderID, placeID }) => {
     });
 
   // remove from database
-  const db = getDatabase();
   const reference1 = ref(db, "/records/" + recordID);
   await remove(reference1)
     .then(() => {

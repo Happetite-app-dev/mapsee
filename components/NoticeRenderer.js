@@ -1,12 +1,4 @@
-import {
-  Database,
-  getDatabase,
-  ref,
-  onValue,
-  set,
-  push,
-  get,
-} from "firebase/database";
+import { ref, onValue, set, push, get } from "firebase/database";
 import { useContext, useState } from "react";
 
 import AppContext from "../components/AppContext";
@@ -26,8 +18,10 @@ import ReceptRecordAddDoneList from "./ReceptRecordAddDoneList";
 //NoticeRenderer에서는 각 내부 알림을 그 type에 따라 분류하여 알맞은 모양의 컴포넌트를 return한다
 //이때, 이 컴포넌트가 수행해야되는 함수 또한 여기서 처리한다
 //ID를 UID에서 갖고 오는 식으로 바꿔야 될수도
+
+import { database } from "../firebase";
+const db = database;
 const acceptFriendRequest = ({ myUID, noticeKey, requesterUID }) => {
-  const db = getDatabase();
   set(
     ref(db, "/notices/" + myUID + "/" + noticeKey + "/type/"), //remove할지 추후에 고려 필요
     "recept_friend_request_accept_inact"
@@ -49,7 +43,6 @@ const acceptFolderInviteRequest = ({
   requesterUID,
   folderID,
 }) => {
-  const db = getDatabase();
   onValue(ref(db, `/folders/${folderID}/initFolderName`), (snapshot1) => {
     const folderName = snapshot1.val();
     onValue(ref(db, `/folders/${folderID}/initFolderColor`), (snapshot2) => {
@@ -88,7 +81,6 @@ const acceptFolderInviteRequest = ({
 };
 
 const denyFriendRequest = ({ myUID, noticeKey, onToggleSnackBar }) => {
-  const db = getDatabase();
   set(
     ref(db, "/notices/" + myUID + "/" + noticeKey + "/type/"),
     "recept_friend_request_deny_inact"
@@ -97,7 +89,6 @@ const denyFriendRequest = ({ myUID, noticeKey, onToggleSnackBar }) => {
 };
 
 const denyFolderInviteRequest = ({ myUID, noticeKey, onToggleSnackBar }) => {
-  const db = getDatabase();
   set(
     ref(db, "/notices/" + myUID + "/" + noticeKey + "/type/"),
     "recept_folderInvite_request_deny_inact"

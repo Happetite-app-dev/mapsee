@@ -31,7 +31,6 @@ const InbetweenCompo = ({ name, history, setHistory, navigation }) => {
       <View
         style={styles.historyItem}
         onTouchEndCapture={() => {
-          console.log("history page", item);
           gotoSearch2Screen({ navigation, data: item });
         }}
       >
@@ -188,15 +187,10 @@ const MapSearchScreen1 = ({ navigation, route }) => {
           ? []
           : JSON.parse(await AsyncStorage.getItem("search"))
       );
-      console.log("setHistory done");
     }
 
     fetchData();
   }, [useIsFocused]);
-
-  useEffect(() => {
-    console.log("history changed", history);
-  }, [history]);
 
   return (
     <View style={styles.container}>

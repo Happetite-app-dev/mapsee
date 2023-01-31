@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
     left: 31,
   },
   title: {
-    width: 304,
+    width: 280,
     height: 24,
     left: 63,
     position: "absolute",

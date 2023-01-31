@@ -1,4 +1,4 @@
-import PlaceInfoBottomSheet from "../components/PlaceInfoBottomSheet";
+import PlaceInfoBottomSheet from "../components/MapScreen/PlaceInfoBottomSheet";
 
 const PlaceInfoBottomSheetScreen = ({ navigation, route }) => {
   return <PlaceInfoBottomSheet navigation={navigation} route={route} />;

@@ -1,14 +1,9 @@
-import {
-  getAuth,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-} from "firebase/auth";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 import React, { useEffect, useState, useContext } from "react";
 import {
   StyleSheet,
   Text,
   View,
-  KeyboardAvoidingView,
   TextInput,
   TouchableOpacity,
   Dimensions,

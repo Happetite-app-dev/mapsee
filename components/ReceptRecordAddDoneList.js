@@ -1,4 +1,4 @@
-import { getDatabase, onValue, ref } from "@firebase/database";
+import { onValue, ref } from "@firebase/database";
 import { useEffect, useState } from "react";
 import {
   Pressable,
@@ -8,8 +8,9 @@ import {
   View,
 } from "react-native";
 
+import { database } from "../firebase";
+const db = database;
 const gotoEditScreen = ({ navigation, recordID }) => {
-  const db = getDatabase();
   let recordData;
   onValue(ref(db, `/records/${recordID}`), (snapshot) => {
     recordData = snapshot.val();

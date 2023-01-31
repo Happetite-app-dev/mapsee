@@ -1,7 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useIsFocused } from "@react-navigation/native";
 import * as Location from "expo-location";
-import { getDatabase, ref, onValue } from "firebase/database";
 import React, { useEffect, useState, useContext } from "react";
 import {
   Image,
@@ -16,21 +15,16 @@ import {
 import Geocoder from "react-native-geocoding";
 import MapView, { Marker } from "react-native-maps";
 import { Easing } from "react-native-reanimated";
+import { useUserQuery, useAllRecordQuery } from "../queries";
 
 import CreateNote from "../assets/icons/createNote.svg";
 import SearchMain from "../assets/icons/searchMain.svg";
 import SearchBox from "../assets/image/searchBox.svg";
-import Marker1 from "../assets/markers/marker#4F92D9.svg";
-import NewMarker from "../assets/markers/newMarker.svg";
 import TargetMarker from "../assets/markers/selectedMarker.svg";
 import AppContext from "../components/AppContext";
-import PlaceInfoBottomSheet from "../components/PlaceInfoBottomSheet";
-import RecordMarker from "../components/RecordMarker";
+import RecordMarker from "../components/MapScreen/RecordMarker";
 import GeneratePushToken from "../modules/GeneratePushToken";
-
-const currentLocationImage = require("../assets/image/currentLocation.png");
 const findCurrentLocationImage = require("../assets/image/findCurrentLocation.png");
-const targetLocationImage = require("../assets/image/targetLocation.png");
 const mapStyle = require("../assets/mapDesign.json");
 
 const SearchView = ({ navigation, origin }) => {
@@ -156,8 +150,10 @@ const RotateData = rotateValueHolder.interpolate({
 const MapScreen = ({ navigation }) => {
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
+  const userQuery = useUserQuery(myUID);
+  const allRecordQuery = useAllRecordQuery();
+
   const isFocused = useIsFocused();
-  const [list1, setList1] = useState({});
   const [getPermissions, setGetPermissions] = useState(false);
 
   const mapRef = React.createRef();
@@ -203,80 +199,6 @@ const MapScreen = ({ navigation }) => {
   useEffect(() => {
     // earse Target marker when come back from other screen
     if (targetShown && isFocused) setTargetShown(false);
-  }, [isFocused]);
-
-  useEffect(() => {
-    const db = getDatabase();
-    onValue(ref(db, "/users/" + myUID + "/folderIDs"), (snapshot) => {
-      if (snapshot.val() != null) {
-        const folderIDList1 = Object.keys(snapshot.val());
-        folderIDList1.map((folderID) => {
-          onValue(
-            ref(db, "/folders/" + folderID + "/placeRecords"),
-            (snapshot2) => {
-              if (snapshot2.val() != null) {
-                const placeRecordList1 = Object.values(snapshot2.val());
-                placeRecordList1.map((placeRecord1) => {
-                  const recordIDList1 = Object.keys(placeRecord1);
-                  recordIDList1.map((recordID) => {
-                    onValue(
-                      ref(db, "/records/" + recordID + "/folderID"),
-                      (snapshotFolder) => {
-                        const folderID = snapshotFolder.val();
-                        onValue(
-                          ref(db, "/folders/" + folderID + "/folderColor"),
-                          (snapshotColor) => {
-                            if (snapshotColor.val() != null) {
-                              const color = Object.values(
-                                snapshotColor.val()
-                              )[0];
-
-                              onValue(
-                                ref(db, "/records/" + recordID + "/writeDate"),
-                                (snapshotDate) => {
-                                  if (
-                                    snapshotDate.val() != null &&
-                                    snapshotDate.val().year != null &&
-                                    snapshotDate.val().year !== undefined
-                                  ) {
-                                    const date = new Date(
-                                      snapshotDate.val().year,
-                                      snapshotDate.val().month - 1,
-                                      snapshotDate.val().day,
-                                      snapshotDate.val().hour,
-                                      snapshotDate.val().minute
-                                    );
-                                    onValue(
-                                      ref(db, "/records/" + recordID + "/lctn"),
-                                      (snapshot3) => {
-                                        console.log(snapshot3.val());
-                                        setList1((list1) => ({
-                                          ...list1,
-                                          [recordID]: {
-                                            recordID,
-                                            lctn: snapshot3.val(),
-                                            color,
-                                            date,
-                                          },
-                                        }));
-                                      }
-                                    );
-                                  }
-                                }
-                              );
-                            }
-                          }
-                        );
-                      }
-                    );
-                  });
-                });
-              }
-            }
-          );
-        });
-      }
-    });
   }, [isFocused]);
 
   useEffect(() => {
@@ -337,15 +259,7 @@ const MapScreen = ({ navigation }) => {
           <TargetMarker />
         </Marker>
         <View
-          style={{
-            position: "absolute",
-            width: 48,
-            height: 48,
-            borderRadius: 24,
-            left: 23,
-            bottom: 112,
-            backgroundColor: "white",
-          }}
+          style={styles.currentLocationButton}
           onTouchEndCapture={() => {
             mapRef.current.animateToRegion({
               latitude: current.latitude,
@@ -371,30 +285,23 @@ const MapScreen = ({ navigation }) => {
           />
         </View>
         <View
-          style={{
-            position: "absolute",
-            width: 48,
-            height: 48,
-            borderRadius: 24,
-            zIndex: 1,
-            shadowColor: "black",
-            shadowOffset: {
-              width: 0,
-              height: 5,
-            },
-            shadowOpacity: 0.25,
-            shadowRadius: 3.5,
-            left: 319,
-            bottom: 112,
-            backgroundColor: "red",
-          }}
+          style={styles.createNote}
           onTouchEndCapture={() => {
             console.log("create note !!");
           }}
         >
           <CreateNote />
         </View>
-        <RecordMarker recordData={list1} origin={origin} />
+        <RecordMarker
+          recordData={
+            allRecordQuery.data
+              ? Object.values(allRecordQuery.data).filter((record) => {
+                  return record.folderID in userQuery.data?.folderIDs;
+                })
+              : []
+          }
+          origin={origin}
+        />
       </MapView>
       <SearchView navigation={navigation} origin={origin} />
     </SafeAreaView>
@@ -421,5 +328,31 @@ const styles = StyleSheet.create({
     left: 330,
     top: 608,
     tintColor: "grey",
+  },
+  currentLocationButton: {
+    position: "absolute",
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    left: 23,
+    bottom: 112,
+    backgroundColor: "white",
+  },
+  createNote: {
+    position: "absolute",
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    zIndex: 1,
+    shadowColor: "black",
+    shadowOffset: {
+      width: 0,
+      height: 5,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.5,
+    left: 319,
+    bottom: 112,
+    backgroundColor: "red",
   },
 });
