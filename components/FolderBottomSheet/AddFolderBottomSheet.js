@@ -2,7 +2,7 @@ import { ref, onValue, set, push } from "firebase/database";
 import { database } from "../../firebase";
 import React, { useEffect, useRef, useState, useContext } from "react";
 import { View } from "react-native";
-
+import { useQueryClient } from "react-query";
 import AppContext from "../AppContext";
 import SendPushNotification from "../../modules/SendPushNotification";
 import DefaultFolderBottomSheet from "./defaultFolderBottomSheet";
@@ -20,6 +20,7 @@ const addNewFolder = ({
   folderName,
   folderColor,
   folderUserIDs,
+  queryClient,
 }) => {
   //친구초대한 사람한테 push알림 보내는 함수
   const reference1 = ref(db, "/folders"); //folders에 push
@@ -81,6 +82,8 @@ const addNewFolder = ({
   }));
   setFolderID(newFolderID);
   setFolderName(folderName);
+  // invalidate queries
+  queryClient.invalidateQueries(["all-folders"]);
 };
 const AddFolderBottomSheet = ({
   stackNavigation,
@@ -94,6 +97,7 @@ const AddFolderBottomSheet = ({
   const myID = myContext.myID;
   const myFirstName = myContext.myFirstName;
   const myLastName = myContext.myLastName;
+  const queryClient = useQueryClient();
 
   const [newFolderName, setNewFolderName] = useState("");
   const [newFolderColor, setNewFolderColor] = useState("#EB7A7C");
@@ -130,6 +134,7 @@ const AddFolderBottomSheet = ({
       folderName: newFolderName,
       folderColor: newFolderColor,
       folderUserIDs: newFolderUserIDs,
+      queryClient: queryClient,
     });
     setShow(false);
   };

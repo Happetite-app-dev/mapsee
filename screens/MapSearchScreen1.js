@@ -134,7 +134,6 @@ const SearchBox = ({
             : JSON.parse(await AsyncStorage.getItem("search"));
         storeData([...newArray, newPlace]);
 
-        console.log("onPress", details);
         gotoSearch2Screen({ navigation, data: details });
       }}
       styles={styles.GooglePlacesAutocomplete}

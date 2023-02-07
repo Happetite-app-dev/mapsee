@@ -18,7 +18,7 @@ export const useRecordQuery = (recordID) =>
   useQuery(["records", recordID], () => fetchRecord(recordID));
 
 export const useAllFolderQuery = () =>
-  useQuery(["all-Folders"], () => fetchAllFolder());
+  useQuery(["all-folders"], () => fetchAllFolder());
 
 export const useAllRecordQuery = () =>
   useQuery(["all-records"], () => fetchAllRecord());

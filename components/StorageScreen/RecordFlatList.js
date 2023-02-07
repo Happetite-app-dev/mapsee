@@ -12,9 +12,9 @@ import NoImageRecord1 from "../../assets/image/noImageRecord1.svg";
 import NoImageRecord2 from "../../assets/image/noImageRecord2.svg";
 
 const gotoEditScreen = (stackNavigation, item) => {
+  console.log("RecordFlatList", item);
   stackNavigation.navigate("EditScreen", {
     recordID: item.recordID,
-    ...item.recordData,
   });
 };
 

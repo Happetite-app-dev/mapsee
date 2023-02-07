@@ -1,5 +1,7 @@
 import { useIsFocused } from "@react-navigation/native";
-import { ref, onValue, set, push, remove, off } from "firebase/database";
+import { ref, onValue, set, push, remove, off, query } from "firebase/database";
+import { useQueryClient } from "react-query";
+
 import {
   ref as ref_storage,
   uploadBytes,
@@ -38,6 +40,7 @@ import { PopUpType1, PopUpType2 } from "../components/PopUp";
 import SnackBar from "../components/SnackBar";
 import { storage, auth, database } from "../firebase";
 import SendPushNotification from "../modules/SendPushNotification";
+import { useRecordQuery } from "../queries";
 
 const db = database;
 
@@ -92,7 +95,8 @@ const saveData = async (
   text,
   writeDate_,
   recordID,
-  originalfolderID
+  originalfolderID,
+  queryClient
 ) => {
   const timeNow = new Date();
   const writeDate = writeDate_ || {
@@ -171,6 +175,11 @@ const saveData = async (
         });
       }
     });
+
+    // invalidate queries
+    queryClient.invalidateQueries(["folders", folderID]);
+    queryClient.invalidateQueries(["all-records"]);
+    console.log("query invalidated");
   } //새 기록이 아니라면
   else {
     const reference1 = ref(db, "/records/" + recordID);
@@ -260,6 +269,11 @@ const saveData = async (
     });
 
     //기존 기록의 수정이나 삭제는 알림 없어도 됨.
+
+    // invalidate queries
+    queryClient.invalidateQueries(["folders", folderID]);
+    queryClient.invalidateQueries(["records", recordID]);
+    queryClient.invalidateQueries(["all-records"]);
   }
 };
 const storeRecord = async ({
@@ -282,6 +296,7 @@ const storeRecord = async ({
   recordID,
   originalfolderID,
   IsNewRecord,
+  queryClient,
 }) => {
   await saveData(
     myUID,
@@ -300,12 +315,13 @@ const storeRecord = async ({
     text_,
     writeDate,
     recordID,
-    originalfolderID
+    originalfolderID,
+    queryClient
   ).then(() => {
     IsNewRecord ? navigation.pop() : navigation.navigate("Storage"); //realtimeDataBase가 모두 업데이트 된후
   });
 };
-const removeData = async ({ recordID, folderID, placeID }) => {
+const removeData = async ({ recordID, folderID, placeID, queryClient }) => {
   //remove from storage
   const folderRef = ref_storage(storage, `images/${recordID}/`);
 
@@ -344,10 +360,21 @@ const removeData = async ({ recordID, folderID, placeID }) => {
         }
       )
     );
+
+  // invalidate queries
+  queryClient.invalidateQueries(["folders", folderID]);
+  queryClient.invalidateQueries(["records", recordID]);
+  queryClient.invalidateQueries(["all-records"]);
 };
 
-const removeRecord = async ({ navigation, recordID, folderID_, placeID }) => {
-  await removeData({ recordID, folderID_, placeID }).then(
+const removeRecord = async ({
+  navigation,
+  recordID,
+  folderID_,
+  placeID,
+  queryClient,
+}) => {
+  await removeData({ recordID, folderID_, placeID, queryClient }).then(
     () => navigation.navigate("Storage") //realtimeDataBase가 모두 업데이트 된후
   );
 };
@@ -356,54 +383,46 @@ const EditScreen = ({ navigation, route }) => {
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
   const myID = myContext.myID;
+  const queryClient = useQueryClient();
+
   const myFirstName = myContext.myFirstName;
   const myLastName = myContext.myLastName;
 
   const timeNow2 = new Date();
 
-  const {
-    recordID,
-    folderID,
-    placeID,
-    address,
-    lctn,
-    userID,
-    writeDate,
-    title,
-    placeName,
-    date,
-    folderName,
-    photos,
-    text,
-  } = route.params;
+  const { recordID } = route.params;
+  const { data, isLoading, error } = useRecordQuery(recordID);
+  console.log("EditScreenData", route.params);
 
-  const IsNewRecord = title === undefined; //지금 사용자가 작성하고 있는 record가 새로 만드는 record인지 기존에 있던 record인지를 알려주는 bool
-  const IsRecordOwner = userID === myUID; //기존의 기록인 경우, 그것이 자신의 기록인지 확인하는 bool
+  const IsNewRecord = data.title === undefined; //지금 사용자가 작성하고 있는 record가 새로 만드는 record인지 기존에 있던 record인지를 알려주는 bool
+  const IsRecordOwner = data.userID === myUID; //기존의 기록인 경우, 그것이 자신의 기록인지 확인하는 bool
   const [isEditable, setIsEditable] = useState(IsNewRecord); //이거는 IsNewRecord이거나, IsRecordOwner이고 토글을 눌렀을 때 true가 됨
 
-  const [title_, setTitle_] = useState(title || undefined);
+  const [title_, setTitle_] = useState(data.title || undefined);
 
-  const [place, setPlace] = useState(placeName);
+  const [place, setPlace] = useState(data.placeName);
 
   const [date_, setDate_] = useState(
-    date === undefined
+    data.date === undefined
       ? new Date()
-      : new Date(date.year, date.month - 1, date.day)
+      : new Date(data.date.year, data.date.month - 1, data.date.day)
   );
   const [showDatePicker, setShowDatePicker] = useState(false);
 
-  const originalfolderID = folderID; //만약 IsnewRecord가 아니라면 기존에 저장되어 있을 folderID를 받는다. IsNewRecord라면
-  const [folderID_, setFolderID_] = useState(folderID || defaultFolderID);
+  const originalfolderID = data.folderID; //만약 IsnewRecord가 아니라면 기존에 저장되어 있을 folderID를 받는다. IsNewRecord라면
+  const [folderID_, setFolderID_] = useState(data.folderID || defaultFolderID);
   const [folderName_, setFolderName_] = useState(
-    folderName || defaultFolderName
+    data.folderName || defaultFolderName
   );
   const [showFolderBottomSheet, setShowFolderBottomSheet] = useState(false);
 
   const [selectedPhotos, setSelectedPhotos] = useState(
-    photos !== undefined && photos !== null ? Object.values(photos) : []
+    data.photos !== undefined && data.photos !== null
+      ? Object.values(data.photos)
+      : []
   );
 
-  const [text_, setText_] = useState(text || "");
+  const [text_, setText_] = useState(data.text || "");
   const [removeModalVisible, setRemoveModalVisible] = useState(false);
   const [goBackModalVisible, setGoBackModalVisible] = useState(false);
 
@@ -552,7 +571,7 @@ const EditScreen = ({ navigation, route }) => {
             style={{ flex: 1 }}
           />
         </View>
-        {!isEditable && (text === undefined || text.length === 0) ? (
+        {!isEditable && (data.text === undefined || data.text.length === 0) ? (
           <></>
         ) : (
           <View style={{ ...styles.item }}>
@@ -593,18 +612,19 @@ const EditScreen = ({ navigation, route }) => {
                   myLastName,
                   title_,
                   place,
-                  placeID,
-                  address,
-                  lctn,
+                  placeID: data.placeID,
+                  address: data.address,
+                  lctn: data.lctn,
                   date_,
                   folderID_,
                   folderName_,
                   selectedPhotos,
                   text_,
-                  writeDate,
+                  writeDate: data.writeDate,
                   recordID,
                   originalfolderID,
                   IsNewRecord,
+                  queryClient,
                 })
               }
               style={{ width: 160, padding: 15, marginLeft: 7 }}
@@ -629,7 +649,13 @@ const EditScreen = ({ navigation, route }) => {
         modalVisible={removeModalVisible}
         modalHandler={setRemoveModalVisible}
         action={() =>
-          removeRecord({ navigation, recordID, folderID_, placeID })
+          removeRecord({
+            navigation,
+            recordID,
+            folderID_,
+            placeID: data.placeID,
+            queryClient,
+          })
         }
         askValue="정말 삭제하시겠어요?"
         actionValue="삭제"
@@ -649,18 +675,19 @@ const EditScreen = ({ navigation, route }) => {
             myLastName,
             title_,
             place,
-            placeID,
-            address,
-            lctn,
+            placeID: data.placeID,
+            address: data.address,
+            lctn: data.lctn,
             date_,
             folderID_,
             folderName_,
             selectedPhotos,
             text_,
-            writeDate,
+            writeDate: data.writeDate,
             recordID,
             originalfolderID,
             IsNewRecord,
+            queryClient,
           });
         }}
         askValue="변경 사항을 저장하시겠어요?"

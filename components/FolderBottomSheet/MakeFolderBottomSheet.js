@@ -10,7 +10,7 @@ import {
   FlatList,
 } from "react-native";
 import { ScrollView, Switch, TextInput } from "react-native-gesture-handler";
-
+import { useQueryClient } from "react-query";
 import AppContext from "../AppContext";
 import SendPushNotification from "../../modules/SendPushNotification";
 import { useUserQuery, useAllFolderQuery } from "../../queries";
@@ -47,6 +47,7 @@ const addNewFolder = async ({
   IsNewRecord,
   myUID,
   allFolderQuery,
+  queryClient,
 }) => {
   if (IsNewRecord) {
     //새 기록이면 친구초대한 모든 사람 대상으로 데이터베이스 수정(-->이건 나 말고 다른 사람에게는 해당X) 및 알림 보내기
@@ -100,6 +101,7 @@ const addNewFolder = async ({
         });
       }
     });
+    queryClient.invalidateQueries(["all-folders"]);
   } else {
     //새 폴더가 아니라면 개인화폴더이름, 폴더색상만 데이터베이스상에서 수정
     const folder = allFolderQuery.data[folderID];
@@ -136,6 +138,8 @@ const addNewFolder = async ({
         });
       });
     });
+    queryClient.invalidateQueries(["all-folders"]);
+    queryClient.invalidateQueries(["folders", folderID]);
   }
 };
 
@@ -149,7 +153,7 @@ const MakeFolderBottomSheet = ({
 }) => {
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
-  const queryClient = useUserQuery(myUID);
+  const queryClient = useQueryClient();
 
   const myID = myContext.myID;
   const myFirstName = myContext.myFirstName;
@@ -183,6 +187,7 @@ const MakeFolderBottomSheet = ({
       myFirstName,
       myLastName,
       allFolderQuery,
+      queryClient,
     }).then(() => {
       queryClient.invalidateQueries(["users", myUID]);
 

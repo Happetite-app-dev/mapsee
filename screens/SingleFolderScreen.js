@@ -7,6 +7,7 @@ import GoBackHeader from "../components/GoBackHeader";
 import { PopUpType1 } from "../components/PopUp";
 import RecordFlatList from "../components/StorageScreen/RecordFlatList";
 import { database } from "../firebase";
+import { useAllRecordQuery, useFolderQuery } from "../queries";
 
 const gotoMakeFolderBottomSheetScreen = ({
   navigation,
@@ -65,17 +66,25 @@ const exitData = async (myUID, folderID) => {
 const SingleFolderScreen = ({ navigation, route }) => {
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
+  const { folderID, folderName, folderColor, folderUserIDs } = route.params;
+  const query = useFolderQuery(folderID);
+  const allRecordQuery = useAllRecordQuery();
 
-  const { recordDataSource, folderID, folderName, folderColor, folderUserIDs } =
-    route.params;
+  const recordDataSource = Object.values(allRecordQuery.data).filter(function (
+    item
+  ) {
+    // Applying filter for the inserted text in search bar
+    return item.folderID === folderID;
+  });
+
   const [modalVisible, setModalVisible] = useState(false);
   return (
     <View style={{ height: "100%", width: "100%", backgroundColor: "white" }}>
       <GoBackHeader
         navigation={navigation}
-        text={folderName}
-        folderColor={folderColor}
-        isShareFolder={folderUserIDs.length >= 2}
+        text={query.data.folderName[myUID]}
+        folderColor={query.data.folderColor[myUID]}
+        isShareFolder={query.data.userIDs?.length >= 2}
         rightButton="edit"
         rightButtonFunction={() =>
           gotoMakeFolderBottomSheetScreen({
@@ -90,7 +99,7 @@ const SingleFolderScreen = ({ navigation, route }) => {
         rightButtonFunction2={() => setModalVisible(true)}
       />
       <RecordFlatList
-        recordDataSource={recordDataSource}
+        recordList={recordDataSource}
         stackNavigation={navigation}
       />
       <PopUpType1

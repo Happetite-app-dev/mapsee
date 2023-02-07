@@ -32,7 +32,7 @@ const IndividualFolder = ({
               ? Object.keys(query.data.userIDs)
               : [],
           });
-          //gotoSingleFolderScreen()
+          //gotoSingleFolderScreen();
         }}
         onLongPress={() => {
           setLongPressedFolder({

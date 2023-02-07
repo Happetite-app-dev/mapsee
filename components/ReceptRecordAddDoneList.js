@@ -8,16 +8,9 @@ import {
   View,
 } from "react-native";
 
-import { database } from "../firebase";
-const db = database;
 const gotoEditScreen = ({ navigation, recordID }) => {
-  let recordData;
-  onValue(ref(db, `/records/${recordID}`), (snapshot) => {
-    recordData = snapshot.val();
-  });
   navigation.navigate("EditScreen", {
     recordID,
-    ...recordData,
   });
 };
 const ReceptRecordAddDoneList = ({
