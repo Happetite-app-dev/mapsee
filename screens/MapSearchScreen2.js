@@ -227,9 +227,11 @@ const BottomSheetScreen = ({
           <RecordFlatList
             recordList={
               allRecordQuery.data
-                ? Object.values(allRecordQuery.data).filter((record) => {
-                    return record.placeID == targetId;
-                  })
+                ? Object.entries(allRecordQuery.data).filter(
+                    ([key, values]) => {
+                      return values.placeID === targetId;
+                    }
+                  )
                 : []
             } /// 수정필요
             stackNavigation={navigation}

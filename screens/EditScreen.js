@@ -21,6 +21,7 @@ import {
   SafeAreaView,
   TouchableHighlight,
   Alert,
+  unstable_batchedUpdates,
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
@@ -391,45 +392,50 @@ const EditScreen = ({ navigation, route }) => {
   const timeNow2 = new Date();
 
   const { recordID } = route.params;
-  const { data, isLoading, error } = useRecordQuery(recordID);
-  console.log("EditScreenData", route.params);
+  const query = useRecordQuery(recordID);
+  const data = query.data;
+  console.log("editScreen", recordID, query);
 
-  const IsNewRecord = data.title === undefined; //지금 사용자가 작성하고 있는 record가 새로 만드는 record인지 기존에 있던 record인지를 알려주는 bool
-  const IsRecordOwner = data.userID === myUID; //기존의 기록인 경우, 그것이 자신의 기록인지 확인하는 bool
+  const IsNewRecord = recordID === undefined; //data?.title === undefined; //지금 사용자가 작성하고 있는 record가 새로 만드는 record인지 기존에 있던 record인지를 알려주는 bool
+  const IsRecordOwner = data?.userID === myUID; //기존의 기록인 경우, 그것이 자신의 기록인지 확인하는 bool
   const [isEditable, setIsEditable] = useState(IsNewRecord); //이거는 IsNewRecord이거나, IsRecordOwner이고 토글을 눌렀을 때 true가 됨
 
-  const [title_, setTitle_] = useState(data.title || undefined);
+  const [title_, setTitle_] = useState(data?.title || undefined);
 
-  const [place, setPlace] = useState(data.placeName);
+  const [place, setPlace] = useState(data?.placeName);
 
   const [date_, setDate_] = useState(
-    data.date === undefined
+    data?.date === undefined
       ? new Date()
-      : new Date(data.date.year, data.date.month - 1, data.date.day)
+      : new Date(data?.date.year, data?.date.month - 1, data?.date.day)
   );
   const [showDatePicker, setShowDatePicker] = useState(false);
 
-  const originalfolderID = data.folderID; //만약 IsnewRecord가 아니라면 기존에 저장되어 있을 folderID를 받는다. IsNewRecord라면
-  const [folderID_, setFolderID_] = useState(data.folderID || defaultFolderID);
+  const originalfolderID = data?.folderID; //만약 IsnewRecord가 아니라면 기존에 저장되어 있을 folderID를 받는다. IsNewRecord라면
+  const [folderID_, setFolderID_] = useState(data?.folderID || defaultFolderID);
   const [folderName_, setFolderName_] = useState(
-    data.folderName || defaultFolderName
+    data?.folderName || defaultFolderName
   );
   const [showFolderBottomSheet, setShowFolderBottomSheet] = useState(false);
 
   const [selectedPhotos, setSelectedPhotos] = useState(
-    data.photos !== undefined && data.photos !== null
-      ? Object.values(data.photos)
+    data?.photos !== undefined && data?.photos !== null
+      ? Object.values(data?.photos)
       : []
   );
 
-  const [text_, setText_] = useState(data.text || "");
+  const [text_, setText_] = useState(data?.text || "");
   const [removeModalVisible, setRemoveModalVisible] = useState(false);
   const [goBackModalVisible, setGoBackModalVisible] = useState(false);
 
   const [visible, setVisible] = useState(false); // Snackbar
   const onToggleSnackBar = () => setVisible(!visible); // SnackbarButton -> 나중에는 없애기
   const onDismissSnackBar = () => setVisible(false); // Snackbar
-  return (
+  return query.isLoading ? (
+    <Text>로딩중</Text>
+  ) : query.isError ? (
+    <Text>에러</Text>
+  ) : (
     <View
       style={{
         width: "100%",
@@ -612,15 +618,15 @@ const EditScreen = ({ navigation, route }) => {
                   myLastName,
                   title_,
                   place,
-                  placeID: data.placeID,
-                  address: data.address,
-                  lctn: data.lctn,
+                  placeID: data?.placeID,
+                  address: data?.address,
+                  lctn: data?.lctn,
                   date_,
                   folderID_,
                   folderName_,
                   selectedPhotos,
                   text_,
-                  writeDate: data.writeDate,
+                  writeDate: data?.writeDate,
                   recordID,
                   originalfolderID,
                   IsNewRecord,
@@ -653,7 +659,7 @@ const EditScreen = ({ navigation, route }) => {
             navigation,
             recordID,
             folderID_,
-            placeID: data.placeID,
+            placeID: data?.placeID,
             queryClient,
           })
         }
@@ -675,15 +681,15 @@ const EditScreen = ({ navigation, route }) => {
             myLastName,
             title_,
             place,
-            placeID: data.placeID,
-            address: data.address,
-            lctn: data.lctn,
+            placeID: data?.placeID,
+            address: data?.address,
+            lctn: data?.lctn,
             date_,
             folderID_,
             folderName_,
             selectedPhotos,
             text_,
-            writeDate: data.writeDate,
+            writeDate: data?.writeDate,
             recordID,
             originalfolderID,
             IsNewRecord,

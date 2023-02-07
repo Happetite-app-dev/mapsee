@@ -271,7 +271,7 @@ const BottomSheetScreen = ({
           style={{ position: "absolute", top: 85, width: "100%", height: 600 }}
         >
           <RecordFlatList
-            recordDataSource={Object.values(masterDataSource)}
+            recordDataSource={Object.entries(masterDataSource)}
             stackNavigation={navigation}
           />
         </View>

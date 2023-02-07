@@ -196,8 +196,8 @@ const StorageScreen = ({ navigation, route }) => {
       <RecordFlatList
         recordList={
           allRecordQuery.data
-            ? Object.values(allRecordQuery.data).filter((record) => {
-                return record.folderID in userQuery.data?.folderIDs;
+            ? Object.entries(allRecordQuery.data).filter(([key, values]) => {
+                return values.folderID in userQuery.data?.folderIDs;
               })
             : []
         }

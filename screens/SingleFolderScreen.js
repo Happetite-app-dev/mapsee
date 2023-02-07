@@ -70,12 +70,12 @@ const SingleFolderScreen = ({ navigation, route }) => {
   const query = useFolderQuery(folderID);
   const allRecordQuery = useAllRecordQuery();
 
-  const recordDataSource = Object.values(allRecordQuery.data).filter(function (
-    item
-  ) {
-    // Applying filter for the inserted text in search bar
-    return item.folderID === folderID;
-  });
+  const recordDataSource = Object.entries(allRecordQuery.data).filter(
+    function ([key, values]) {
+      // Applying filter for the inserted text in search bar
+      return values.folderID === folderID;
+    }
+  );
 
   const [modalVisible, setModalVisible] = useState(false);
   return (

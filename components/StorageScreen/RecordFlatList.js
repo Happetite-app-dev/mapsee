@@ -12,9 +12,8 @@ import NoImageRecord1 from "../../assets/image/noImageRecord1.svg";
 import NoImageRecord2 from "../../assets/image/noImageRecord2.svg";
 
 const gotoEditScreen = (stackNavigation, item) => {
-  console.log("RecordFlatList", item);
   stackNavigation.navigate("EditScreen", {
-    recordID: item.recordID,
+    recordID: item[0],
   });
 };
 
@@ -24,8 +23,9 @@ const IndividualRecord = ({ item, stackNavigation }) => {
       <TouchableOpacity onPress={() => gotoEditScreen(stackNavigation, item)}>
         <View style={{ flexDirection: "column", justifyContent: "center" }}>
           <View style={{ width: 158, height: 148, alignItems: "center" }}>
-            {item.photos !== undefined &&
-            Object.values(item.photos).length >= 1 ? (
+            {item[1].photos !== undefined &&
+            item[1].photos !== null &&
+            Object.values(item[1].photos).length >= 1 ? (
               <View>
                 <Image
                   style={{
@@ -34,7 +34,7 @@ const IndividualRecord = ({ item, stackNavigation }) => {
                     borderTopLeftRadius: 8,
                     borderTopRightRadius: 8,
                   }}
-                  source={{ uri: Object.values(item.photos)[0] }}
+                  source={{ uri: Object.values(item[1].photos)[0] }}
                 />
               </View>
             ) : Math.random() < 0.5 ? (
@@ -47,11 +47,11 @@ const IndividualRecord = ({ item, stackNavigation }) => {
               />
             )}
           </View>
-          <Text style={styles.title}>{item.title}</Text>
-          <Text style={styles.placeName}>{item.placeName}</Text>
+          <Text style={styles.title}>{item[1].title}</Text>
+          <Text style={styles.placeName}>{item[1].placeName}</Text>
           <Text
             style={styles.date}
-          >{`${item.date.year}.${item.date.month}.${item.date.day}`}</Text>
+          >{`${item[1].date.year}.${item[1].date.month}.${item[1].date.day}`}</Text>
         </View>
       </TouchableOpacity>
     </View>
@@ -68,8 +68,16 @@ const RecordFlatList = ({ recordList, stackNavigation }) => {
       data={
         recordList
           ? recordList.sort(function (a, b) {
-              const date1 = new Date(a.date.year, a.date.month, a.date.day);
-              const date2 = new Date(b.date.year, b.date.month, b.date.day);
+              const date1 = new Date(
+                a[1].date.year,
+                a[1].date.month,
+                a[1].date.day
+              );
+              const date2 = new Date(
+                b[1].date.year,
+                b[1].date.month,
+                b[1].date.day
+              );
               return date2 - date1;
             })
           : []
