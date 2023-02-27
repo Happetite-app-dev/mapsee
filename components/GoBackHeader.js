@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import { Image, StyleSheet, Text, View, TouchableOpacity, TouchableHighlight } from "react-native";
 
 import AddFriend from "../assets/icons/addFriend.svg";
 import Close from "../assets/icons/close.svg";
@@ -112,7 +112,7 @@ const GoBackHeader = ({
           <></>
         )}
       </View>
-    </View>
+    </View >
   );
 };
 
@@ -122,7 +122,7 @@ const styles = StyleSheet.create({
     width: "100%",
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "white",
+    backgroundColor: "white"
   },
   goBack: {
     width: 32,

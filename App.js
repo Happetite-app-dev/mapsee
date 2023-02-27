@@ -26,7 +26,6 @@ import SubSearchScreen1 from "./screens/SubSearchScreen1";
 import SubSearchScreen2 from "./screens/SubSearchScreen2";
 import SuggestScreen from "./screens/SuggestScreen";
 import TutorialScreen from "./screens/TutorialScreen";
-
 const Stack = createNativeStackNavigator();
 const queryClient = new QueryClient();
 const App = () => {
