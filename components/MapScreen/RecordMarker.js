@@ -18,7 +18,7 @@ const RecordMarker = ({ recordData, origin }) => {
   return recordData == null || recordData === undefined ? (
     <></>
   ) : (
-    recordData.map((record) => {
+    recordData.map(([key, record]) => {
       const showMarker = Math.random();
       const recordDate = new Date(
         record?.date?.year,
@@ -32,7 +32,7 @@ const RecordMarker = ({ recordData, origin }) => {
 
       return (
         <Marker
-          key={record.placeID}
+          key={key}
           coordinate={record.lctn}
           opacity={origin.latitudeDelta < 0.01 || showMarker > 0.5 ? 100 : 0}
           style={{ zIndex: Math.round(dayDiff * 1000) }}

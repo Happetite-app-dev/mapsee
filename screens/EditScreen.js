@@ -1,5 +1,4 @@
-import { useIsFocused } from "@react-navigation/native";
-import { ref, onValue, set, push, remove, off, query } from "firebase/database";
+import { ref, onValue, set, push, remove } from "firebase/database";
 import { useQueryClient } from "react-query";
 
 import {
@@ -180,7 +179,6 @@ const saveData = async (
     // invalidate queries
     queryClient.invalidateQueries(["folders", folderID]);
     queryClient.invalidateQueries(["all-records"]);
-    console.log("query invalidated");
   } //새 기록이 아니라면
   else {
     const reference1 = ref(db, "/records/" + recordID);
@@ -394,7 +392,6 @@ const EditScreen = ({ navigation, route }) => {
   const { recordID } = route.params;
   const query = useRecordQuery(recordID);
   const data = query.data;
-  console.log("editScreen", recordID, query);
 
   const IsNewRecord = recordID === undefined; //data?.title === undefined; //지금 사용자가 작성하고 있는 record가 새로 만드는 record인지 기존에 있던 record인지를 알려주는 bool
   const IsRecordOwner = data?.userID === myUID; //기존의 기록인 경우, 그것이 자신의 기록인지 확인하는 bool

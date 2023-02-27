@@ -295,7 +295,7 @@ const MapScreen = ({ navigation }) => {
         <RecordMarker
           recordData={
             allRecordQuery.data
-              ? Object.values(allRecordQuery.data).filter((record) => {
+              ? Object.entries(allRecordQuery.data).filter(([key, record]) => {
                   return record.folderID in userQuery.data?.folderIDs;
                 })
               : []
