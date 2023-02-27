@@ -83,7 +83,7 @@ const AddFriendModal = ({
         setRequestSent(false);
         onToggleSnackBar();
       } else {
-        callFriendRequest(friendUID, myUID, myID, myFirstName, myLastName);
+        callFriendRequest(friendUID, myUID, myID, myFirstName, myLastName)
         setRequestSent(true);
         setRequestInfo([newFriend, friendName]); // newFriend: friend ID
         onToggleSnackBar();
