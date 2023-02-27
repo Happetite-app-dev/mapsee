@@ -14,7 +14,7 @@ import {
   TouchableOpacity,
   Dimensions,
 } from "react-native";
-
+import BottomButton from "../components/BottomButton";
 import AppContext from "../components/AppContext";
 import { auth, database } from "../firebase";
 
@@ -129,11 +129,7 @@ const LoginScreen = ({ navigation }) => {
     } else {
       return (
         <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.invalidButton}>
-            <View style={{ justifyContent: "center", alignItems: "center" }}>
-              <Text style={styles.invalidButtonText}>계속하기</Text>
-            </View>
-          </TouchableOpacity>
+          <BottomButton text={"계속하기"} />
         </View>
       );
     }

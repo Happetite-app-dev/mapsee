@@ -26,6 +26,7 @@ import SubSearchScreen1 from "./screens/SubSearchScreen1";
 import SubSearchScreen2 from "./screens/SubSearchScreen2";
 import SuggestScreen from "./screens/SuggestScreen";
 import TutorialScreen from "./screens/TutorialScreen";
+import ImageView from "./screens/ImageView";
 const Stack = createNativeStackNavigator();
 const queryClient = new QueryClient();
 const App = () => {
@@ -176,6 +177,16 @@ const App = () => {
               name="EditScreen"
               component={EditScreen}
               options={{ headerShown: false, presentation: "containedModal" }}
+            />
+
+            <Stack.Screen
+              name="ImageView"
+              component={ImageView}
+              options={{
+                headerShown: false,
+                gestureEnabled: false,
+                presentation: "containedModal",
+              }}
             />
             <Stack.Screen
               name="ProfileScreen"

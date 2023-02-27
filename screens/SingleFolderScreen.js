@@ -67,7 +67,7 @@ const exitData = async (myUID, folderID) => {
 const SingleFolderScreen = ({ navigation, route }) => {
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
-  const { folderID, folderName, folderColor, folderUserIDs } = route.params;
+  const { folderID } = route.params;
   const query = useFolderQuery(folderID);
   const allRecordQuery = useAllRecordQuery();
 
@@ -91,10 +91,6 @@ const SingleFolderScreen = ({ navigation, route }) => {
           gotoMakeFolderBottomSheetScreen({
             navigation,
             folderID,
-            folderName,
-            folderColor,
-            folderUserIDs,
-            recordDataSource,
           })
         }
         rightButtonFunction2={() => setModalVisible(true)}

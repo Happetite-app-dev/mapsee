@@ -13,7 +13,7 @@ import { ScrollView, Switch, TextInput } from "react-native-gesture-handler";
 import { useQueryClient } from "react-query";
 import AppContext from "../AppContext";
 import SendPushNotification from "../../modules/SendPushNotification";
-import { useUserQuery, useAllFolderQuery } from "../../queries";
+import { useUserQuery, useAllFolderQuery, useFolderQuery } from "../../queries";
 
 import DefaultFolderBottomSheet from "./defaultFolderBottomSheet";
 import { database } from "../../firebase";
@@ -24,14 +24,12 @@ const gotoStorageScreen = (stackNavigation) => {
 };
 const gotoSingleFolderScreen = ({
   stackNavigation,
-  recordDataSource,
   folderID,
   newFolderName,
   newFolderColor,
   newFolderUserIDs,
 }) => {
   stackNavigation.navigate("SingleFolderScreen", {
-    recordDataSource,
     folderID,
     folderName: newFolderName,
     folderColor: newFolderColor,
@@ -46,7 +44,6 @@ const addNewFolder = async ({
   originalFolderUserIDs,
   IsNewRecord,
   myUID,
-  allFolderQuery,
   queryClient,
 }) => {
   if (IsNewRecord) {
@@ -104,7 +101,6 @@ const addNewFolder = async ({
     queryClient.invalidateQueries(["all-folders"]);
   } else {
     //새 폴더가 아니라면 개인화폴더이름, 폴더색상만 데이터베이스상에서 수정
-    const folder = allFolderQuery.data[folderID];
     const reference1 = ref(db, `/folders/${folderID}/folderName/${myUID}`); //folderName 개인화
     set(reference1, folderName);
     const reference2 = ref(db, `/folders/${folderID}/folderColor/${myUID}`); //folderColor 개인화
@@ -143,26 +139,25 @@ const addNewFolder = async ({
   }
 };
 
-const MakeFolderBottomSheet = ({
-  stackNavigation,
-  folderID,
-  folderName_,
-  folderColor_,
-  folderUserIDs_,
-  recordDataSource,
-}) => {
+const MakeFolderBottomSheet = ({ stackNavigation, folderID }) => {
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
   const queryClient = useQueryClient();
+  const query = useFolderQuery(folderID);
+  const folderName_ = query.data?.folderName;
+  const folderColor_ =
+    query.data?.folderColor !== undefined
+      ? query.data?.folderColor[myUID]
+      : undefined;
+  const folderUserIDs_ =
+    query.data?.userIDs !== undefined ? Object.keys(query.data?.userIDs) : [];
 
   const myID = myContext.myID;
   const myFirstName = myContext.myFirstName;
   const myLastName = myContext.myLastName;
   const IsNewRecord = folderName_ === null;
   const [newFolderName, setNewFolderName] = useState(folderName_ || "");
-  const [newFolderColor, setNewFolderColor] = useState(
-    folderColor_ || "#EB7A7C"
-  );
+  const [newFolderColor, setNewFolderColor] = useState(folderColor_ || null);
   const [newFolderUserIDs, setNewFolderUserIDs] = useState(
     folderUserIDs_ || [myUID]
   );
@@ -170,8 +165,6 @@ const MakeFolderBottomSheet = ({
   const onChangeNewFolderUserIDs = (newFolderUserIDs_) => {
     setNewFolderUserIDs(newFolderUserIDs_);
   };
-
-  const allFolderQuery = useAllFolderQuery();
 
   //폴더에 속한 친구이름 목록을 바텀쉬트에 띄우는 함수
   const onPressFunction = async () => {
@@ -186,7 +179,6 @@ const MakeFolderBottomSheet = ({
       myID,
       myFirstName,
       myLastName,
-      allFolderQuery,
       queryClient,
     }).then(() => {
       queryClient.invalidateQueries(["users", myUID]);
@@ -195,11 +187,7 @@ const MakeFolderBottomSheet = ({
         ? gotoStorageScreen(stackNavigation)
         : gotoSingleFolderScreen({
             stackNavigation,
-            recordDataSource,
             folderID,
-            newFolderName,
-            newFolderColor,
-            newFolderUserIDs,
           });
     });
   };

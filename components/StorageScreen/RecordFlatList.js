@@ -59,7 +59,7 @@ const IndividualRecord = ({ item, stackNavigation }) => {
   );
 };
 
-const RecordFlatList = ({ recordList, stackNavigation }) => {
+const RecordFlatList = ({ recordList, stackNavigation, style }) => {
   const renderItem = ({ item }) => (
     <IndividualRecord item={item} stackNavigation={stackNavigation} />
   );
@@ -91,6 +91,7 @@ const RecordFlatList = ({ recordList, stackNavigation }) => {
       style={{
         width: "100%",
         left: 10,
+        ...style,
       }}
     />
   );
