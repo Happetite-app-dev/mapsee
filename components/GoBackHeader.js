@@ -128,7 +128,6 @@ const styles = StyleSheet.create({
     height: 24,
     position: "absolute",
     left: 31,
-    backgroundColor: "red",
   },
   title: {
     width: 280,
@@ -136,7 +135,6 @@ const styles = StyleSheet.create({
     left: 63,
     position: "absolute",
     flexDirection: "row",
-    backgroundColor: "grey",
   },
   titleText: {
     fontSize: 16,
@@ -152,29 +150,3 @@ const styles = StyleSheet.create({
 });
 
 export default GoBackHeader;
-
-/**
- * 
-      <View
-        onTouchEndCapture={() => {
-          navigation.goBack();
-        }}
-        style={styles.goBack}
-      >
-        <GoBack style={{ position: "relative" }} />
-      </View>
-      <View style={styles.title}>
-        <Text style={styles.titleText}>{text}</Text>
-      </View>
-      {RightButton === "goHome" ? (
-        <GoHome navigation={navigation} />
-      ) : RightButton === "none" ? (
-        <></>
-      ) : RightButton === "edit" ? (
-        <></>
-      ) : RightButton === "addFriend" ? (
-        <></>
-      ) : (
-        <></>
-      )}
- */
