@@ -1,6 +1,6 @@
 import { ref, onValue, set, push, get } from "firebase/database";
 import { useContext, useState } from "react";
-
+import { useQueryClient } from "react-query";
 import AppContext from "../components/AppContext";
 import {
   fetchFolderObject,
@@ -21,7 +21,7 @@ import ReceptRecordAddDoneList from "./ReceptRecordAddDoneList";
 
 import { database } from "../firebase";
 const db = database;
-const acceptFriendRequest = ({ myUID, noticeKey, requesterUID }) => {
+const acceptFriendRequest = async ({ myUID, noticeKey, requesterUID }) => {
   set(
     ref(db, "/notices/" + myUID + "/" + noticeKey + "/type/"), //remove할지 추후에 고려 필요
     "recept_friend_request_accept_inact"
@@ -39,7 +39,7 @@ const acceptFriendRequest = ({ myUID, noticeKey, requesterUID }) => {
   set(ref(db, "/users/" + myUID + "/friendUIDs/" + requesterUID), true);
   set(ref(db, "/users/" + requesterUID + "/friendUIDs/" + myUID), true);
 };
-const acceptFolderInviteRequest = ({
+const acceptFolderInviteRequest = async ({
   myUID,
   noticeKey,
   requesterUID,
@@ -84,7 +84,7 @@ const acceptFolderInviteRequest = ({
   );
 };
 
-const denyFriendRequest = ({ myUID, noticeKey, onToggleSnackBar }) => {
+const denyFriendRequest = async ({ myUID, noticeKey, onToggleSnackBar }) => {
   set(
     ref(db, "/notices/" + myUID + "/" + noticeKey + "/type/"),
     "recept_friend_request_deny_inact"
@@ -92,7 +92,7 @@ const denyFriendRequest = ({ myUID, noticeKey, onToggleSnackBar }) => {
   onToggleSnackBar();
 };
 
-const denyFolderInviteRequest = ({ myUID, noticeKey, onToggleSnackBar }) => {
+const denyFolderInviteRequest = async ({ myUID, noticeKey, onToggleSnackBar }) => {
   set(
     ref(db, "/notices/" + myUID + "/" + noticeKey + "/type/"),
     "recept_folderInvite_request_deny_inact"
@@ -105,6 +105,7 @@ const NoticeRenderer = ({ navigation, item, onToggleSnackBar }) => {
   const myUID = myContext.myUID;
   const [userObject, setUserObject] = useState({});
   const [folderObject, setFolderObject] = useState({});
+  const queryClient = useQueryClient();
   switch (item.val.type) {
     case "recept_friend_request": //친구 요청 수신 - 수락 거절 안 한 활성화된 새로운 알림
       return (
@@ -115,18 +116,22 @@ const NoticeRenderer = ({ navigation, item, onToggleSnackBar }) => {
             userID: item.val.requesterUID,
           })}
           time={item.val.time}
-          acceptRequest={() =>
-            acceptFriendRequest({
+          acceptRequest={async () =>
+            await acceptFriendRequest({
               myUID,
               noticeKey: item.key,
               requesterUID: item.val.requesterUID,
+            }).then(() => {
+              queryClient.invalidateQueries(["all-notices"]);
             })
           }
-          denyRequest={() =>
-            denyFriendRequest({
+          denyRequest={async () =>
+            await denyFriendRequest({
               myUID,
               noticeKey: item.key,
               onToggleSnackBar,
+            }).then(() => {
+              queryClient.invalidateQueries(["all-notices"]);
             })
           }
         />
@@ -172,19 +177,23 @@ const NoticeRenderer = ({ navigation, item, onToggleSnackBar }) => {
             setFolderObject,
             folderID: item.val.folderID,
           })}
-          acceptRequest={() => {
-            acceptFolderInviteRequest({
+          acceptRequest={async () => {
+            await acceptFolderInviteRequest({
               myUID,
               noticeKey: item.key,
               requesterUID: item.val.requesterUID,
               folderID: item.val.folderID,
-            });
+            }).then(() => {
+              queryClient.invalidateQueries(["all-notices"]);
+            })
           }}
-          denyRequest={() =>
-            denyFolderInviteRequest({
+          denyRequest={async () =>
+            await denyFolderInviteRequest({
               myUID,
               noticeKey: item.key,
               onToggleSnackBar,
+            }).then(() => {
+              queryClient.invalidateQueries(["all-notices"]);
             })
           }
         />
