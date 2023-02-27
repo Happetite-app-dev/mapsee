@@ -208,7 +208,7 @@ const BottomSheetScreen = ({
           rightButton="goHome"
           goBackFunction={() => {
             console.log("done");
-            toggleAnimation1(showAnimation, setAnimationValue);
+            toggleAnimation3(showAnimation, setAnimationValue);
           }}
         />
         <View

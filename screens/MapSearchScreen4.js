@@ -25,6 +25,7 @@ const gotoSearch2Screen = ({ navigation, item }) => {
         address: item.structured_formatting.secondary_text,
         id: item.place_id,
       };
+      navigation.navigate("MapSearchScreen2", newPlace);
     },
     (error) => {
       console.error("cannot move to MapSearchScreen2", error);

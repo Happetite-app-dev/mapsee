@@ -42,7 +42,9 @@ const GoBackHeader = ({
         <View
           style={styles.title}
           onTouchEndCapture={() => {
-            console.log("title");
+            console.log("back through header");
+            if (goBackFunction === undefined) navigation.goBack();
+            else goBackFunction();
           }}
         >
           {folderColor !== undefined ? (

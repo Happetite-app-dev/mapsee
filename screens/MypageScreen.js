@@ -69,7 +69,12 @@ const MypageScreen = ({ navigation }) => {
             >
               {myID}
             </Text>
-            <Copy onPress={() => {}} style={{ left: 16 }} />
+            <Copy
+              onPress={() => {
+                console.log("copy");
+              }}
+              style={{ left: 16 }}
+            />
           </View>
         </View>
         <Arrow

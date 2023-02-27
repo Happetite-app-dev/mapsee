@@ -274,7 +274,7 @@ const MapScreen = ({ navigation }) => {
       <View
         style={styles.createNote}
         onTouchEndCapture={() => {
-          console.log("create note !!");
+          navigation.navigate("EditScreen", 0);
         }}
       >
         <CreateNote style={{ position: "absolute" }} />
