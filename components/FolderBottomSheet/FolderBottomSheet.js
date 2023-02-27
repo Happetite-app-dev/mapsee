@@ -8,7 +8,12 @@ const db = database;
 import AppContext from "../AppContext";
 import AddFolderBottomSheet from "./AddFolderBottomSheet";
 import BottomButton from "../BottomButton";
+import BottomSheetScroll from "../../assets/icons/BottomSheetScroll.svg";
+import ListEcllipse from "../../assets/icons/ListEcllipse.svg";
+import ControlEmpty from "../../assets/icons/ControlEmpty.svg";
+import ControlFull from "../../assets/icons/ControlFull.svg";
 import SnackBar from "../SnackBar";
+
 const toggleAnimation = ({ show, showAnimation, setAnimationValue }) => {
   const val = show ? 0 : -1000;
   Animated.timing(showAnimation, {
@@ -24,6 +29,7 @@ const FolderBottomSheet = ({
   setShow,
   setFolderName,
   setFolderID,
+  selectedFolderID,
 }) => {
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
@@ -67,25 +73,23 @@ const FolderBottomSheet = ({
         backgroundColor: "#fff",
         borderTopLeftRadius: 30,
         borderTopRightRadius: 30,
+        borderWidth: 1,
+        borderColor: "#DDDFE9",
         padding: 0,
         position: "absolute",
         zIndex: 3,
         alignItems: "center",
         justifyContent: "center",
-        height: 630,
-        shadowOffset: {
-          width: 0,
-          height: 12,
-        },
+        height: 728,
         alignSelf: "center",
-        shadowOpacity: 0.58,
-        shadowRadius: 16.0,
         bottom: showAnimation,
         elevation: 24,
       }}
     >
       {isSelectingFolder ? (
-        <View style={{ width: "100%", height: "100%" }}>
+        <View style={{ width: "100%", height: "100%", alignItems: "center" }}>
+          <BottomSheetScroll style={{ top: 8 }} />
+
           <ScrollView
             showsHorizontalScrollIndicator={false}
             style={{ width: "100%", top: 20 }}
@@ -94,7 +98,7 @@ const FolderBottomSheet = ({
               if (folderName != null)
                 return (
                   <View
-                    style={{ alignItems: "center", paddingBottom: 10 }}
+                    style={{ alignItems: "center", height: 48 }}
                     key={folderID}
                   >
                     <TouchableOpacity
@@ -104,23 +108,34 @@ const FolderBottomSheet = ({
                         setShow(false);
                       }}
                       style={{
-                        width: 350,
-                        borderWidth: 1,
-                        borderRadius: 8,
+                        width: 344,
                       }}
                     >
                       <View
                         style={{
-                          alignItems: "center",
-                          justifyContent: "center",
                           height: 40,
-                          marginBottom: 0,
-                          top: 0,
+                          flexDirection: "row",
+                          alignItems: "center",
+                          justifyContent: "space-between",
                         }}
                       >
-                        <Text style={{ fontSize: 16, fontWeight: "bold" }}>
-                          {folderName}
-                        </Text>
+                        <View
+                          style={{
+                            height: 40,
+                            flexDirection: "row",
+                            alignItems: "center",
+                          }}
+                        >
+                          <ListEcllipse />
+                          <Text style={{ fontSize: 14, left: 16 }}>
+                            {folderName}
+                          </Text>
+                        </View>
+                        {selectedFolderID === folderID ? (
+                          <ControlFull />
+                        ) : (
+                          <ControlEmpty />
+                        )}
                       </View>
                     </TouchableOpacity>
                   </View>

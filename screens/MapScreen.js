@@ -256,7 +256,11 @@ const MapScreen = ({ navigation }) => {
           }
         }}
       >
-        <Marker coordinate={target.lctn} opacity={targetShown ? 100 : 0}>
+        <Marker
+          coordinate={target.lctn}
+          opacity={targetShown ? 100 : 0}
+          style={{ zIndex: 1 }}
+        >
           <TargetMarker />
         </Marker>
         <RecordMarker

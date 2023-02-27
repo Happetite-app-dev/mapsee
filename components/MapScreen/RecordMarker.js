@@ -25,7 +25,8 @@ const RecordMarker = ({ recordData, origin }) => {
         record?.date?.month - 1,
         record?.date?.day
       );
-      const dayDiff = (recordDate - currentDate) / (1000 * 60 * 60 * 24);
+      const dayDiff = (currentDate - recordDate) / (1000 * 60 * 60 * 24);
+
       const color =
         get(data, [record.folderID, "folderColor", myUID]) ||
         get(data, [record.folderID, "initFoldercolor"]);
