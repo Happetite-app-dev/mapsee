@@ -21,7 +21,7 @@ import FolderList from "../components/StorageScreen/FolderList";
 import { database } from "../firebase";
 const db = database;
 
-const exitFolder = async ({ myUID, folderID, navigation }) => {
+const  exitFolder = async ({ myUID, folderID, navigation }) => {
   await exitData(myUID, folderID).then(
     () => navigation.navigate("Storage") //realtimeDataBase가 모두 업데이트 된후
   );
