@@ -7,7 +7,9 @@ import {
   Text,
   TouchableOpacity,
   View,
+  StyleSheet
 } from "react-native";
+import TimeDisplay from "./NoticeScreen/TimeDisplay";
 const gotoSingleFolderScreen = ({
   navigation,
   folderID,
@@ -66,6 +68,7 @@ const DispatchFolderInviteRequestList = ({
   folderID,
   navigation,
   myUID,
+  time
 }) => {
   const [approverObj, setApproverObj] = useState(
     approverObject || { id: "", firstName: "", lastName: "" }
@@ -107,38 +110,47 @@ const DispatchFolderInviteRequestList = ({
             folderUserIDs,
           });
         }}
-        style={{ flex: 1, alignItems: "center", marginBottom: 40 }}
+        style={styles.container}
       >
-        <View
+        <Text
+          style={styles.text}
+        >
+          <Text style={{ fontWeight: "700" }}>
+            {approverLastName}
+            {approverFirstName}(@{approverID})
+          </Text>
+          님이
+          <Text style={{ fontWeight: "700" }}> {folderName} </Text>
+          초대를 수락했습니다.
+        </Text>
+        <Text
           style={{
-            width: 344,
-            height: 24,
-            borderRadius: 16,
-            flexDirection: "row",
+            ...styles.text,
+            fontWeight: "700",
+            fontSize: 12,
+            color: "#545766",
           }}
         >
-          <Text
-            style={{
-              left: 16,
-              top: 5,
-              fontWeight: "400",
-              fontSize: 14,
-              lineHeight: 16,
-              letterSpacing: -0.5,
-            }}
-          >
-            <Text style={{ fontWeight: "700" }}>
-              {approverLastName}
-              {approverFirstName}(@{approverID})
-            </Text>
-            님이
-            <Text style={{ fontWeight: "700" }}> {folderName} </Text>
-            초대를 수락했습니다.
-          </Text>
-        </View>
+          <TimeDisplay time={time} />
+        </Text>
       </TouchableOpacity>
     );
   }
 };
 
 export default DispatchFolderInviteRequestList;
+
+const styles = StyleSheet.create({
+  container: {
+    width: 344,
+    alignSelf: "center",
+    flexDirection: "row",
+    marginBottom: 40,
+  },
+  text: {
+    alignSelf: "center",
+    lineHeight: 16,
+    letterSpacing: -0.5,
+  },
+});
+
