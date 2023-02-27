@@ -365,7 +365,6 @@ const removeData = async ({ recordID, folderID, placeID, queryClient }) => {
   queryClient.invalidateQueries(["records", recordID]);
   queryClient.invalidateQueries(["all-records"]);
 };
-
 const removeRecord = async ({
   navigation,
   recordID,
@@ -398,34 +397,29 @@ const EditScreen = ({ navigation, route }) => {
   const [isEditable, setIsEditable] = useState(IsNewRecord); //이거는 IsNewRecord이거나, IsRecordOwner이고 토글을 눌렀을 때 true가 됨
 
   const [title_, setTitle_] = useState(data?.title || undefined);
-
   const [place, setPlace] = useState(data?.placeName);
-
   const [date_, setDate_] = useState(
     data?.date === undefined
       ? new Date()
       : new Date(data?.date.year, data?.date.month - 1, data?.date.day)
   );
   const [showDatePicker, setShowDatePicker] = useState(false);
-
   const originalfolderID = data?.folderID; //만약 IsnewRecord가 아니라면 기존에 저장되어 있을 folderID를 받는다. IsNewRecord라면
   const [folderID_, setFolderID_] = useState(data?.folderID || defaultFolderID);
   const [folderName_, setFolderName_] = useState(
     data?.folderName || defaultFolderName
   );
   const [showFolderBottomSheet, setShowFolderBottomSheet] = useState(false);
-
   const [selectedPhotos, setSelectedPhotos] = useState(
     data?.photos !== undefined && data?.photos !== null
       ? Object.values(data?.photos)
       : []
   );
-
   const [text_, setText_] = useState(data?.text || "");
   const [removeModalVisible, setRemoveModalVisible] = useState(false);
   const [goBackModalVisible, setGoBackModalVisible] = useState(false);
-
   const [visible, setVisible] = useState(false); // Snackbar
+
   const onToggleSnackBar = () => setVisible(!visible); // SnackbarButton -> 나중에는 없애기
   const onDismissSnackBar = () => setVisible(false); // Snackbar
   return query.isLoading ? (

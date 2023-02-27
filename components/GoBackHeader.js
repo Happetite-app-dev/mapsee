@@ -39,7 +39,12 @@ const GoBackHeader = ({
         >
           <GoBack height={24} />
         </View>
-        <View style={styles.title}>
+        <View
+          style={styles.title}
+          onTouchEndCapture={() => {
+            console.log("title");
+          }}
+        >
           {folderColor !== undefined ? (
             <Image
               source={folder2Image}
@@ -123,6 +128,7 @@ const styles = StyleSheet.create({
     height: 24,
     position: "absolute",
     left: 31,
+    backgroundColor: "red",
   },
   title: {
     width: 280,
@@ -130,6 +136,7 @@ const styles = StyleSheet.create({
     left: 63,
     position: "absolute",
     flexDirection: "row",
+    backgroundColor: "grey",
   },
   titleText: {
     fontSize: 16,

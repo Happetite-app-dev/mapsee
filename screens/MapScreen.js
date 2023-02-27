@@ -24,6 +24,7 @@ import TargetMarker from "../assets/markers/selectedMarker.svg";
 import AppContext from "../components/AppContext";
 import RecordMarker from "../components/MapScreen/RecordMarker";
 import GeneratePushToken from "../modules/GeneratePushToken";
+const MyLocation = require("../assets/icons/MyLocation.svg");
 const findCurrentLocationImage = require("../assets/image/findCurrentLocation.png");
 const mapStyle = require("../assets/mapDesign.json");
 
@@ -258,40 +259,6 @@ const MapScreen = ({ navigation }) => {
         <Marker coordinate={target.lctn} opacity={targetShown ? 100 : 0}>
           <TargetMarker />
         </Marker>
-        <View
-          style={styles.currentLocationButton}
-          onTouchEndCapture={() => {
-            mapRef.current.animateToRegion({
-              latitude: current.latitude,
-              longitude: current.longitude,
-              latitudeDelta: 0.0016,
-              longitudeDelta: 0.0012,
-            });
-          }}
-        >
-          <Animated.Image
-            source={findCurrentLocationImage}
-            resizeMode="contain"
-            style={{
-              position: "absolute",
-              width: 30,
-              height: 30,
-              borderRadius: 15,
-              left: 330,
-              top: 608,
-              tintColor: "grey",
-              transform: [{ rotate: RotateData }],
-            }}
-          />
-        </View>
-        <View
-          style={styles.createNote}
-          onTouchEndCapture={() => {
-            console.log("create note !!");
-          }}
-        >
-          <CreateNote />
-        </View>
         <RecordMarker
           recordData={
             allRecordQuery.data
@@ -304,6 +271,39 @@ const MapScreen = ({ navigation }) => {
         />
       </MapView>
       <SearchView navigation={navigation} origin={origin} />
+      <View
+        style={styles.createNote}
+        onTouchEndCapture={() => {
+          console.log("create note !!");
+        }}
+      >
+        <CreateNote style={{ position: "absolute" }} />
+      </View>
+
+      <View
+        style={styles.currentLocationButton}
+        onTouchEndCapture={() => {
+          mapRef.current.animateToRegion({
+            latitude: current.latitude,
+            longitude: current.longitude,
+            latitudeDelta: 0.0016,
+            longitudeDelta: 0.0012,
+          });
+        }}
+      >
+        <Animated.Image
+          source={MyLocation}
+          resizeMode="contain"
+          style={{
+            position: "absolute",
+            width: 30,
+            height: 30,
+            borderRadius: 15,
+            tintColor: "grey",
+            transform: [{ rotate: RotateData }],
+          }}
+        />
+      </View>
     </SafeAreaView>
   );
 };
@@ -339,20 +339,18 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
   createNote: {
-    position: "absolute",
+    position: "relative",
     width: 48,
     height: 48,
     borderRadius: 24,
-    zIndex: 1,
+    left: 319,
+    bottom: 112,
     shadowColor: "black",
     shadowOffset: {
       width: 0,
       height: 5,
     },
-    shadowOpacity: 0.25,
+    shadowOpacity: 0.15,
     shadowRadius: 3.5,
-    left: 319,
-    bottom: 112,
-    backgroundColor: "red",
   },
 });

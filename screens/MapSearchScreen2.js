@@ -142,9 +142,13 @@ const BottomSheetScreen = ({
             {
               Object.values(
                 allRecordQuery.data
-                  ? Object.values(allRecordQuery.data).filter((record) => {
-                      return record.folderID in userQuery.data?.folderIDs;
-                    })
+                  ? Object.values(allRecordQuery.data)
+                      .filter((record) => {
+                        return record.folderID in userQuery.data?.folderIDs;
+                      })
+                      .filter((record) => {
+                        return record.placeID === targetId;
+                      })
                   : []
               ).length
             }
@@ -161,38 +165,34 @@ const BottomSheetScreen = ({
             toggleAnimation2(showAnimation, setAnimationValue)
           }
         />
-        <View
+        <TouchableHighlight
           style={{
             position: "absolute",
+            alignItems: "center",
             width: 48,
             height: 48,
-            marginTop: 48,
-            marginLeft: 319,
-            alignItems: "center",
-            justifyContent: "center",
+            borderRadius: 24,
+            zIndex: 1,
+            top: 48,
+            left: 319,
+
+            shadowColor: "black",
+            shadowOffset: {
+              width: 0,
+              height: 5,
+            },
+            shadowOpacity: 0.15,
+            shadowRadius: 3.5,
           }}
+          underlayColor="white"
+          onPress={gotoEditScreen}
         >
-          <TouchableHighlight
-            style={{
-              position: "absolute",
-              alignItems: "center",
-              width: 48,
-              height: 48,
-              borderRadius: 24,
-              zIndex: 1,
-              bottom: 23,
-            }}
-            underlayColor="white"
-            onPress={gotoEditScreen}
-          >
-            <CreateNote resizeMode="contain" />
-          </TouchableHighlight>
-        </View>
+          <CreateNote resizeMode="contain" />
+        </TouchableHighlight>
       </View>
     );
   } else {
     // TODO (@KhoDongwook) hook 루트로 빼기
-    console.log("else");
     return (
       //bottomsheet가 전체 화면을 덮은 후
       <View
@@ -247,6 +247,14 @@ const BottomSheetScreen = ({
             height: 48,
             borderRadius: 24,
             zIndex: 1,
+
+            shadowColor: "black",
+            shadowOffset: {
+              width: 0,
+              height: 5,
+            },
+            shadowOpacity: 0.15,
+            shadowRadius: 3.5,
           }}
           underlayColor="blue"
           onPress={gotoEditScreen}
