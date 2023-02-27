@@ -425,6 +425,27 @@ const EditScreen = ({ navigation, route }) => {
   const [goBackModalVisible, setGoBackModalVisible] = useState(false);
   const [visible, setVisible] = useState(false); // Snackbar
 
+  useEffect(() => {
+    setPlaceID_(placeID || data?.placeID);
+    setPlaceName_(placeName || data?.placeName);
+    setAddress_(address || data?.address);
+    setLctn_(lctn || data?.lctn);
+    setTitle_(data?.title || undefined);
+    setDate_(
+      data?.date === undefined
+        ? new Date()
+        : new Date(data?.date.year, data?.date.month - 1, data?.date.day)
+    );
+    setFolderID_(data?.folderID || defaultFolderID);
+    setFolderName_(data?.folderName || defaultFolderName);
+    setSelectedPhotos(
+      data?.photos !== undefined && data?.photos !== null
+        ? Object.values(data?.photos)
+        : []
+    );
+    setText_(data?.text || "");
+  }, [query.isLoading]);
+
   const onToggleSnackBar = () => setVisible(!visible); // SnackbarButton -> 나중에는 없애기
   const onDismissSnackBar = () => setVisible(false); // Snackbar
   return query.isLoading ? (
@@ -453,7 +474,8 @@ const EditScreen = ({ navigation, route }) => {
       >
         <View
           onTouchEndCapture={() => {
-            setGoBackModalVisible(true);
+            if (isEditable) setGoBackModalVisible(true);
+            else navigation.goBack();
           }}
           style={styles.goBack}
         >
@@ -511,6 +533,7 @@ const EditScreen = ({ navigation, route }) => {
               defaultPhotos={selectedPhotos}
               IsEditable={isEditable}
               onToggleSnackBar={onToggleSnackBar}
+              navigation={navigation}
             />
           </View>
         )}
@@ -778,8 +801,10 @@ const styles = StyleSheet.create({
   },
   titleText: {
     fontSize: 16,
-    lineHeight: 24,
+    lineHeight: 20,
     fontWeight: "bold",
+    height: 24,
+    width: 224,
   },
   twoRightButtons: {
     position: "absolute",

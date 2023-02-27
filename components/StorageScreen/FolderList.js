@@ -46,6 +46,7 @@ const FolderList = ({
         renderItem={renderFolder}
         keyExtractor={(item) => item}
         horizontal
+        showsHorizontalScrollIndicator={false}
         style={{
           flex: 1,
         }}

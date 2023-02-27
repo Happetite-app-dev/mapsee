@@ -7,6 +7,7 @@ import {
   fetchAllFolder,
   fetchAllRecord,
   fetchAllNotice
+  fetchAllUser,
 } from "./actions";
 
 export const useUserQuery = (UID) =>
@@ -26,3 +27,7 @@ export const useAllRecordQuery = () =>
 
 export const useAllNoticeQuery = (UID) =>
   useQuery(["all-notices"], () => fetchAllNotice(UID));
+
+export const useAllUserQuery = () =>
+  useQuery(["all-users"], () => fetchAllUser());
+

@@ -8,7 +8,8 @@ import {
   FlatList,
 } from "react-native";
 import { ScrollView, Switch, TextInput } from "react-native-gesture-handler";
-
+import BottomButton from "../BottomButton";
+import Arrow from "../../assets/icons/Arrow.svg";
 const BottomSheetTitle = ({ IsNewRecord }) => {
   return (
     <View
@@ -41,7 +42,7 @@ const BottomSheetName = ({ newFolderName, setNewFolderName }) => {
         style={{ fontSize: 14, fontWeight: "400", lineHeight: 0 }}
         value={newFolderName}
         onChangeText={(fdr) => setNewFolderName(fdr)}
-        placeholder="폴더"
+        placeholder={"폴더 이름"}
         placeholderTextColor="grey"
       />
     </View>
@@ -330,33 +331,11 @@ const BottomSheetColor = ({ newFolderColor, setNewFolderColor }) => {
 
 const BottomSheetSave = ({ onPressFunction, IsNewRecord }) => {
   return (
-    <TouchableOpacity
-      onPress={onPressFunction}
-      style={{
-        position: "absolute",
-        width: 350,
-        height: 48,
-        borderColor: "black",
-        borderWidth: 1,
-        borderRadius: 8,
-        alignSelf: "center",
-        marginTop: 500,
-      }}
-    >
-      <View
-        style={{
-          alignItems: "center",
-          justifyContent: "center",
-          height: 40,
-        }}
-      >
-        {IsNewRecord ? (
-          <Text style={{ fontSize: 16, fontWeight: "bold" }}>추가</Text>
-        ) : (
-          <Text style={{ fontSize: 16, fontWeight: "bold" }}>수정</Text>
-        )}
-      </View>
-    </TouchableOpacity>
+    <BottomButton
+      onPressFunction={onPressFunction}
+      text={IsNewRecord ? "추가" : "수정"}
+      style={{ bottom: 40 }}
+    />
   );
 };
 
@@ -403,10 +382,11 @@ const BottomSheetInvite = ({
           }}
           style={{
             marginLeft: 20,
-            backgroundColor: "red",
+            height: 20,
+            width: 50,
           }}
         >
-          <Text>친구초대 버튼</Text>
+          <Arrow />
         </TouchableOpacity>
       </View>
     </View>
@@ -428,9 +408,8 @@ const renderFolderUser = ({ item }) => {
     >
       <Text
         style={{
-          //width: 58,
           height: 24,
-          fontWeight: "500",
+          fontWeight: "bold",
           fontSize: 16,
           letterSpacing: -0.5,
           color: "black",
@@ -455,8 +434,10 @@ const DefaultFolderBottomSheet = ({
   onChangeNewFolderUserIDs,
   folderUserIDs_,
 }) => {
+  console.log("newFolderColor", newFolderColor);
+
   return (
-    <View>
+    <View style={{ width: "100%", height: "100%" }}>
       <BottomSheetTitle IsNewRecord={IsNewRecord} />
       <BottomSheetName
         newFolderName={newFolderName}
@@ -481,6 +462,7 @@ const DefaultFolderBottomSheet = ({
         style={{
           width: "100%",
           height: 100,
+          marginLeft: 7,
         }}
       />
       <BottomSheetSave

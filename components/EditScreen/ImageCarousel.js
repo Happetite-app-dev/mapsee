@@ -1,20 +1,26 @@
 import { useState } from "react";
 import { View, Image } from "react-native";
+import { TouchableOpacity } from "react-native-gesture-handler";
 import Carousel from "react-native-snap-carousel";
-const _renderItem = ({ item, index }) => {
-  return (
-    <View
-      style={{
-        height: 148,
-        width: 148,
-      }}
-    >
-      <Image style={{ flex: 1 }} source={{ uri: item }} />
-    </View>
-  );
-};
-const ImageCarousel = ({ images }) => {
+const ImageCarousel = ({ navigation, images }) => {
   const [carousel, setCarousel] = useState();
+
+  const _renderItem = ({ item, index }) => {
+    return (
+      <TouchableOpacity
+        style={{
+          height: 148,
+          width: 148,
+        }}
+        onPress={() => {
+          navigation.navigate("ImageView", item);
+        }}
+        activeOpacity={1}
+      >
+        <Image style={{ flex: 1, borderRadius: 8 }} source={{ uri: item }} />
+      </TouchableOpacity>
+    );
+  };
 
   return (
     <View

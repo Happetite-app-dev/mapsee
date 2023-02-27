@@ -35,10 +35,13 @@ const Tabs = ({ navigation }) => {
           right: 0,
           elevation: 0,
           backgroundColor: "#ffffff",
-          borderRadius: 15,
-          height: 90,
+          borderTopLeftRadius: 16,
+          borderTopRightRadius: 16,
+          height: 88,
           opacity: 100,
           zIndex: 1,
+          borderWidth: 1,
+          borderColor: "#DDDFE9",
         },
       }}
     >
@@ -51,11 +54,21 @@ const Tabs = ({ navigation }) => {
               style={{
                 alignItems: "center",
                 justifyContent: "center",
-                top: 10,
+                top: 0,
               }}
             >
               {focused ? (
-                <MapOn width={24} height={24} />
+                <View style={{ alignItems: "center" }}>
+                  <View
+                    style={{
+                      backgroundColor: "#5ED3CC",
+                      height: 2,
+                      width: 32,
+                      top: -16,
+                    }}
+                  />
+                  <MapOn width={24} height={24} />
+                </View>
               ) : (
                 <MapOff width={24} height={24} />
               )}
@@ -72,11 +85,21 @@ const Tabs = ({ navigation }) => {
               style={{
                 alignItems: "center",
                 justifyContent: "center",
-                top: 10,
+                top: 0,
               }}
             >
               {focused ? (
-                <StorageOn width={24} height={24} />
+                <View style={{ alignItems: "center" }}>
+                  <View
+                    style={{
+                      backgroundColor: "#5ED3CC",
+                      height: 2,
+                      width: 32,
+                      top: -16,
+                    }}
+                  />
+                  <StorageOn width={24} height={24} />
+                </View>
               ) : (
                 <StorageOff width={24} height={24} />
               )}
@@ -93,11 +116,21 @@ const Tabs = ({ navigation }) => {
               style={{
                 alignItems: "center",
                 justifyContent: "center",
-                top: 10,
+                top: 0,
               }}
             >
               {focused ? (
-                <NoticeOn width={24} height={24} />
+                <View style={{ alignItems: "center" }}>
+                  <View
+                    style={{
+                      backgroundColor: "#5ED3CC",
+                      height: 2,
+                      width: 32,
+                      top: -16,
+                    }}
+                  />
+                  <NoticeOn width={24} height={24} />
+                </View>
               ) : (
                 <NoticeOff width={24} height={24} />
               )}
@@ -114,11 +147,21 @@ const Tabs = ({ navigation }) => {
               style={{
                 alignItems: "center",
                 justifyContent: "center",
-                top: 10,
+                top: 0,
               }}
             >
               {focused ? (
-                <MypageOn width={24} height={24} />
+                <View style={{ alignItems: "center" }}>
+                  <View
+                    style={{
+                      backgroundColor: "#5ED3CC",
+                      height: 2,
+                      width: 32,
+                      top: -16,
+                    }}
+                  />
+                  <MypageOn width={24} height={24} />
+                </View>
               ) : (
                 <MypageOff width={24} height={24} />
               )}

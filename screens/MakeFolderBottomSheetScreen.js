@@ -1,8 +1,9 @@
 import React, { useRef, useState } from "react";
 import { Animated, View } from "react-native";
-
+import { useFolderQuery } from "../queries";
 import MakeFolderBottomSheet from "../components/FolderBottomSheet/MakeFolderBottomSheet";
 import { PopUpType1 } from "../components/PopUp";
+import BottomSheetScroll from "../assets/icons/BottomSheetScroll.svg";
 
 const toggleAnimation = ({ showAnimation, setAnimationValue }) => {
   const val = -1000;
@@ -15,10 +16,8 @@ const toggleAnimation = ({ showAnimation, setAnimationValue }) => {
 };
 
 const MakeFolderBottomSheetScreen = ({ navigation, route }) => {
-  const { folderID, folderName, folderColor, folderUserIDs, recordDataSource } =
-    route.params;
+  const { folderID } = route.params;
   const [animationValue, setAnimationValue] = useState(0);
-
   const showAnimation = useRef(new Animated.Value(animationValue)).current;
   const [modalVisible, setModalVisible] = useState(false);
   return (
@@ -34,7 +33,7 @@ const MakeFolderBottomSheetScreen = ({ navigation, route }) => {
       <Animated.View
         style={{
           width: "100%",
-          backgroundColor: "#fff",
+          backgroundColor: "white",
           borderTopLeftRadius: 30,
           borderTopRightRadius: 30,
           padding: 0,
@@ -42,25 +41,18 @@ const MakeFolderBottomSheetScreen = ({ navigation, route }) => {
           zIndex: 3,
           alignItems: "center",
           justifyContent: "center",
-          height: 630,
-          shadowOffset: {
-            width: 0,
-            height: 12,
-          },
+          height: 728,
           alignSelf: "center",
-          shadowOpacity: 0.58,
-          shadowRadius: 16.0,
           bottom: showAnimation,
           elevation: 24,
+          borderWidth: 1,
+          borderColor: "#DDDFE9",
         }}
       >
+        <BottomSheetScroll style={{ top: 8 }} />
         <MakeFolderBottomSheet
           stackNavigation={navigation}
           folderID={folderID}
-          folderName_={folderName}
-          folderColor_={folderColor}
-          folderUserIDs_={folderUserIDs}
-          recordDataSource={recordDataSource}
         />
       </Animated.View>
       <PopUpType1

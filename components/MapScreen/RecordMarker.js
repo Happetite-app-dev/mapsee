@@ -3,7 +3,7 @@ import { Marker } from "react-native-maps";
 
 import Marker1 from "../../assets/markers/marker#4F92D9.svg";
 import NewMarker from "../../assets/markers/newMarker.svg";
-import { useAllFolderQuery } from "../../queries";
+import { useAllFolderQuery, useFolderQuery } from "../../queries";
 import get from "lodash/get";
 import { useContext } from "react";
 import AppContext from "../AppContext";
