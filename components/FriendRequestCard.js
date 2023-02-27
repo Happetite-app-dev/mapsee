@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import { Pressable, SafeAreaView, Text, View } from "react-native";
-import { isObject } from "util";
+import { Pressable, SafeAreaView, Text, View, StyleSheet } from "react-native";
 const DisplayTime = (time) => {
   const timeNow = new Date();
   const timePast = new Date(time);
@@ -141,3 +140,48 @@ const FriendRequestCard = ({
 };
 
 export default FriendRequestCard;
+const styles = StyleSheet.create({
+  container: {
+    width: "100%",
+    height: "89.5%",
+    backgroundColor: "white",
+  },
+  screenTitle: { fontWeight: "bold", fontSize: 16, left: 23 },
+  screenTitleView: {
+    flexDirection: "row",
+    height: 56,
+    marginBottom: 20,
+    alignItems: "center",
+  },
+  item: {
+    flex: 0.5,
+    borderColor: "grey",
+    borderRadius: 8,
+    borderWidth: 1,
+    padding: 0,
+    height: 224,
+    maxWidth: 160,
+    marginVertical: 8,
+    marginHorizontal: 12,
+  },
+  title: {
+    fontSize: 16,
+  },
+  twoRightButtons: {
+    position: "absolute",
+    right: 0,
+    width: 86,
+    height: 30,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  firstButton: {
+    width: 30,
+    height: 30,
+  },
+  secondButton: {
+    width: 30,
+    height: 30,
+    left: 10,
+  },
+});

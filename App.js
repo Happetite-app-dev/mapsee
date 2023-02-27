@@ -24,7 +24,6 @@ import RegisterScreen3 from "./screens/RegisterScreen3";
 import SingleFolderScreen from "./screens/SingleFolderScreen";
 import SuggestScreen from "./screens/SuggestScreen";
 import TutorialScreen from "./screens/TutorialScreen";
-
 const Stack = createNativeStackNavigator();
 const queryClient = new QueryClient();
 const App = () => {
