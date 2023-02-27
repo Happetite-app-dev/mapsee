@@ -38,7 +38,7 @@ const NoticeScreen = ({ navigation }) => {
   );
 
   return (
-    <SafeAreaView style={{ backgroundColor: "white" }}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.screenTitleView}>
         <Text style={styles.screenTitle}>알림</Text>
       </View>
@@ -81,7 +81,8 @@ export default NoticeScreen;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    width: "100%",
+    height: "89.5%",
     backgroundColor: "white",
   },
   screenTitle: { fontWeight: "bold", fontSize: 16, left: 23 },
