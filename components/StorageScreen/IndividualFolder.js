@@ -9,6 +9,7 @@ import PinFolder from "../../assets/icons/pinFolder.svg";
 import SearchData from "../../assets/icons/searchData.svg";
 import ShareFolder from "../../assets/icons/shareFolder2.svg";
 import SingleFolder from "../../assets/icons/singleFolder.svg";
+
 const IndividualFolder = ({
   folderID,
   setSelectedFolderIDNameColorUserIDs,
@@ -20,6 +21,7 @@ const IndividualFolder = ({
   const query = useFolderQuery(folderID);
   if (query.isLoading) return <Text>강해린 로딩중이다</Text>;
   else if (query.error) return <Text>강해린 이상하다</Text>;
+  console.log("length");
   return (
     query.data && (
       <TouchableOpacity
@@ -48,10 +50,21 @@ const IndividualFolder = ({
         activeOpacity={0.2}
       >
         <View style={{ marginLeft: 10, marginRight: 10 }}>
-          <SingleFolder
-            color={query.data.folderColor[myUID] || query.data.initFolderColor}
-          />
-          {query.data.userIDs.length > 1 ? <ShareFolder /> : <></>}
+          <View style={{ position: "relative" }}>
+            <SingleFolder
+              color={
+                query.data.folderColor[myUID] || query.data.initFolderColor
+              }
+            />
+            {query.data.userIDs !== undefined &&
+            Object.keys(query.data.userIDs).length > 1 ? (
+              <ShareFolder
+                style={{ position: "absolute", top: 17, left: 25 }}
+              />
+            ) : (
+              <></>
+            )}
+          </View>
           <View
             style={{
               flexDirection: "row",

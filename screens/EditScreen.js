@@ -24,6 +24,7 @@ import {
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
+import ListEcllipse from "../assets/icons/ListEcllipse.svg";
 import DateImage from "../assets/icons/date.svg";
 import DeleteFolder from "../assets/icons/delete.svg";
 import FolderImage from "../assets/icons/folder.svg";
@@ -571,8 +572,8 @@ const EditScreen = ({ navigation, route }) => {
               flexDirection: "row",
             }}
           >
-            <FolderPrefix height={16} width={16} />
-            <Text> {folderName_} </Text>
+            <ListEcllipse height={16} width={16} />
+            <Text style={{ left: 10 }}> {folderName_} </Text>
           </TouchableOpacity>
           <View
             onTouchEndCapture={() => {

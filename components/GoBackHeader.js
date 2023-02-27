@@ -6,8 +6,7 @@ import DeleteFolder from "../assets/icons/delete.svg";
 import EditFolder from "../assets/icons/folderEdit.svg";
 import GoBack from "../assets/icons/goBack.svg";
 import ShareFolder from "../assets/icons/shareFolder.svg";
-
-const folder2Image = require("../assets/image/folder2.png");
+import SmallFolder from "../assets/icons/SmallFolder.svg";
 
 const GoBackHeader = ({
   navigation,
@@ -48,9 +47,9 @@ const GoBackHeader = ({
           }}
         >
           {folderColor !== undefined ? (
-            <Image
-              source={folder2Image}
-              style={{ tintColor: folderColor, marginRight: 11, top: 3 }}
+            <SmallFolder
+              color={folderColor}
+              style={{ marginRight: 11, top: 3 }}
             />
           ) : (
             <></>

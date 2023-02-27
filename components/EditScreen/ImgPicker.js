@@ -107,7 +107,7 @@ const ImgPicker = ({
                 }}
                 style={styles.imagePreview}
               >
-                <Text style={{ fontSize: 35, color: "grey" }}>+</Text>
+                <Text style={{ fontSize: 40, color: "#5ED3CC" }}>+</Text>
               </TouchableOpacity>
 
               {pickedImages != null && pickedImages !== undefined ? (
@@ -172,21 +172,22 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     //marginBottom:10,
     marginRight: 15,
+    backgroundColor: "#F4F5F9",
     justifyContent: "center",
     alignItems: "center",
     borderColor: "#ccc",
-    borderWidth: 1,
+    borderWidth: 0,
   },
   image: {
     width: 148,
     height: 148,
-    borderRadius: 10,
+    borderRadius: 8,
     //marginBottom:10,
     marginRight: 15,
     justifyContent: "center",
     alignItems: "center",
     borderColor: "#ccc",
-    borderWidth: 1,
+    borderWidth: 0,
     position: "absolute",
   },
 });

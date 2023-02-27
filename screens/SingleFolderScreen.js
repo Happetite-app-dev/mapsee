@@ -8,6 +8,7 @@ import { PopUpType1 } from "../components/PopUp";
 import RecordFlatList from "../components/StorageScreen/RecordFlatList";
 import { database } from "../firebase";
 import { useAllRecordQuery, useFolderQuery } from "../queries";
+import SmallFolder from "../assets/icons/SmallFolder.svg";
 
 const gotoMakeFolderBottomSheetScreen = ({
   navigation,

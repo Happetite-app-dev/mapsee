@@ -13,6 +13,7 @@ const FolderList = ({
 }) => {
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
+
   const renderFolder = ({ item: folderID }) => (
     <IndividualFolder
       folderID={folderID}
@@ -23,6 +24,7 @@ const FolderList = ({
       setModalVisible={setModalVisible}
     />
   );
+
   const { isLoading, error, data } = useAllFolderQuery();
   if (isLoading) return <Text>로딩중</Text>;
   else if (error) return <Text>에러 발생</Text>;
