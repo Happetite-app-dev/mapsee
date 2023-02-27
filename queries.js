@@ -6,7 +6,7 @@ import {
   fetchRecord,
   fetchAllFolder,
   fetchAllRecord,
-  fetchAllNotice
+  fetchAllNotice,
   fetchAllUser,
 } from "./actions";
 
