@@ -2,32 +2,23 @@ import { ref, onValue, set, push } from "firebase/database";
 import { useEffect, useState, useContext } from "react";
 import { SafeAreaView, Text, View, FlatList, StyleSheet } from "react-native";
 import { Snackbar } from "react-native-paper";
-
+import { useQueryClient } from "react-query";
 import AppContext from "../components/AppContext";
 import NoticeRenderer from "../components/NoticeRenderer";
 import { database } from "../firebase";
+import { useAllNoticeQuery } from "../queries";
 
 const NoticeScreen = ({ navigation }) => {
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
-  const [noticeList, setNoticeList] = useState([]);
-
+  const query = useAllNoticeQuery(myUID);
+  const query_modified = Object.entries(query.data || []).map(item => {
+    return { key: item[0], val: item[1] }
+  });
+  const queryClient = useQueryClient();
   const [visible, setVisible] = useState(false); // Snackbar
   const onToggleSnackBar = () => setVisible(!visible); // SnackbarButton -> 나중에는 없애기
   const onDismissSnackBar = () => setVisible(false); // Snackbar
-
-  const db = database;
-  useEffect(() => {
-    onValue(ref(db, "/notices/" + myUID), (snapshot) => {
-      setNoticeList([]);
-      snapshot.forEach((datasnapshot) => {
-        setNoticeList((prev) => [
-          ...prev,
-          { key: datasnapshot.key, val: datasnapshot.val() },
-        ]);
-      });
-    });
-  }, []);
 
   const renderNotice = ({ item }) => (
     <NoticeRenderer
@@ -44,7 +35,11 @@ const NoticeScreen = ({ navigation }) => {
       </View>
       <View style={{ alignItems: "center", height: "90%" }}>
         <FlatList
-          data={noticeList}
+          onRefresh={() => {
+            queryClient.invalidateQueries(["all-notices"]);
+          }} // fetch로 데이터 호출
+          refreshing={query.isLoading} // state
+          data={query_modified}
           renderItem={renderNotice}
           numColumns={1}
           initialNumToRender={6}

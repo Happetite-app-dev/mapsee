@@ -3,8 +3,8 @@ import { async } from "@firebase/util";
 import { database } from "../firebase";
 
 import { onValueAsync } from "./utils";
-const db = database;
 
+const db = database;
 export const fetchFolder = async (folderID) => {
   return await onValueAsync(ref(db, "/folders/" + folderID));
 };
@@ -25,6 +25,12 @@ export const fetchAllFolder = async () => {
   return await onValueAsync(ref(db, "/folders/"));
 };
 
+
+export const fetchAllNotice = async (UID) => {
+  return await onValueAsync(ref(db, "/notices/" + UID));
+};
+
 export const fetchAllUser = async () => {
   return await onValueAsync(ref(db, "/users/"));
 };
+
