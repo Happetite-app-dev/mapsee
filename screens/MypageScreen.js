@@ -15,6 +15,8 @@ import Suggest from "../assets/icons/folderEdit.svg";
 import NoticeOn from "../assets/icons/notice_on.svg";
 import SuggestBox from "../assets/icons/suggestBox.svg";
 import FriendList from "../assets/icons/friendsList.svg";
+import Copy from "../assets/icons/Friend.svg";
+import Arrow from "../assets/icons/Arrow.svg";
 import AppContext from "../components/AppContext";
 
 const gotoProfileScreen = ({ navigation }) => {
@@ -43,17 +45,38 @@ const MypageScreen = ({ navigation }) => {
           <Text style={styles.screenTitle}>마이페이지</Text>
         </View>
       </View>
-      <TouchableOpacity
-        onPress={() => gotoProfileScreen({ navigation })}
-        style={{ position: "absolute", width: "100%", height: 80, top: 105 }}
+      <View
+        style={{
+          position: "absolute",
+          width: "100%",
+          height: 80,
+          top: 105,
+          flexDirection: "column",
+        }}
       >
-        <Text style={{ top: 20, left: 20, fontSize: 16, fontWeight: "bold" }}>
-          {myName}
-        </Text>
-        <Text style={{ top: 30, left: 20, fontSize: 14, color: "#ADB1C5" }}>
-          {myID}
-        </Text>
-      </TouchableOpacity>
+        <View>
+          <Text style={{ top: 20, left: 23, fontSize: 16, fontWeight: "bold" }}>
+            {myName}
+          </Text>
+          <View style={{ flexDirection: "row", top: 30, left: 23 }}>
+            <Text
+              style={{
+                fontSize: 14,
+                lineHeight: 24,
+                color: "#ADB1C5",
+                height: 24,
+              }}
+            >
+              {myID}
+            </Text>
+            <Copy onPress={() => {}} style={{ left: 16 }} />
+          </View>
+        </View>
+        <Arrow
+          onPress={() => gotoProfileScreen({ navigation })}
+          style={{ left: 352.5 }}
+        />
+      </View>
 
       <View
         style={{
@@ -135,7 +158,9 @@ const MypageScreen = ({ navigation }) => {
               paddingTop: 24,
               paddingLeft: 18,
             }}
-            onPress={()=>{gotoBeforeLoginScreen({navigation})}}
+            onPress={() => {
+              gotoBeforeLoginScreen({ navigation });
+            }}
           >
             <Text style={{ fontSize: 14, top: 3 }}>로그아웃</Text>
           </TouchableOpacity>
