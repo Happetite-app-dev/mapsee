@@ -14,6 +14,7 @@ import { useUserQuery, useAllRecordQuery, useAllFolderQuery } from "../queries";
 
 import SearchData from "../assets/icons/searchData.svg";
 import AppContext from "../components/AppContext";
+import CreateNote from "../assets/icons/createNote.svg";
 import { PopUpType4 } from "../components/PopUp";
 import RecordFlatList from "../components/StorageScreen/RecordFlatList";
 import SnackBar from "../components/SnackBar";
@@ -66,14 +67,6 @@ const gotoMakeFolderBottomSheetScreen = ({
   folderUserIDs,
   recordDataSource,
 }) => {
-  console.log(
-    "gotoMakeFolderBS",
-    folderID,
-    folderName,
-    folderColor,
-    folderUserIDs,
-    recordDataSource
-  );
   navigation.navigate("MakeFolderBottomSheetScreen", {
     folderID,
     folderName,
@@ -210,7 +203,18 @@ const StorageScreen = ({ navigation, route }) => {
             : []
         }
         stackNavigation={navigation}
+        style={{ height: "65%" }}
       />
+
+      <View
+        style={styles.createNote}
+        onTouchEndCapture={() => {
+          navigation.navigate("EditScreen", 0);
+        }}
+      >
+        <CreateNote style={{ position: "absolute" }} />
+      </View>
+
       <PopUpType4
         modalVisible={modalVisible}
         modalHandler={setModalVisible}
@@ -281,11 +285,7 @@ const StorageScreen = ({ navigation, route }) => {
 export default StorageScreen;
 
 const styles = StyleSheet.create({
-  container: {
-    width: "100%",
-    height: "89.5%",
-    backgroundColor: "white",
-  },
+  container: { flex: 1, backgroundColor: "white" },
   screenTitle: { fontWeight: "bold", fontSize: 16, left: 23 },
   screenTitleView: {
     flexDirection: "row",
@@ -323,5 +323,20 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
     left: 10,
+  },
+  createNote: {
+    position: "absolute",
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    left: 319,
+    bottom: 112,
+    shadowColor: "black",
+    shadowOffset: {
+      width: 0,
+      height: 5,
+    },
+    shadowOpacity: 0.15,
+    shadowRadius: 3.5,
   },
 });

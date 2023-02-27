@@ -1,15 +1,8 @@
 import { set, ref, onValue, push } from "firebase/database";
-import {
-  useAllFolderQuery,
-  useAllUserQuery,
-  useUserQuery,
-} from "../../queries";
+import { useAllFolderQuery, useUserQuery } from "../../queries";
 import React, { useEffect, useRef, useState, useContext } from "react";
 import { Animated, Text, View, TouchableOpacity, Button } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import { database } from "../../firebase";
-const db = database;
-
 import AppContext from "../AppContext";
 import AddFolderBottomSheet from "./AddFolderBottomSheet";
 import BottomButton from "../BottomButton";

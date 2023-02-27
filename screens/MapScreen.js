@@ -343,7 +343,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
   createNote: {
-    position: "relative",
+    position: "absolute",
     width: 48,
     height: 48,
     borderRadius: 24,
