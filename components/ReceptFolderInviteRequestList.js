@@ -1,9 +1,11 @@
 import { onValue, ref } from "@firebase/database";
 import { useEffect, useState } from "react";
-import { Text, View, TouchableOpacity } from "react-native";
+import { Text, View, TouchableOpacity, StyleSheet } from "react-native";
 
 import { database } from "../firebase";
+import TimeDisplay from "./NoticeScreen/TimeDisplay";
 const db = database;
+
 const gotoSingleFolderScreen = ({
   navigation,
   folderID,
@@ -61,6 +63,7 @@ const ReceptFolderInviteRequestList = ({
   folderID,
   navigation,
   myUID,
+  time
 }) => {
   const [requesterObj, setRequesterObj] = useState(
     requesterObject || { id: "", firstName: "", lastName: "" }
@@ -105,38 +108,46 @@ const ReceptFolderInviteRequestList = ({
             folderName,
           });
         }}
-        style={{ flex: 1, alignItems: "center", marginBottom: 40 }}
+        style={styles.container}
       >
-        <View
+        <Text
+          style={styles.text}
+        >
+          <Text style={{ fontWeight: "700" }}>
+            {requesterLastName}
+            {requesterFirstName}(@{requesterID})
+          </Text>
+          님의
+          <Text style={{ fontWeight: "700" }}> {folderName} </Text>
+          초대를 수락했습니다.
+        </Text>
+        <Text
           style={{
-            width: 344,
-            height: 24,
-            borderRadius: 16,
-            flexDirection: "row",
+            ...styles.text,
+            fontWeight: "700",
+            fontSize: 12,
+            color: "#545766",
           }}
         >
-          <Text
-            style={{
-              left: 16,
-              top: 5,
-              fontWeight: "400",
-              fontSize: 14,
-              lineHeight: 16,
-              letterSpacing: -0.5,
-            }}
-          >
-            <Text style={{ fontWeight: "700" }}>
-              {requesterLastName}
-              {requesterFirstName}(@{requesterID})
-            </Text>
-            님의
-            <Text style={{ fontWeight: "700" }}> {folderName} </Text>
-            초대를 수락했습니다.
-          </Text>
-        </View>
+          <TimeDisplay time={time} />
+        </Text>
       </TouchableOpacity>
     );
   }
 };
 
 export default ReceptFolderInviteRequestList;
+
+const styles = StyleSheet.create({
+  container: {
+    width: 344,
+    alignSelf: "center",
+    flexDirection: "row",
+    marginBottom: 40,
+  },
+  text: {
+    alignSelf: "center",
+    lineHeight: 16,
+    letterSpacing: -0.5,
+  },
+});

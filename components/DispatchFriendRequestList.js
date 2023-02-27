@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { Pressable, SafeAreaView, Text, View } from "react-native";
+import { Pressable, SafeAreaView, Text, View, StyleSheet } from "react-native";
+import TimeDisplay from "./NoticeScreen/TimeDisplay";
 
-const DispatchFriendRequestList = ({ approverObject }) => {
+const DispatchFriendRequestList = ({ approverObject, time }) => {
   const [approverObj, setApproverObj] = useState(
     approverObject || { id: "", firstName: "", lastName: "" }
   );
@@ -14,34 +15,46 @@ const DispatchFriendRequestList = ({ approverObject }) => {
   const approverFirstName = JSON.stringify(approverObj.firstName).slice(1, -1);
   const approverLastName = JSON.stringify(approverObj.lastName).slice(1, -1);
   return (
-    <View style={{ flex: 1, alignItems: "center", marginBottom: 40 }}>
-      <View
+    <View style={styles.container}>
+      <Text
         style={{
-          width: 344,
-          height: 24,
-          borderRadius: 16,
-          flexDirection: "row",
+          ...styles.text,
+          fontWeight: "400",
+          fontSize: 14,
         }}
       >
-        <Text
-          style={{
-            left: 16,
-            top: 5,
-            fontWeight: "400",
-            fontSize: 14,
-            lineHeight: 16,
-            letterSpacing: -0.5,
-          }}
-        >
-          <Text style={{ fontWeight: "700" }}>
-            {approverLastName}
-            {approverFirstName}(@{approverID})
-          </Text>
-          님이 친구 요청을 수락했습니다.
+        <Text style={{ fontWeight: "700" }}>
+          {approverLastName}
+          {approverFirstName}(@{approverID})
         </Text>
-      </View>
+        님이 친구 요청을 수락했습니다.
+      </Text>
+      <Text
+        style={{
+          ...styles.text,
+          fontWeight: "700",
+          fontSize: 12,
+          color: "#545766",
+        }}
+      >
+        <TimeDisplay time={time} />
+      </Text>
     </View>
   );
 };
 
 export default DispatchFriendRequestList;
+
+const styles = StyleSheet.create({
+  container: {
+    width: 344,
+    alignSelf: "center",
+    flexDirection: "row",
+    marginBottom: 40,
+  },
+  text: {
+    alignSelf: "center",
+    lineHeight: 16,
+    letterSpacing: -0.5,
+  },
+});

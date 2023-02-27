@@ -29,10 +29,12 @@ const acceptFriendRequest = ({ myUID, noticeKey, requesterUID }) => {
   push(ref(db, "/notices/" + myUID), {
     type: "recept_friend_request_accept_act",
     requesterUID,
+    time: new Date().getTime()
   });
   push(ref(db, "/notices/" + requesterUID), {
     type: "dispatch_friend_request_accept_act",
     approverUID: myUID,
+    time: new Date().getTime()
   });
   set(ref(db, "/users/" + myUID + "/friendUIDs/" + requesterUID), true);
   set(ref(db, "/users/" + requesterUID + "/friendUIDs/" + myUID), true);
@@ -67,11 +69,13 @@ const acceptFolderInviteRequest = ({
     type: "recept_folderInvite_request_accept_act",
     requesterUID,
     folderID,
+    time: new Date().getTime()
   });
   push(ref(db, "/notices/" + requesterUID), {
     type: "dispatch_folderInvite_request_accept_act",
     approverUID: myUID,
     folderID,
+    time: new Date().getTime()
   });
   //notice/myUID/noticeKey에 접근해서 type 바꾸기 -> remove 할지 추후에 고려 필요
   set(
@@ -135,6 +139,7 @@ const NoticeRenderer = ({ navigation, item, onToggleSnackBar }) => {
             setUserObject,
             userID: item.val.requesterUID,
           })}
+          time={item.val.time}
         />
       );
     case "recept_friend_request_accept_inact": //친구 요청 수신 - 수락하여 비활성화된 알림
@@ -147,6 +152,7 @@ const NoticeRenderer = ({ navigation, item, onToggleSnackBar }) => {
             setUserObject,
             userID: item.val.approverUID,
           })}
+          time={item.val.time}
         />
       );
     case "recept_friend_request_deny_inact": //친구 요청 수신 - 거절하여 비활성화된 알림
@@ -200,6 +206,7 @@ const NoticeRenderer = ({ navigation, item, onToggleSnackBar }) => {
           folderID={item.val.folderID}
           navigation={navigation}
           myUID={myUID}
+          time={item.val.time}
         />
       );
     case "dispatch_folderInvite_request_accept_act": //공유폴더초대 요청 발신 - 수락하여 활성화된 새로운 알림
@@ -219,6 +226,7 @@ const NoticeRenderer = ({ navigation, item, onToggleSnackBar }) => {
           folderID={item.val.folderID}
           navigation={navigation}
           myUID={myUID}
+          time={item.val.time}
         />
       );
     case "recept_folderInvite_request_accept_inact": //공유폴더초대 요청 수신 - 수락하여 비활성화된 알림
@@ -241,6 +249,7 @@ const NoticeRenderer = ({ navigation, item, onToggleSnackBar }) => {
           })}
           recordID={item.val.recordID}
           navigation={navigation}
+          time={item.val.time}
         />
       );
     default:
