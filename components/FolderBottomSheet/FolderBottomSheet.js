@@ -1,4 +1,9 @@
 import { set, ref, onValue, push } from "firebase/database";
+import {
+  useAllFolderQuery,
+  useAllUserQuery,
+  useUserQuery,
+} from "../../queries";
 import React, { useEffect, useRef, useState, useContext } from "react";
 import { Animated, Text, View, TouchableOpacity, Button } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
@@ -33,6 +38,8 @@ const FolderBottomSheet = ({
 }) => {
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
+  const userQuery = useUserQuery(myUID);
+  const allFolderQuery = useAllFolderQuery();
 
   const [folderIDNameList, setFolderIDNameList] = useState({}); //{folderID: folderName}가 쌓여있음
   const [isSelectingFolder, setIsSelectingFolder] = useState(true); //folderlist 창과 폴더 추가창 중 무엇을 띄울지에 대한 bool
@@ -47,22 +54,15 @@ const FolderBottomSheet = ({
     setIsSelectingFolder(true);
   }, [show]);
   useEffect(() => {
-    onValue(ref(db, "/users/" + myUID + "/folderIDs"), (snapshot) => {
-      if (snapshot.val() != null) {
-        const folderIDList = Object.keys(snapshot.val());
-        setFolderIDNameList({});
-        folderIDList.map((folderID) => {
-          onValue(
-            ref(db, "/folders/" + folderID + "/folderName/" + myUID),
-            (snapshot2) => {
-              setFolderIDNameList((prev) => ({
-                ...prev,
-                [folderID]: { folderID, folderName: snapshot2.val() },
-              }));
-            }
-          );
-        });
-      }
+    const folderIDList = Object.keys(userQuery.data?.folderIDs);
+    setFolderIDNameList({});
+
+    folderIDList.map((folderID) => {
+      const folderName = allFolderQuery.data[folderID].folderName[myUID];
+      setFolderIDNameList((prev) => ({
+        ...prev,
+        [folderID]: { folderID, folderName },
+      }));
     });
   }, []);
 

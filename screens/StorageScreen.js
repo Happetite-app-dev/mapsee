@@ -66,6 +66,14 @@ const gotoMakeFolderBottomSheetScreen = ({
   folderUserIDs,
   recordDataSource,
 }) => {
+  console.log(
+    "gotoMakeFolderBS",
+    folderID,
+    folderName,
+    folderColor,
+    folderUserIDs,
+    recordDataSource
+  );
   navigation.navigate("MakeFolderBottomSheetScreen", {
     folderID,
     folderName,
@@ -197,8 +205,8 @@ const StorageScreen = ({ navigation, route }) => {
         recordList={
           allRecordQuery.data
             ? Object.entries(allRecordQuery.data).filter(([key, values]) => {
-              return values.folderID in userQuery.data?.folderIDs;
-            })
+                return values.folderID in userQuery.data?.folderIDs;
+              })
             : []
         }
         stackNavigation={navigation}

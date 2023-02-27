@@ -1,4 +1,5 @@
 import { ref } from "@firebase/database";
+import { async } from "@firebase/util";
 import { database } from "../firebase";
 
 import { onValueAsync } from "./utils";
@@ -22,4 +23,8 @@ export const fetchAllRecord = async () => {
 
 export const fetchAllFolder = async () => {
   return await onValueAsync(ref(db, "/folders/"));
+};
+
+export const fetchAllUser = async () => {
+  return await onValueAsync(ref(db, "/users/"));
 };
