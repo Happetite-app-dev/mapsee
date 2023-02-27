@@ -572,7 +572,7 @@ const EditScreen = ({ navigation, route }) => {
             }}
           >
             <FolderPrefix height={16} width={16} />
-            <Text> {folderName_}</Text>
+            <Text> {folderName_} </Text>
           </TouchableOpacity>
           <View
             onTouchEndCapture={() => {
@@ -654,6 +654,7 @@ const EditScreen = ({ navigation, route }) => {
         }}
         setFolderName={(f) => setFolderName_(f)}
         setFolderID={(f) => setFolderID_(f)}
+        selectedFolderID={folderID_}
       />
       <PopUpType1
         modalVisible={removeModalVisible}
