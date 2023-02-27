@@ -1,21 +1,13 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useIsFocused } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
-import { Image, StyleSheet, Text, View } from "react-native";
-import { FlatList } from "react-native-gesture-handler";
+import { Image, StyleSheet, Text, View, FlatList } from "react-native";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 
 import Close from "../assets/icons/close.svg";
 import GoBack from "../assets/icons/goBack.svg";
 import SearchHistory from "../assets/icons/searchPlace.svg";
-import InbetweenCompo from "../components/MapSearchScreen/InbetweenCompo";
 import renderDescription from "../components/MapSearchScreen/RenderDescription";
-const gotoSearch2Screen = ({ navigation, data }) => {
-  navigation.navigate("MapSearchScreen2", data);
-};
-const gotoSearch3Screen = ({ navigation, data }) => {
-  navigation.navigate("MapSearchScreen3", data);
-};
 
 const storeData = async (value) => {
   try {
@@ -26,6 +18,65 @@ const storeData = async (value) => {
   }
 };
 
+const InbetweenCompo = ({
+  name,
+  history,
+  setHistory,
+  navigation,
+  setPlaceID,
+  setPlaceName,
+  setAddress,
+  setLctn,
+}) => {
+  const renderHistoryItem = ({ item }) => {
+    return (
+      <View
+        style={styles.historyItem}
+        onTouchEndCapture={() => {
+          navigation.navigate("SubSearchScreen2", {
+            details: item,
+            setPlaceID: (f) => setPlaceID(f),
+            setPlaceName: (f) => setPlaceName(f),
+            setAddress: (f) => setAddress(f),
+            setLctn: (f) => setLctn(f),
+          });
+        }}
+      >
+        <SearchHistory />
+        <Text style={{ marginLeft: 20, fontSize: 14, lineHeight: 24 }}>
+          {item.name}
+        </Text>
+      </View>
+    );
+  };
+  return name === "" ? (
+    <View>
+      <View style={styles.inbetweenCompo}>
+        <View style={styles.recentSearch}>
+          <Text style={{ fontSize: 16 }}>최근검색</Text>
+        </View>
+        <View
+          onTouchEndCapture={() => {
+            storeData("");
+            setHistory([]);
+          }}
+          style={styles.eraseAll}
+        >
+          <Text style={{ fontSize: 14, color: "#5ED3CC" }}>전체삭제</Text>
+        </View>
+      </View>
+      <FlatList
+        data={history}
+        renderItem={renderHistoryItem}
+        extraData={history}
+        style={{ marginTop: 24 }}
+      />
+    </View>
+  ) : (
+    <></>
+  );
+};
+
 const SearchBox = ({
   name,
   setName,
@@ -33,6 +84,10 @@ const SearchBox = ({
   setHistory,
   location,
   navigation,
+  setPlaceID,
+  setPlaceName,
+  setAddress,
+  setLctn,
 }) => {
   return (
     <GooglePlacesAutocomplete
@@ -42,14 +97,14 @@ const SearchBox = ({
           history={history}
           setHistory={setHistory}
           navigation={navigation}
+          setPlaceID={setPlaceID}
+          setPlaceName={setPlaceName}
+          setAddress={setAddress}
+          setLctn={setLctn}
         />
       }
       getSearchWord={(text) => {
         setName(text);
-      }}
-      getResultArray={(dataSource) => {
-        gotoSearch3Screen({ navigation, data: [name, dataSource] });
-        //onClick(navigation, name, dataSource);
       }}
       textInputProps={{
         autoFocus: true, // 커서 바로 이동
@@ -90,15 +145,20 @@ const SearchBox = ({
             ? []
             : JSON.parse(await AsyncStorage.getItem("search"));
         storeData([...newArray, newPlace]);
-
-        gotoSearch2Screen({ navigation, data: details });
+        navigation.navigate("SubSearchScreen2", {
+          details,
+          setPlaceID: (f) => setPlaceID(f),
+          setPlaceName: (f) => setPlaceName(f),
+          setAddress: (f) => setAddress(f),
+          setLctn: (f) => setLctn(f),
+        });
       }}
       styles={styles.GooglePlacesAutocomplete}
     />
   );
 };
 
-const MapSearchScreen1 = ({ navigation, route }) => {
+const SubSearchScreen1 = ({ navigation, route }) => {
   const [name, setName] = useState("");
   const [history, setHistory] = useState([]);
 
@@ -142,8 +202,12 @@ const MapSearchScreen1 = ({ navigation, route }) => {
         setName={(name) => setName(name)}
         history={history}
         setHistory={(history) => setHistory(history)}
-        location={[route.params.latitude, route.params.longitude]}
+        location={[0, 0]}
         navigation={navigation}
+        setPlaceID={route.params.setPlaceID}
+        setPlaceName={route.params.setPlaceName}
+        setAddress={route.params.setAddress}
+        setLctn={route.params.setLctn}
       />
     </View>
   );
@@ -178,14 +242,6 @@ const styles = StyleSheet.create({
       flexDirection: "row",
     },
   },
-  inbetweenCompo: {
-    height: 24,
-    width: "100%",
-    alignItems: "center",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 32,
-  },
   buttons: {
     height: 88,
     width: "100%",
@@ -206,6 +262,30 @@ const styles = StyleSheet.create({
     tintColor: "black",
   },
   goHome: { width: 15, height: 15, marginRight: 20.5, marginTop: 52.5 },
+
+  inbetweenCompo: {
+    height: 24,
+    width: "100%",
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 32,
+  },
+  recentSearch: {
+    width: 51,
+    height: 24,
+    marginLeft: 23,
+  },
+  eraseAll: {
+    height: 12,
+    marginRight: 23,
+  },
+  historyItem: {
+    height: 48,
+    width: 320,
+    marginLeft: 20,
+    flexDirection: "row",
+  },
 });
 
-export default MapSearchScreen1;
+export default SubSearchScreen1;

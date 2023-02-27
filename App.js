@@ -22,6 +22,8 @@ import RegisterScreen1 from "./screens/RegisterScreen1";
 import RegisterScreen2 from "./screens/RegisterScreen2";
 import RegisterScreen3 from "./screens/RegisterScreen3";
 import SingleFolderScreen from "./screens/SingleFolderScreen";
+import SubSearchScreen1 from "./screens/SubSearchScreen1";
+import SubSearchScreen2 from "./screens/SubSearchScreen2";
 import SuggestScreen from "./screens/SuggestScreen";
 import TutorialScreen from "./screens/TutorialScreen";
 
@@ -150,6 +152,25 @@ const App = () => {
                 presentation: "transparentModal",
                 gestureDirection: "vertical",
                 contentStyle: { backgroundColor: "transparent" },
+              }}
+            />
+
+            <Stack.Screen
+              name="SubSearchScreen1"
+              component={SubSearchScreen1}
+              options={{
+                headerShown: false,
+                gestureEnabled: false,
+                presentation: "containedModal",
+              }}
+            />
+            <Stack.Screen
+              name="SubSearchScreen2"
+              component={SubSearchScreen2}
+              options={{
+                headerShown: false,
+                gestureEnabled: false,
+                presentation: "containedModal",
               }}
             />
             <Stack.Screen

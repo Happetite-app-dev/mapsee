@@ -1,6 +1,7 @@
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useState } from "react";
 import { Text, View, Button } from "react-native";
+import { TouchableOpacity } from "react-native-gesture-handler";
 const getday = (day) => {
   if (day == 0) {
     return "일";
@@ -37,23 +38,27 @@ const DatePicker = ({ date1, setDate1, show, setShow, IsEditable }) => {
   };
 
   return (
-    <View style={{ position: "absolute", left: -55, bottom: 21, width: 330 }}>
-      <View>
-        <Button
-          color="black"
-          onPress={() =>
-            showDatepicker({ show, setDate1, setShow, date, IsEditable })
-          }
-          title={`${date.getFullYear().toString()}년 ${(
-            date.getMonth() + 1
-          ).toString()}월 ${date.getDate().toString()}일 (${getday(
-            date.getDay()
-          )})`}
-        />
-      </View>
+    <View style={{ position: "absolute", width: 330 }}>
+      <TouchableOpacity
+        onPress={() =>
+          showDatepicker({ show, setDate1, setShow, date, IsEditable })
+        }
+      >
+        <Text
+          style={{
+            fontSize: 16,
+            height: 24,
+            lineHeight: 24,
+            left: 37,
+          }}
+        >{`${date.getFullYear().toString()}년 ${(
+          date.getMonth() + 1
+        ).toString()}월 ${date.getDate().toString()}일 (${getday(
+          date.getDay()
+        )})`}</Text>
+      </TouchableOpacity>
       {show && (
         <DateTimePicker
-          style={{ left: 65 }}
           display="spinner"
           testID="dateTimePicker"
           value={date}

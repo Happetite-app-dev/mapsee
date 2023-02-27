@@ -388,7 +388,7 @@ const EditScreen = ({ navigation, route }) => {
 
   const timeNow2 = new Date();
 
-  const { recordID } = route.params;
+  const { recordID, placeID, placeName, address, lctn } = route.params;
   const query = useRecordQuery(recordID);
   const data = query.data;
 
@@ -396,8 +396,12 @@ const EditScreen = ({ navigation, route }) => {
   const IsRecordOwner = data?.userID === myUID; //기존의 기록인 경우, 그것이 자신의 기록인지 확인하는 bool
   const [isEditable, setIsEditable] = useState(IsNewRecord); //이거는 IsNewRecord이거나, IsRecordOwner이고 토글을 눌렀을 때 true가 됨
 
+  const [placeID_, setPlaceID_] = useState(placeID || data?.placeID);
+  const [placeName_, setPlaceName_] = useState(placeName || data?.placeName);
+  const [address_, setAddress_] = useState(address || data?.address);
+  const [lctn_, setLctn_] = useState(lctn || data?.lctn);
+
   const [title_, setTitle_] = useState(data?.title || undefined);
-  const [place, setPlace] = useState(data?.placeName);
   const [date_, setDate_] = useState(
     data?.date === undefined
       ? new Date()
@@ -512,17 +516,26 @@ const EditScreen = ({ navigation, route }) => {
         <View
           onTouchEndCapture={() => {
             showFolderBottomSheet && setShowFolderBottomSheet(false);
+            navigation.navigate("SubSearchScreen1", {
+              setPlaceID: (f) => setPlaceID_(f),
+              setPlaceName: (f) => setPlaceName_(f),
+              setAddress: (f) => setAddress_(f),
+              setLctn: (f) => setLctn_(f),
+            });
           }}
           style={{ height: 48, ...styles.item }}
         >
           <LocationImage />
-          <TextInput
-            editable={isEditable}
-            selectTextOnFocus={isEditable}
-            style={{ fontSize: 15, ...styles.textInput }}
-            onChangeText={(plc) => setPlace(plc)}
-            value={place}
-          />
+          <Text
+            style={{
+              height: 24,
+              lineHeight: 24,
+              fontSize: 14,
+              left: 12,
+            }}
+          >
+            {placeName_}
+          </Text>
         </View>
         <View
           onTouchEndCapture={() => {
@@ -608,10 +621,10 @@ const EditScreen = ({ navigation, route }) => {
                   myFirstName,
                   myLastName,
                   title_,
-                  place,
-                  placeID: data?.placeID,
-                  address: data?.address,
-                  lctn: data?.lctn,
+                  place: placeName_,
+                  placeID: placeID_,
+                  address: address_,
+                  lctn: lctn_,
                   date_,
                   folderID_,
                   folderName_,
@@ -671,10 +684,10 @@ const EditScreen = ({ navigation, route }) => {
             myFirstName,
             myLastName,
             title_,
-            place,
-            placeID: data?.placeID,
-            address: data?.address,
-            lctn: data?.lctn,
+            place: placeName_,
+            placeID: placeID_,
+            address: address_,
+            lctn: lctn_,
             date_,
             folderID_,
             folderName_,
