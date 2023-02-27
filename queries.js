@@ -6,7 +6,6 @@ import {
   fetchRecord,
   fetchAllFolder,
   fetchAllRecord,
-  fetchAllUser,
 } from "./actions";
 
 export const useUserQuery = (UID) =>
@@ -23,6 +22,3 @@ export const useAllFolderQuery = () =>
 
 export const useAllRecordQuery = () =>
   useQuery(["all-records"], () => fetchAllRecord());
-
-export const useAllUserQuery = () =>
-  useQuery(["all-users"], () => fetchAllUser());
