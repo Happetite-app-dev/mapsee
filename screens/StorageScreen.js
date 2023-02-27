@@ -179,7 +179,7 @@ const StorageScreen = ({ navigation, route }) => {
           </TouchableOpacity>
         </View>
       </View>
-      <View style={{ height: 85 }}>
+      <View style={{ height: 80 }}>
         <FolderList
           folderIDs={
             userQuery.data?.folderIDs
@@ -193,7 +193,6 @@ const StorageScreen = ({ navigation, route }) => {
           setModalVisible={setModalVisible}
         />
       </View>
-
       <RecordFlatList
         recordList={
           allRecordQuery.data

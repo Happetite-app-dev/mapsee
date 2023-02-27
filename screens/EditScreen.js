@@ -474,7 +474,8 @@ const EditScreen = ({ navigation, route }) => {
       >
         <View
           onTouchEndCapture={() => {
-            setGoBackModalVisible(true);
+            if (isEditable) setGoBackModalVisible(true);
+            else navigation.goBack();
           }}
           style={styles.goBack}
         >
@@ -532,6 +533,7 @@ const EditScreen = ({ navigation, route }) => {
               defaultPhotos={selectedPhotos}
               IsEditable={isEditable}
               onToggleSnackBar={onToggleSnackBar}
+              navigation={navigation}
             />
           </View>
         )}
@@ -799,8 +801,10 @@ const styles = StyleSheet.create({
   },
   titleText: {
     fontSize: 16,
-    lineHeight: 24,
+    lineHeight: 20,
     fontWeight: "bold",
+    height: 24,
+    width: 224,
   },
   twoRightButtons: {
     position: "absolute",

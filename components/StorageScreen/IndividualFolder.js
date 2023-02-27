@@ -48,7 +48,7 @@ const IndividualFolder = ({
         style={{ height: 65 }}
         activeOpacity={0.2}
       >
-        <View style={{ marginLeft: 10, marginRight: 10 }}>
+        <View style={{ marginLeft: 20, marginRight: 20 }}>
           <View style={{ position: "relative" }}>
             <SingleFolder
               color={

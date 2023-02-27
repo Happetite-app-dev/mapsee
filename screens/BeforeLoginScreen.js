@@ -10,9 +10,9 @@ import {
 } from "react-native";
 
 import AppContext from "../components/AppContext";
+import BottomButton from "../components/BottomButton";
 import { auth, database } from "../firebase";
-
-const mapseeLogoImage = require("../assets/image/mapsee_logo.png");
+import Mapsee from "../assets/image/Mapsee.svg";
 const { height } = Dimensions.get("window");
 
 const db = database;
@@ -93,10 +93,7 @@ const BeforeLoginScreen = ({ navigation }) => {
       }}
     >
       <View style={{ padding: height * 0.3, marginBottom: height * 0.2 }}>
-        <Image
-          style={{ alignItems: "center", justifyContent: "center" }}
-          source={mapseeLogoImage}
-        />
+        <Mapsee />
       </View>
       <TouchableOpacity onPress={() => gotoEmailScreen()} style={styles.button}>
         <Text style={styles.buttonText}>로그인</Text>

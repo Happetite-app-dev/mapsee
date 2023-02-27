@@ -85,6 +85,7 @@ const ImgPicker = ({
   defaultPhotos,
   IsEditable,
   onToggleSnackBar,
+  navigation,
 }) => {
   const [pickedImages, setPickedImages] = useState(defaultPhotos);
   useEffect(() => {
@@ -98,7 +99,7 @@ const ImgPicker = ({
             <ScrollView
               showsHorizontalScrollIndicator={false}
               horizontal
-              style={{ height: 148 }}
+              style={{ height: 148, marginLeft: 7 }}
             >
               <TouchableOpacity
                 onPress={() => {
@@ -152,7 +153,10 @@ const ImgPicker = ({
         <></>
       ) : (
         <View style={{ height: 148, width: 360 }}>
-          <ImageCarousel images={Object.values(pickedImages)} />
+          <ImageCarousel
+            images={Object.values(pickedImages)}
+            navigation={navigation}
+          />
         </View>
       )}
     </View>
@@ -177,6 +181,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderColor: "#ccc",
     borderWidth: 0,
+    alignSelf: "center",
   },
   image: {
     width: 148,

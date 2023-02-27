@@ -47,7 +47,10 @@ const FolderBottomSheet = ({
     setIsSelectingFolder(true);
   }, [show]);
   useEffect(() => {
-    const folderIDList = Object.keys(userQuery.data?.folderIDs);
+    const folderIDList =
+      userQuery.data?.folderIDs !== undefined
+        ? Object.keys(userQuery.data?.folderIDs)
+        : undefined;
     setFolderIDNameList({});
 
     folderIDList.map((folderID) => {
