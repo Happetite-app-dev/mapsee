@@ -186,9 +186,9 @@ const MakeFolderBottomSheet = ({ stackNavigation, folderID }) => {
       IsNewRecord
         ? gotoStorageScreen(stackNavigation)
         : gotoSingleFolderScreen({
-            stackNavigation,
-            folderID,
-          });
+          stackNavigation,
+          folderID,
+        });
     });
   };
 
