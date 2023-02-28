@@ -30,4 +30,3 @@ export const useAllNoticeQuery = (UID) =>
 
 export const useAllUserQuery = () =>
   useQuery(["all-users"], () => fetchAllUser());
-

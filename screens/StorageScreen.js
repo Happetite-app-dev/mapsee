@@ -163,7 +163,7 @@ const StorageScreen = ({ navigation, route }) => {
               else {
                 gotoMakeFolderBottomSheetScreen({
                   navigation,
-                  folderID: "",
+                  folderID: null,
                   folderName: null,
                   folderColor: null,
                   recordDataSource: {},

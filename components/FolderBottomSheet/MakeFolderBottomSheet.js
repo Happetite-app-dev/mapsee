@@ -109,30 +109,26 @@ const addNewFolder = async ({
     const referenceDate = ref(db, `/folders/${folderID}/updateDate`);
     const now = new Date();
     set(referenceDate, now.toString());
-    //공통폴더이름, 색상 가져오기
-    onValue(ref(db, `/folders/${folderID}/initFolderName`), (snapshot) => {
-      onValue(ref(db, `/folders/${folderID}/initFolderColor`), (snapshot2) => {
-        folderUserIDs.map((folderUserID) => {
-          //새로 추가된 친구에 대해 공통폴더이름, 색상 부여 필요
-          //folderName 공통폴더이름 부여
-          if (!originalFolderUserIDs.includes(folderUserID)) {
-            const timeNow = new Date();
-            const reference = ref(db, "/notices/" + folderUserID);
-            push(reference, {
-              type: "recept_folderInvite_request",
-              requesterUID: myUID,
-              time: timeNow.getTime(),
-              //여기서 부턴 "recept_folderInvite_request" type 알림만의 정보
-              folderID,
-            });
-            SendPushNotification({
-              receiverUID: folderUserID,
-              title_: "피어나 뭐해요?",
-              body_: "뉴진스 덕질해요",
-            });
-          }
+    //공통폴더이름, 색상 가져오기\
+    folderUserIDs.map((folderUserID) => {
+      //새로 추가된 친구에 대해 공통폴더이름, 색상 부여 필요
+      //folderName 공통폴더이름 부여
+      if (!originalFolderUserIDs.includes(folderUserID)) {
+        const timeNow = new Date();
+        const reference = ref(db, "/notices/" + folderUserID);
+        push(reference, {
+          type: "recept_folderInvite_request",
+          requesterUID: myUID,
+          time: timeNow.getTime(),
+          //여기서 부턴 "recept_folderInvite_request" type 알림만의 정보
+          folderID,
         });
-      });
+        SendPushNotification({
+          receiverUID: folderUserID,
+          title_: "피어나 뭐해요?",
+          body_: "뉴진스 덕질해요",
+        });
+      }
     });
     queryClient.invalidateQueries(["all-folders"]);
     queryClient.invalidateQueries(["folders", folderID]);
@@ -144,18 +140,20 @@ const MakeFolderBottomSheet = ({ stackNavigation, folderID }) => {
   const myUID = myContext.myUID;
   const queryClient = useQueryClient();
   const query = useFolderQuery(folderID);
-  const folderName_ = query.data?.folderName;
+  const folderName_ =
+    query.data?.folderName !== undefined
+      ? query.data?.folderName[myUID]
+      : undefined;
   const folderColor_ =
     query.data?.folderColor !== undefined
       ? query.data?.folderColor[myUID]
       : undefined;
   const folderUserIDs_ =
-    query.data?.userIDs !== undefined ? Object.keys(query.data?.userIDs) : [];
-
+    query.data?.userIDs !== undefined ? Object.keys(query.data?.userIDs) : null;
   const myID = myContext.myID;
   const myFirstName = myContext.myFirstName;
   const myLastName = myContext.myLastName;
-  const IsNewRecord = folderName_ === null;
+  const IsNewRecord = folderID === null;
   const [newFolderName, setNewFolderName] = useState(folderName_ || "");
   const [newFolderColor, setNewFolderColor] = useState(folderColor_ || null);
   const [newFolderUserIDs, setNewFolderUserIDs] = useState(
@@ -182,13 +180,7 @@ const MakeFolderBottomSheet = ({ stackNavigation, folderID }) => {
       queryClient,
     }).then(() => {
       queryClient.invalidateQueries(["users", myUID]);
-
-      IsNewRecord
-        ? gotoStorageScreen(stackNavigation)
-        : gotoSingleFolderScreen({
-          stackNavigation,
-          folderID,
-        });
+      stackNavigation.goBack();
     });
   };
 
