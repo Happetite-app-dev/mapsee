@@ -179,20 +179,7 @@ const StorageScreen = ({ navigation, route }) => {
           </TouchableOpacity>
         </View>
       </View>
-      <View style={{ height: 80 }}>
-        <FolderList
-          folderIDs={
-            userQuery.data?.folderIDs
-              ? Object.keys(userQuery.data?.folderIDs)
-              : []
-          }
-          setSelectedFolderIDNameColorUserIDs={
-            setSelectedFolderIDNameColorUserIDs
-          }
-          setLongPressedFolder={setLongPressedFolder}
-          setModalVisible={setModalVisible}
-        />
-      </View>
+
       <RecordFlatList
         recordList={
           allRecordQuery.data
@@ -202,7 +189,23 @@ const StorageScreen = ({ navigation, route }) => {
             : []
         }
         stackNavigation={navigation}
-        style={{ height: "65%" }}
+        ListHeaderComponent={
+          <View style={{ height: 80 }}>
+            <FolderList
+              folderIDs={
+                userQuery.data?.folderIDs
+                  ? Object.keys(userQuery.data?.folderIDs)
+                  : []
+              }
+              setSelectedFolderIDNameColorUserIDs={
+                setSelectedFolderIDNameColorUserIDs
+              }
+              setLongPressedFolder={setLongPressedFolder}
+              setModalVisible={setModalVisible}
+            />
+          </View>
+        }
+        style={{ height: "79%" }}
       />
 
       <View

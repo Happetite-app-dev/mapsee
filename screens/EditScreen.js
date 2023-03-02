@@ -627,8 +627,8 @@ const EditScreen = ({ navigation, route }) => {
           <View style={{ ...styles.button }}>
             <TouchableOpacity
               onPress={() => {
-                IsNewRecord ? navigation.pop() : setIsEditable(false);
                 setGoBackModalVisible(true);
+                IsNewRecord ? navigation.pop() : setIsEditable(false);
               }}
               style={{ width: 160, padding: 15, marginRight: 7 }}
             >
