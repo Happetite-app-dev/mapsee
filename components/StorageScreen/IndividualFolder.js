@@ -19,8 +19,8 @@ const IndividualFolder = ({
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
   const query = useFolderQuery(folderID);
-  if (query.isLoading) return <Text>강해린 로딩중이다</Text>;
-  else if (query.error) return <Text>강해린 이상하다</Text>;
+  if (query.isLoading) return <Text>Loading</Text>;
+  else if (query.error) return <Text>Error</Text>;
   return (
     query.data && (
       <TouchableOpacity

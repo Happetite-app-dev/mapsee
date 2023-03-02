@@ -206,6 +206,11 @@ const StorageScreen = ({ navigation, route }) => {
           </View>
         }
         style={{ height: "79%" }}
+        onRefresh={() => {
+          queryClient.invalidateQueries(["all-records"]);
+          queryClient.invalidateQueries(["all-folders"]); // 임시로!!!! 고쳐야해!!!!!!!!!!!!!!!!!!!!!!!!!
+        }} // fetch로 데이터 호출
+        refreshing={allRecordQuery.isLoading && allFolderQuery.isLoading} // state
       />
 
       <View
@@ -291,7 +296,7 @@ const styles = StyleSheet.create({
   screenTitle: { fontWeight: "bold", fontSize: 16, left: 23 },
   screenTitleView: {
     flexDirection: "row",
-    height: 56,
+    height: 33,
     marginBottom: 20,
     alignItems: "center",
   },

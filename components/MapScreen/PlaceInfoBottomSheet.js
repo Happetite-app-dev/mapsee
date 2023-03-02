@@ -258,16 +258,6 @@ const BottomSheetScreen = ({
           }
         />
         <View
-          style={{
-            position: "absolute",
-            top: 30,
-            left: 0,
-            width: 60,
-            height: 50,
-            paddingTop: 5,
-          }}
-        />
-        <View
           style={{ position: "absolute", top: 85, width: "100%", height: 600 }}
         >
           <RecordFlatList
