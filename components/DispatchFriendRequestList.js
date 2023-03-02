@@ -1,19 +1,13 @@
 import { useEffect, useState } from "react";
 import { Pressable, SafeAreaView, Text, View, StyleSheet } from "react-native";
+import { useUserQuery } from "../queries";
 import TimeDisplay from "./NoticeScreen/TimeDisplay";
 
-const DispatchFriendRequestList = ({ approverObject, time }) => {
-  const [approverObj, setApproverObj] = useState(
-    approverObject || { id: "", firstName: "", lastName: "" }
-  );
-  useEffect(() => {
-    if (approverObject != undefined) {
-      setApproverObj(approverObject);
-    }
-  }, [approverObject]);
-  const approverID = JSON.stringify(approverObj.id).slice(1, -1);
-  const approverFirstName = JSON.stringify(approverObj.firstName).slice(1, -1);
-  const approverLastName = JSON.stringify(approverObj.lastName).slice(1, -1);
+const DispatchFriendRequestList = ({ approverUID, time }) => {
+  const query = useUserQuery(approverUID);
+  const approverID = query.data?.id
+  const approverFirstName = query.data?.firstName
+  const approverLastName = query.data?.lastName
   return (
     <View style={styles.container}>
       <Text

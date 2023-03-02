@@ -2,11 +2,6 @@ import { ref, onValue, set, push, get } from "firebase/database";
 import { useContext, useState } from "react";
 import { useQueryClient } from "react-query";
 import AppContext from "../components/AppContext";
-import {
-  fetchFolderObject,
-  fetchInitFolderObject,
-  fetchUserObject,
-} from "../modules/FetchDatabase";
 import SendPushNotification from "../modules/SendPushNotification";
 import DispatchFolderInviteRequestList from "./DispatchFolderInviteRequestList";
 import DispatchFriendRequestList from "./DispatchFriendRequestList";
@@ -103,18 +98,12 @@ const denyFolderInviteRequest = async ({ myUID, noticeKey, onToggleSnackBar }) =
 const NoticeRenderer = ({ navigation, item, onToggleSnackBar }) => {
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
-  const [userObject, setUserObject] = useState({});
-  const [folderObject, setFolderObject] = useState({});
   const queryClient = useQueryClient();
   switch (item.val.type) {
     case "recept_friend_request": //친구 요청 수신 - 수락 거절 안 한 활성화된 새로운 알림
       return (
         <FriendRequestCard
-          requesterObject={fetchUserObject({
-            userObject,
-            setUserObject,
-            userID: item.val.requesterUID,
-          })}
+          requesterUID={item.val.requesterUID}
           time={item.val.time}
           acceptRequest={async () =>
             await acceptFriendRequest({
@@ -139,11 +128,7 @@ const NoticeRenderer = ({ navigation, item, onToggleSnackBar }) => {
     case "recept_friend_request_accept_act": //친구 요청 수신 - 수락하여 활성화된 새로운 알림
       return (
         <ReceptFriendRequestList
-          requesterObject={fetchUserObject({
-            userObject,
-            setUserObject,
-            userID: item.val.requesterUID,
-          })}
+          requesterUID={item.val.requesterUID}
           time={item.val.time}
         />
       );
@@ -152,11 +137,7 @@ const NoticeRenderer = ({ navigation, item, onToggleSnackBar }) => {
     case "dispatch_friend_request_accept_act": //친구 요청 발신 - 수락하여 활성화된 알림
       return (
         <DispatchFriendRequestList
-          approverObject={fetchUserObject({
-            userObject,
-            setUserObject,
-            userID: item.val.approverUID,
-          })}
+          approverUID={item.val.approverUID}
           time={item.val.time}
         />
       );
@@ -166,17 +147,8 @@ const NoticeRenderer = ({ navigation, item, onToggleSnackBar }) => {
       return (
         <FolderInviteRequestCard
           requesterUID={item.val.requesterUID}
-          requesterObject={fetchUserObject({
-            userObject,
-            setUserObject,
-            userID: item.val.requesterUID,
-          })}
           time={item.val.time}
-          folderObject={fetchInitFolderObject({
-            folderObject,
-            setFolderObject,
-            folderID: item.val.folderID,
-          })}
+          folderID={item.val.folderID}
           acceptRequest={async () => {
             await acceptFolderInviteRequest({
               myUID,
@@ -201,40 +173,18 @@ const NoticeRenderer = ({ navigation, item, onToggleSnackBar }) => {
     case "recept_folderInvite_request_accept_act": //공유폴대초대 요청 수신 - 수락하여 활성화된 새로운 알림
       return (
         <ReceptFolderInviteRequestList
-          requesterObject={fetchUserObject({
-            userObject,
-            setUserObject,
-            userID: item.val.requesterUID,
-          })}
-          folderObject={fetchFolderObject({
-            folderObject,
-            setFolderObject,
-            folderID: item.val.folderID,
-            userID: myUID,
-          })}
+          requesterUID={item.val.requesterUID}
           folderID={item.val.folderID}
           navigation={navigation}
-          myUID={myUID}
           time={item.val.time}
         />
       );
     case "dispatch_folderInvite_request_accept_act": //공유폴더초대 요청 발신 - 수락하여 활성화된 새로운 알림
       return (
         <DispatchFolderInviteRequestList
-          approverObject={fetchUserObject({
-            userObject,
-            setUserObject,
-            userID: item.val.approverUID,
-          })}
-          folderObject={fetchFolderObject({
-            folderObject,
-            setFolderObject,
-            folderID: item.val.folderID,
-            userID: myUID,
-          })}
+          approverUID={item.val.approverUID}
           folderID={item.val.folderID}
           navigation={navigation}
-          myUID={myUID}
           time={item.val.time}
         />
       );
@@ -245,17 +195,8 @@ const NoticeRenderer = ({ navigation, item, onToggleSnackBar }) => {
     case "recept_recordAdd_done": //기록추가 완료되었음 수신
       return (
         <ReceptRecordAddDoneList
-          performerObject={fetchUserObject({
-            userObject,
-            setUserObject,
-            userID: item.val.performerUID,
-          })}
-          folderObject={fetchFolderObject({
-            folderObject,
-            setFolderObject,
-            folderID: item.val.folderID,
-            userID: myUID,
-          })}
+          performerUID={item.val.performerUID}
+          folderID={item.val.folderID}
           recordID={item.val.recordID}
           navigation={navigation}
           time={item.val.time}

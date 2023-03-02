@@ -1,5 +1,5 @@
 import { onValue, ref } from "@firebase/database";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   Pressable,
   SafeAreaView,
@@ -8,6 +8,8 @@ import {
   View,
   StyleSheet
 } from "react-native";
+import { useFolderQuery, useUserQuery } from "../queries";
+import AppContext from "./AppContext";
 import TimeDisplay from "./NoticeScreen/TimeDisplay";
 
 const gotoEditScreen = ({ navigation, recordID }) => {
@@ -16,65 +18,57 @@ const gotoEditScreen = ({ navigation, recordID }) => {
   });
 };
 const ReceptRecordAddDoneList = ({
-  performerObject,
-  folderObject,
+  performerUID,
+  folderID,
   recordID,
   navigation,
   time
 }) => {
-  const [performerObj, setPerformerObj] = useState(
-    performerObject || { id: "", firstName: "", lastName: "" }
-  );
-  useEffect(() => {
-    if (performerObject != undefined) {
-      setPerformerObj(performerObject);
-    }
-  }, [performerObject]);
-  const performerID = JSON.stringify(performerObj.id).slice(1, -1);
-  const performerFirstName = JSON.stringify(performerObj.firstName).slice(
-    1,
-    -1
-  );
-  const performerLastName = JSON.stringify(performerObj.lastName).slice(1, -1);
-  const [folderObj, setFolderObj] = useState(
-    folderObject || { folderName: "", folderColor: "", folderUserIDs: [] }
-  );
-  useEffect(() => {
-    if (folderObject != undefined) {
-      setFolderObj(folderObject);
-    }
-  }, [folderObject]);
-  const folderName = JSON.stringify(folderObj.folderName).slice(1, -1);
-  return (
-    <TouchableOpacity
-      onPress={() => {
-        gotoEditScreen({ navigation, recordID });
-      }}
-      style={styles.container}
-    >
-      <Text
-        style={styles.text}
-      >
-        <Text style={{ fontWeight: "700" }}>
-          {performerLastName}
-          {performerFirstName}(@{performerID})
-        </Text>
-        님이
-        <Text style={{ fontWeight: "700" }}>폴더[{folderName}]</Text>에 기록을
-        남겼습니다.
-      </Text>
-      <Text
-        style={{
-          ...styles.text,
-          fontWeight: "700",
-          fontSize: 12,
-          color: "#545766",
+  const myContext = useContext(AppContext);
+  const myUID = myContext.myUID;
+
+  const userQuery = useUserQuery(performerUID);
+  const performerID = userQuery.data?.id
+  const performerFirstName = userQuery.data?.firstName
+  const performerLastName = userQuery.data?.lastName
+
+  const folderQuery = useFolderQuery(folderID);
+  const folderName = folderQuery.data?.folderName[myUID]
+
+  if (folderName == (null || undefined)) {
+    return <></>;
+  } else {
+    return (
+      <TouchableOpacity
+        onPress={() => {
+          gotoEditScreen({ navigation, recordID });
         }}
+        style={styles.container}
       >
-        <TimeDisplay time={time} />
-      </Text>
-    </TouchableOpacity>
-  );
+        <Text
+          style={styles.text}
+        >
+          <Text style={{ fontWeight: "700" }}>
+            {performerLastName}
+            {performerFirstName}(@{performerID})
+          </Text>
+          님이
+          <Text style={{ fontWeight: "700" }}>폴더[{folderName}]</Text>에 기록을
+          남겼습니다.
+        </Text>
+        <Text
+          style={{
+            ...styles.text,
+            fontWeight: "700",
+            fontSize: 12,
+            color: "#545766",
+          }}
+        >
+          <TimeDisplay time={time} />
+        </Text>
+      </TouchableOpacity>
+    );
+  }
 };
 
 export default ReceptRecordAddDoneList;

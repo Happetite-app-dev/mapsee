@@ -1,23 +1,13 @@
 import { useEffect, useState } from "react";
 import { Pressable, SafeAreaView, Text, View, StyleSheet } from "react-native";
+import { useUserQuery } from "../queries";
 import TimeDisplay from "./NoticeScreen/TimeDisplay";
 
-const ReceptFriendRequestList = ({ requesterObject, time }) => {
-  const [requesterObj, setRequesterObj] = useState(
-    requesterObject || { id: "", firstName: "", lastName: "" }
-  );
-  useEffect(() => {
-    if (requesterObject != undefined) {
-      setRequesterObj(requesterObject);
-    }
-  }, [requesterObject]);
-  const requesterID = JSON.stringify(requesterObj.id).slice(1, -1);
-  const requesterFirstName = JSON.stringify(requesterObj.firstName).slice(
-    1,
-    -1
-  );
-  const requesterLastName = JSON.stringify(requesterObj.lastName).slice(1, -1);
-
+const ReceptFriendRequestList = ({ requesterUID, time }) => {
+  const query = useUserQuery(requesterUID);
+  const requesterID = query.data?.id
+  const requesterFirstName = query.data?.firstName
+  const requesterLastName = query.data?.lastName
   return (
     <View style={styles.container}>
       <Text
