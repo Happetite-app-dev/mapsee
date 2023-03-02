@@ -59,7 +59,14 @@ const IndividualRecord = ({ item, stackNavigation }) => {
   );
 };
 
-const RecordFlatList = ({ recordList, stackNavigation, style }) => {
+const RecordFlatList = ({
+  recordList,
+  stackNavigation,
+  style,
+  ListHeaderComponent,
+  onRefresh,
+  refreshing,
+}) => {
   const renderItem = ({ item }) => (
     <IndividualRecord item={item} stackNavigation={stackNavigation} />
   );
@@ -88,9 +95,11 @@ const RecordFlatList = ({ recordList, stackNavigation, style }) => {
       keyExtractor={(item) => item}
       numColumns={2}
       initialNumToRender={6}
+      ListHeaderComponent={ListHeaderComponent}
+      onRefresh={onRefresh}
+      refreshing={refreshing}
       style={{
         width: "100%",
-        left: 10,
         ...style,
       }}
     />
@@ -110,6 +119,7 @@ const styles = StyleSheet.create({
     maxWidth: 160,
     marginVertical: 8,
     marginHorizontal: 12,
+    left: 10,
   },
   title: {
     width: 136,

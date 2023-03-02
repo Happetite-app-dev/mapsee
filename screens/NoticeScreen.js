@@ -12,8 +12,8 @@ const NoticeScreen = ({ navigation }) => {
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
   const query = useAllNoticeQuery(myUID);
-  const query_modified = Object.entries(query.data || []).map(item => {
-    return { key: item[0], val: item[1] }
+  const query_modified = Object.entries(query.data || []).map((item) => {
+    return { key: item[0], val: item[1] };
   });
   const queryClient = useQueryClient();
   const [visible, setVisible] = useState(false); // Snackbar
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
   screenTitle: { fontWeight: "bold", fontSize: 16, left: 23 },
   screenTitleView: {
     flexDirection: "row",
-    height: 56,
+    height: 33,
     marginBottom: 20,
     alignItems: "center",
   },

@@ -179,20 +179,7 @@ const StorageScreen = ({ navigation, route }) => {
           </TouchableOpacity>
         </View>
       </View>
-      <View style={{ height: 80 }}>
-        <FolderList
-          folderIDs={
-            userQuery.data?.folderIDs
-              ? Object.keys(userQuery.data?.folderIDs)
-              : []
-          }
-          setSelectedFolderIDNameColorUserIDs={
-            setSelectedFolderIDNameColorUserIDs
-          }
-          setLongPressedFolder={setLongPressedFolder}
-          setModalVisible={setModalVisible}
-        />
-      </View>
+
       <RecordFlatList
         recordList={
           allRecordQuery.data
@@ -202,7 +189,28 @@ const StorageScreen = ({ navigation, route }) => {
             : []
         }
         stackNavigation={navigation}
-        style={{ height: "65%" }}
+        ListHeaderComponent={
+          <View style={{ height: 80 }}>
+            <FolderList
+              folderIDs={
+                userQuery.data?.folderIDs
+                  ? Object.keys(userQuery.data?.folderIDs)
+                  : []
+              }
+              setSelectedFolderIDNameColorUserIDs={
+                setSelectedFolderIDNameColorUserIDs
+              }
+              setLongPressedFolder={setLongPressedFolder}
+              setModalVisible={setModalVisible}
+            />
+          </View>
+        }
+        style={{ height: "79%" }}
+        onRefresh={() => {
+          queryClient.invalidateQueries(["all-records"]);
+          queryClient.invalidateQueries(["all-folders"]); // 임시로!!!! 고쳐야해!!!!!!!!!!!!!!!!!!!!!!!!!
+        }} // fetch로 데이터 호출
+        refreshing={allRecordQuery.isLoading && allFolderQuery.isLoading} // state
       />
 
       <View
@@ -288,7 +296,7 @@ const styles = StyleSheet.create({
   screenTitle: { fontWeight: "bold", fontSize: 16, left: 23 },
   screenTitleView: {
     flexDirection: "row",
-    height: 56,
+    height: 33,
     marginBottom: 20,
     alignItems: "center",
   },
