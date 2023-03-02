@@ -1,5 +1,4 @@
 import { useQuery } from "react-query";
-
 import {
   fetchFolder,
   fetchUser,
@@ -30,3 +29,4 @@ export const useAllNoticeQuery = (UID) =>
 
 export const useAllUserQuery = () =>
   useQuery(["all-users"], () => fetchAllUser());
+

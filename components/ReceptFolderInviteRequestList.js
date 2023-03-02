@@ -1,8 +1,10 @@
 import { onValue, ref } from "@firebase/database";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Text, View, TouchableOpacity, StyleSheet } from "react-native";
 
 import { database } from "../firebase";
+import { useFolderQuery, useUserQuery } from "../queries";
+import AppContext from "./AppContext";
 import TimeDisplay from "./NoticeScreen/TimeDisplay";
 const db = database;
 
@@ -15,37 +17,23 @@ const gotoSingleFolderScreen = ({
   });
 };
 const ReceptFolderInviteRequestList = ({
-  requesterObject,
-  folderObject,
+  requesterUID,
   folderID,
   navigation,
-  myUID,
   time
 }) => {
-  const [requesterObj, setRequesterObj] = useState(
-    requesterObject || { id: "", firstName: "", lastName: "" }
-  );
-  useEffect(() => {
-    if (requesterObject != undefined) {
-      setRequesterObj(requesterObject);
-    }
-  }, [requesterObject]);
-  const requesterID = JSON.stringify(requesterObj.id).slice(1, -1);
-  const requesterFirstName = JSON.stringify(requesterObj.firstName).slice(
-    1,
-    -1
-  );
-  const requesterLastName = JSON.stringify(requesterObj.lastName).slice(1, -1);
-  const [folderObj, setFolderObj] = useState(
-    folderObject || { folderName: "", folderColor: "", folderUserIDs: [] }
-  );
-  useEffect(() => {
-    if (folderObject != undefined) {
-      setFolderObj(folderObject);
-    }
-  }, [folderObject]);
-  const folderName = JSON.stringify(folderObj.folderName).slice(1, -1);
-  if (folderObj == { folderName: "", folderColor: "", folderUserIDs: [] }) {
+  const myContext = useContext(AppContext);
+  const myUID = myContext.myUID;
+
+  const userQuery = useUserQuery(requesterUID);
+  const requesterID = userQuery.data?.id
+  const requesterFirstName = userQuery.data?.firstName
+  const requesterLastName = userQuery.data?.lastName
+
+  const folderQuery = useFolderQuery(folderID);
+  const folderName = folderQuery.data?.folderName[myUID]
+
+  if (folderName == (null || undefined)) {
     return <></>;
   } else {
     return (

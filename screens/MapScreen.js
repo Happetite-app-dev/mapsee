@@ -265,10 +265,10 @@ const MapScreen = ({ navigation }) => {
         </Marker>
         <RecordMarker
           recordData={
-            allRecordQuery.data
+            (allRecordQuery.data && userQuery.data?.folderIDs)
               ? Object.entries(allRecordQuery.data).filter(([key, record]) => {
-                  return record.folderID in userQuery.data?.folderIDs;
-                })
+                return record.folderID in userQuery.data?.folderIDs;
+              })
               : []
           }
           origin={origin}

@@ -1,41 +1,31 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Pressable, SafeAreaView, Text, View, StyleSheet } from "react-native";
+import { useFolderQuery, useUserQuery } from "../queries";
+import AppContext from "./AppContext";
 import TimeDisplay from "./NoticeScreen/TimeDisplay";
 
 //오로지 display만을 위한 함수
 const FolderInviteRequestCard = ({
-  requesterObject,
+  requesterUID,
   time,
-  folderObject,
+  folderID,
   acceptRequest,
   denyRequest,
 }) => {
-  const [requesterObj, setRequesterObj] = useState(
-    requesterObject || { id: "", firstName: "", lastName: "" }
-  );
-  useEffect(() => {
-    if (requesterObject != undefined) {
-      setRequesterObj(requesterObject);
-    }
-  }, [requesterObject]);
-  const requesterID = JSON.stringify(requesterObj.id).slice(1, -1);
-  const requesterFirstName = JSON.stringify(requesterObj.firstName).slice(
-    1,
-    -1
-  );
-  const requesterLastName = JSON.stringify(requesterObj.lastName).slice(1, -1);
+  const myContext = useContext(AppContext);
+  const myUID = myContext.myUID;
 
-  const [folderObj, setFolderObj] = useState(
-    folderObject || { folderName: "", folderColor: "", folderUserIDs: [] }
-  );
-  useEffect(() => {
-    if (folderObject != undefined) {
-      setFolderObj(folderObject);
-    }
-  }, [folderObject]);
-  const folderName = JSON.stringify(folderObj.folderName).slice(1, -1);
+  const userQuery = useUserQuery(requesterUID);
+  const requesterID = userQuery.data?.id
+  const requesterFirstName = userQuery.data?.firstName
+  const requesterLastName = userQuery.data?.lastName
 
-  if (folderObj == { folderName: "", folderColor: "", folderUserIDs: [] }) {
+  const folderQuery = useFolderQuery(folderID);
+  const folderName = folderQuery.data?.folderName[myUID] ?
+    folderQuery.data?.folderName[myUID]
+    : folderQuery.data?.initFolderName;
+
+  if (folderName == (null || undefined)) {
     return <></>;
   } else {
     return (
