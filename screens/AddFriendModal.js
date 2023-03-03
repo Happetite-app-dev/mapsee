@@ -15,6 +15,7 @@ import AppContext from "../components/AppContext";
 import SendPushNotification from "../modules/SendPushNotification";
 
 import { database } from "../firebase";
+import AddRelatedUID from "../modules/AddRelatedUID";
 const db = database;
 
 const getFriendUID = (newFriend, handleFriendUID, handleFriendName) => {
@@ -31,7 +32,7 @@ const getFriendUID = (newFriend, handleFriendUID, handleFriendName) => {
   });
 };
 
-const callFriendRequest = (friendUID, myUID, myID, myFirstName, myLastName) => {
+const callFriendRequest = (friendUID, myUID) => {
   if (friendUID != undefined) {
     const timeNow = new Date();
     const reference = ref(db, "/notices/" + friendUID);
@@ -46,6 +47,7 @@ const callFriendRequest = (friendUID, myUID, myID, myFirstName, myLastName) => {
       title_: "친구추가타이틀",
       body_: "친구추가바디",
     });
+    AddRelatedUID(friendUID, myUID)
   } else {
   }
 };
@@ -60,9 +62,6 @@ const AddFriendModal = ({
 }) => {
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
-  const myID = myContext.myID;
-  const myFirstName = myContext.myFirstName;
-  const myLastName = myContext.myLastName;
   const [newFriend, setNewFriend] = useState("");
   const [friendUID, setFriendUID] = useState(undefined);
   const [friendName, setFriendName] = useState(undefined);
@@ -83,7 +82,7 @@ const AddFriendModal = ({
         setRequestSent(false);
         onToggleSnackBar();
       } else {
-        callFriendRequest(friendUID, myUID, myID, myFirstName, myLastName)
+        callFriendRequest(friendUID, myUID)
         setRequestSent(true);
         setRequestInfo([newFriend, friendName]); // newFriend: friend ID
         onToggleSnackBar();

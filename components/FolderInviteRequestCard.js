@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { Pressable, SafeAreaView, Text, View, StyleSheet } from "react-native";
+import AddRelatedUID from "../modules/AddRelatedUID";
 import { useFolderQuery, useUserQuery } from "../queries";
 import AppContext from "./AppContext";
 import TimeDisplay from "./NoticeScreen/TimeDisplay";
@@ -21,11 +22,13 @@ const FolderInviteRequestCard = ({
   const requesterLastName = userQuery.data?.lastName
 
   const folderQuery = useFolderQuery(folderID);
-  const folderName = folderQuery.data?.folderName[myUID] ?
-    folderQuery.data?.folderName[myUID]
-    : folderQuery.data?.initFolderName;
+  // const folderName = folderQuery.data?.folderName[myUID] ?
+  //   folderQuery.data?.folderName[myUID]
+  //   : folderQuery.data?.initFolderName;
+  const folderName = folderQuery.data?.initFolderName;
+  const folderUserIDs = folderQuery.data?.userIDs ? Object.keys(folderQuery.data?.userIDs) : [];
 
-  if (folderName == (null || undefined)) {
+  if (!userQuery.data || !folderQuery.data) {
     return <></>;
   } else {
     return (
@@ -62,7 +65,13 @@ const FolderInviteRequestCard = ({
           </Pressable>
           <View style={styles.buttonBorder} />
           <Pressable
-            onPress={acceptRequest}
+            onPress={() => {
+              acceptRequest();
+              folderUserIDs.forEach((folderUserID) => {
+                console.log(folderUserID)
+                if (myUID != folderUserID) AddRelatedUID(myUID, folderUserID)
+              })
+            }}
             style={{ ...styles.button, left: 22 }}
           >
             <Text style={styles.buttonText}>

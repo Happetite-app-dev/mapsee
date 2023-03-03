@@ -36,7 +36,7 @@ const DispatchFolderInviteRequestList = ({
 
   const folderQuery = useFolderQuery(folderID);
   const folderName = folderQuery.data?.folderName[myUID]
-  if (folderName == (null || undefined)) {
+  if (!userQuery.data || !folderQuery.data) {
     return <></>;
   } else {
     return (

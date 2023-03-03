@@ -15,6 +15,8 @@ import ReceptRecordAddDoneList from "./ReceptRecordAddDoneList";
 //ID를 UID에서 갖고 오는 식으로 바꿔야 될수도
 
 import { database } from "../firebase";
+import AddRelatedUID from "../modules/AddRelatedUID";
+import { fetchAllUser } from "../actions";
 const db = database;
 const acceptFriendRequest = async ({ myUID, noticeKey, requesterUID }) => {
   set(
@@ -99,6 +101,7 @@ const NoticeRenderer = ({ navigation, item, onToggleSnackBar }) => {
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
   const queryClient = useQueryClient();
+
   switch (item.val.type) {
     case "recept_friend_request": //친구 요청 수신 - 수락 거절 안 한 활성화된 새로운 알림
       return (

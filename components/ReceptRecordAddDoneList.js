@@ -35,7 +35,7 @@ const ReceptRecordAddDoneList = ({
   const folderQuery = useFolderQuery(folderID);
   const folderName = folderQuery.data?.folderName[myUID]
 
-  if (folderName == (null || undefined)) {
+  if (!userQuery.data || !folderQuery.data) {
     return <></>;
   } else {
     return (
@@ -53,7 +53,7 @@ const ReceptRecordAddDoneList = ({
             {performerFirstName}(@{performerID})
           </Text>
           님이
-          <Text style={{ fontWeight: "700" }}>폴더[{folderName}]</Text>에 기록을
+          <Text style={{ fontWeight: "700" }}> 폴더[{folderName}]</Text>에 기록을
           남겼습니다.
         </Text>
         <Text

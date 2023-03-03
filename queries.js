@@ -27,6 +27,12 @@ export const useAllRecordQuery = () =>
 export const useAllNoticeQuery = (UID) =>
   useQuery(["all-notices"], () => fetchAllNotice(UID));
 
-export const useAllUserQuery = () =>
-  useQuery(["all-users"], () => fetchAllUser());
+
+/** 
+ * relatedUIDs에 속한 각 UID들에 대한 정보를 트리로 만들어 저장
+ * useAllUserQuery에 대해 invalidate 실행 시 useUserQuery에 대해 invalidate 모두 실행
+ * or setQueryData 실행
+ */
+export const useAllUserQuery = (UID) =>
+  useQuery(["all-users"], () => fetchAllUser(UID));
 

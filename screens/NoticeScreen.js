@@ -3,10 +3,11 @@ import { useEffect, useState, useContext } from "react";
 import { SafeAreaView, Text, View, FlatList, StyleSheet } from "react-native";
 import { Snackbar } from "react-native-paper";
 import { useQueryClient } from "react-query";
+import { fetchAllNotice } from "../actions";
 import AppContext from "../components/AppContext";
 import NoticeRenderer from "../components/NoticeRenderer";
 import { database } from "../firebase";
-import { useAllNoticeQuery } from "../queries";
+import { useAllNoticeQuery, useUserQuery } from "../queries";
 
 const NoticeScreen = ({ navigation }) => {
   const myContext = useContext(AppContext);
@@ -27,6 +28,7 @@ const NoticeScreen = ({ navigation }) => {
       onToggleSnackBar={onToggleSnackBar}
     />
   );
+  //set(ref(database, "/users/dIo8sCXlQ3YcXooeB53WmTKEDtc2/firstName"), "동욱")
 
   return (
     <SafeAreaView style={styles.container}>
@@ -37,6 +39,8 @@ const NoticeScreen = ({ navigation }) => {
         <FlatList
           onRefresh={() => {
             queryClient.invalidateQueries(["all-notices"]);
+            //queryClient.setQueryData(["users", "dIo8sCXlQ3YcXooeB53WmTKEDtc2"], () => "하하")
+            queryClient.invalidateQueries(["users"])
           }} // fetch로 데이터 호출
           refreshing={query.isLoading} // state
           data={query_modified}

@@ -15,53 +15,58 @@ const FriendRequestCard = ({
   const requesterFirstName = query.data?.firstName
   const requesterLastName = query.data?.lastName
 
-  return (
-    <View style={styles.container}>
-      <View style={styles.textContainer}>
-        <Text style={{ ...styles.text, fontSize: 14, fontWeight: "400" }}>
-          <Text style={{ fontWeight: "700" }}>
-            {requesterLastName}
-            {requesterFirstName}(@{requesterID})
+  if (!query.data) {
+    return <></>
+  } else {
+    return (
+      <View style={styles.container}>
+        <View style={styles.textContainer}>
+          <Text style={{ ...styles.text, fontSize: 14, fontWeight: "400" }}>
+            <Text style={{ fontWeight: "700" }}>
+              {requesterLastName}
+              {requesterFirstName}(@{requesterID})
+            </Text>
+            님이
+            <Text style={{ fontWeight: "700" }}> 친구요청</Text>을 보냈습니다.
           </Text>
-          님이
-          <Text style={{ fontWeight: "700" }}> 친구요청</Text>을 보냈습니다.
-        </Text>
-        <Text
-          style={{
-            ...styles.text,
-            fontWeight: "700",
-            fontSize: 12,
-            color: "#545766",
-          }}
-        >
-          <TimeDisplay time={time} />
-        </Text>
-      </View>
-      <View style={styles.buttonContainer}>
-        <Pressable
-          onPress={denyRequest}
-          style={{ ...styles.button, right: 22 }}
-        >
           <Text
-            style={styles.buttonText}
+            style={{
+              ...styles.text,
+              fontWeight: "700",
+              fontSize: 12,
+              color: "#545766",
+            }}
           >
-            거절
+            <TimeDisplay time={time} />
           </Text>
-        </Pressable>
-        <View style={styles.buttonBorder} />
-        <Pressable
-          onPress={acceptRequest}
-          style={{ ...styles.button, left: 22 }}
-        >
-          <Text
-            style={styles.buttonText}
+        </View>
+        <View style={styles.buttonContainer}>
+          <Pressable
+            onPress={denyRequest}
+            style={{ ...styles.button, right: 22 }}
           >
-            수락
-          </Text>
-        </Pressable>
+            <Text
+              style={styles.buttonText}
+            >
+              거절
+            </Text>
+          </Pressable>
+          <View style={styles.buttonBorder} />
+          <Pressable
+            onPress={acceptRequest}
+            style={{ ...styles.button, left: 22 }}
+          >
+            <Text
+              style={styles.buttonText}
+            >
+              수락
+            </Text>
+          </Pressable>
+        </View>
       </View>
-    </View>
-  );
+    );
+  }
+
 };
 
 export default FriendRequestCard;
