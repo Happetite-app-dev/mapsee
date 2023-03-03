@@ -24,7 +24,7 @@ import TargetMarker from "../assets/markers/selectedMarker.svg";
 import AppContext from "../components/AppContext";
 import RecordMarker from "../components/MapScreen/RecordMarker";
 import GeneratePushToken from "../modules/GeneratePushToken";
-const MyLocation = require("../assets/icons/MyLocation.svg");
+import MyLocation from "../assets/icons/MyLocation.svg";
 const findCurrentLocationImage = require("../assets/image/findCurrentLocation.png");
 const mapStyle = require("../assets/mapDesign.json");
 
@@ -265,10 +265,10 @@ const MapScreen = ({ navigation }) => {
         </Marker>
         <RecordMarker
           recordData={
-            (allRecordQuery.data && userQuery.data?.folderIDs)
+            allRecordQuery.data && userQuery.data?.folderIDs
               ? Object.entries(allRecordQuery.data).filter(([key, record]) => {
-                return record.folderID in userQuery.data?.folderIDs;
-              })
+                  return record.folderID in userQuery.data?.folderIDs;
+                })
               : []
           }
           origin={origin}
@@ -295,18 +295,20 @@ const MapScreen = ({ navigation }) => {
           });
         }}
       >
-        <Animated.Image
+        <Animated.View
           source={MyLocation}
           resizeMode="contain"
           style={{
             position: "absolute",
-            width: 30,
-            height: 30,
-            borderRadius: 15,
+            width: 48,
+            height: 48,
+            borderRadius: 24,
             tintColor: "grey",
             transform: [{ rotate: RotateData }],
           }}
-        />
+        >
+          <MyLocation />
+        </Animated.View>
       </View>
     </SafeAreaView>
   );
