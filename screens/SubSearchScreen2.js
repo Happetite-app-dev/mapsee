@@ -270,6 +270,7 @@ const SubSearchScreen2 = ({ navigation, route }) => {
         rightButton="goHome"
       />
       <MapView
+        showsBuildings={false}
         customMapStyle={mapStyle}
         provider="google"
         ref={mapRef}

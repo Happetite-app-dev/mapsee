@@ -215,6 +215,7 @@ const MapScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <MapView
+        showsBuildings={false}
         provider="google"
         ref={mapRef}
         style={styles.map}

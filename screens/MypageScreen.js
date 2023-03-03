@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import * as Clipboard from "expo-clipboard";
 
 import Rate from "../assets/icons/Rate.svg";
 import SNS from "../assets/icons/SNS.svg";
@@ -37,6 +38,10 @@ const MypageScreen = ({ navigation }) => {
   const myContext = useContext(AppContext);
   const myID = myContext.myID;
   const myName = myContext.myLastName + myContext.myFirstName;
+
+  const copyToClipboard = async (string) => {
+    await Clipboard.setStringAsync(string);
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -69,18 +74,20 @@ const MypageScreen = ({ navigation }) => {
             >
               {myID}
             </Text>
-            <Copy
-              onPress={() => {
-                console.log("copy");
-              }}
+            <TouchableOpacity
+              onPress={() => copyToClipboard(myID)}
               style={{ left: 16 }}
-            />
+            >
+              <Copy />
+            </TouchableOpacity>
           </View>
         </View>
-        <Arrow
+        <TouchableOpacity
           onPress={() => gotoProfileScreen({ navigation })}
-          style={{ left: 352.5 }}
-        />
+          style={{ height: 20, width: 50, left: 352.5 }}
+        >
+          <Arrow />
+        </TouchableOpacity>
       </View>
 
       <View
