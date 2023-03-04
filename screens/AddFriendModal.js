@@ -15,7 +15,6 @@ import AppContext from "../components/AppContext";
 import SendPushNotification from "../modules/SendPushNotification";
 
 import { database } from "../firebase";
-import AddRelatedUID from "../modules/AddRelatedUID";
 const db = database;
 
 const getFriendUID = (newFriend, handleFriendUID, handleFriendName) => {
@@ -47,7 +46,6 @@ const callFriendRequest = (friendUID, myUID) => {
       title_: "친구추가타이틀",
       body_: "친구추가바디",
     });
-    AddRelatedUID(friendUID, myUID)
   } else {
   }
 };

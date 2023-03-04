@@ -39,14 +39,15 @@ const NoticeScreen = ({ navigation }) => {
         <FlatList
           onRefresh={() => {
             queryClient.invalidateQueries(["all-notices"]);
-            //queryClient.setQueryData(["users", "dIo8sCXlQ3YcXooeB53WmTKEDtc2"], () => "하하")
             queryClient.invalidateQueries(["users"])
+            queryClient.invalidateQueries(["folders"])
           }} // fetch로 데이터 호출
           refreshing={query.isLoading} // state
           data={query_modified}
           renderItem={renderNotice}
           numColumns={1}
-          initialNumToRender={6}
+          initialNumToRender={15}
+          windowSize={5}
           style={{
             width: "100%",
           }}

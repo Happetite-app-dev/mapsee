@@ -53,15 +53,16 @@ const exitData = async (myUID, folderID) => {
       );
       remove(reference4);
     })
-    .then(
-      //지울 필요가 없음
-      onValue(ref(db, "/folders/" + folderID + "/userIDs"), (snapshot) => {
-        if (!snapshot.hasChildren()) {
-          const reference3 = ref(db, "/folders/" + folderID);
-          remove(reference3);
-        }
-      })
-    );
+  //사람이 없는 폴더에 나중에 사람이 추가될 가능성을 위해 일단 폴더를 남겨두자
+  // .then(
+  //   //지울 필요가 없음
+  //   onValue(ref(db, "/folders/" + folderID + "/userIDs"), (snapshot) => {
+  //     if (!snapshot.hasChildren()) {
+  //       const reference3 = ref(db, "/folders/" + folderID);
+  //       remove(reference3);
+  //     }
+  //   })
+  // );
 };
 
 const SingleFolderScreen = ({ navigation, route }) => {

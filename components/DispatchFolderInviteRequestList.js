@@ -29,6 +29,8 @@ const DispatchFolderInviteRequestList = ({
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
 
+  const myUserQuery = useUserQuery(myUID)
+
   const userQuery = useUserQuery(approverUID);
   const approverID = userQuery.data?.id
   const approverFirstName = userQuery.data?.firstName
@@ -38,6 +40,34 @@ const DispatchFolderInviteRequestList = ({
   const folderName = folderQuery.data?.folderName[myUID]
   if (!userQuery.data || !folderQuery.data) {
     return <></>;
+  } else if (!myUserQuery.data.folderIDs[folderID]) {
+    return (
+      <View
+        style={styles.container}
+      >
+        <Text
+          style={styles.text}
+        >
+          <Text style={{ fontWeight: "700" }}>
+            {approverLastName}
+            {approverFirstName}(@{approverID})
+          </Text>
+          님이
+          <Text style={{ fontWeight: "700" }}> {folderName} </Text>
+          초대를 수락했습니다.
+        </Text>
+        <Text
+          style={{
+            ...styles.text,
+            fontWeight: "700",
+            fontSize: 12,
+            color: "#545766",
+          }}
+        >
+          <TimeDisplay time={time} />
+        </Text>
+      </View>
+    );
   } else {
     return (
       <TouchableOpacity

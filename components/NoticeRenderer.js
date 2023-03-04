@@ -1,4 +1,4 @@
-import { ref, onValue, set, push, get } from "firebase/database";
+import { ref, onValue, set, push, get, remove } from "firebase/database";
 import { useContext, useState } from "react";
 import { useQueryClient } from "react-query";
 import AppContext from "../components/AppContext";
@@ -15,13 +15,15 @@ import ReceptRecordAddDoneList from "./ReceptRecordAddDoneList";
 //ID를 UID에서 갖고 오는 식으로 바꿔야 될수도
 
 import { database } from "../firebase";
-import AddRelatedUID from "../modules/AddRelatedUID";
-import { fetchAllUser } from "../actions";
+
 const db = database;
 const acceptFriendRequest = async ({ myUID, noticeKey, requesterUID }) => {
-  set(
-    ref(db, "/notices/" + myUID + "/" + noticeKey + "/type/"), //remove할지 추후에 고려 필요
-    "recept_friend_request_accept_inact"
+  // set(
+  //   ref(db, "/notices/" + myUID + "/" + noticeKey + "/type/"), //remove할지 추후에 고려 필요
+  //   "recept_friend_request_accept_inact"
+  // );
+  remove(
+    ref(db, "/notices/" + myUID + "/" + noticeKey)
   );
   push(ref(db, "/notices/" + myUID), {
     type: "recept_friend_request_accept_act",
@@ -75,24 +77,33 @@ const acceptFolderInviteRequest = async ({
     time: new Date().getTime()
   });
   //notice/myUID/noticeKey에 접근해서 type 바꾸기 -> remove 할지 추후에 고려 필요
-  set(
-    ref(db, "/notices/" + myUID + "/" + noticeKey + "/type/"), //remove할지 추후에 고려 필요
-    "recept_folderInvite_request_accept_inact"
+  // set(
+  //   ref(db, "/notices/" + myUID + "/" + noticeKey + "/type/"), //remove할지 추후에 고려 필요
+  //   "recept_folderInvite_request_accept_inact"
+  // );
+  remove(
+    ref(db, "/notices/" + myUID + "/" + noticeKey)
   );
 };
 
 const denyFriendRequest = async ({ myUID, noticeKey, onToggleSnackBar }) => {
-  set(
-    ref(db, "/notices/" + myUID + "/" + noticeKey + "/type/"),
-    "recept_friend_request_deny_inact"
+  // set(
+  //   ref(db, "/notices/" + myUID + "/" + noticeKey + "/type/"),
+  //   "recept_friend_request_deny_inact"
+  // );
+  remove(
+    ref(db, "/notices/" + myUID + "/" + noticeKey)
   );
   onToggleSnackBar();
 };
 
 const denyFolderInviteRequest = async ({ myUID, noticeKey, onToggleSnackBar }) => {
-  set(
-    ref(db, "/notices/" + myUID + "/" + noticeKey + "/type/"),
-    "recept_folderInvite_request_deny_inact"
+  // set(
+  //   ref(db, "/notices/" + myUID + "/" + noticeKey + "/type/"),
+  //   "recept_folderInvite_request_deny_inact"
+  // );
+  remove(
+    ref(db, "/notices/" + myUID + "/" + noticeKey)
   );
   onToggleSnackBar();
 };
