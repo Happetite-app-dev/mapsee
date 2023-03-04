@@ -27,6 +27,8 @@ const ReceptRecordAddDoneList = ({
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
 
+  const myUserQuery = useUserQuery(myUID)
+
   const userQuery = useUserQuery(performerUID);
   const performerID = userQuery.data?.id
   const performerFirstName = userQuery.data?.firstName
@@ -35,8 +37,37 @@ const ReceptRecordAddDoneList = ({
   const folderQuery = useFolderQuery(folderID);
   const folderName = folderQuery.data?.folderName[myUID]
 
-  if (folderName == (null || undefined)) {
+  if (!userQuery.data || !folderQuery.data || !myUserQuery.data) {
     return <></>;
+  }
+  else if (!myUserQuery.data.folderIDs[folderID] || !Object.values(folderQuery.data.placeRecords ? folderQuery.data.placeRecords : []).some((item) => item[recordID])) {
+    return (
+      <View
+        style={styles.container}
+      >
+        <Text
+          style={styles.text}
+        >
+          <Text style={{ fontWeight: "700" }}>
+            {performerLastName}
+            {performerFirstName}(@{performerID})
+          </Text>
+          님이
+          <Text style={{ fontWeight: "700" }}> 폴더[{folderName}]</Text>에 기록을
+          남겼습니다.
+        </Text>
+        <Text
+          style={{
+            ...styles.text,
+            fontWeight: "700",
+            fontSize: 12,
+            color: "#545766",
+          }}
+        >
+          <TimeDisplay time={time} />
+        </Text>
+      </View>
+    )
   } else {
     return (
       <TouchableOpacity
@@ -53,7 +84,7 @@ const ReceptRecordAddDoneList = ({
             {performerFirstName}(@{performerID})
           </Text>
           님이
-          <Text style={{ fontWeight: "700" }}>폴더[{folderName}]</Text>에 기록을
+          <Text style={{ fontWeight: "700" }}> 폴더[{folderName}]</Text>에 기록을
           남겼습니다.
         </Text>
         <Text

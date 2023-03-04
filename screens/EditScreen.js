@@ -73,7 +73,7 @@ const uploadImage = async (image, imageName, newRecordID) => {
 
   await uploadBytes(imageRef, blob, {
     connectType: "image/png",
-  }).then((snapshot) => {});
+  }).then((snapshot) => { });
 
   blob.close();
   return await getDownloadURL(imageRef);
@@ -121,8 +121,8 @@ const saveData = async (
       title:
         title === undefined
           ? `${timeNow.getFullYear().toString()}_${(
-              timeNow.getMonth() + 1
-            ).toString()}_${timeNow.getDay().toString()}_기록`
+            timeNow.getMonth() + 1
+          ).toString()}_${timeNow.getDay().toString()}_기록`
           : title,
       placeName: place,
       date: {
@@ -194,8 +194,8 @@ const saveData = async (
       title:
         title == undefined
           ? `${timeNow.getFullYear().toString()}_${(
-              timeNow.getMonth() + 1
-            ).toString()}_${timeNow.getDay().toString()}_기록`
+            timeNow.getMonth() + 1
+          ).toString()}_${timeNow.getDay().toString()}_기록`
           : title, //나중에 modify할 때 default title을 어떻게 할지를 기획한테 물어보기
       placeName: place,
       date: {
@@ -344,6 +344,7 @@ const removeData = async ({ recordID, folderID, placeID, queryClient }) => {
         db,
         "/folders/" + folderID + "/placeRecords/" + placeID + "/" + recordID
       );
+      //console.log(folderID, placeID, recordID)
       remove(reference2);
     })
     .then(
@@ -373,7 +374,7 @@ const removeRecord = async ({
   placeID,
   queryClient,
 }) => {
-  await removeData({ recordID, folderID_, placeID, queryClient }).then(
+  await removeData({ recordID, folderID: folderID_, placeID, queryClient }).then(
     () => navigation.navigate("Storage") //realtimeDataBase가 모두 업데이트 된후
   );
 };

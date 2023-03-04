@@ -21,11 +21,12 @@ const FolderInviteRequestCard = ({
   const requesterLastName = userQuery.data?.lastName
 
   const folderQuery = useFolderQuery(folderID);
-  const folderName = folderQuery.data?.folderName[myUID] ?
-    folderQuery.data?.folderName[myUID]
-    : folderQuery.data?.initFolderName;
+  // const folderName = folderQuery.data?.folderName[myUID] ?
+  //   folderQuery.data?.folderName[myUID]
+  //   : folderQuery.data?.initFolderName;
+  const folderName = folderQuery.data?.initFolderName;
 
-  if (folderName == (null || undefined)) {
+  if (!userQuery.data || !folderQuery.data) {
     return <></>;
   } else {
     return (
@@ -62,7 +63,9 @@ const FolderInviteRequestCard = ({
           </Pressable>
           <View style={styles.buttonBorder} />
           <Pressable
-            onPress={acceptRequest}
+            onPress={() => {
+              acceptRequest();
+            }}
             style={{ ...styles.button, left: 22 }}
           >
             <Text style={styles.buttonText}>

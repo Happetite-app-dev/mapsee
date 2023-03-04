@@ -8,33 +8,37 @@ const ReceptFriendRequestList = ({ requesterUID, time }) => {
   const requesterID = query.data?.id
   const requesterFirstName = query.data?.firstName
   const requesterLastName = query.data?.lastName
-  return (
-    <View style={styles.container}>
-      <Text
-        style={{
-          ...styles.text,
-          fontWeight: "400",
-          fontSize: 14,
-        }}
-      >
-        <Text style={{ fontWeight: "700" }}>
-          {requesterLastName}
-          {requesterFirstName}(@{requesterID})
+  if (!query.data) {
+    return <></>
+  } else {
+    return (
+      <View style={styles.container}>
+        <Text
+          style={{
+            ...styles.text,
+            fontWeight: "400",
+            fontSize: 14,
+          }}
+        >
+          <Text style={{ fontWeight: "700" }}>
+            {requesterLastName}
+            {requesterFirstName}(@{requesterID})
+          </Text>
+          님과 친구가 되었습니다.
         </Text>
-        님과 친구가 되었습니다.
-      </Text>
-      <Text
-        style={{
-          ...styles.text,
-          fontWeight: "700",
-          fontSize: 12,
-          color: "#545766",
-        }}
-      >
-        <TimeDisplay time={time} />
-      </Text>
-    </View>
-  );
+        <Text
+          style={{
+            ...styles.text,
+            fontWeight: "700",
+            fontSize: 12,
+            color: "#545766",
+          }}
+        >
+          <TimeDisplay time={time} />
+        </Text>
+      </View>
+    );
+  }
 };
 
 export default ReceptFriendRequestList;

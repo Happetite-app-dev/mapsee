@@ -31,7 +31,7 @@ const getFriendUID = (newFriend, handleFriendUID, handleFriendName) => {
   });
 };
 
-const callFriendRequest = (friendUID, myUID, myID, myFirstName, myLastName) => {
+const callFriendRequest = (friendUID, myUID) => {
   if (friendUID != undefined) {
     const timeNow = new Date();
     const reference = ref(db, "/notices/" + friendUID);
@@ -60,9 +60,6 @@ const AddFriendModal = ({
 }) => {
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
-  const myID = myContext.myID;
-  const myFirstName = myContext.myFirstName;
-  const myLastName = myContext.myLastName;
   const [newFriend, setNewFriend] = useState("");
   const [friendUID, setFriendUID] = useState(undefined);
   const [friendName, setFriendName] = useState(undefined);
@@ -83,7 +80,7 @@ const AddFriendModal = ({
         setRequestSent(false);
         onToggleSnackBar();
       } else {
-        callFriendRequest(friendUID, myUID, myID, myFirstName, myLastName)
+        callFriendRequest(friendUID, myUID)
         setRequestSent(true);
         setRequestInfo([newFriend, friendName]); // newFriend: friend ID
         onToggleSnackBar();
