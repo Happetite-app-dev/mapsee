@@ -201,6 +201,7 @@ const MapSearchScreen3 = ({ navigation, route }) => {
         name={route.params[0]}
       />
       <MapView
+        showsBuildings={false}
         customMapStyle={mapStyle}
         provider="google"
         ref={mapRef}

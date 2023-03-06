@@ -7,15 +7,21 @@ import {
   Image,
   TouchableOpacity,
 } from "react-native";
+import * as Clipboard from "expo-clipboard";
 
 import AppContext from "../components/AppContext";
 import GoBackHeader from "../components/GoBackHeader";
+import Copy from "../assets/icons/Friend.svg";
 
 const ProfileScreen = ({ navigation }) => {
   const myContext = useContext(AppContext);
   const myName = myContext.myLastName + myContext.myFirstName;
   const myID = myContext.myID;
   const myEmail = myContext.myEmail;
+
+  const copyToClipboard = async (string) => {
+    await Clipboard.setStringAsync(string);
+  };
 
   return (
     <View style={styles.container}>
@@ -48,7 +54,21 @@ const ProfileScreen = ({ navigation }) => {
         <Text style={{ marginLeft: 24, fontSize: 14, fontWeight: "bold" }}>
           아이디
         </Text>
-        <Text style={{ marginLeft: 24, fontWeight: "400" }}>{myID}</Text>
+        <View
+          style={{
+            marginLeft: 24,
+            fontWeight: "400",
+            flexDirection: "row",
+          }}
+        >
+          <Text>{myID}</Text>
+          <TouchableOpacity
+            onPress={() => copyToClipboard(myID)}
+            style={{ left: 16 }}
+          >
+            <Copy />
+          </TouchableOpacity>
+        </View>
       </View>
       <View
         style={{
