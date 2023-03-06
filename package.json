@@ -19,6 +19,7 @@
     "@react-navigation/native": "^6.0.10",
     "@react-navigation/native-stack": "^6.7.0",
     "expo": "^46.0.16",
+    "expo-clipboard": "^4.1.1",
     "expo-device": "^4.3.0",
     "expo-image-picker": "^13.1.1",
     "expo-location": "^14.2.2",

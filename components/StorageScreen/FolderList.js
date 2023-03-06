@@ -49,6 +49,7 @@ const FolderList = ({
         showsHorizontalScrollIndicator={false}
         style={{
           flex: 1,
+          marginTop: 16,
         }}
       />
     )

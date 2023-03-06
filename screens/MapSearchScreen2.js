@@ -143,12 +143,12 @@ const BottomSheetScreen = ({
               Object.values(
                 allRecordQuery.data
                   ? Object.values(allRecordQuery.data)
-                    .filter((record) => {
-                      return record.folderID in userQuery.data?.folderIDs;
-                    })
-                    .filter((record) => {
-                      return record.placeID === targetId;
-                    })
+                      .filter((record) => {
+                        return record.folderID in userQuery.data?.folderIDs;
+                      })
+                      .filter((record) => {
+                        return record.placeID === targetId;
+                      })
                   : []
               ).length
             }
@@ -200,7 +200,7 @@ const BottomSheetScreen = ({
           position: "absolute",
           width: "100%",
           height: "100%",
-          backgroundColor: "white"
+          backgroundColor: "white",
         }}
       >
         <GoBackHeader
@@ -219,10 +219,10 @@ const BottomSheetScreen = ({
             recordList={
               allRecordQuery.data
                 ? Object.entries(allRecordQuery.data).filter(
-                  ([key, values]) => {
-                    return values.placeID === targetId;
-                  }
-                )
+                    ([key, values]) => {
+                      return values.placeID === targetId;
+                    }
+                  )
                 : []
             } /// 수정필요
             stackNavigation={navigation}
@@ -355,6 +355,7 @@ const MapSearchScreen2 = ({ navigation, route }) => {
         rightButton="goHome"
       />
       <MapView
+        showsBuildings={false}
         customMapStyle={mapStyle}
         provider="google"
         ref={mapRef}

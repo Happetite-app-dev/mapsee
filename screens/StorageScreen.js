@@ -160,7 +160,11 @@ const StorageScreen = ({ navigation, route }) => {
           <TouchableOpacity
             style={styles.firstButton}
             onPress={() => {
-              if (userQuery.data?.folderIDs && userQuery.data?.folderIDs.length >= 16) onToggleSnackBar();
+              if (
+                userQuery.data?.folderIDs &&
+                userQuery.data?.folderIDs.length >= 16
+              )
+                onToggleSnackBar();
               else {
                 gotoMakeFolderBottomSheetScreen({
                   navigation,
@@ -183,10 +187,10 @@ const StorageScreen = ({ navigation, route }) => {
 
       <RecordFlatList
         recordList={
-          (allRecordQuery.data && userQuery.data?.folderIDs)
+          allRecordQuery.data && userQuery.data?.folderIDs
             ? Object.entries(allRecordQuery.data).filter(([key, values]) => {
-              return values.folderID in userQuery.data?.folderIDs;
-            })
+                return values.folderID in userQuery.data?.folderIDs;
+              })
             : []
         }
         stackNavigation={navigation}
@@ -206,7 +210,7 @@ const StorageScreen = ({ navigation, route }) => {
             />
           </View>
         }
-        style={{ height: "79%" }}
+        style={{ height: "85%", marginTop: -20 }}
         onRefresh={() => {
           queryClient.invalidateQueries(["all-records"]);
           queryClient.invalidateQueries(["all-folders"]); // 임시로!!!! 고쳐야해!!!!!!!!!!!!!!!!!!!!!!!!!
