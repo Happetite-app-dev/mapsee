@@ -1,28 +1,20 @@
-import React, {
-  useEffect,
-  useRef,
-  useState,
-  useContext,
-  TouchableOpacity,
-} from "react";
+import { onValue, ref } from "firebase/database";
+import React, { useEffect, useRef, useState, useContext } from "react";
 import {
   Animated,
   StyleSheet,
   Text,
   View,
   TouchableHighlight,
-  Button,
   Image,
 } from "react-native";
-import { onValue, ref } from "firebase/database";
-import { useUserQuery, useAllRecordQuery } from "../../queries";
-import CreateNote from "../../assets/icons/createNote.svg";
-import GoBackHeader from "../GoBackHeader";
 
+import CreateNote from "../../assets/icons/createNote.svg";
 import { database } from "../../firebase";
-const db = database;
 import AppContext from "../AppContext";
+import GoBackHeader from "../GoBackHeader";
 import RecordFlatList from "../StorageScreen/RecordFlatList";
+const db = database;
 
 const bottomSheetImage = require("../../assets/image/bottomSheetScroll.png");
 

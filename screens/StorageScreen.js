@@ -1,4 +1,4 @@
-import { ref, onValue, set, remove } from "firebase/database";
+import { ref, set, remove } from "firebase/database";
 import { useEffect, useState, useContext } from "react";
 import {
   StyleSheet,
@@ -48,7 +48,7 @@ const exitData = async (myUID, folderID) => {
         "/folders/" + folderID + "/folderColor/" + myUID
       );
       remove(reference4);
-    })
+    });
   //사람이 없는 폴더에 나중에 사람이 추가될 가능성을 위해 일단 폴더를 남겨두자
   // .then(
   //   //지울 필요가 없음
@@ -213,7 +213,9 @@ const StorageScreen = ({ navigation, route }) => {
         style={{ height: "85%", marginTop: -20 }}
         onRefresh={() => {
           queryClient.invalidateQueries(["all-records"]);
-          queryClient.invalidateQueries(["all-folders"]); // 임시로!!!! 고쳐야해!!!!!!!!!!!!!!!!!!!!!!!!!
+          queryClient.invalidateQueries(["all-folders"]);
+          queryClient.invalidateQueries(["records"]);
+          queryClient.invalidateQueries(["folders"]);
         }} // fetch로 데이터 호출
         refreshing={allRecordQuery.isLoading && allFolderQuery.isLoading} // state
       />
