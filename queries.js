@@ -1,4 +1,5 @@
 import { ref } from "@firebase/database";
+import { useState } from "react";
 import { useQuery, useQueries } from "react-query";
 import {
   fetchFolder,
@@ -25,6 +26,21 @@ export const useFolderQueries = (folderIDList) =>
 
 export const useRecordQuery = (recordID) =>
   useQuery(["records", recordID], () => fetchRecord(recordID));
+
+export const useRecordQueries = (folderIDList) => {
+  const folderQueries = useFolderQueries(folderIDList)
+  const recordIDList = folderIDList.reduce((acc, curr, idx) => {
+    const folderObj = folderQueries[idx].data
+    const newRecordID = folderObj?.placeRecords ? Object.values(folderObj.placeRecords).map((item) => Object.keys(item)[0]) : [];
+    return [...acc, ...newRecordID]
+  }, new Array)
+  return useQueries(recordIDList.map((recordID) => {
+    return {
+      queryKey: ["records", recordID],
+      queryFn: () => fetchRecord(recordID)
+    }
+  }))
+}
 
 export const useAllRecordQuery = () =>
   useQuery(["all-records"], () => fetchAllRecord());

@@ -13,7 +13,7 @@ import { ScrollView, Switch, TextInput } from "react-native-gesture-handler";
 import { useQueryClient } from "react-query";
 import AppContext from "../AppContext";
 import SendPushNotification from "../../modules/SendPushNotification";
-import { useUserQuery, useAllFolderQuery, useFolderQuery } from "../../queries";
+import { useUserQuery, useFolderQuery } from "../../queries";
 
 import DefaultFolderBottomSheet from "./defaultFolderBottomSheet";
 import { database } from "../../firebase";
