@@ -83,7 +83,7 @@ const addNewFolder = ({
   setFolderID(newFolderID);
   setFolderName(folderName);
   // invalidate queries
-  queryClient.invalidateQueries(["all-folders"]);
+  queryClient.invalidateQueries(["folders"]);
 };
 const AddFolderBottomSheet = ({
   stackNavigation,
