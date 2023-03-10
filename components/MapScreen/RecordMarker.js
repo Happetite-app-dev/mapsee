@@ -3,7 +3,7 @@ import { Marker } from "react-native-maps";
 
 import Marker1 from "../../assets/markers/marker#4F92D9.svg";
 import NewMarker from "../../assets/markers/newMarker.svg";
-import { useAllFolderQuery, useFolderQuery } from "../../queries";
+import { useFolderQueries, useUserQuery } from "../../queries";
 import get from "lodash/get";
 import { useContext } from "react";
 import AppContext from "../AppContext";
@@ -14,7 +14,18 @@ const currentDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 const RecordMarker = ({ recordData, origin }) => {
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
-  const { isLoading, error, data } = useAllFolderQuery();
+  const userQuery = useUserQuery(myUID);
+  const folderIDList =
+    userQuery.data?.folderIDs !== undefined
+      ? Object.keys(userQuery.data?.folderIDs)
+      : [];
+
+  const folderQueries = useFolderQueries(folderIDList)
+
+  const data = folderIDList.reduce((acc, curr, idx) => {
+    return { ...acc, [curr]: folderQueries[idx].data }
+  }, new Object)
+
   return recordData == null || recordData === undefined ? (
     <></>
   ) : (
@@ -25,8 +36,8 @@ const RecordMarker = ({ recordData, origin }) => {
         record?.date?.month - 1,
         record?.date?.day
       );
+      //console.log({ ...data }[record.folderID])
       const dayDiff = (currentDate - recordDate) / (1000 * 60 * 60 * 24);
-
       const color =
         get(data, [record.folderID, "folderColor", myUID]) ||
         get(data, [record.folderID, "initFoldercolor"]);

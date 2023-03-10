@@ -10,7 +10,7 @@ import {
 import { useQueryClient } from "react-query";
 
 import AddFolder from "../assets/icons/addfolder.svg";
-import { useUserQuery, useAllRecordQuery, useAllFolderQuery } from "../queries";
+import { useUserQuery, useAllRecordQuery } from "../queries";
 
 import SearchData from "../assets/icons/searchData.svg";
 import AppContext from "../components/AppContext";
@@ -119,7 +119,6 @@ const StorageScreen = ({ navigation, route }) => {
   const myUID = myContext.myUID;
   const userQuery = useUserQuery(myUID);
   const allRecordQuery = useAllRecordQuery();
-  const allFolderQuery = useAllFolderQuery();
   const queryClient = useQueryClient();
 
   const [visible, setVisible] = useState(false); // Snackbar
@@ -144,10 +143,8 @@ const StorageScreen = ({ navigation, route }) => {
     if (selectedFolderIDNameColorUserIDs !== undefined) {
       filterFunction({
         navigation,
-        allRecordQuery,
         setSelectedFolderIDNameColorUserIDs,
         selectedFolderIDNameColorUserIDs,
-        allFolderQuery,
       });
     }
   }, [selectedFolderIDNameColorUserIDs]);
@@ -189,8 +186,8 @@ const StorageScreen = ({ navigation, route }) => {
         recordList={
           allRecordQuery.data && userQuery.data?.folderIDs
             ? Object.entries(allRecordQuery.data).filter(([key, values]) => {
-                return values.folderID in userQuery.data?.folderIDs;
-              })
+              return values.folderID in userQuery.data?.folderIDs;
+            })
             : []
         }
         stackNavigation={navigation}
@@ -213,9 +210,9 @@ const StorageScreen = ({ navigation, route }) => {
         style={{ height: "85%", marginTop: -20 }}
         onRefresh={() => {
           queryClient.invalidateQueries(["all-records"]);
-          queryClient.invalidateQueries(["all-folders"]); // 임시로!!!! 고쳐야해!!!!!!!!!!!!!!!!!!!!!!!!!
+          queryClient.invalidateQueries(["folders"]); // 임시로!!!! 고쳐야해!!!!!!!!!!!!!!!!!!!!!!!!!
         }} // fetch로 데이터 호출
-        refreshing={allRecordQuery.isLoading && allFolderQuery.isLoading} // state
+        refreshing={allRecordQuery.isLoading} // state
       />
 
       <View
@@ -243,7 +240,6 @@ const StorageScreen = ({ navigation, route }) => {
               "folders",
               longPressedFolder.folderID,
             ]);
-            queryClient.invalidateQueries(["all-folders"]);
           } else {
             const referenceFix = ref(
               db,
@@ -256,7 +252,6 @@ const StorageScreen = ({ navigation, route }) => {
             "folders",
             longPressedFolder.folderID,
           ]);
-          queryClient.invalidateQueries(["all-folders"]);
         }}
         action2={() => {
           gotoMakeFolderBottomSheetScreen({

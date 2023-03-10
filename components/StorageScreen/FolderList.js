@@ -1,6 +1,6 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { FlatList, Text } from "react-native";
-import { useAllFolderQuery } from "../../queries";
+import { useFolderQueries } from "../../queries";
 import AppContext from "../AppContext";
 import IndividualFolder from "./IndividualFolder";
 import get from "lodash/get";
@@ -25,13 +25,19 @@ const FolderList = ({
     />
   );
 
-  const { isLoading, error, data } = useAllFolderQuery();
+
+  const folderQueries = useFolderQueries(folderIDs)
+  const { isLoading, error } = folderQueries[folderIDs.length - 1]
+  const data = Object.entries(folderIDs).map(([i, folderID]) => {
+    return [folderID, folderQueries[i].data]
+  })
+
   if (isLoading) return <Text>로딩중</Text>;
   else if (error) return <Text>에러 발생</Text>;
   return (
     data && (
       <FlatList
-        data={Object.entries(data)
+        data={data
           .filter(([key]) => folderIDs.includes(key))
           .sort(([, a], [, b]) => {
             const fixedDateA = get(a, ["fixedDate", myUID]);

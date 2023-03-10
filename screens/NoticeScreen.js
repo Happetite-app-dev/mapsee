@@ -3,7 +3,7 @@ import { useEffect, useState, useContext } from "react";
 import { SafeAreaView, Text, View, FlatList, StyleSheet } from "react-native";
 import { Snackbar } from "react-native-paper";
 import { useQueryClient } from "react-query";
-import { fetchAllNotice } from "../actions";
+import { fetchAllFolder2, fetchAllNotice } from "../actions";
 import AppContext from "../components/AppContext";
 import NoticeRenderer from "../components/NoticeRenderer";
 import { database } from "../firebase";
@@ -20,7 +20,7 @@ const NoticeScreen = ({ navigation }) => {
   const [visible, setVisible] = useState(false); // Snackbar
   const onToggleSnackBar = () => setVisible(!visible); // SnackbarButton -> 나중에는 없애기
   const onDismissSnackBar = () => setVisible(false); // Snackbar
-
+  //fetchAllFolder2(myUID)
   const renderNotice = ({ item }) => (
     <NoticeRenderer
       navigation={navigation}
