@@ -15,7 +15,7 @@ import {
 import Geocoder from "react-native-geocoding";
 import MapView, { Marker } from "react-native-maps";
 import { Easing } from "react-native-reanimated";
-import { useUserQuery, useAllRecordQuery } from "../queries";
+import { useUserQuery, useAllRecordQuery, useRecordQueries } from "../queries";
 
 import CreateNote from "../assets/icons/createNote.svg";
 import SearchMain from "../assets/icons/searchMain.svg";
@@ -154,6 +154,10 @@ const MapScreen = ({ navigation }) => {
   const userQuery = useUserQuery(myUID);
   const allRecordQuery = useAllRecordQuery();
 
+  const folderIDList = userQuery.data ? userQuery.data.folderIDs : []
+
+  useRecordQueries(Object.keys(folderIDList))
+
   const isFocused = useIsFocused();
   const [getPermissions, setGetPermissions] = useState(false);
 
@@ -268,8 +272,8 @@ const MapScreen = ({ navigation }) => {
           recordData={
             allRecordQuery.data && userQuery.data?.folderIDs
               ? Object.entries(allRecordQuery.data).filter(([key, record]) => {
-                  return record.folderID in userQuery.data?.folderIDs;
-                })
+                return record.folderID in userQuery.data?.folderIDs;
+              })
               : []
           }
           origin={origin}
