@@ -73,9 +73,18 @@ const takeImageHandlerCam = async (setPickedImages, onImageTaken) => {
 };
 
 const deleteImage = (image, pickedImages, setPickedImages, onImageErased) => {
+  console.log("image", image);
+  console.log("pickedImage", pickedImages);
+
   const idx = pickedImages.indexOf(image); // findIndex = find + indexOf
-  pickedImages.splice(idx, 1);
-  setPickedImages((prev) => prev.splice(idx, 1));
+  console.log("idx", idx);
+
+  if (pickedImages.length === 1 && idx === 0) setPickedImages((prev) => []);
+  else
+    setPickedImages((prev) => {
+      prev.splice(idx, 1);
+      return prev;
+    });
   onImageErased(pickedImages);
 };
 
@@ -94,19 +103,31 @@ const ImgPicker = ({
   return (
     <View style={styles.imagePicker}>
       {IsEditable ? (
-        <View>
-          <View style={{ height: 148, width: 360 }}>
+        <View style={{ width: "100%" }}>
+          {pickedImages.length === 0 ? (
+            <View>
+              <TouchableOpacity
+                onPress={() => {
+                  if (pickedImages.length >= 10) onToggleSnackBar();
+                  else takeImageHandlerLib(setPickedImages, onImageTaken);
+                }}
+                style={{ ...styles.imagePreview }}
+              >
+                <Text style={{ fontSize: 40, color: "#5ED3CC" }}>+</Text>
+              </TouchableOpacity>
+            </View>
+          ) : (
             <ScrollView
               showsHorizontalScrollIndicator={false}
               horizontal
-              style={{ height: 148, marginLeft: 7 }}
+              style={{ height: 148, marginLeft: 17 }}
             >
               <TouchableOpacity
                 onPress={() => {
                   if (pickedImages.length >= 10) onToggleSnackBar();
                   else takeImageHandlerLib(setPickedImages, onImageTaken);
                 }}
-                style={styles.imagePreview}
+                style={{ marginRight: 18, ...styles.imagePreview }}
               >
                 <Text style={{ fontSize: 40, color: "#5ED3CC" }}>+</Text>
               </TouchableOpacity>
@@ -147,10 +168,8 @@ const ImgPicker = ({
                 <></>
               )}
             </ScrollView>
-          </View>
+          )}
         </View>
-      ) : pickedImages.length === 0 ? (
-        <></>
       ) : (
         <View style={{ height: 148, width: 360 }}>
           <ImageCarousel
@@ -168,14 +187,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 15,
     flexDirection: "row",
-    paddingLeft: 10,
   },
   imagePreview: {
     width: 148,
     height: 148,
     borderRadius: 10,
-    //marginBottom:10,
-    marginRight: 15,
     backgroundColor: "#F4F5F9",
     justifyContent: "center",
     alignItems: "center",

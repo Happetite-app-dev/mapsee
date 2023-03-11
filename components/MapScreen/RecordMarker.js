@@ -11,7 +11,7 @@ import AppContext from "../AppContext";
 const now = new Date();
 const currentDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
-const RecordMarker = ({ recordData, origin }) => {
+const RecordMarker = ({ recordData, origin, setTargetShown }) => {
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
   const userQuery = useUserQuery(myUID);
@@ -20,11 +20,11 @@ const RecordMarker = ({ recordData, origin }) => {
       ? Object.keys(userQuery.data?.folderIDs)
       : [];
 
-  const folderQueries = useFolderQueries(folderIDList)
+  const folderQueries = useFolderQueries(folderIDList);
 
   const data = folderIDList.reduce((acc, curr, idx) => {
-    return { ...acc, [curr]: folderQueries[idx].data }
-  }, new Object)
+    return { ...acc, [curr]: folderQueries[idx].data };
+  }, new Object());
 
   return recordData == null || recordData === undefined ? (
     <></>
@@ -47,7 +47,7 @@ const RecordMarker = ({ recordData, origin }) => {
           key={key}
           coordinate={record.lctn}
           opacity={origin.latitudeDelta < 0.01 || showMarker > 0.5 ? 100 : 0}
-          style={{ zIndex: Math.round(dayDiff * 1000) }}
+          style={{ zIndex: Math.round(dayDiff) }}
         >
           {dayDiff <= 3 ? <NewMarker /> : <Marker1 color={color} />}
         </Marker>

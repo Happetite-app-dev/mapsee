@@ -29,6 +29,21 @@ const saveUser = async ({ uid, email, id, firstName, lastName }) => {
     firstName,
     lastName,
   });
+  const referenceFolder = ref(db, "/folders");
+  const now = new Date();
+  const newFolderID = push(referenceFolder, {
+    initFolderName: "기본 폴더",
+    initFolderColor: "#EB7A7C",
+    updateDate: now.toString(),
+  }).key;
+  const reference2 = ref(db, `/folders/${newFolderID}/folderName/${uid}`); //folderName 개인화
+  set(reference2, "기본 폴더");
+  const reference3 = ref(db, `/folders/${newFolderID}/folderColor/${uid}`); //folderColor 개인화
+  set(reference3, "#EB7A7C");
+  const reference4 = ref(db, `/folders/${newFolderID}/userIDs/${uid}`); //folders/newfolderID/userIDs에 userID:true를 넣기
+  set(reference4, true);
+  const reference5 = ref(db, `users/${uid}/folderIDs/${newFolderID}`); //user에 folderID를 넣고
+  set(reference5, true);
 };
 const gotoApp = ({
   initMyUID,

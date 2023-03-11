@@ -46,10 +46,11 @@ const DatePicker = ({ date1, setDate1, show, setShow, IsEditable }) => {
       >
         <Text
           style={{
-            fontSize: 16,
+            fontSize: 14,
             height: 24,
             lineHeight: 24,
             left: 37,
+            fontFamily: "Noto-Sans",
           }}
         >{`${date.getFullYear().toString()}년 ${(
           date.getMonth() + 1

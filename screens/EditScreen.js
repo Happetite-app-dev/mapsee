@@ -1,6 +1,7 @@
 import { ref, onValue, set, push, remove } from "firebase/database";
 import { useQueryClient } from "react-query";
-
+import { useFonts } from "expo-font";
+import useCachedResources from "../modules/useCachedResources";
 import {
   ref as ref_storage,
   uploadBytes,
@@ -41,12 +42,9 @@ import { PopUpType1, PopUpType2 } from "../components/PopUp";
 import SnackBar from "../components/SnackBar";
 import { storage, auth, database } from "../firebase";
 import SendPushNotification from "../modules/SendPushNotification";
-import { useRecordQuery } from "../queries";
+import { useFolderQuery, useRecordQuery, useUserQuery } from "../queries";
 
 const db = database;
-
-const defaultFolderID = "-NB6gdHZgh_liXbnuOLr";
-const defaultFolderName = "폴더1";
 
 const uploadImage = async (image, imageName, newRecordID) => {
   const imageRef = ref_storage(storage, `images/${newRecordID}/${imageName}`);
@@ -73,7 +71,7 @@ const uploadImage = async (image, imageName, newRecordID) => {
 
   await uploadBytes(imageRef, blob, {
     connectType: "image/png",
-  }).then((snapshot) => { });
+  }).then((snapshot) => {});
 
   blob.close();
   return await getDownloadURL(imageRef);
@@ -121,8 +119,8 @@ const saveData = async (
       title:
         title === undefined
           ? `${timeNow.getFullYear().toString()}_${(
-            timeNow.getMonth() + 1
-          ).toString()}_${timeNow.getDay().toString()}_기록`
+              timeNow.getMonth() + 1
+            ).toString()}_${timeNow.getDay().toString()}_기록`
           : title,
       placeName: place,
       date: {
@@ -194,8 +192,8 @@ const saveData = async (
       title:
         title == undefined
           ? `${timeNow.getFullYear().toString()}_${(
-            timeNow.getMonth() + 1
-          ).toString()}_${timeNow.getDay().toString()}_기록`
+              timeNow.getMonth() + 1
+            ).toString()}_${timeNow.getDay().toString()}_기록`
           : title, //나중에 modify할 때 default title을 어떻게 할지를 기획한테 물어보기
       placeName: place,
       date: {
@@ -374,7 +372,12 @@ const removeRecord = async ({
   placeID,
   queryClient,
 }) => {
-  await removeData({ recordID, folderID: folderID_, placeID, queryClient }).then(
+  await removeData({
+    recordID,
+    folderID: folderID_,
+    placeID,
+    queryClient,
+  }).then(
     () => navigation.navigate("Storage") //realtimeDataBase가 모두 업데이트 된후
   );
 };
@@ -393,6 +396,11 @@ const EditScreen = ({ navigation, route }) => {
   const { recordID, placeID, placeName, address, lctn } = route.params;
   const query = useRecordQuery(recordID);
   const data = query.data;
+
+  const userQuery = useUserQuery(myUID);
+  const defaultFolderID = Object.keys(userQuery.data.folderIDs)[0] || "";
+  const defaultFolderName =
+    useFolderQuery(defaultFolderID).data.folderName[myUID] || "";
 
   const IsNewRecord = recordID === undefined; //data?.title === undefined; //지금 사용자가 작성하고 있는 record가 새로 만드는 record인지 기존에 있던 record인지를 알려주는 bool
   const IsRecordOwner = data?.userID === myUID; //기존의 기록인 경우, 그것이 자신의 기록인지 확인하는 bool
@@ -425,6 +433,7 @@ const EditScreen = ({ navigation, route }) => {
   const [removeModalVisible, setRemoveModalVisible] = useState(false);
   const [goBackModalVisible, setGoBackModalVisible] = useState(false);
   const [visible, setVisible] = useState(false); // Snackbar
+  const [visible2, setVisible2] = useState(false);
 
   useEffect(() => {
     setPlaceID_(placeID || data?.placeID);
@@ -449,296 +458,316 @@ const EditScreen = ({ navigation, route }) => {
 
   const onToggleSnackBar = () => setVisible(!visible); // SnackbarButton -> 나중에는 없애기
   const onDismissSnackBar = () => setVisible(false); // Snackbar
-  return query.isLoading ? (
-    <Text>로딩중</Text>
-  ) : query.isError ? (
-    <Text>에러</Text>
-  ) : (
-    <View
-      style={{
-        width: "100%",
-        height: "100%",
-        position: "absolute",
-        backgroundColor: "white",
-        flexDirection: "column",
-      }}
-    >
+  const onDismissSnackBar2 = () => setVisible2(false);
+  const [isLoaded] = useFonts({
+    "Noto-Sans": require("../assets/fonts/NotoSansKR-Regular.otf"),
+  });
+  const textLoaded = useCachedResources();
+  if (!isLoaded) return <Text>Null</Text>;
+  else
+    return query.isLoading ? (
+      <Text>로딩중</Text>
+    ) : query.isError ? (
+      <Text>에러</Text>
+    ) : (
       <View
         style={{
-          height: 56,
-          top: 32,
           width: "100%",
-          flexDirection: "row",
-          alignItems: "center",
-          marginBottom: 16,
+          height: "100%",
+          position: "absolute",
+          backgroundColor: "white",
+          flexDirection: "column",
         }}
       >
         <View
-          onTouchEndCapture={() => {
-            if (isEditable) setGoBackModalVisible(true);
-            else navigation.goBack();
+          style={{
+            height: 56,
+            top: 32,
+            width: "100%",
+            flexDirection: "row",
+            alignItems: "center",
+            marginBottom: 16,
           }}
-          style={styles.goBack}
         >
-          <GoBack height={24} />
-        </View>
-        <View style={styles.title}>
-          <TextInput
-            editable={isEditable}
-            selectTextOnFocus={isEditable}
-            style={styles.titleText}
-            onChangeText={(tle) => setTitle_(tle)}
-            value={title_}
-            placeholder={`${timeNow2.getFullYear().toString()}_${(
-              timeNow2.getMonth() + 1
-            ).toString()}_${timeNow2.getDate().toString()}_기록`}
-          />
-        </View>
-        {IsRecordOwner && !isEditable && (
-          <View style={styles.twoRightButtons}>
-            <View style={{ flexDirection: "row" }}>
-              <TouchableOpacity
-                onPress={() => setIsEditable(true)}
-                style={styles.firstButton}
-              >
-                <EditFolder />
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => setRemoveModalVisible(true)}
-                style={styles.secondButton}
-              >
-                <DeleteFolder />
-              </TouchableOpacity>
-            </View>
+          <View
+            onTouchEndCapture={() => {
+              if (isEditable) setGoBackModalVisible(true);
+              else navigation.goBack();
+            }}
+            style={styles.goBack}
+          >
+            <GoBack height={24} />
           </View>
-        )}
-      </View>
-      <ScrollView
-        style={{ width: "100%", marginTop: 32 }}
-        showsVerticalScrollIndicator={false}
-        scrollEnabled
-      >
-        {selectedPhotos.length === 0 && !isEditable ? (
-          <></>
-        ) : (
-          <View style={{ height: 210, ...styles.imgPicker }}>
-            {/* <Image source={RecordPhotoImage} /> */}
-            <ImgPicker
-              onImageTaken={(photo) => {
-                setSelectedPhotos((selectedPhotos) => [
-                  ...selectedPhotos,
-                  photo,
-                ]);
-              }}
-              onImageErased={(photos) => setSelectedPhotos(() => photos)}
-              defaultPhotos={selectedPhotos}
-              IsEditable={isEditable}
-              onToggleSnackBar={onToggleSnackBar}
-              navigation={navigation}
+          <View style={styles.title}>
+            <TextInput
+              editable={isEditable}
+              selectTextOnFocus={isEditable}
+              style={styles.titleText}
+              onChangeText={(tle) => setTitle_(tle)}
+              value={title_}
+              placeholder={`${timeNow2.getFullYear().toString()}_${(
+                timeNow2.getMonth() + 1
+              ).toString()}_${timeNow2.getDate().toString()}_기록`}
             />
           </View>
-        )}
-        <View
-          onTouchEndCapture={() => {
-            showFolderBottomSheet && setShowFolderBottomSheet(false);
-            navigation.navigate("SubSearchScreen1", {
-              setPlaceID: (f) => setPlaceID_(f),
-              setPlaceName: (f) => setPlaceName_(f),
-              setAddress: (f) => setAddress_(f),
-              setLctn: (f) => setLctn_(f),
-            });
-          }}
-          style={{ height: 48, ...styles.item }}
-        >
-          <LocationImage />
-          <Text
-            style={{
-              height: 24,
-              lineHeight: 24,
-              fontSize: 14,
-              left: 12,
-            }}
-          >
-            {placeName_}
-          </Text>
+          {IsRecordOwner && !isEditable && (
+            <View style={styles.twoRightButtons}>
+              <View style={{ flexDirection: "row" }}>
+                <TouchableOpacity
+                  onPress={() => setIsEditable(true)}
+                  style={styles.firstButton}
+                >
+                  <EditFolder />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => setRemoveModalVisible(true)}
+                  style={styles.secondButton}
+                >
+                  <DeleteFolder />
+                </TouchableOpacity>
+              </View>
+            </View>
+          )}
         </View>
-        <View
-          onTouchEndCapture={() => {
-            showFolderBottomSheet && setShowFolderBottomSheet(false);
-          }}
-          style={{
-            width: 350,
-            height: showDatePicker ? 266 : 50,
-            ...styles.item,
-          }}
+        <ScrollView
+          style={{ width: "100%", marginTop: 32 }}
+          showsVerticalScrollIndicator={false}
+          scrollEnabled
         >
-          <DateImage />
-          <DatePicker
-            date1={date_}
-            setDate1={(date1) => setDate_(date1)}
-            show={showDatePicker}
-            setShow={(show1) => setShowDatePicker(show1)}
-            IsEditable={isEditable}
-          />
-        </View>
-        <View style={{ height: 50, ...styles.item }}>
-          <FolderImage />
-          <TouchableOpacity
-            onPress={() => {
-              isEditable && setShowFolderBottomSheet(!showFolderBottomSheet);
+          {selectedPhotos.length === 0 && !isEditable ? (
+            <></>
+          ) : (
+            <View style={{ height: 180, ...styles.imgPicker }}>
+              {/* <Image source={RecordPhotoImage} /> */}
+              <ImgPicker
+                onImageTaken={(photo) => {
+                  setSelectedPhotos((selectedPhotos) => [
+                    ...selectedPhotos,
+                    photo,
+                  ]);
+                }}
+                onImageErased={(photos) => setSelectedPhotos(() => photos)}
+                defaultPhotos={selectedPhotos}
+                IsEditable={isEditable}
+                onToggleSnackBar={onToggleSnackBar}
+                navigation={navigation}
+              />
+            </View>
+          )}
+          <View
+            onTouchEndCapture={() => {
+              showFolderBottomSheet && setShowFolderBottomSheet(false);
+              navigation.navigate("SubSearchScreen1", {
+                setPlaceID: (f) => setPlaceID_(f),
+                setPlaceName: (f) => setPlaceName_(f),
+                setAddress: (f) => setAddress_(f),
+                setLctn: (f) => setLctn_(f),
+              });
             }}
-            style={{
-              width: 100,
-              height: 40,
-              left: 10,
-              bottom: 7,
-              alignItems: "center",
-              flexDirection: "row",
-            }}
+            style={{ height: 48, ...styles.item }}
           >
-            <ListEcllipse height={16} width={16} />
-            <Text style={{ left: 10 }}> {folderName_} </Text>
-          </TouchableOpacity>
+            <LocationImage />
+            {placeName_ ? (
+              <Text style={styles.placeNameText}>{placeName_}</Text>
+            ) : (
+              <Text style={{ color: "grey", ...styles.placeNameText }}>
+                장소
+              </Text>
+            )}
+          </View>
           <View
             onTouchEndCapture={() => {
               showFolderBottomSheet && setShowFolderBottomSheet(false);
             }}
-            style={{ flex: 1 }}
-          />
-        </View>
-        {!isEditable && (data.text === undefined || data.text.length === 0) ? (
-          <></>
-        ) : (
-          <View style={{ ...styles.item }}>
-            <WritingImage />
-            <TextInput
-              editable={isEditable}
-              selectTextOnFocus={isEditable}
-              style={styles.record}
-              onChangeText={(txt) => setText_(txt)}
-              value={text_}
-              multiline
-              placeholder="내용을 입력해주세요"
-              placeholderTextColor="grey"
+            style={{
+              width: 350,
+              height: showDatePicker ? 266 : 50,
+              ...styles.item,
+            }}
+          >
+            <DateImage />
+            <DatePicker
+              date1={date_}
+              setDate1={(date1) => setDate_(date1)}
+              show={showDatePicker}
+              setShow={(show1) => setShowDatePicker(show1)}
+              IsEditable={isEditable}
             />
           </View>
-        )}
-
-        {isEditable && (
-          <View style={{ ...styles.button }}>
+          <View style={{ height: 50, ...styles.item }}>
+            <FolderImage />
             <TouchableOpacity
               onPress={() => {
-                setGoBackModalVisible(true);
-                IsNewRecord ? navigation.pop() : setIsEditable(false);
+                isEditable && setShowFolderBottomSheet(!showFolderBottomSheet);
               }}
-              style={{ width: 160, padding: 15, marginRight: 7 }}
+              style={{
+                width: 100,
+                height: 40,
+                left: 10,
+                bottom: 7,
+                alignItems: "center",
+                flexDirection: "row",
+              }}
             >
-              <Text style={{ alignSelf: "center", fontWeight: "bold" }}>
-                취소
-              </Text>
+              <ListEcllipse height={16} width={16} />
+              <Text style={{ left: 10, ...styles.text }}> {folderName_} </Text>
             </TouchableOpacity>
-            <Text>|</Text>
-            <TouchableOpacity
-              onPress={() =>
-                storeRecord({
-                  navigation,
-                  myUID,
-                  myID,
-                  myFirstName,
-                  myLastName,
-                  title_,
-                  place: placeName_,
-                  placeID: placeID_,
-                  address: address_,
-                  lctn: lctn_,
-                  date_,
-                  folderID_,
-                  folderName_,
-                  selectedPhotos,
-                  text_,
-                  writeDate: data?.writeDate,
-                  recordID,
-                  originalfolderID,
-                  IsNewRecord,
-                  queryClient,
-                })
-              }
-              style={{ width: 160, padding: 15, marginLeft: 7 }}
-            >
-              <Text style={{ alignSelf: "center", fontWeight: "bold" }}>
-                저장
-              </Text>
-            </TouchableOpacity>
+            <View
+              onTouchEndCapture={() => {
+                showFolderBottomSheet && setShowFolderBottomSheet(false);
+              }}
+              style={{ flex: 1 }}
+            />
           </View>
-        )}
-      </ScrollView>
-      <FolderBottomSheet
-        stackNavigation={navigation}
-        show={showFolderBottomSheet}
-        setShow={(s) => {
-          setShowFolderBottomSheet(s);
-        }}
-        setFolderName={(f) => setFolderName_(f)}
-        setFolderID={(f) => setFolderID_(f)}
-        selectedFolderID={folderID_}
-      />
-      <PopUpType1
-        modalVisible={removeModalVisible}
-        modalHandler={setRemoveModalVisible}
-        action={() =>
-          removeRecord({
-            navigation,
-            recordID,
-            folderID_,
-            placeID: data?.placeID,
-            queryClient,
-          })
-        }
-        askValue="정말 삭제하시겠어요?"
-        actionValue="삭제"
-      />
-      <PopUpType2
-        modalVisible={goBackModalVisible}
-        modalHandler={setGoBackModalVisible}
-        action1={() => {
-          navigation.goBack();
-        }}
-        action2={() => {
-          storeRecord({
-            navigation,
-            myUID,
-            myID,
-            myFirstName,
-            myLastName,
-            title_,
-            place: placeName_,
-            placeID: placeID_,
-            address: address_,
-            lctn: lctn_,
-            date_,
-            folderID_,
-            folderName_,
-            selectedPhotos,
-            text_,
-            writeDate: data?.writeDate,
-            recordID,
-            originalfolderID,
-            IsNewRecord,
-            queryClient,
-          });
-        }}
-        askValue="변경 사항을 저장하시겠어요?"
-        actionValue1="저장 안함"
-        actionValue2="저장"
-      />
+          {!isEditable &&
+          (data?.text === undefined ||
+            data?.text === null ||
+            data?.text.length === 0) ? (
+            <></>
+          ) : (
+            <View style={{ ...styles.item }}>
+              <WritingImage />
+              <TextInput
+                editable={isEditable}
+                selectTextOnFocus={isEditable}
+                style={styles.record}
+                onChangeText={(txt) => setText_(txt)}
+                value={text_}
+                multiline
+                placeholder="내용을 입력해주세요"
+                placeholderTextColor="grey"
+              />
+            </View>
+          )}
 
-      <SnackBar
-        visible={visible}
-        onDismissSnackBar={onDismissSnackBar}
-        text="최대 10개까지 사진 첨부 가능합니다."
-      />
-    </View>
-  );
+          {isEditable && (
+            <View style={{ ...styles.button }}>
+              <TouchableOpacity
+                onPress={() => {
+                  setGoBackModalVisible(true);
+                  IsNewRecord ? navigation.pop() : setIsEditable(false);
+                }}
+                style={{ width: 160, padding: 15, marginRight: 7 }}
+              >
+                <Text style={{ alignSelf: "center", fontWeight: "bold" }}>
+                  취소
+                </Text>
+              </TouchableOpacity>
+              <Text>|</Text>
+              <TouchableOpacity
+                onPress={() => {
+                  if (placeID_ === undefined) setVisible2(true);
+                  else
+                    storeRecord({
+                      navigation,
+                      myUID,
+                      myID,
+                      myFirstName,
+                      myLastName,
+                      title_,
+                      place: placeName_,
+                      placeID: placeID_,
+                      address: address_,
+                      lctn: lctn_,
+                      date_,
+                      folderID_,
+                      folderName_,
+                      selectedPhotos,
+                      text_,
+                      writeDate: data?.writeDate,
+                      recordID,
+                      originalfolderID,
+                      IsNewRecord,
+                      queryClient,
+                    });
+                }}
+                style={{ width: 160, padding: 15, marginLeft: 7 }}
+              >
+                <Text
+                  style={{
+                    alignSelf: "center",
+                    fontWeight: "bold",
+                    ...styles.text,
+                  }}
+                >
+                  저장
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
+        </ScrollView>
+        <FolderBottomSheet
+          stackNavigation={navigation}
+          show={showFolderBottomSheet}
+          setShow={(s) => {
+            setShowFolderBottomSheet(s);
+          }}
+          setFolderName={(f) => setFolderName_(f)}
+          setFolderID={(f) => setFolderID_(f)}
+          selectedFolderID={folderID_}
+        />
+        <PopUpType1
+          modalVisible={removeModalVisible}
+          modalHandler={setRemoveModalVisible}
+          action={() =>
+            removeRecord({
+              navigation,
+              recordID,
+              folderID_,
+              placeID: data?.placeID,
+              queryClient,
+            })
+          }
+          askValue="정말 삭제하시겠어요?"
+          actionValue="삭제"
+        />
+        <PopUpType2
+          modalVisible={goBackModalVisible}
+          modalHandler={setGoBackModalVisible}
+          action1={() => {
+            navigation.goBack();
+          }}
+          action2={() => {
+            storeRecord({
+              navigation,
+              myUID,
+              myID,
+              myFirstName,
+              myLastName,
+              title_,
+              place: placeName_,
+              placeID: placeID_,
+              address: address_,
+              lctn: lctn_,
+              date_,
+              folderID_,
+              folderName_,
+              selectedPhotos,
+              text_,
+              writeDate: data?.writeDate,
+              recordID,
+              originalfolderID,
+              IsNewRecord,
+              queryClient,
+            });
+          }}
+          askValue="변경 사항을 저장하시겠어요?"
+          actionValue1="저장 안함"
+          actionValue2="저장"
+        />
+
+        <SnackBar
+          visible={visible}
+          onDismissSnackBar={onDismissSnackBar}
+          text="최대 10개까지 사진 첨부 가능합니다."
+        />
+        <SnackBar
+          visible={visible2}
+          onDismissSnackBar={onDismissSnackBar2}
+          text="장소를 선택하세요"
+        />
+      </View>
+    );
 };
 
 export default EditScreen;
@@ -779,6 +808,7 @@ const styles = StyleSheet.create({
     lineHeight: 24,
     left: 10,
     bottom: 6,
+    fontFamily: "Noto-Sans",
   },
   button: {
     justifyContent: "center",
@@ -807,6 +837,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     height: 24,
     width: 224,
+    fontFamily: "Noto-Sans",
   },
   twoRightButtons: {
     position: "absolute",
@@ -823,4 +854,12 @@ const styles = StyleSheet.create({
     height: 30,
     left: 10,
   },
+  placeNameText: {
+    height: 24,
+    lineHeight: 24,
+    fontSize: 14,
+    left: 12,
+    fontFamily: "Noto-Sans",
+  },
+  text: { fontFamily: "Noto-Sans" },
 });

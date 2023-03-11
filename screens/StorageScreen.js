@@ -48,7 +48,7 @@ const exitData = async (myUID, folderID) => {
         "/folders/" + folderID + "/folderColor/" + myUID
       );
       remove(reference4);
-    })
+    });
   //사람이 없는 폴더에 나중에 사람이 추가될 가능성을 위해 일단 폴더를 남겨두자
   // .then(
   //   //지울 필요가 없음
@@ -120,11 +120,13 @@ const StorageScreen = ({ navigation, route }) => {
   const userQuery = useUserQuery(myUID);
   const queryClient = useQueryClient();
 
-  const folderIDList = userQuery.data ? Object.keys(userQuery.data.folderIDs) : []
-  const recordQueries = useRecordQueries(folderIDList)
+  const folderIDList = userQuery.data
+    ? Object.keys(userQuery.data.folderIDs)
+    : [];
+  const recordQueries = useRecordQueries(folderIDList);
   const recordObjLists = folderIDList.reduce((acc, curr, idx) => {
-    return [...acc, [curr, recordQueries[idx]?.data]]
-  }, new Array)
+    return [...acc, [curr, recordQueries[idx]?.data]];
+  }, new Array());
 
   const [visible, setVisible] = useState(false); // Snackbar
   const onToggleSnackBar = () => setVisible(!visible); // SnackbarButton -> 나중에는 없애기
@@ -191,8 +193,8 @@ const StorageScreen = ({ navigation, route }) => {
         recordList={
           recordObjLists && userQuery.data?.folderIDs
             ? recordObjLists.filter(([key, values]) => {
-              return values?.folderID in userQuery.data?.folderIDs;
-            })
+                return values?.folderID in userQuery.data?.folderIDs;
+              })
             : []
         }
         stackNavigation={navigation}
@@ -301,7 +303,7 @@ const styles = StyleSheet.create({
   screenTitle: { fontWeight: "bold", fontSize: 16, left: 23 },
   screenTitleView: {
     flexDirection: "row",
-    height: 33,
+    height: "7%",
     marginBottom: 20,
     alignItems: "center",
   },
