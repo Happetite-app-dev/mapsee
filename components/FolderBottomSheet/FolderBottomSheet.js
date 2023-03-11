@@ -50,10 +50,10 @@ const FolderBottomSheet = ({
   const folderIDList =
     userQuery.data?.folderIDs !== undefined
       ? Object.keys(userQuery.data?.folderIDs)
-      : undefined;
+      : [];
 
   const folderQueries = useFolderQueries(folderIDList)
-  const isLoading = folderQueries[folderIDList.length - 1].isLoading
+  const isLoading = userQuery.data?.folderIDs && folderQueries[folderIDList.length - 1].isLoading
 
   useEffect(() => {
     setFolderIDNameList({});

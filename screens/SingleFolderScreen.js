@@ -7,8 +7,9 @@ import GoBackHeader from "../components/GoBackHeader";
 import { PopUpType1 } from "../components/PopUp";
 import RecordFlatList from "../components/StorageScreen/RecordFlatList";
 import { database } from "../firebase";
-import { useFolderQuery, useRecordQueries, useUserQuery } from "../queries";
+import { useFolderQuery, useRecordIDListQuery, useRecordQueries, useUserQuery } from "../queries";
 import SmallFolder from "../assets/icons/SmallFolder.svg";
+import { useQueryClient } from "react-query";
 
 const gotoMakeFolderBottomSheetScreen = ({
   navigation,
@@ -26,8 +27,10 @@ const gotoMakeFolderBottomSheetScreen = ({
     recordDataSource,
   });
 };
-const exitFolder = async ({ myUID, folderID, navigation }) => {
+const exitFolder = async ({ myUID, folderID, navigation, onInvalid }) => {
   await exitData(myUID, folderID).then(
+    () => onInvalid()
+  ).then(
     () => navigation.navigate("Storage") //realtimeDataBase가 모두 업데이트 된후
   );
 };
@@ -69,14 +72,19 @@ const SingleFolderScreen = ({ navigation, route }) => {
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
   const { folderID } = route.params;
+  const queryClient = useQueryClient()
   const query = useFolderQuery(folderID);
-
   const userQuery = useUserQuery(myUID);
-  const folderIDList = userQuery.data ? Object.keys(userQuery.data.folderIDs) : []
-  const recordQueries = useRecordQueries(folderIDList)
-  const recordObjLists = folderIDList.reduce((acc, curr, idx) => {
-    return [...acc, [curr, recordQueries[idx]?.data]]
-  }, new Array)
+
+  const folderIDList = userQuery.data?.folderIDs ? Object.keys(userQuery.data.folderIDs) : []
+  const { data: recordIDList } = useRecordIDListQuery(folderIDList)
+  const recordQueries = useRecordQueries(recordIDList ? recordIDList : [])
+  const recordObjLists = recordIDList ?
+    recordIDList.reduce((acc, curr, idx) => {
+      return [...acc, [curr, recordQueries[idx]?.data]]
+    }, new Array)
+    :
+    []
 
   const recordDataSource = recordObjLists.filter(
     function ([key, values]) {
@@ -109,7 +117,14 @@ const SingleFolderScreen = ({ navigation, route }) => {
       <PopUpType1
         modalVisible={modalVisible}
         modalHandler={setModalVisible}
-        action={() => exitFolder({ myUID, folderID, navigation })}
+        action={() =>
+          exitFolder({
+            myUID, folderID, navigation,
+            onInvalid: () => {
+              queryClient.invalidateQueries(["users", myUID]);
+              queryClient.invalidateQueries(["recordIDList"]);
+            }
+          })}
         askValue="정말 삭제하시겠어요?"
         actionValue="삭제"
       />

@@ -17,7 +17,7 @@ import {
 import Geocoder from "react-native-geocoding";
 import MapView, { Marker } from "react-native-maps";
 
-import { useUserQuery, useRecordQueries } from "../queries";
+import { useUserQuery, useRecordQueries, useRecordIDListQuery } from "../queries";
 
 import TargetMarker from "../assets/markers/selectedMarker.svg";
 
@@ -77,11 +77,15 @@ const BottomSheetScreen = ({
   const myUID = myContext.myUID;
   const userQuery = useUserQuery(myUID);
 
-  const folderIDList = userQuery.data ? Object.keys(userQuery.data.folderIDs) : []
-  const recordQueries = useRecordQueries(folderIDList)
-  const recordObjLists = folderIDList.reduce((acc, curr, idx) => {
-    return [...acc, [curr, recordQueries[idx]?.data]]
-  }, new Array)
+  const folderIDList = userQuery.data?.folderIDs ? Object.keys(userQuery.data.folderIDs) : []
+  const { data: recordIDList } = useRecordIDListQuery(folderIDList)
+  const recordQueries = useRecordQueries(recordIDList ? recordIDList : [])
+  const recordObjLists = recordIDList ?
+    recordIDList.reduce((acc, curr, idx) => {
+      return [...acc, [curr, recordQueries[idx]?.data]]
+    }, new Array)
+    :
+    []
 
   return (
     //bottomsheet가 전체 화면을 덮기 전

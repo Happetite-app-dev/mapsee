@@ -1,7 +1,15 @@
 import { ref } from "@firebase/database";
 import { useState } from "react";
 import { useQuery, useQueries } from "react-query";
-import { fetchFolder, fetchUser, fetchRecord, fetchAllNotice } from "./actions";
+import {
+  fetchFolder,
+  fetchUser,
+  fetchRecord,
+  fetchAllNotice,
+  fetchRecordIDList,
+} from "./actions";
+
+
 
 export const useUserQuery = (UID) =>
   useQuery(["users", UID], () => fetchUser(UID));
@@ -22,26 +30,21 @@ export const useFolderQueries = (folderIDList) =>
 export const useRecordQuery = (recordID) =>
   useQuery(["records", recordID], () => fetchRecord(recordID));
 
-export const useRecordQueries = (folderIDList) => {
-  const folderQueries = useFolderQueries(folderIDList);
-  const recordIDList = folderIDList.reduce((acc, curr, idx) => {
-    const folderObj = folderQueries[idx].data;
-    const newRecordID = folderObj?.placeRecords
-      ? Object.values(folderObj.placeRecords).map(
-          (item) => Object.keys(item)[0]
-        )
-      : [];
-    return [...acc, ...newRecordID];
-  }, new Array());
+export const useRecordQueries = (recordIDList) => {
+  return useQueries(recordIDList.map((recordID) => {
+    return {
+      queryKey: ["records", recordID],
+      queryFn: () => fetchRecord(recordID)
+    }
+  }))
+}
 
-  return useQueries(
-    recordIDList.map((recordID) => {
-      return {
-        queryKey: ["records", recordID],
-        queryFn: () => fetchRecord(recordID),
-      };
-    })
-  );
-};
+export const useRecordIDListQuery = (folderIDList) => {
+  const folderQueries = useFolderQueries(folderIDList)
+  //console.log("query", folderQueries[0]?.data ? folderQueries[0].data : "none")
+  // console.log("query2", folderQueries[0]?.data ? folderQueries[0].data : "none"); 
+  return useQuery(["recordIDList"], () => fetchRecordIDList(folderIDList, folderQueries))
+}
+
 export const useAllNoticeQuery = (UID) =>
   useQuery(["all-notices"], () => fetchAllNotice(UID));
