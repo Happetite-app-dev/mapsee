@@ -9,7 +9,8 @@ import {
   View,
 } from "react-native";
 import * as Clipboard from "expo-clipboard";
-
+import * as Linking from "expo-linking";
+import * as StoreReview from "react-native-store-review";
 import Rate from "../assets/icons/Rate.svg";
 import SNS from "../assets/icons/SNS.svg";
 import Suggest from "../assets/icons/folderEdit.svg";
@@ -29,6 +30,10 @@ const gotoFriendListSreen = ({ navigation }) => {
 
 const gotoBeforeLoginScreen = ({ navigation }) => {
   navigation.navigate("BeforeLoginScreen");
+};
+
+const openInstagram = () => {
+  Linking.openURL("https://www.instagram.com/mapsee_happetite/");
 };
 
 const gotoSuggestScreen = ({ navigation }) => {
@@ -143,6 +148,12 @@ const MypageScreen = ({ navigation }) => {
               paddingTop: 24,
               paddingLeft: 18,
             }}
+            onPress={() => {
+              console.log("store review");
+              if (StoreReview.isAvailable) {
+                StoreReview.requestReview();
+              }
+            }}
           >
             <Rate />
             <Text style={{ fontSize: 14, left: 14, top: 3 }}>별점주기</Text>
@@ -155,6 +166,9 @@ const MypageScreen = ({ navigation }) => {
               flexDirection: "row",
               paddingTop: 24,
               paddingLeft: 18,
+            }}
+            onPress={() => {
+              openInstagram();
             }}
           >
             <SNS />

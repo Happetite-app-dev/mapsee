@@ -13,29 +13,13 @@ import { ScrollView, Switch, TextInput } from "react-native-gesture-handler";
 import { useQueryClient } from "react-query";
 import AppContext from "../AppContext";
 import SendPushNotification from "../../modules/SendPushNotification";
+
 import { useUserQuery, useFolderQuery } from "../../queries";
 
 import DefaultFolderBottomSheet from "./defaultFolderBottomSheet";
 import { database } from "../../firebase";
 const db = database;
 
-const gotoStorageScreen = (stackNavigation) => {
-  stackNavigation.navigate("Storage");
-};
-const gotoSingleFolderScreen = ({
-  stackNavigation,
-  folderID,
-  newFolderName,
-  newFolderColor,
-  newFolderUserIDs,
-}) => {
-  stackNavigation.navigate("SingleFolderScreen", {
-    folderID,
-    folderName: newFolderName,
-    folderColor: newFolderColor,
-    folderUserIDs: newFolderUserIDs,
-  });
-};
 const addNewFolder = async ({
   folderID,
   folderName,
