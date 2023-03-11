@@ -17,7 +17,7 @@ import {
 import Geocoder from "react-native-geocoding";
 import MapView, { Marker } from "react-native-maps";
 
-import { useUserQuery, useAllRecordQuery } from "../queries";
+import { useUserQuery, useRecordQueries } from "../queries";
 
 import CreateNote from "../assets/icons/createNote.svg";
 import TargetMarker from "../assets/markers/selectedMarker.svg";
@@ -71,7 +71,12 @@ const BottomSheetScreen = ({
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
   const userQuery = useUserQuery(myUID);
-  const allRecordQuery = useAllRecordQuery();
+
+  const folderIDList = userQuery.data ? Object.keys(userQuery.data.folderIDs) : []
+  const recordQueries = useRecordQueries(folderIDList)
+  const recordObjLists = folderIDList.reduce((acc, curr, idx) => {
+    return [...acc, [curr, recordQueries[idx]?.data]]
+  }, new Array)
 
   const gotoEditScreen = () => {
     return navigation.push("EditScreen", {
@@ -141,14 +146,14 @@ const BottomSheetScreen = ({
             기록{" "}
             {
               Object.values(
-                allRecordQuery.data
-                  ? Object.values(allRecordQuery.data)
-                      .filter((record) => {
-                        return record.folderID in userQuery.data?.folderIDs;
-                      })
-                      .filter((record) => {
-                        return record.placeID === targetId;
-                      })
+                recordObjLists
+                  ? recordObjLists
+                    .filter((record) => {
+                      return record.folderID in userQuery.data?.folderIDs;
+                    })
+                    .filter((record) => {
+                      return record.placeID === targetId;
+                    })
                   : []
               ).length
             }
@@ -217,12 +222,12 @@ const BottomSheetScreen = ({
         >
           <RecordFlatList
             recordList={
-              allRecordQuery.data
-                ? Object.entries(allRecordQuery.data).filter(
-                    ([key, values]) => {
-                      return values.placeID === targetId;
-                    }
-                  )
+              recordObjLists
+                ? recordObjLists.filter(
+                  ([key, values]) => {
+                    return values?.placeID === targetId;
+                  }
+                )
                 : []
             } /// 수정필요
             stackNavigation={navigation}

@@ -5,7 +5,6 @@ import {
   fetchFolder,
   fetchUser,
   fetchRecord,
-  fetchAllRecord,
   fetchAllNotice,
 } from "./actions";
 
@@ -41,10 +40,6 @@ export const useRecordQueries = (folderIDList) => {
     }
   }))
 }
-
-export const useAllRecordQuery = () =>
-  useQuery(["all-records"], () => fetchAllRecord());
-
 export const useAllNoticeQuery = (UID) =>
   useQuery(["all-notices"], () => fetchAllNotice(UID));
 

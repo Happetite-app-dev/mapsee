@@ -7,7 +7,7 @@ import GoBackHeader from "../components/GoBackHeader";
 import { PopUpType1 } from "../components/PopUp";
 import RecordFlatList from "../components/StorageScreen/RecordFlatList";
 import { database } from "../firebase";
-import { useAllRecordQuery, useFolderQuery } from "../queries";
+import { useFolderQuery, useRecordQueries, useUserQuery } from "../queries";
 import SmallFolder from "../assets/icons/SmallFolder.svg";
 
 const gotoMakeFolderBottomSheetScreen = ({
@@ -70,12 +70,18 @@ const SingleFolderScreen = ({ navigation, route }) => {
   const myUID = myContext.myUID;
   const { folderID } = route.params;
   const query = useFolderQuery(folderID);
-  const allRecordQuery = useAllRecordQuery();
 
-  const recordDataSource = Object.entries(allRecordQuery.data).filter(
+  const userQuery = useUserQuery(myUID);
+  const folderIDList = userQuery.data ? Object.keys(userQuery.data.folderIDs) : []
+  const recordQueries = useRecordQueries(folderIDList)
+  const recordObjLists = folderIDList.reduce((acc, curr, idx) => {
+    return [...acc, [curr, recordQueries[idx]?.data]]
+  }, new Array)
+
+  const recordDataSource = recordObjLists.filter(
     function ([key, values]) {
       // Applying filter for the inserted text in search bar
-      return values.folderID === folderID;
+      return values?.folderID === folderID;
     }
   );
 
