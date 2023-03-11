@@ -72,7 +72,7 @@ const BottomSheetScreen = ({
   const myUID = myContext.myUID;
   const userQuery = useUserQuery(myUID);
 
-  const folderIDList = userQuery.data ? Object.keys(userQuery.data.folderIDs) : []
+  const folderIDList = userQuery.data?.folderIDs ? Object.keys(userQuery.data.folderIDs) : []
   const recordQueries = useRecordQueries(folderIDList)
   const recordObjLists = folderIDList.reduce((acc, curr, idx) => {
     return [...acc, [curr, recordQueries[idx]?.data]]

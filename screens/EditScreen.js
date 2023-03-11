@@ -81,9 +81,6 @@ const uploadImage = async (image, imageName, newRecordID) => {
 
 const saveData = async (
   myUID,
-  myID,
-  myFirstName,
-  myLastName,
   title,
   place,
   placeID,
@@ -97,7 +94,6 @@ const saveData = async (
   writeDate_,
   recordID,
   originalfolderID,
-  queryClient
 ) => {
   const timeNow = new Date();
   const writeDate = writeDate_ || {
@@ -177,9 +173,6 @@ const saveData = async (
       }
     });
 
-    // invalidate queries
-    queryClient.invalidateQueries(["folders", folderID]);
-    queryClient.invalidateQueries(["all-records"]);
   } //새 기록이 아니라면
   else {
     const reference1 = ref(db, "/records/" + recordID);
@@ -269,11 +262,6 @@ const saveData = async (
     });
 
     //기존 기록의 수정이나 삭제는 알림 없어도 됨.
-
-    // invalidate queries
-    queryClient.invalidateQueries(["folders", folderID]);
-    queryClient.invalidateQueries(["records", recordID]);
-    queryClient.invalidateQueries(["all-records"]);
   }
 };
 const storeRecord = async ({
@@ -300,9 +288,6 @@ const storeRecord = async ({
 }) => {
   await saveData(
     myUID,
-    myID,
-    myFirstName,
-    myLastName,
     title_,
     place,
     placeID,
@@ -316,8 +301,12 @@ const storeRecord = async ({
     writeDate,
     recordID,
     originalfolderID,
-    queryClient
   ).then(() => {
+    queryClient.invalidateQueries(["users", myUID])
+    queryClient.invalidateQueries(["folders", folderID_]);
+    queryClient.invalidateQueries(["records"]);
+    queryClient.invalidateQueries(["recordIDList"])
+  }).then(() => {
     IsNewRecord ? navigation.pop() : navigation.navigate("Storage"); //realtimeDataBase가 모두 업데이트 된후
   });
 };
@@ -365,7 +354,7 @@ const removeData = async ({ recordID, folderID, placeID, queryClient }) => {
   // invalidate queries
   queryClient.invalidateQueries(["folders", folderID]);
   queryClient.invalidateQueries(["records", recordID]);
-  queryClient.invalidateQueries(["all-records"]);
+  queryClient.invalidateQueries(["recordIDList"])
 };
 const removeRecord = async ({
   navigation,
@@ -606,7 +595,7 @@ const EditScreen = ({ navigation, route }) => {
             style={{ flex: 1 }}
           />
         </View>
-        {!isEditable && (data.text === undefined || data.text.length === 0) ? (
+        {!isEditable && (data.text === (undefined) || data.text.length === 0) ? (
           <></>
         ) : (
           <View style={{ ...styles.item }}>

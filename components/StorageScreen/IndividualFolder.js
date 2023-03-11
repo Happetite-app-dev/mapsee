@@ -52,11 +52,11 @@ const IndividualFolder = ({
           <View style={{ position: "relative" }}>
             <SingleFolder
               color={
-                query.data.folderColor[myUID] || query.data.initFolderColor
+                query.data?.folderColor[myUID] || query.data.initFolderColor
               }
             />
             {query.data.userIDs !== undefined &&
-            Object.keys(query.data.userIDs).length > 1 ? (
+              Object.keys(query.data.userIDs).length > 1 ? (
               <ShareFolder
                 style={{ position: "absolute", top: 17, left: 25 }}
               />
@@ -76,7 +76,7 @@ const IndividualFolder = ({
               {query.data.folderName[myUID]}
             </Text>
             {query.data.fixedDate !== undefined &&
-            query.data.fixedDate[myUID] !== undefined ? (
+              query.data.fixedDate[myUID] !== undefined ? (
               <PinFolder style={{ position: "relative", left: 3 }} />
             ) : (
               <></>

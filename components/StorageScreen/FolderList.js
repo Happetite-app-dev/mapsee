@@ -27,7 +27,7 @@ const FolderList = ({
 
 
   const folderQueries = useFolderQueries(folderIDs)
-  const { isLoading, error } = folderQueries[folderIDs.length - 1]
+  const { isLoading, error } = folderQueries[folderIDs.length - 1] ? folderQueries[folderIDs.length - 1] : { isLoading: false, error: false }
   const data = Object.entries(folderIDs).map(([i, folderID]) => {
     return [folderID, folderQueries[i].data]
   })

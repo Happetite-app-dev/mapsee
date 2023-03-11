@@ -10,7 +10,7 @@ import {
 import { useQueryClient } from "react-query";
 
 import AddFolder from "../assets/icons/addfolder.svg";
-import { useUserQuery, useRecordQueries } from "../queries";
+import { useUserQuery, useRecordQueries, useRecordIDListQuery } from "../queries";
 
 import SearchData from "../assets/icons/searchData.svg";
 import AppContext from "../components/AppContext";
@@ -22,8 +22,10 @@ import FolderList from "../components/StorageScreen/FolderList";
 import { database } from "../firebase";
 const db = database;
 
-const exitFolder = async ({ myUID, folderID, navigation }) => {
+const exitFolder = async ({ myUID, folderID, navigation, onInvalid }) => {
   await exitData(myUID, folderID).then(
+    () => onInvalid()
+  ).then(
     () => navigation.navigate("Storage") //realtimeDataBase가 모두 업데이트 된후
   );
 };
@@ -78,20 +80,12 @@ const gotoMakeFolderBottomSheetScreen = ({
 };
 const gotoSingleFolderScreen = ({
   navigation,
-  recordDataSource,
   folderID,
-  folderName,
-  folderColor,
-  folderUserIDs,
   setSelectedFolderIDNameColorUserIDs,
 }) => {
   setSelectedFolderIDNameColorUserIDs(undefined);
   navigation.navigate("SingleFolderScreen", {
-    recordDataSource,
     folderID,
-    folderName,
-    folderColor,
-    folderUserIDs,
   });
 };
 const filterFunction = ({
@@ -107,9 +101,6 @@ const filterFunction = ({
   gotoSingleFolderScreen({
     navigation,
     folderID,
-    folderName,
-    folderColor,
-    folderUserIDs,
     setSelectedFolderIDNameColorUserIDs,
   });
 };
@@ -120,12 +111,17 @@ const StorageScreen = ({ navigation, route }) => {
   const userQuery = useUserQuery(myUID);
   const queryClient = useQueryClient();
 
-  const folderIDList = userQuery.data ? Object.keys(userQuery.data.folderIDs) : []
-  const recordQueries = useRecordQueries(folderIDList)
-  const recordObjLists = folderIDList.reduce((acc, curr, idx) => {
-    return [...acc, [curr, recordQueries[idx]?.data]]
-  }, new Array)
+  const folderIDList = userQuery.data?.folderIDs ? Object.keys(userQuery.data.folderIDs) : []
+  const { data: recordIDList } = useRecordIDListQuery(folderIDList)
+  const recordQueries = useRecordQueries(recordIDList ? recordIDList : [])
+  const recordObjLists = recordIDList ?
+    recordIDList.reduce((acc, curr, idx) => {
+      return [...acc, [curr, recordQueries[idx]?.data]]
+    }, new Array)
+    :
+    []
 
+  //console.log(recordObjLists.length)
   const [visible, setVisible] = useState(false); // Snackbar
   const onToggleSnackBar = () => setVisible(!visible); // SnackbarButton -> 나중에는 없애기
   const onDismissSnackBar = () => setVisible(false); // Snackbar
@@ -214,10 +210,12 @@ const StorageScreen = ({ navigation, route }) => {
         }
         style={{ height: "85%", marginTop: -20 }}
         onRefresh={() => {
-          queryClient.invalidateQueries(["records"]);
+          queryClient.invalidateQueries(["users", myUID])
           queryClient.invalidateQueries(["folders"]); // 임시로!!!! 고쳐야해!!!!!!!!!!!!!!!!!!!!!!!!!
+          queryClient.invalidateQueries(["recordIDList"])
+          queryClient.invalidateQueries(["records"]);
         }} // fetch로 데이터 호출
-        refreshing={recordQueries[0].isLoading} // state
+        refreshing={(userQuery.data.folderIDs !== undefined) && (recordQueries[0] != undefined) && recordQueries[0].isLoading} // state
       />
 
       <View
@@ -273,6 +271,7 @@ const StorageScreen = ({ navigation, route }) => {
             myUID,
             folderID: longPressedFolder.folderID,
             navigation,
+            onInvalid: () => queryClient.invalidateQueries(["users", myUID])
           });
         }}
         askValue={longPressedFolder.folderName}
