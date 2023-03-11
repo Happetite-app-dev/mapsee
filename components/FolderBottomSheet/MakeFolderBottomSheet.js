@@ -98,7 +98,7 @@ const addNewFolder = async ({
         });
       }
     });
-    queryClient.invalidateQueries(["all-folders"]);
+    queryClient.invalidateQueries(["folders"]);
   } else {
     //새 폴더가 아니라면 개인화폴더이름, 폴더색상만 데이터베이스상에서 수정
     const reference1 = ref(db, `/folders/${folderID}/folderName/${myUID}`); //folderName 개인화
@@ -130,7 +130,6 @@ const addNewFolder = async ({
         });
       }
     });
-    queryClient.invalidateQueries(["all-folders"]);
     queryClient.invalidateQueries(["folders", folderID]);
   }
 };
