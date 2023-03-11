@@ -1,4 +1,4 @@
-import { ref, onValue, remove } from "firebase/database";
+import { ref, remove } from "firebase/database";
 import { useContext, useState } from "react";
 import { View } from "react-native";
 
@@ -55,7 +55,7 @@ const exitData = async (myUID, folderID) => {
         "/folders/" + folderID + "/folderColor/" + myUID
       );
       remove(reference4);
-    })
+    });
   //사람이 없는 폴더에 나중에 사람이 추가될 가능성을 위해 일단 폴더를 남겨두자
   // .then(
   //   //지울 필요가 없음
