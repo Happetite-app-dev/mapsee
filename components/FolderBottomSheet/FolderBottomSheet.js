@@ -1,5 +1,5 @@
 import { set, ref, onValue, push } from "firebase/database";
-import { useAllFolderQuery, useUserQuery } from "../../queries";
+import { useFolderQueries, useUserQuery } from "../../queries";
 import React, { useEffect, useRef, useState, useContext } from "react";
 import { Animated, Text, View, TouchableOpacity, Button } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
@@ -11,6 +11,7 @@ import ListEcllipse from "../../assets/icons/ListEcllipse.svg";
 import ControlEmpty from "../../assets/icons/ControlEmpty.svg";
 import ControlFull from "../../assets/icons/ControlFull.svg";
 import SnackBar from "../SnackBar";
+import { get } from "lodash";
 
 const toggleAnimation = ({ show, showAnimation, setAnimationValue }) => {
   const val = show ? 0 : -1000;
@@ -32,7 +33,6 @@ const FolderBottomSheet = ({
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
   const userQuery = useUserQuery(myUID);
-  const allFolderQuery = useAllFolderQuery();
 
   const [folderIDNameList, setFolderIDNameList] = useState({}); //{folderID: folderName}가 쌓여있음
   const [isSelectingFolder, setIsSelectingFolder] = useState(true); //folderlist 창과 폴더 추가창 중 무엇을 띄울지에 대한 bool
@@ -46,21 +46,27 @@ const FolderBottomSheet = ({
     toggleAnimation({ show, showAnimation, setAnimationValue });
     setIsSelectingFolder(true);
   }, [show]);
-  useEffect(() => {
-    const folderIDList =
-      userQuery.data?.folderIDs !== undefined
-        ? Object.keys(userQuery.data?.folderIDs)
-        : undefined;
-    setFolderIDNameList({});
 
-    folderIDList.map((folderID) => {
-      const folderName = allFolderQuery.data[folderID].folderName[myUID];
-      setFolderIDNameList((prev) => ({
-        ...prev,
-        [folderID]: { folderID, folderName },
-      }));
-    });
-  }, []);
+  const folderIDList =
+    userQuery.data?.folderIDs !== undefined
+      ? Object.keys(userQuery.data?.folderIDs)
+      : undefined;
+
+  const folderQueries = useFolderQueries(folderIDList)
+  const isLoading = folderQueries[folderIDList.length - 1].isLoading
+
+  useEffect(() => {
+    setFolderIDNameList({});
+    if (!isLoading) {
+      Object.entries(folderIDList).forEach(([i, folderID]) => {
+        setFolderIDNameList((prev) => ({
+          ...prev,
+          [folderID]: { folderID: folderID, folderName: get(folderQueries[i].data, ["folderName", myUID]) }
+        }))
+      })
+    }
+
+  }, [isLoading]);
 
   return (
     <Animated.View
