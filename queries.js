@@ -1,6 +1,6 @@
 import { ref } from "@firebase/database";
-import { useState } from "react";
-import { useQuery, useQueries } from "react-query";
+import { useEffect, useState } from "react";
+import { useQuery, useQueries, useQueryClient } from "react-query";
 import {
   fetchFolder,
   fetchUser,
@@ -39,11 +39,14 @@ export const useRecordQueries = (recordIDList) => {
   }))
 }
 
-export const useRecordIDListQuery = (folderIDList) => {
+export const useRecordIDListQuery = (folderIDList, condition) => {
   const folderQueries = useFolderQueries(folderIDList)
-  //console.log("query", folderQueries[0]?.data ? folderQueries[0].data : "none")
-  // console.log("query2", folderQueries[0]?.data ? folderQueries[0].data : "none"); 
-  return useQuery(["recordIDList"], () => fetchRecordIDList(folderIDList, folderQueries))
+  //const loadingFinishAll = !folderQueries.some((result) => result.isLoading)
+  //const isFetched = folderQueries[folderIDList.length - 1] ? folderQueries[folderIDList.length - 1]?.isFetchedAfterMount : false
+  // const queryClient = useQueryClient()
+  return useQuery(["recordIDList", condition], () => {
+    return fetchRecordIDList(folderIDList, folderQueries)
+  })
 }
 
 export const useAllNoticeQuery = (UID) =>

@@ -74,7 +74,7 @@ const RecordFlatList = ({
   return (
     <FlatList
       data={
-        recordList
+        recordList && recordList != [] && recordList.every((record) => record[1]?.date)
           ? recordList.sort(function (a, b) {
             const date1 = new Date(
               a[1].date.year,

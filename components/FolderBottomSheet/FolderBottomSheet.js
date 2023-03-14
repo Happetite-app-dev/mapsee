@@ -53,7 +53,8 @@ const FolderBottomSheet = ({
       : [];
 
   const folderQueries = useFolderQueries(folderIDList)
-  const isLoading = userQuery.data?.folderIDs && folderQueries[folderIDList.length - 1].isLoading
+  const loadingFinishAll = !folderQueries.some((result) => result.isLoading)
+  const isLoading = userQuery.data?.folderIDs && !loadingFinishAll
 
   useEffect(() => {
     setFolderIDNameList({});

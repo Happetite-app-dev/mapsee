@@ -74,19 +74,18 @@ const SingleFolderScreen = ({ navigation, route }) => {
   const { folderID } = route.params;
   const queryClient = useQueryClient()
   const query = useFolderQuery(folderID);
-  const userQuery = useUserQuery(myUID);
 
-  const folderIDList = userQuery.data?.folderIDs ? Object.keys(userQuery.data.folderIDs) : []
-  const { data: recordIDList } = useRecordIDListQuery(folderIDList)
+
+  const { data: recordIDList } = useRecordIDListQuery([folderID], folderID)
   const recordQueries = useRecordQueries(recordIDList ? recordIDList : [])
-  const recordObjLists = recordIDList ?
+  const recordObjList = recordIDList ?
     recordIDList.reduce((acc, curr, idx) => {
       return [...acc, [curr, recordQueries[idx]?.data]]
     }, new Array)
     :
     []
 
-  const recordDataSource = recordObjLists.filter(
+  const recordDataSource = recordObjList.filter(
     function ([key, values]) {
       // Applying filter for the inserted text in search bar
       return values?.folderID === folderID;
@@ -111,7 +110,7 @@ const SingleFolderScreen = ({ navigation, route }) => {
         rightButtonFunction2={() => setModalVisible(true)}
       />
       <RecordFlatList
-        recordList={recordDataSource}
+        recordList={recordObjList}
         stackNavigation={navigation}
       />
       <PopUpType1

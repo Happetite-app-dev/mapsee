@@ -22,7 +22,6 @@ export const fetchAllNotice = async (UID) => {
 };
 
 export const fetchRecordIDList = async (folderIDList, folderQueries) => {
-  //console.log("fetching", folderQueries[0]?.data ? folderQueries[0].data : "none")
   const recordIDList = folderIDList.reduce((acc, curr, idx) => {
     const folderObj = folderQueries[idx].data
     const newRecordID = folderObj?.placeRecords ?

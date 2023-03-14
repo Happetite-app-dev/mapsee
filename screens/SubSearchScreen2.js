@@ -78,9 +78,9 @@ const BottomSheetScreen = ({
   const userQuery = useUserQuery(myUID);
 
   const folderIDList = userQuery.data?.folderIDs ? Object.keys(userQuery.data.folderIDs) : []
-  const { data: recordIDList } = useRecordIDListQuery(folderIDList)
+  const { data: recordIDList } = useRecordIDListQuery(folderIDList, "all")
   const recordQueries = useRecordQueries(recordIDList ? recordIDList : [])
-  const recordObjLists = recordIDList ?
+  const recordObjList = recordIDList ?
     recordIDList.reduce((acc, curr, idx) => {
       return [...acc, [curr, recordQueries[idx]?.data]]
     }, new Array)
@@ -146,11 +146,8 @@ const BottomSheetScreen = ({
           {
             //박정인 점검 필요
             Object.values(
-              recordObjLists
-                ? recordObjLists
-                  .filter((record) => {
-                    return record?.folderID in userQuery.data?.folderIDs;
-                  })
+              recordObjList
+                ? recordObjList
                   .filter((record) => {
                     return record?.placeID === targetId;
                   })

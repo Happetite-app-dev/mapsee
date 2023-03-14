@@ -27,18 +27,19 @@ const FolderList = ({
 
 
   const folderQueries = useFolderQueries(folderIDs)
-  const { isLoading, error } = folderQueries[folderIDs.length - 1] ? folderQueries[folderIDs.length - 1] : { isLoading: false, error: false }
+  const errorExistAll = folderQueries.some((result) => result.error)
+  const loadingFinishAll = !folderQueries.some((result) => result.isLoading)
+
   const data = Object.entries(folderIDs).map(([i, folderID]) => {
     return [folderID, folderQueries[i].data]
   })
 
-  if (isLoading) return <Text>로딩중</Text>;
-  else if (error) return <Text>에러 발생</Text>;
+  if (!loadingFinishAll) return <Text>로딩중</Text>;
+  else if (errorExistAll) return <Text>에러 발생</Text>;
   return (
     data && (
       <FlatList
         data={data
-          .filter(([key]) => folderIDs.includes(key))
           .sort(([, a], [, b]) => {
             const fixedDateA = get(a, ["fixedDate", myUID]);
             const fixedDateB = get(b, ["fixedDate", myUID]);

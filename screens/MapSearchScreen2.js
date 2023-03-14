@@ -17,7 +17,7 @@ import {
 import Geocoder from "react-native-geocoding";
 import MapView, { Marker } from "react-native-maps";
 
-import { useUserQuery, useRecordQueries } from "../queries";
+import { useUserQuery, useRecordQueries, useRecordIDListQuery } from "../queries";
 
 import CreateNote from "../assets/icons/createNote.svg";
 import TargetMarker from "../assets/markers/selectedMarker.svg";
@@ -73,10 +73,14 @@ const BottomSheetScreen = ({
   const userQuery = useUserQuery(myUID);
 
   const folderIDList = userQuery.data?.folderIDs ? Object.keys(userQuery.data.folderIDs) : []
-  const recordQueries = useRecordQueries(folderIDList)
-  const recordObjLists = folderIDList.reduce((acc, curr, idx) => {
-    return [...acc, [curr, recordQueries[idx]?.data]]
-  }, new Array)
+  const { data: recordIDList } = useRecordIDListQuery(folderIDList, "all")
+  const recordQueries = useRecordQueries(recordIDList ? recordIDList : [])
+  const recordObjList = recordIDList ?
+    recordIDList.reduce((acc, curr, idx) => {
+      return [...acc, [curr, recordQueries[idx]?.data]]
+    }, new Array)
+    :
+    []
 
   const gotoEditScreen = () => {
     return navigation.push("EditScreen", {
@@ -146,11 +150,8 @@ const BottomSheetScreen = ({
             기록{" "}
             {
               Object.values(
-                recordObjLists
-                  ? recordObjLists
-                    .filter((record) => {
-                      return record.folderID in userQuery.data?.folderIDs;
-                    })
+                recordObjList
+                  ? recordObjList
                     .filter((record) => {
                       return record.placeID === targetId;
                     })
@@ -222,8 +223,8 @@ const BottomSheetScreen = ({
         >
           <RecordFlatList
             recordList={
-              recordObjLists
-                ? recordObjLists.filter(
+              recordObjList
+                ? recordObjList.filter(
                   ([key, values]) => {
                     return values?.placeID === targetId;
                   }

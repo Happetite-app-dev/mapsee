@@ -112,16 +112,17 @@ const StorageScreen = ({ navigation, route }) => {
   const queryClient = useQueryClient();
 
   const folderIDList = userQuery.data?.folderIDs ? Object.keys(userQuery.data.folderIDs) : []
-  const { data: recordIDList } = useRecordIDListQuery(folderIDList)
+  const { data: recordIDList } = useRecordIDListQuery(folderIDList, "all")
   const recordQueries = useRecordQueries(recordIDList ? recordIDList : [])
-  const recordObjLists = recordIDList ?
+  const loadingFinishAll = !recordQueries.some((result) => result.isLoading)
+  const recordObjList = (recordIDList && loadingFinishAll) ?
     recordIDList.reduce((acc, curr, idx) => {
       return [...acc, [curr, recordQueries[idx]?.data]]
     }, new Array)
     :
     []
 
-  //console.log(recordObjLists.length)
+  //console.log(recordObjList.length)
   const [visible, setVisible] = useState(false); // Snackbar
   const onToggleSnackBar = () => setVisible(!visible); // SnackbarButton -> 나중에는 없애기
   const onDismissSnackBar = () => setVisible(false); // Snackbar
@@ -185,10 +186,8 @@ const StorageScreen = ({ navigation, route }) => {
 
       <RecordFlatList
         recordList={
-          recordObjLists && userQuery.data?.folderIDs
-            ? recordObjLists.filter(([key, values]) => {
-              return values?.folderID in userQuery.data?.folderIDs;
-            })
+          recordObjList && userQuery.data?.folderIDs
+            ? recordObjList
             : []
         }
         stackNavigation={navigation}
@@ -196,9 +195,7 @@ const StorageScreen = ({ navigation, route }) => {
           <View style={{ height: 80 }}>
             <FolderList
               folderIDs={
-                userQuery.data?.folderIDs
-                  ? Object.keys(userQuery.data?.folderIDs)
-                  : []
+                folderIDList
               }
               setSelectedFolderIDNameColorUserIDs={
                 setSelectedFolderIDNameColorUserIDs
@@ -211,11 +208,11 @@ const StorageScreen = ({ navigation, route }) => {
         style={{ height: "85%", marginTop: -20 }}
         onRefresh={() => {
           queryClient.invalidateQueries(["users", myUID])
-          queryClient.invalidateQueries(["folders"]); // 임시로!!!! 고쳐야해!!!!!!!!!!!!!!!!!!!!!!!!!
-          queryClient.invalidateQueries(["recordIDList"])
+          queryClient.invalidateQueries(["folders"]);
+          queryClient.invalidateQueries(["recordIDLisst"])
           queryClient.invalidateQueries(["records"]);
         }} // fetch로 데이터 호출
-        refreshing={(userQuery.data.folderIDs !== undefined) && (recordQueries[0] != undefined) && recordQueries[0].isLoading} // state
+        refreshing={(userQuery.data.folderIDs !== undefined) && !loadingFinishAll} // state
       />
 
       <View
