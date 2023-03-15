@@ -10,7 +10,11 @@ import {
 import { useQueryClient } from "react-query";
 
 import AddFolder from "../assets/icons/addfolder.svg";
-import { useUserQuery, useRecordQueries, useRecordIDListQuery } from "../queries";
+import {
+  useUserQuery,
+  useRecordQueries,
+  useRecordIDListQuery,
+} from "../queries";
 
 import SearchData from "../assets/icons/searchData.svg";
 import AppContext from "../components/AppContext";
@@ -23,11 +27,11 @@ import { database } from "../firebase";
 const db = database;
 
 const exitFolder = async ({ myUID, folderID, navigation, onInvalid }) => {
-  await exitData(myUID, folderID).then(
-    () => onInvalid()
-  ).then(
-    () => navigation.navigate("Storage") //realtimeDataBase가 모두 업데이트 된후
-  );
+  await exitData(myUID, folderID)
+    .then(() => onInvalid())
+    .then(
+      () => navigation.navigate("Storage") //realtimeDataBase가 모두 업데이트 된후
+    );
 };
 
 const exitData = async (myUID, folderID) => {
@@ -111,15 +115,16 @@ const StorageScreen = ({ navigation, route }) => {
   const userQuery = useUserQuery(myUID);
   const queryClient = useQueryClient();
 
-  const folderIDList = userQuery.data?.folderIDs ? Object.keys(userQuery.data.folderIDs) : []
-  const { data: recordIDList } = useRecordIDListQuery(folderIDList)
-  const recordQueries = useRecordQueries(recordIDList ? recordIDList : [])
-  const recordObjLists = recordIDList ?
-    recordIDList.reduce((acc, curr, idx) => {
-      return [...acc, [curr, recordQueries[idx]?.data]]
-    }, new Array)
-    :
-    []
+  const folderIDList = userQuery.data?.folderIDs
+    ? Object.keys(userQuery.data.folderIDs)
+    : [];
+  const { data: recordIDList } = useRecordIDListQuery(folderIDList);
+  const recordQueries = useRecordQueries(recordIDList ? recordIDList : []);
+  const recordObjLists = recordIDList
+    ? recordIDList.reduce((acc, curr, idx) => {
+        return [...acc, [curr, recordQueries[idx]?.data]];
+      }, new Array())
+    : [];
 
   //console.log(recordObjLists.length)
   const [visible, setVisible] = useState(false); // Snackbar
@@ -153,7 +158,14 @@ const StorageScreen = ({ navigation, route }) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.screenTitleView}>
-        <Text style={styles.screenTitle}>보관함</Text>
+        <Text
+          style={{
+            fontFamily: "Noto Sans Kannada",
+            ...styles.screenTitle,
+          }}
+        >
+          보관함
+        </Text>
         <View style={styles.twoRightButtons}>
           <TouchableOpacity
             style={styles.firstButton}
@@ -187,8 +199,8 @@ const StorageScreen = ({ navigation, route }) => {
         recordList={
           recordObjLists && userQuery.data?.folderIDs
             ? recordObjLists.filter(([key, values]) => {
-              return values?.folderID in userQuery.data?.folderIDs;
-            })
+                return values?.folderID in userQuery.data?.folderIDs;
+              })
             : []
         }
         stackNavigation={navigation}
@@ -210,12 +222,16 @@ const StorageScreen = ({ navigation, route }) => {
         }
         style={{ height: "85%", marginTop: -20 }}
         onRefresh={() => {
-          queryClient.invalidateQueries(["users", myUID])
+          queryClient.invalidateQueries(["users", myUID]);
           queryClient.invalidateQueries(["folders"]); // 임시로!!!! 고쳐야해!!!!!!!!!!!!!!!!!!!!!!!!!
-          queryClient.invalidateQueries(["recordIDList"])
+          queryClient.invalidateQueries(["recordIDList"]);
           queryClient.invalidateQueries(["records"]);
         }} // fetch로 데이터 호출
-        refreshing={(userQuery.data.folderIDs !== undefined) && (recordQueries[0] != undefined) && recordQueries[0].isLoading} // state
+        refreshing={
+          userQuery.data.folderIDs !== undefined &&
+          recordQueries[0] != undefined &&
+          recordQueries[0].isLoading
+        } // state
       />
 
       <View
@@ -271,7 +287,7 @@ const StorageScreen = ({ navigation, route }) => {
             myUID,
             folderID: longPressedFolder.folderID,
             navigation,
-            onInvalid: () => queryClient.invalidateQueries(["users", myUID])
+            onInvalid: () => queryClient.invalidateQueries(["users", myUID]),
           });
         }}
         askValue={longPressedFolder.folderName}
@@ -297,7 +313,11 @@ export default StorageScreen;
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "white" },
-  screenTitle: { fontWeight: "bold", fontSize: 16, left: 23 },
+  screenTitle: {
+    fontWeight: "bold",
+    fontSize: 16,
+    left: 23,
+  },
   screenTitleView: {
     flexDirection: "row",
     height: 33,
