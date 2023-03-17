@@ -73,7 +73,7 @@ const uploadImage = async (image, imageName, newRecordID) => {
 
   await uploadBytes(imageRef, blob, {
     connectType: "image/png",
-  }).then((snapshot) => { });
+  }).then((snapshot) => {});
 
   blob.close();
   return await getDownloadURL(imageRef);
@@ -93,7 +93,7 @@ const saveData = async (
   text,
   writeDate_,
   recordID,
-  originalfolderID,
+  originalfolderID
 ) => {
   const timeNow = new Date();
   const writeDate = writeDate_ || {
@@ -117,8 +117,8 @@ const saveData = async (
       title:
         title === undefined
           ? `${timeNow.getFullYear().toString()}_${(
-            timeNow.getMonth() + 1
-          ).toString()}_${timeNow.getDay().toString()}_기록`
+              timeNow.getMonth() + 1
+            ).toString()}_${timeNow.getDay().toString()}_기록`
           : title,
       placeName: place,
       date: {
@@ -172,7 +172,6 @@ const saveData = async (
         });
       }
     });
-
   } //새 기록이 아니라면
   else {
     const reference1 = ref(db, "/records/" + recordID);
@@ -187,8 +186,8 @@ const saveData = async (
       title:
         title == undefined
           ? `${timeNow.getFullYear().toString()}_${(
-            timeNow.getMonth() + 1
-          ).toString()}_${timeNow.getDay().toString()}_기록`
+              timeNow.getMonth() + 1
+            ).toString()}_${timeNow.getDay().toString()}_기록`
           : title, //나중에 modify할 때 default title을 어떻게 할지를 기획한테 물어보기
       placeName: place,
       date: {
@@ -300,15 +299,17 @@ const storeRecord = async ({
     text_,
     writeDate,
     recordID,
-    originalfolderID,
-  ).then(() => {
-    queryClient.invalidateQueries(["users", myUID])
-    queryClient.invalidateQueries(["folders", folderID_]);
-    queryClient.invalidateQueries(["records"]);
-    queryClient.invalidateQueries(["recordIDList"])
-  }).then(() => {
-    IsNewRecord ? navigation.pop() : navigation.navigate("Storage"); //realtimeDataBase가 모두 업데이트 된후
-  });
+    originalfolderID
+  )
+    .then(() => {
+      queryClient.invalidateQueries(["users", myUID]);
+      queryClient.invalidateQueries(["folders", folderID_]);
+      queryClient.invalidateQueries(["records"]);
+      queryClient.invalidateQueries(["recordIDList"]);
+    })
+    .then(() => {
+      IsNewRecord ? navigation.pop() : navigation.navigate("Storage"); //realtimeDataBase가 모두 업데이트 된후
+    });
 };
 const removeData = async ({ recordID, folderID, placeID, queryClient }) => {
   //remove from storage
@@ -354,7 +355,7 @@ const removeData = async ({ recordID, folderID, placeID, queryClient }) => {
   // invalidate queries
   queryClient.invalidateQueries(["folders", folderID]);
   queryClient.invalidateQueries(["records", recordID]);
-  queryClient.invalidateQueries(["recordIDList"])
+  queryClient.invalidateQueries(["recordIDList"]);
 };
 const removeRecord = async ({
   navigation,
@@ -363,7 +364,12 @@ const removeRecord = async ({
   placeID,
   queryClient,
 }) => {
-  await removeData({ recordID, folderID: folderID_, placeID, queryClient }).then(
+  await removeData({
+    recordID,
+    folderID: folderID_,
+    placeID,
+    queryClient,
+  }).then(
     () => navigation.navigate("Storage") //realtimeDataBase가 모두 업데이트 된후
   );
 };
@@ -546,6 +552,7 @@ const EditScreen = ({ navigation, route }) => {
               lineHeight: 24,
               fontSize: 14,
               left: 12,
+              fontFamily: "NotoSansKR-Regular",
             }}
           >
             {placeName_}
@@ -586,7 +593,10 @@ const EditScreen = ({ navigation, route }) => {
             }}
           >
             <ListEcllipse height={16} width={16} />
-            <Text style={{ left: 10 }}> {folderName_} </Text>
+            <Text style={{ fontFamily: "NotoSansKR-Regular", left: 10 }}>
+              {" "}
+              {folderName_}{" "}
+            </Text>
           </TouchableOpacity>
           <View
             onTouchEndCapture={() => {
@@ -595,7 +605,7 @@ const EditScreen = ({ navigation, route }) => {
             style={{ flex: 1 }}
           />
         </View>
-        {!isEditable && (data.text === (undefined) || data.text.length === 0) ? (
+        {!isEditable && (data.text === undefined || data.text.length === 0) ? (
           <></>
         ) : (
           <View style={{ ...styles.item }}>
@@ -622,7 +632,12 @@ const EditScreen = ({ navigation, route }) => {
               }}
               style={{ width: 160, padding: 15, marginRight: 7 }}
             >
-              <Text style={{ alignSelf: "center", fontWeight: "bold" }}>
+              <Text
+                style={{
+                  alignSelf: "center",
+                  fontFamily: "NotoSansKR-Bold",
+                }}
+              >
                 취소
               </Text>
             </TouchableOpacity>
@@ -654,7 +669,12 @@ const EditScreen = ({ navigation, route }) => {
               }
               style={{ width: 160, padding: 15, marginLeft: 7 }}
             >
-              <Text style={{ alignSelf: "center", fontWeight: "bold" }}>
+              <Text
+                style={{
+                  alignSelf: "center",
+                  fontFamily: "NotoSansKR-Bold",
+                }}
+              >
                 저장
               </Text>
             </TouchableOpacity>
@@ -768,6 +788,8 @@ const styles = StyleSheet.create({
     lineHeight: 24,
     left: 10,
     bottom: 6,
+    fontFamily: "NotoSansKR-Regular",
+    fontSize: 14,
   },
   button: {
     justifyContent: "center",
@@ -793,7 +815,7 @@ const styles = StyleSheet.create({
   titleText: {
     fontSize: 16,
     lineHeight: 20,
-    fontWeight: "bold",
+    fontFamily: "NotoSansKR-Medium",
     height: 24,
     width: 224,
   },

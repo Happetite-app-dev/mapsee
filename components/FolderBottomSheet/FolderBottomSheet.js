@@ -52,8 +52,10 @@ const FolderBottomSheet = ({
       ? Object.keys(userQuery.data?.folderIDs)
       : [];
 
-  const folderQueries = useFolderQueries(folderIDList)
-  const isLoading = userQuery.data?.folderIDs && folderQueries[folderIDList.length - 1].isLoading
+  const folderQueries = useFolderQueries(folderIDList);
+  const isLoading =
+    userQuery.data?.folderIDs &&
+    folderQueries[folderIDList.length - 1].isLoading;
 
   useEffect(() => {
     setFolderIDNameList({});
@@ -61,11 +63,13 @@ const FolderBottomSheet = ({
       Object.entries(folderIDList).forEach(([i, folderID]) => {
         setFolderIDNameList((prev) => ({
           ...prev,
-          [folderID]: { folderID: folderID, folderName: get(folderQueries[i].data, ["folderName", myUID]) }
-        }))
-      })
+          [folderID]: {
+            folderID: folderID,
+            folderName: get(folderQueries[i].data, ["folderName", myUID]),
+          },
+        }));
+      });
     }
-
   }, [isLoading]);
 
   return (
@@ -129,7 +133,13 @@ const FolderBottomSheet = ({
                           }}
                         >
                           <ListEcllipse />
-                          <Text style={{ fontSize: 14, left: 16 }}>
+                          <Text
+                            style={{
+                              fontSize: 14,
+                              left: 16,
+                              fontFamily: "NotoSansKR-Regular",
+                            }}
+                          >
                             {folderName}
                           </Text>
                         </View>

@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
   titleText: {
     fontSize: 16,
     lineHeight: 25,
-    fontWeight: "bold",
+    fontFamily: "NotoSansKR-Medium",
   },
   goHome: {
     width: 24,

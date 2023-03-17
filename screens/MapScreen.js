@@ -15,7 +15,11 @@ import {
 import Geocoder from "react-native-geocoding";
 import MapView, { Marker } from "react-native-maps";
 import { Easing } from "react-native-reanimated";
-import { useUserQuery, useRecordQueries, useRecordIDListQuery } from "../queries";
+import {
+  useUserQuery,
+  useRecordQueries,
+  useRecordIDListQuery,
+} from "../queries";
 
 import CreateNote from "../assets/icons/createNote.svg";
 import SearchMain from "../assets/icons/searchMain.svg";
@@ -49,7 +53,14 @@ const SearchView = ({ navigation, origin }) => {
     >
       <SearchBox style={{ position: "absolute" }} />
       <SearchMain style={{ position: "relative", left: 12 }} />
-      <Text style={{ left: 20, fontSize: 16, color: "#DDDFE9" }}>
+      <Text
+        style={{
+          left: 20,
+          fontSize: 16,
+          color: "#DDDFE9",
+          fontFamily: "NotoSansKR-Medium",
+        }}
+      >
         열람하고 싶은 장소를 검색하세요
       </Text>
     </View>
@@ -153,15 +164,16 @@ const MapScreen = ({ navigation }) => {
   const myUID = myContext.myUID;
   const userQuery = useUserQuery(myUID);
 
-  const folderIDList = userQuery.data?.folderIDs ? Object.keys(userQuery.data.folderIDs) : []
-  const { data: recordIDList } = useRecordIDListQuery(folderIDList)
-  const recordQueries = useRecordQueries(recordIDList ? recordIDList : [])
-  const recordObjLists = recordIDList ?
-    recordIDList.reduce((acc, curr, idx) => {
-      return [...acc, [curr, recordQueries[idx]?.data]]
-    }, new Array)
-    :
-    []
+  const folderIDList = userQuery.data?.folderIDs
+    ? Object.keys(userQuery.data.folderIDs)
+    : [];
+  const { data: recordIDList } = useRecordIDListQuery(folderIDList);
+  const recordQueries = useRecordQueries(recordIDList ? recordIDList : []);
+  const recordObjLists = recordIDList
+    ? recordIDList.reduce((acc, curr, idx) => {
+        return [...acc, [curr, recordQueries[idx]?.data]];
+      }, new Array())
+    : [];
 
   const isFocused = useIsFocused();
   const [getPermissions, setGetPermissions] = useState(false);
@@ -275,10 +287,11 @@ const MapScreen = ({ navigation }) => {
         </Marker>
         <RecordMarker
           recordData={
-            recordQueries[recordQueries.length - 1]?.data && userQuery.data?.folderIDs
+            recordQueries[recordQueries.length - 1]?.data &&
+            userQuery.data?.folderIDs
               ? recordObjLists?.filter(([key, record]) => {
-                return record?.folderID in userQuery.data?.folderIDs;
-              })
+                  return record?.folderID in userQuery.data?.folderIDs;
+                })
               : []
           }
           origin={origin}

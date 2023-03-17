@@ -56,7 +56,7 @@ const IndividualFolder = ({
               }
             />
             {query.data.userIDs !== undefined &&
-              Object.keys(query.data.userIDs).length > 1 ? (
+            Object.keys(query.data.userIDs).length > 1 ? (
               <ShareFolder
                 style={{ position: "absolute", top: 17, left: 25 }}
               />
@@ -72,11 +72,17 @@ const IndividualFolder = ({
               justifyContent: "center",
             }}
           >
-            <Text style={{ position: "relative" }}>
+            <Text
+              style={{
+                position: "relative",
+                fontFamily: "NotoSansKR-Light",
+                fontSize: 10,
+              }}
+            >
               {query.data.folderName[myUID]}
             </Text>
             {query.data.fixedDate !== undefined &&
-              query.data.fixedDate[myUID] !== undefined ? (
+            query.data.fixedDate[myUID] !== undefined ? (
               <PinFolder style={{ position: "relative", left: 3 }} />
             ) : (
               <></>

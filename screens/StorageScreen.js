@@ -8,7 +8,6 @@ import {
   SafeAreaView,
 } from "react-native";
 import { useQueryClient } from "react-query";
-
 import AddFolder from "../assets/icons/addfolder.svg";
 import {
   useUserQuery,
@@ -158,14 +157,7 @@ const StorageScreen = ({ navigation, route }) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.screenTitleView}>
-        <Text
-          style={{
-            fontFamily: "Noto Sans Kannada",
-            ...styles.screenTitle,
-          }}
-        >
-          보관함
-        </Text>
+        <Text style={styles.screenTitle}>보관함</Text>
         <View style={styles.twoRightButtons}>
           <TouchableOpacity
             style={styles.firstButton}
@@ -205,7 +197,7 @@ const StorageScreen = ({ navigation, route }) => {
         }
         stackNavigation={navigation}
         ListHeaderComponent={
-          <View style={{ height: 80 }}>
+          <View style={{ height: 80, marginBottom: 36 }}>
             <FolderList
               folderIDs={
                 userQuery.data?.folderIDs
@@ -317,6 +309,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 16,
     left: 23,
+    fontFamily: "NotoSansKR-Bold",
   },
   screenTitleView: {
     flexDirection: "row",
@@ -370,4 +363,13 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.15,
     shadowRadius: 3.5,
   },
+});
+
+export const textStyle = StyleSheet.create({
+  size12: { fontSize: 12, fontFamily: "NotoSansKR-Regular" },
+  size14: { fontSize: 14, fontFamily: "NotoSansKR-Regular" },
+  "size14.5": { fontSize: 14, fontFamily: "NotoSansKR-Medium" },
+  size16: { fontSize: 16, fontFamily: "NotoSansKR-Medium" },
+  title: { fontSize: 16, fontFamily: "NotoSansKR-Bold" },
+  sizse12Bold: { fontSize: 12, fontFamily: "NotoSansKR-Bold" },
 });

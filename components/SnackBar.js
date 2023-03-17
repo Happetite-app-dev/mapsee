@@ -27,7 +27,13 @@ const SnackBar = ({ visible, onDismissSnackBar, text }) => {
         >
           <Close color="#FFFFFF" />
           <Text
-            style={{ fontSize: 14, lineHeight: 24, color: "white", left: 20.5 }}
+            style={{
+              fontSize: 14,
+              lineHeight: 24,
+              color: "white",
+              left: 20.5,
+              fontFamily: "NotoSansKR-Bold",
+            }}
           >
             {text}
           </Text>

@@ -25,7 +25,14 @@ const InbetweenCompo = ({ name, history, setHistory, navigation }) => {
         }}
       >
         <SearchHistory />
-        <Text style={{ marginLeft: 20, fontSize: 14, lineHeight: 24 }}>
+        <Text
+          style={{
+            marginLeft: 20,
+            fontSize: 14,
+            lineHeight: 24,
+            fontFamily: "NotoSansKR-Regular",
+          }}
+        >
           {item.name}
         </Text>
       </View>
@@ -35,7 +42,9 @@ const InbetweenCompo = ({ name, history, setHistory, navigation }) => {
     <View>
       <View style={styles.inbetweenCompo}>
         <View style={styles.recentSearch}>
-          <Text style={{ fontSize: 16 }}>최근검색</Text>
+          <Text style={{ fontSize: 16, fontFamily: "NotoSansKR-Medium" }}>
+            최근검색
+          </Text>
         </View>
         <View
           onTouchEndCapture={() => {
@@ -44,7 +53,15 @@ const InbetweenCompo = ({ name, history, setHistory, navigation }) => {
           }}
           style={styles.eraseAll}
         >
-          <Text style={{ fontSize: 14, color: "#5ED3CC" }}>전체삭제</Text>
+          <Text
+            style={{
+              fontSize: 14,
+              color: "#5ED3CC",
+              fontFamily: "NotoSansKR-Bold",
+            }}
+          >
+            전체삭제
+          </Text>
         </View>
       </View>
       <FlatList

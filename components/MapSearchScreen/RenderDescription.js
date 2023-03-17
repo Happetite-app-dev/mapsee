@@ -15,18 +15,32 @@ const renderDescription = (data) => {
               width: data.structured_formatting.main_text.length * 9 + 20,
             }}
           >
-            <Text style={{ fontSize: 14 }}>
+            <Text style={{ fontSize: 14, fontFamily: "NotoSansKR-Medium" }}>
               {data.structured_formatting.main_text}
             </Text>
           </View>
 
           <View style={styles.descriptionType}>
-            <Text style={{ fontSize: 10, color: "#ADB1C5" }}>기타</Text>
+            <Text
+              style={{
+                fontSize: 10,
+                color: "#ADB1C5",
+                fontFamily: "NotoSansKR-Light",
+              }}
+            >
+              기타
+            </Text>
           </View>
         </View>
 
         <View style={styles.descriptionSecondaryText}>
-          <Text style={{ fontSize: 12, color: "#545766" }}>
+          <Text
+            style={{
+              fontSize: 12,
+              color: "#545766",
+              fontFamily: "NotoSansKR-Regular",
+            }}
+          >
             {data.structured_formatting.secondary_text}
           </Text>
         </View>

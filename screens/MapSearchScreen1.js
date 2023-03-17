@@ -170,6 +170,7 @@ const styles = StyleSheet.create({
       fontSize: 16,
       marginTop: 48,
       marginBottom: 16,
+      fontFamily: "NotoSansKR-Regular",
     },
     separator: { height: 0 },
     row: {

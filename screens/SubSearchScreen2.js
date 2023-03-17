@@ -17,7 +17,11 @@ import {
 import Geocoder from "react-native-geocoding";
 import MapView, { Marker } from "react-native-maps";
 
-import { useUserQuery, useRecordQueries, useRecordIDListQuery } from "../queries";
+import {
+  useUserQuery,
+  useRecordQueries,
+  useRecordIDListQuery,
+} from "../queries";
 
 import TargetMarker from "../assets/markers/selectedMarker.svg";
 
@@ -77,15 +81,16 @@ const BottomSheetScreen = ({
   const myUID = myContext.myUID;
   const userQuery = useUserQuery(myUID);
 
-  const folderIDList = userQuery.data?.folderIDs ? Object.keys(userQuery.data.folderIDs) : []
-  const { data: recordIDList } = useRecordIDListQuery(folderIDList)
-  const recordQueries = useRecordQueries(recordIDList ? recordIDList : [])
-  const recordObjLists = recordIDList ?
-    recordIDList.reduce((acc, curr, idx) => {
-      return [...acc, [curr, recordQueries[idx]?.data]]
-    }, new Array)
-    :
-    []
+  const folderIDList = userQuery.data?.folderIDs
+    ? Object.keys(userQuery.data.folderIDs)
+    : [];
+  const { data: recordIDList } = useRecordIDListQuery(folderIDList);
+  const recordQueries = useRecordQueries(recordIDList ? recordIDList : []);
+  const recordObjLists = recordIDList
+    ? recordIDList.reduce((acc, curr, idx) => {
+        return [...acc, [curr, recordQueries[idx]?.data]];
+      }, new Array())
+    : [];
 
   return (
     //bottomsheet가 전체 화면을 덮기 전
@@ -117,7 +122,7 @@ const BottomSheetScreen = ({
             marginTop: 24,
             marginLeft: 23,
             fontSize: 16,
-            fontWeight: "bold",
+            fontFamily: "NotoSansKR-Medium",
           }}
         >
           {targetName}
@@ -129,6 +134,7 @@ const BottomSheetScreen = ({
             marginLeft: 23,
             fontSize: 12,
             color: "#545766",
+            fontFamily: "NotoSansKR-Regular",
           }}
         >
           {targetAddress}
@@ -140,6 +146,7 @@ const BottomSheetScreen = ({
             marginLeft: 23,
             fontSize: 12,
             color: "#ADB1C5",
+            fontFamily: "NotoSansKR-Regular",
           }}
         >
           기록{" "}
@@ -148,12 +155,12 @@ const BottomSheetScreen = ({
             Object.values(
               recordObjLists
                 ? recordObjLists
-                  .filter((record) => {
-                    return record?.folderID in userQuery.data?.folderIDs;
-                  })
-                  .filter((record) => {
-                    return record?.placeID === targetId;
-                  })
+                    .filter((record) => {
+                      return record?.folderID in userQuery.data?.folderIDs;
+                    })
+                    .filter((record) => {
+                      return record?.placeID === targetId;
+                    })
                 : []
             ).length
           }

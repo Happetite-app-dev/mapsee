@@ -54,13 +54,22 @@ const IndividualFriend = ({
           justifyContent: "space-between",
         }}
       >
-        <Text style={{ fontSize: 14, fontWeight: "bold", top: 5 }}>{name}</Text>
         <Text
           style={{
             fontSize: 14,
-            fontWeight: "400",
-            color: "gray",
+            fontWeight: "bold",
+            top: 5,
+            fontFamily: "NotoSansKR-Regular",
+          }}
+        >
+          {name}
+        </Text>
+        <Text
+          style={{
+            fontSize: 14,
+            color: "#ADB1C5",
             bottom: 5,
+            fontFamily: "NotoSansKR-Regular",
           }}
         >
           {id}
@@ -81,7 +90,13 @@ const IndividualFriend = ({
             alignItems: "center",
           }}
         >
-          <Text style={{ fontSize: 14, fontWeight: "500", color: "#5ED3CC" }}>
+          <Text
+            style={{
+              fontSize: 14,
+              color: "#5ED3CC",
+              fontFamily: "NotoSansKR-Regular",
+            }}
+          >
             차단
           </Text>
         </TouchableOpacity>

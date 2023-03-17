@@ -72,11 +72,13 @@ const BottomSheetScreen = ({
   const myUID = myContext.myUID;
   const userQuery = useUserQuery(myUID);
 
-  const folderIDList = userQuery.data?.folderIDs ? Object.keys(userQuery.data.folderIDs) : []
-  const recordQueries = useRecordQueries(folderIDList)
+  const folderIDList = userQuery.data?.folderIDs
+    ? Object.keys(userQuery.data.folderIDs)
+    : [];
+  const recordQueries = useRecordQueries(folderIDList);
   const recordObjLists = folderIDList.reduce((acc, curr, idx) => {
-    return [...acc, [curr, recordQueries[idx]?.data]]
-  }, new Array)
+    return [...acc, [curr, recordQueries[idx]?.data]];
+  }, new Array());
 
   const gotoEditScreen = () => {
     return navigation.push("EditScreen", {
@@ -118,7 +120,7 @@ const BottomSheetScreen = ({
               marginTop: 24,
               marginLeft: 23,
               fontSize: 16,
-              fontWeight: "bold",
+              fontFamily: "NotoSansKR-Medium",
             }}
           >
             {targetName}
@@ -130,6 +132,7 @@ const BottomSheetScreen = ({
               marginLeft: 23,
               fontSize: 12,
               color: "#545766",
+              fontFamily: "NotoSansKR-Regular",
             }}
           >
             {targetAddress}
@@ -141,6 +144,7 @@ const BottomSheetScreen = ({
               marginLeft: 23,
               fontSize: 12,
               color: "#ADB1C5",
+              fontFamily: "NotoSansKR-Regular",
             }}
           >
             기록{" "}
@@ -148,12 +152,12 @@ const BottomSheetScreen = ({
               Object.values(
                 recordObjLists
                   ? recordObjLists
-                    .filter((record) => {
-                      return record.folderID in userQuery.data?.folderIDs;
-                    })
-                    .filter((record) => {
-                      return record.placeID === targetId;
-                    })
+                      .filter((record) => {
+                        return record.folderID in userQuery.data?.folderIDs;
+                      })
+                      .filter((record) => {
+                        return record.placeID === targetId;
+                      })
                   : []
               ).length
             }
@@ -223,11 +227,9 @@ const BottomSheetScreen = ({
           <RecordFlatList
             recordList={
               recordObjLists
-                ? recordObjLists.filter(
-                  ([key, values]) => {
+                ? recordObjLists.filter(([key, values]) => {
                     return values?.placeID === targetId;
-                  }
-                )
+                  })
                 : []
             } /// 수정필요
             stackNavigation={navigation}

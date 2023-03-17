@@ -6,7 +6,7 @@ import {
   Text,
   TouchableOpacity,
   View,
-  StyleSheet
+  StyleSheet,
 } from "react-native";
 import { useFolderQuery, useUserQuery } from "../queries";
 import AppContext from "./AppContext";
@@ -22,52 +22,55 @@ const ReceptRecordAddDoneList = ({
   folderID,
   recordID,
   navigation,
-  time
+  time,
 }) => {
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
 
-  const myUserQuery = useUserQuery(myUID)
+  const myUserQuery = useUserQuery(myUID);
 
   const userQuery = useUserQuery(performerUID);
-  const performerID = userQuery.data?.id
-  const performerFirstName = userQuery.data?.firstName
-  const performerLastName = userQuery.data?.lastName
+  const performerID = userQuery.data?.id;
+  const performerFirstName = userQuery.data?.firstName;
+  const performerLastName = userQuery.data?.lastName;
 
   const folderQuery = useFolderQuery(folderID);
-  const folderName = folderQuery.data?.folderName[myUID]
+  const folderName = folderQuery.data?.folderName[myUID];
 
   if (!userQuery.data || !folderQuery.data || !myUserQuery.data) {
     return <></>;
-  }
-  else if (!myUserQuery.data.folderIDs[folderID] || !Object.values(folderQuery.data.placeRecords ? folderQuery.data.placeRecords : []).some((item) => item[recordID])) {
+  } else if (
+    !myUserQuery.data.folderIDs[folderID] ||
+    !Object.values(
+      folderQuery.data.placeRecords ? folderQuery.data.placeRecords : []
+    ).some((item) => item[recordID])
+  ) {
     return (
-      <View
-        style={styles.container}
-      >
-        <Text
-          style={styles.text}
-        >
-          <Text style={{ fontWeight: "700" }}>
+      <View style={styles.container}>
+        <Text style={styles.text}>
+          <Text style={{ fontFamily: "NotoSansKR-Bold" }}>
             {performerLastName}
             {performerFirstName}(@{performerID})
           </Text>
           님이
-          <Text style={{ fontWeight: "700" }}> 폴더[{folderName}]</Text>에 기록을
-          남겼습니다.
+          <Text style={{ fontFamily: "NotoSansKR-Bold" }}>
+            {" "}
+            폴더[{folderName}]
+          </Text>
+          에 기록을 남겼습니다.
         </Text>
         <Text
           style={{
             ...styles.text,
-            fontWeight: "700",
             fontSize: 12,
             color: "#545766",
+            fontFamily: "NotoSansKR-Bold",
           }}
         >
           <TimeDisplay time={time} />
         </Text>
       </View>
-    )
+    );
   } else {
     return (
       <TouchableOpacity
@@ -76,27 +79,19 @@ const ReceptRecordAddDoneList = ({
         }}
         style={styles.container}
       >
-        <Text
-          style={styles.text}
-        >
-          <Text style={{ fontWeight: "700" }}>
+        <Text style={styles.text}>
+          <Text style={{ fontFamily: "NotoSansKR-Bold" }}>
             {performerLastName}
             {performerFirstName}(@{performerID})
           </Text>
           님이
-          <Text style={{ fontWeight: "700" }}> 폴더[{folderName}]</Text>에 기록을
-          남겼습니다.
+          <Text style={{ fontFamily: "NotoSansKR-Bold" }}>
+            {" "}
+            폴더[{folderName}]
+          </Text>
+          에 기록을 남겼습니다.
         </Text>
-        <Text
-          style={{
-            ...styles.text,
-            fontWeight: "700",
-            fontSize: 12,
-            color: "#545766",
-          }}
-        >
-          <TimeDisplay time={time} />
-        </Text>
+        <TimeDisplay time={time} />
       </TouchableOpacity>
     );
   }
@@ -115,5 +110,6 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     lineHeight: 16,
     letterSpacing: -0.5,
+    fontFamily: "NotoSansKR-Regular",
   },
 });

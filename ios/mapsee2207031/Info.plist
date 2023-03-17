@@ -61,6 +61,9 @@
 	<key>UIAppFonts</key>
 	<array>
 		<string>NotoSansKR-Regular.otf</string>
+		<string>NotoSansKR-Medium.otf</string>
+		<string>NotoSansKR-Bold.otf</string>
+		<string>NotoSansKR-Light.otf</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>SplashScreen</string>
