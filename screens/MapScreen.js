@@ -21,6 +21,8 @@ import {
   useRecordIDListQuery,
 } from "../queries";
 
+import MyLocation from "../assets/icons/MyLocation.svg";
+import MyLocationMarker from "../assets/markers/MyLocation.svg";
 import CreateNote from "../assets/icons/createNote.svg";
 import SearchMain from "../assets/icons/searchMain.svg";
 import SearchBox from "../assets/image/searchBox.svg";
@@ -28,7 +30,6 @@ import TargetMarker from "../assets/markers/selectedMarker.svg";
 import AppContext from "../components/AppContext";
 import RecordMarker from "../components/MapScreen/RecordMarker";
 import GeneratePushToken from "../modules/GeneratePushToken";
-import MyLocation from "../assets/icons/MyLocation.svg";
 const findCurrentLocationImage = require("../assets/image/findCurrentLocation.png");
 const mapStyle = require("../assets/mapDesign.json");
 
@@ -40,7 +41,7 @@ const SearchView = ({ navigation, origin }) => {
         height: 48,
         flexDirection: "row",
         left: 23,
-        top: 36,
+        top: 58,
         position: "absolute",
         alignItems: "center",
       }}
@@ -285,6 +286,16 @@ const MapScreen = ({ navigation }) => {
         >
           <TargetMarker />
         </Marker>
+        <Marker
+          coordinate={{
+            latitude: current.latitude,
+            longitude: current.longitude,
+          }}
+          style={{ zIndex: 1000 }}
+        >
+          <MyLocationMarker />
+        </Marker>
+
         <RecordMarker
           recordData={
             recordQueries[recordQueries.length - 1]?.data &&

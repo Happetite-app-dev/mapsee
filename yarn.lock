@@ -7983,7 +7983,7 @@ react-native-snap-carousel@^3.9.1:
 
 react-native-store-review@^0.3.0:
   version "0.3.0"
-  resolved "https://registry.npmjs.org/react-native-store-review/-/react-native-store-review-0.3.0.tgz"
+  resolved "https://registry.yarnpkg.com/react-native-store-review/-/react-native-store-review-0.3.0.tgz#67480b9736c10bd00ad8d4d80324d2146e18d7dd"
   integrity sha512-PipH/p3O10DDCUWHiW0sVZ0020HPx6gRFFZOyuAYRRVwdssO7or/+H2pHTlwUt2lasVzLenTf2aZ9sMrpryuKA==
 
 react-native-svg-transformer@^1.0.0:

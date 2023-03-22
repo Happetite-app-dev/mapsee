@@ -1,7 +1,34 @@
-import { View, TextInput, Text } from "react-native";
+import { View, TextInput, Text, Linking } from "react-native";
 import BottomButton from "../components/BottomButton";
-
+import qs from "qs";
 import GoBackHeader from "../components/GoBackHeader";
+
+async function sendEmail(to, subject, body, options = {}) {
+  const { cc, bcc } = options;
+
+  let url = `mailto:${to}`;
+
+  // Create email link query
+  const query = qs.stringify({
+    subject: subject,
+    body: body,
+    cc: cc,
+    bcc: bcc,
+  });
+
+  if (query.length) {
+    url += `?${query}`;
+  }
+
+  // check if we can use this link
+  const canOpen = await Linking.canOpenURL(url);
+
+  if (!canOpen) {
+    throw new Error("Provided URL can not be handled");
+  }
+
+  return Linking.openURL(url);
+}
 
 const SuggestScreen = ({ navigation }) => {
   return (
@@ -42,7 +69,16 @@ const SuggestScreen = ({ navigation }) => {
           placeholder="이런 부분을 이렇게 고쳤으면 좋겠어요!"
         />
       </View>
-      <BottomButton text={"의견 보내기"} style={{ top: 592 }} />
+      <BottomButton
+        text={"의견 보내기"}
+        style={{ top: 592 }}
+        onPressFunction={() => {
+          console.log("pressed");
+          sendEmail("parkjeong02@gmail.com", "mapsee", "this is dmmm").then(
+            () => console.log("email sent")
+          );
+        }}
+      />
     </View>
   );
 };

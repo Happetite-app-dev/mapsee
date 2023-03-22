@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import SnackBar from "../components/SnackBar";
 import * as Clipboard from "expo-clipboard";
 import * as Linking from "expo-linking";
 import * as StoreReview from "react-native-store-review";
@@ -43,6 +44,7 @@ const MypageScreen = ({ navigation }) => {
   const myContext = useContext(AppContext);
   const myID = myContext.myID;
   const myName = myContext.myLastName + myContext.myFirstName;
+  const [visible, setVisible] = useState(false);
 
   const copyToClipboard = async (string) => {
     await Clipboard.setStringAsync(string);
@@ -88,7 +90,10 @@ const MypageScreen = ({ navigation }) => {
               {myID}
             </Text>
             <TouchableOpacity
-              onPress={() => copyToClipboard(myID)}
+              onPress={() => {
+                copyToClipboard(myID);
+                setVisible(true);
+              }}
               style={{ left: 16 }}
             >
               <Copy />
@@ -175,10 +180,7 @@ const MypageScreen = ({ navigation }) => {
               paddingLeft: 18,
             }}
             onPress={() => {
-              console.log("store review");
-              if (StoreReview.isAvailable) {
-                StoreReview.requestReview();
-              }
+              StoreReview.requestReview();
             }}
           >
             <Rate />
@@ -277,6 +279,13 @@ const MypageScreen = ({ navigation }) => {
           더 나은 맵시를 위해 의견을 주세요!
         </Text>
       </TouchableOpacity>
+      <SnackBar
+        visible={visible}
+        onDismissSnackBar={() => {
+          setVisible(false);
+        }}
+        text={`아이디(@${myID})가 복사되었습니다.`}
+      />
     </SafeAreaView>
   );
 };

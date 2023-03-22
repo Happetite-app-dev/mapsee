@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import {
   SafeAreaView,
   Text,
@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import * as Clipboard from "expo-clipboard";
-
+import SnackBar from "../components/SnackBar";
 import AppContext from "../components/AppContext";
 import GoBackHeader from "../components/GoBackHeader";
 import Copy from "../assets/icons/Friend.svg";
@@ -18,6 +18,7 @@ const ProfileScreen = ({ navigation }) => {
   const myName = myContext.myLastName + myContext.myFirstName;
   const myID = myContext.myID;
   const myEmail = myContext.myEmail;
+  const [visible, setVisible] = useState(false);
 
   const copyToClipboard = async (string) => {
     await Clipboard.setStringAsync(string);
@@ -105,7 +106,10 @@ const ProfileScreen = ({ navigation }) => {
         >
           <Text>{myID}</Text>
           <TouchableOpacity
-            onPress={() => copyToClipboard(myID)}
+            onPress={() => {
+              copyToClipboard(myID);
+              setVisible(true);
+            }}
             style={{ left: 16 }}
           >
             <Copy />
@@ -139,6 +143,13 @@ const ProfileScreen = ({ navigation }) => {
           {myEmail}
         </Text>
       </View>
+      <SnackBar
+        visible={visible}
+        onDismissSnackBar={() => {
+          setVisible(false);
+        }}
+        text={`아이디(@${myID})가 복사되었습니다.`}
+      />
     </View>
   );
 };
