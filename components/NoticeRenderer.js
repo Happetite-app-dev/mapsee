@@ -112,7 +112,6 @@ const NoticeRenderer = ({ navigation, item, onToggleSnackBar }) => {
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
   const queryClient = useQueryClient();
-
   switch (item.val.type) {
     case "recept_friend_request": //친구 요청 수신 - 수락 거절 안 한 활성화된 새로운 알림
       return (
