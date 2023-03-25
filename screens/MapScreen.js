@@ -15,7 +15,7 @@ import {
 import Geocoder from "react-native-geocoding";
 import MapView, { Marker } from "react-native-maps";
 import { Easing } from "react-native-reanimated";
-import { useUserQuery, useRecordQueries, useRecordIDListQuery, useAllRecordQuery } from "../queries";
+import { useUserQuery, useAllRecordQuery } from "../queries";
 
 import CreateNote from "../assets/icons/createNote.svg";
 import SearchMain from "../assets/icons/searchMain.svg";
@@ -32,13 +32,13 @@ const SearchView = ({ navigation, origin }) => {
   return (
     <View
       style={{
-        width: 344,
+        width: "100%",
         height: 48,
         flexDirection: "row",
-        left: 23,
-        top: 36,
+        top: "7%",
         position: "absolute",
         alignItems: "center",
+        left: 23,
       }}
       onTouchEndCapture={() =>
         navigation.navigate("MapSearchScreen1", {
@@ -152,8 +152,7 @@ const MapScreen = ({ navigation }) => {
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
   const userQuery = useUserQuery(myUID);
-
-  const recordQueries = useAllRecordQuery()
+  const allRecordQuery = useAllRecordQuery();
 
   const isFocused = useIsFocused();
   const [getPermissions, setGetPermissions] = useState(false);
@@ -261,14 +260,16 @@ const MapScreen = ({ navigation }) => {
         <Marker
           coordinate={target.lctn}
           opacity={targetShown ? 100 : 0}
-          style={{ zIndex: 1 }}
+          style={{ zIndex: 10000 }}
         >
           <TargetMarker />
         </Marker>
         <RecordMarker
           recordData={
-            userQuery.data?.folderIDs
-              ? recordQueries
+            allRecordQuery.data && userQuery.data?.folderIDs
+              ? Object.entries(allRecordQuery.data).filter(([key, record]) => {
+                return record.folderID in userQuery.data?.folderIDs;
+              })
               : []
           }
           origin={origin}
@@ -295,7 +296,7 @@ const MapScreen = ({ navigation }) => {
           });
         }}
       >
-        <Animated.View
+        <View
           source={MyLocation}
           resizeMode="contain"
           style={{
@@ -304,11 +305,10 @@ const MapScreen = ({ navigation }) => {
             height: 48,
             borderRadius: 24,
             tintColor: "grey",
-            transform: [{ rotate: RotateData }],
           }}
         >
           <MyLocation />
-        </Animated.View>
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -319,8 +319,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    alignItems: "stretch",
-    justifyContent: "center",
   },
   map: {
     width: "100%",

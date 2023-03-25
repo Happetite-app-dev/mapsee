@@ -1,4 +1,4 @@
-import { ref, remove } from "firebase/database";
+import { ref, onValue, remove } from "firebase/database";
 import { useContext, useState } from "react";
 import { View } from "react-native";
 
@@ -7,9 +7,8 @@ import GoBackHeader from "../components/GoBackHeader";
 import { PopUpType1 } from "../components/PopUp";
 import RecordFlatList from "../components/StorageScreen/RecordFlatList";
 import { database } from "../firebase";
-import { useAllRecordQuery, useFolderQuery, useRecordIDListQuery, useRecordQueries, useUserQuery } from "../queries";
+import { useAllRecordQuery, useFolderQuery } from "../queries";
 import SmallFolder from "../assets/icons/SmallFolder.svg";
-import { useQueryClient } from "react-query";
 
 const gotoMakeFolderBottomSheetScreen = ({
   navigation,
@@ -27,10 +26,8 @@ const gotoMakeFolderBottomSheetScreen = ({
     recordDataSource,
   });
 };
-const exitFolder = async ({ myUID, folderID, navigation, onInvalid }) => {
+const exitFolder = async ({ myUID, folderID, navigation }) => {
   await exitData(myUID, folderID).then(
-    () => onInvalid()
-  ).then(
     () => navigation.navigate("Storage") //realtimeDataBase가 모두 업데이트 된후
   );
 };
@@ -55,7 +52,7 @@ const exitData = async (myUID, folderID) => {
         "/folders/" + folderID + "/folderColor/" + myUID
       );
       remove(reference4);
-    });
+    })
   //사람이 없는 폴더에 나중에 사람이 추가될 가능성을 위해 일단 폴더를 남겨두자
   // .then(
   //   //지울 필요가 없음
@@ -72,17 +69,13 @@ const SingleFolderScreen = ({ navigation, route }) => {
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
   const { folderID } = route.params;
-  const queryClient = useQueryClient()
   const query = useFolderQuery(folderID);
-  const userQuery = useUserQuery(myUID);
+  const allRecordQuery = useAllRecordQuery();
 
-  const allRecordQueries = useAllRecordQuery()
-
-
-  const recordDataSource = allRecordQueries.filter(
+  const recordDataSource = Object.entries(allRecordQuery.data).filter(
     function ([key, values]) {
       // Applying filter for the inserted text in search bar
-      return values?.folderID === folderID;
+      return values.folderID === folderID;
     }
   );
 
@@ -110,14 +103,7 @@ const SingleFolderScreen = ({ navigation, route }) => {
       <PopUpType1
         modalVisible={modalVisible}
         modalHandler={setModalVisible}
-        action={() =>
-          exitFolder({
-            myUID, folderID, navigation,
-            onInvalid: () => {
-              queryClient.invalidateQueries(["users", myUID]);
-              queryClient.invalidateQueries(["recordIDList"]);
-            }
-          })}
+        action={() => exitFolder({ myUID, folderID, navigation })}
         askValue="정말 삭제하시겠어요?"
         actionValue="삭제"
       />
