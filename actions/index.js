@@ -17,22 +17,20 @@ export const fetchRecord = async (recordID) => {
   return await onValueAsync(ref(db, "/records/" + recordID));
 };
 
+export const fetchAllRecord = async () => {
+  return await onValueAsync(ref(db, "/records/"));
+};
+
+export const fetchAllFolderObject = async (UID) => {
+  return await onValueAsync(ref(db, "/users/" + UID + "/folderIDs"))
+}
+
+export const fetchAllFolder = async () => {
+  return await onValueAsync(ref(db, "/folders/"));
+};
+
+
+
 export const fetchAllNotice = async (UID) => {
   return await onValueAsync(ref(db, "/notices/" + UID));
 };
-
-export const fetchRecordIDList = async (folderIDList, folderQueries) => {
-  //console.log("fetching", folderQueries[0]?.data ? folderQueries[0].data : "none")
-  const recordIDList = folderIDList.reduce((acc, curr, idx) => {
-    const folderObj = folderQueries[idx].data
-    const newRecordID = folderObj?.placeRecords ?
-      Object.values(folderObj.placeRecords).reduce((acc1, curr1, idx1) => {
-        return [...acc1, ...Object.keys(curr1)]
-      }, new Array)
-      :
-      [];
-    return [...acc, ...newRecordID]
-  }, new Array)
-  //console.log("fetching", recordIDList)
-  return recordIDList
-}
