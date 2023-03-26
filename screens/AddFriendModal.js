@@ -80,7 +80,7 @@ const AddFriendModal = ({
         setRequestSent(false);
         onToggleSnackBar();
       } else {
-        callFriendRequest(friendUID, myUID)
+        callFriendRequest(friendUID, myUID);
         setRequestSent(true);
         setRequestInfo([newFriend, friendName]); // newFriend: friend ID
         onToggleSnackBar();
@@ -103,14 +103,15 @@ const AddFriendModal = ({
       >
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
+            <Text style={styles.titleText}>아이디로 친구추가</Text>
             <View
               style={{
-                marginTop: 16,
                 width: 312,
                 height: 48,
                 alignItems: "center",
                 borderBottomWidth: 1,
-                borderBottomColor: "gray",
+                borderBottomColor: "#ADB1C5",
+                marginTop: 8,
               }}
             >
               <TextInput
@@ -164,14 +165,20 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 22,
+    backgroundColor: "rgba(0, 0, 0, 0.4)",
+  },
+  titleText: {
+    marginTop: 24,
+    marginLeft: 16,
+    fontFamily: "NotoSansKR-Medium",
+    alignSelf: "baseline",
   },
   modalView: {
     backgroundColor: "white",
     borderRadius: 16,
     alignItems: "center",
     width: 344,
-    height: 112,
+    height: 152,
   },
   button: {
     width: 128,
@@ -186,11 +193,11 @@ const styles = StyleSheet.create({
   textStyle: {
     width: 312,
     height: 16,
-    marginTop: 16,
     fontSize: 14,
     lineHeight: 0,
     letterSpacing: -0.5,
-    fontWeight: "400",
+    fontFamily: "NotoSansKR-Regular",
+    top: 16,
   },
   modalText: {
     flex: 1,
@@ -198,7 +205,7 @@ const styles = StyleSheet.create({
     lineHeight: 24,
     letterSpacing: 1.2,
     alignSelf: "center",
-    fontWeight: "700",
+    fontFamily: "NotoSansKR-Bold",
   },
 });
 

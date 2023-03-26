@@ -25,8 +25,8 @@ const IndividualRecord = ({ item, stackNavigation }) => {
         <View style={{ flexDirection: "column", justifyContent: "center" }}>
           <View style={{ width: 158, height: 148, alignItems: "center" }}>
             {item[1].photos !== undefined &&
-              item[1].photos !== null &&
-              Object.values(item[1].photos).length >= 1 ? (
+            item[1].photos !== null &&
+            Object.values(item[1].photos).length >= 1 ? (
               <View>
                 <Image
                   style={{
@@ -76,18 +76,18 @@ const RecordFlatList = ({
       data={
         recordList
           ? recordList.sort(function (a, b) {
-            const date1 = new Date(
-              a[1].date.year,
-              a[1].date.month,
-              a[1].date.day
-            );
-            const date2 = new Date(
-              b[1].date.year,
-              b[1].date.month,
-              b[1].date.day
-            );
-            return date2 - date1;
-          })
+              const date1 = new Date(
+                a[1].date.year,
+                a[1].date.month,
+                a[1].date.day
+              );
+              const date2 = new Date(
+                b[1].date.year,
+                b[1].date.month,
+                b[1].date.day
+              );
+              return date2 - date1;
+            })
           : []
       }
       renderItem={renderItem}
@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
     fontSize: 14,
     textAlign: "center",
-    fontWeight: "bold",
+    fontFamily: "NotoSansKR-Medium",
   },
   placeName: {
     width: 136,
@@ -137,6 +137,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     textAlign: "center",
     color: "#545766",
+    fontFamily: "NotoSansKR-Regular",
   },
   date: {
     width: 136,
@@ -145,5 +146,7 @@ const styles = StyleSheet.create({
     fontSize: 10,
     textAlign: "center",
     color: "#ADB1C5",
+    fontFamily: "NotoSansKR-Light",
+    marginTop: 4,
   },
 });

@@ -57,7 +57,13 @@ const _renderRow = ({ navigation, item }) => {
         </View>
 
         <View style={styles.descriptionSecondaryText}>
-          <Text style={{ fontSize: 12, color: "#545766" }}>
+          <Text
+            style={{
+              fontSize: 12,
+              color: "#545766",
+              fontFamily: "NotoSansKR-Regular",
+            }}
+          >
             {item.structured_formatting.secondary_text}
           </Text>
         </View>

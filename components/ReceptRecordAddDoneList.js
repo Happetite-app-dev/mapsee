@@ -25,20 +25,20 @@ const ReceptRecordAddDoneList = ({
   folderID,
   recordID,
   navigation,
-  time
+  time,
 }) => {
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
 
-  const myUserQuery = useUserQuery(myUID)
+  const myUserQuery = useUserQuery(myUID);
 
   const userQuery = useUserQuery(performerUID);
-  const performerID = userQuery.data?.id
-  const performerFirstName = userQuery.data?.firstName
-  const performerLastName = userQuery.data?.lastName
+  const performerID = userQuery.data?.id;
+  const performerFirstName = userQuery.data?.firstName;
+  const performerLastName = userQuery.data?.lastName;
 
   const folderQuery = useFolderQuery(folderID);
-  const folderName = folderQuery.data?.folderName[myUID]
+  const folderName = folderQuery.data?.folderName[myUID];
 
   const { data } = useRecordQuery(recordID);
 
@@ -49,34 +49,38 @@ const ReceptRecordAddDoneList = ({
   console.log(selectedPhotos[0])
   if (!userQuery.data || !folderQuery.data || !myUserQuery.data) {
     return <></>;
-  }
-  else if (!myUserQuery.data.folderIDs[folderID] || !Object.values(folderQuery.data.placeRecords ? folderQuery.data.placeRecords : []).some((item) => item[recordID])) {
+  } else if (
+    !myUserQuery.data.folderIDs[folderID] ||
+    !Object.values(
+      folderQuery.data.placeRecords ? folderQuery.data.placeRecords : []
+    ).some((item) => item[recordID])
+  ) {
     return (
-      <View
-        style={styles.container}
-      >
-        <Text
-          style={styles.text}
-        >
-          <Text style={{ fontWeight: "700" }}>
+      <View style={styles.container}>
+        <Text style={styles.text}>
+          <Text style={{ fontFamily: "NotoSansKR-Bold" }}>
             {performerLastName}
             {performerFirstName}(@{performerID})
           </Text>
           님이
-          <Text style={{ fontWeight: "700" }}> 폴더[{folderName}]</Text>에 기록을
-          남겼습니다.
+          <Text style={{ fontFamily: "NotoSansKR-Bold" }}>
+            {" "}
+            폴더[{folderName}]
+          </Text>
+          에 기록을 남겼습니다.
         </Text>
         <Text
           style={{
             ...styles.text,
-            fontWeight: "700",
             fontSize: 12,
             color: "#545766",
+            fontFamily: "NotoSansKR-Bold",
           }}
         >
           <TimeDisplay time={time} />
         </Text>
       </View>
+
     )
   } else if (selectedPhotos[0] == undefined) {
     return (
@@ -176,5 +180,6 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
     lineHeight: 16,
     letterSpacing: -0.5,
+    fontFamily: "NotoSansKR-Regular",
   },
 });

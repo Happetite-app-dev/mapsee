@@ -39,8 +39,8 @@ const NoticeScreen = ({ navigation }) => {
         <FlatList
           onRefresh={() => {
             queryClient.invalidateQueries(["all-notices"]);
-            queryClient.invalidateQueries(["users"])
-            queryClient.invalidateQueries(["folders"])
+            queryClient.invalidateQueries(["users"]);
+            queryClient.invalidateQueries(["folders"]);
           }} // fetch로 데이터 호출
           refreshing={query.isLoading} // state
           data={query_modified}
@@ -82,10 +82,10 @@ export default NoticeScreen;
 const styles = StyleSheet.create({
   container: {
     width: "100%",
-    height: "89.5%",
+    height: "100%",
     backgroundColor: "white",
   },
-  screenTitle: { fontWeight: "bold", fontSize: 16, left: 23 },
+  screenTitle: { fontFamily: "NotoSansKR-Bold", fontSize: 16, left: 23 },
   screenTitleView: {
     flexDirection: "row",
     height: 33,

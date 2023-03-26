@@ -8,8 +8,8 @@ import {
   SafeAreaView,
 } from "react-native";
 import { useQueryClient } from "react-query";
-
 import AddFolder from "../assets/icons/addfolder.svg";
+
 import { useUserQuery, useAllRecordQuery } from "../queries";
 
 import SearchData from "../assets/icons/searchData.svg";
@@ -192,7 +192,7 @@ const StorageScreen = ({ navigation, route }) => {
         }
         stackNavigation={navigation}
         ListHeaderComponent={
-          <View style={{ height: 80 }}>
+          <View style={{ height: 80, marginBottom: 36 }}>
             <FolderList
               folderIDs={
                 userQuery.data?.folderIDs
@@ -293,7 +293,12 @@ export default StorageScreen;
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "white" },
-  screenTitle: { fontWeight: "bold", fontSize: 16, left: 23 },
+  screenTitle: {
+    fontWeight: "bold",
+    fontSize: 16,
+    left: 23,
+    fontFamily: "NotoSansKR-Bold",
+  },
   screenTitleView: {
     flexDirection: "row",
     height: "7%",
@@ -346,4 +351,5 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.15,
     shadowRadius: 3.5,
   },
+
 });

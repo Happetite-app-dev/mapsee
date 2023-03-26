@@ -15,7 +15,9 @@ const BottomButton = ({ onPressFunction, text, style }) => {
         ...style,
       }}
     >
-      <Text style={{ fontSize: 14, fontWeight: "bold" }}>{text}</Text>
+      <Text style={{ fontSize: 14, fontFamily: "NotoSansKR-Bold" }}>
+        {text}
+      </Text>
     </TouchableOpacity>
   );
 };

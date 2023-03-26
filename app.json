@@ -32,7 +32,8 @@
         "googleMaps": {
           "apiKey": "AIzaSyDBq4tZ1QLm1R7iPH8O4dTvebVGWgkRPks"
         }
-      }
+      },
+      "bundleIdentifier": "mapsee"
     },
     "android": {
       "adaptiveIcon": {
@@ -40,13 +41,18 @@
         "backgroundColor": "#FFFFFF"
       },
       "android": {
-        "permissions":["ACCESS_COARSE_LOCATION","ACCESS_FINE_LOCATION","ACCESS_BACKGROUND_LOCATION"]
+        "permissions": [
+          "ACCESS_COARSE_LOCATION",
+          "ACCESS_FINE_LOCATION",
+          "ACCESS_BACKGROUND_LOCATION"
+        ]
       },
       "config": {
         "googleMaps": {
           "apiKey": "AIzaSyDBq4tZ1QLm1R7iPH8O4dTvebVGWgkRPks"
         }
-      }
+      },
+      "package": "com.parkjeong02.mapsee220703_1"
     },
     "web": {
       "favicon": "./assets/favicon.png"

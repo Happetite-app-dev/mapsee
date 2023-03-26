@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import SnackBar from "../components/SnackBar";
 import * as Clipboard from "expo-clipboard";
 import * as Linking from "expo-linking";
 import * as StoreReview from "react-native-store-review";
@@ -43,6 +44,7 @@ const MypageScreen = ({ navigation }) => {
   const myContext = useContext(AppContext);
   const myID = myContext.myID;
   const myName = myContext.myLastName + myContext.myFirstName;
+  const [visible, setVisible] = useState(false);
 
   const copyToClipboard = async (string) => {
     await Clipboard.setStringAsync(string);
@@ -65,7 +67,14 @@ const MypageScreen = ({ navigation }) => {
         }}
       >
         <View>
-          <Text style={{ top: 20, left: 23, fontSize: 16, fontWeight: "bold" }}>
+          <Text
+            style={{
+              top: 20,
+              left: 23,
+              fontSize: 16,
+              fontFamily: "NotoSansKR-Medium",
+            }}
+          >
             {myName}
           </Text>
           <View style={{ flexDirection: "row", top: 30, left: 23 }}>
@@ -75,12 +84,16 @@ const MypageScreen = ({ navigation }) => {
                 lineHeight: 24,
                 color: "#ADB1C5",
                 height: 24,
+                fontFamily: "NotoSansKR-Regular",
               }}
             >
               {myID}
             </Text>
             <TouchableOpacity
-              onPress={() => copyToClipboard(myID)}
+              onPress={() => {
+                copyToClipboard(myID);
+                setVisible(true);
+              }}
               style={{ left: 16 }}
             >
               <Copy />
@@ -123,7 +136,16 @@ const MypageScreen = ({ navigation }) => {
             }}
           >
             <FriendList />
-            <Text style={{ fontSize: 14, left: 14, top: 3 }}>친구 목록</Text>
+            <Text
+              style={{
+                fontSize: 14,
+                left: 14,
+                top: 3,
+                fontFamily: "NotoSansKR-Medium",
+              }}
+            >
+              친구 목록
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity
             activeOpacity={0.6}
@@ -136,7 +158,16 @@ const MypageScreen = ({ navigation }) => {
             }}
           >
             <NoticeOn />
-            <Text style={{ fontSize: 14, left: 14, top: 3 }}>알림</Text>
+            <Text
+              style={{
+                fontSize: 14,
+                left: 14,
+                top: 3,
+                fontFamily: "NotoSansKR-Medium",
+              }}
+            >
+              알림
+            </Text>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -149,14 +180,20 @@ const MypageScreen = ({ navigation }) => {
               paddingLeft: 18,
             }}
             onPress={() => {
-              console.log("store review");
-              if (StoreReview.isAvailable) {
-                StoreReview.requestReview();
-              }
+              StoreReview.requestReview();
             }}
           >
             <Rate />
-            <Text style={{ fontSize: 14, left: 14, top: 3 }}>별점주기</Text>
+            <Text
+              style={{
+                fontSize: 14,
+                left: 14,
+                top: 3,
+                fontFamily: "NotoSansKR-Medium",
+              }}
+            >
+              별점주기
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity
             activeOpacity={0.6}
@@ -172,7 +209,16 @@ const MypageScreen = ({ navigation }) => {
             }}
           >
             <SNS />
-            <Text style={{ fontSize: 14, left: 14, top: 3 }}>인스타그램</Text>
+            <Text
+              style={{
+                fontSize: 14,
+                left: 14,
+                top: 3,
+                fontFamily: "NotoSansKR-Medium",
+              }}
+            >
+              인스타그램
+            </Text>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -188,7 +234,11 @@ const MypageScreen = ({ navigation }) => {
               gotoBeforeLoginScreen({ navigation });
             }}
           >
-            <Text style={{ fontSize: 14, top: 3 }}>로그아웃</Text>
+            <Text
+              style={{ fontSize: 14, top: 3, fontFamily: "NotoSansKR-Regular" }}
+            >
+              로그아웃
+            </Text>
           </TouchableOpacity>
         </View>
         <Text
@@ -199,6 +249,7 @@ const MypageScreen = ({ navigation }) => {
             left: 23,
             top: 24,
             textAlign: "center",
+            fontFamily: "NotoSansKR-Regular",
           }}
         >
           버전 00.00.01
@@ -217,10 +268,24 @@ const MypageScreen = ({ navigation }) => {
       >
         <SuggestBox style={{ position: "absolute" }} />
         <Suggest style={{ position: "relative", left: 16 }} />
-        <Text style={{ left: 37, color: "#5ED3CC", fontSize: 14 }}>
+        <Text
+          style={{
+            left: 37,
+            color: "#5ED3CC",
+            fontSize: 14,
+            fontFamily: "NotoSansKR-Medium",
+          }}
+        >
           더 나은 맵시를 위해 의견을 주세요!
         </Text>
       </TouchableOpacity>
+      <SnackBar
+        visible={visible}
+        onDismissSnackBar={() => {
+          setVisible(false);
+        }}
+        text={`아이디(@${myID})가 복사되었습니다.`}
+      />
     </SafeAreaView>
   );
 };
@@ -233,7 +298,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     flexDirection: "column",
   },
-  screenTitle: { fontWeight: "bold", fontSize: 16, left: 23 },
+  screenTitle: { fontFamily: "NotoSansKR-Bold", fontSize: 16, left: 23 },
   screenTitleView: {
     flexDirection: "row",
     height: 33,

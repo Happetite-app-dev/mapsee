@@ -15,8 +15,11 @@ import {
 import Geocoder from "react-native-geocoding";
 import MapView, { Marker } from "react-native-maps";
 import { Easing } from "react-native-reanimated";
+
 import { useUserQuery, useAllRecordQuery } from "../queries";
 
+import MyLocation from "../assets/icons/MyLocation.svg";
+import MyLocationMarker from "../assets/markers/MyLocation.svg";
 import CreateNote from "../assets/icons/createNote.svg";
 import SearchMain from "../assets/icons/searchMain.svg";
 import SearchBox from "../assets/image/searchBox.svg";
@@ -24,7 +27,6 @@ import TargetMarker from "../assets/markers/selectedMarker.svg";
 import AppContext from "../components/AppContext";
 import RecordMarker from "../components/MapScreen/RecordMarker";
 import GeneratePushToken from "../modules/GeneratePushToken";
-import MyLocation from "../assets/icons/MyLocation.svg";
 const findCurrentLocationImage = require("../assets/image/findCurrentLocation.png");
 const mapStyle = require("../assets/mapDesign.json");
 
@@ -35,6 +37,7 @@ const SearchView = ({ navigation, origin }) => {
         width: "100%",
         height: 48,
         flexDirection: "row",
+
         top: "7%",
         position: "absolute",
         alignItems: "center",
@@ -49,7 +52,14 @@ const SearchView = ({ navigation, origin }) => {
     >
       <SearchBox style={{ position: "absolute" }} />
       <SearchMain style={{ position: "relative", left: 12 }} />
-      <Text style={{ left: 20, fontSize: 16, color: "#DDDFE9" }}>
+      <Text
+        style={{
+          left: 20,
+          fontSize: 16,
+          color: "#DDDFE9",
+          fontFamily: "NotoSansKR-Medium",
+        }}
+      >
         열람하고 싶은 장소를 검색하세요
       </Text>
     </View>
@@ -152,6 +162,7 @@ const MapScreen = ({ navigation }) => {
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
   const userQuery = useUserQuery(myUID);
+
   const allRecordQuery = useAllRecordQuery();
 
   const isFocused = useIsFocused();
@@ -264,6 +275,16 @@ const MapScreen = ({ navigation }) => {
         >
           <TargetMarker />
         </Marker>
+        <Marker
+          coordinate={{
+            latitude: current.latitude,
+            longitude: current.longitude,
+          }}
+          style={{ zIndex: 1000 }}
+        >
+          <MyLocationMarker />
+        </Marker>
+
         <RecordMarker
           recordData={
             allRecordQuery.data && userQuery.data?.folderIDs

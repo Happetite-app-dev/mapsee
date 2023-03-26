@@ -16,9 +16,13 @@ const BottomSheetTitle = ({ IsNewRecord }) => {
       style={{ top: 24, width: 61, height: 24, left: 23, marginBottom: 24 }}
     >
       {IsNewRecord ? (
-        <Text style={{ fontSize: 16, fontWeight: "700" }}>폴더 추가</Text>
+        <Text style={{ fontSize: 16, fontFamily: "NotoSansKR-Medium" }}>
+          폴더 추가
+        </Text>
       ) : (
-        <Text style={{ fontSize: 16, fontWeight: "700" }}>폴더 수정</Text>
+        <Text style={{ fontSize: 16, fontFamily: "NotoSansKR-Medium" }}>
+          폴더 수정
+        </Text>
       )}
     </View>
   );
@@ -39,11 +43,15 @@ const BottomSheetName = ({ newFolderName, setNewFolderName }) => {
       }}
     >
       <TextInput
-        style={{ fontSize: 14, fontWeight: "400", lineHeight: 0 }}
+        style={{
+          fontSize: 14,
+          fontFamily: "NotoSansKR-Regular",
+          lineHeight: 0,
+        }}
         value={newFolderName}
         onChangeText={(fdr) => setNewFolderName(fdr)}
         placeholder={"폴더 이름"}
-        placeholderTextColor="grey"
+        placeholderTextColor="#000000"
       />
     </View>
   );
@@ -54,7 +62,9 @@ const BottomSheetColor = ({ newFolderColor, setNewFolderColor }) => {
     <View
       style={{ top: 24, width: 390, height: 128, left: 23, marginBottom: 24 }}
     >
-      <Text style={{ fontSize: 14, fontWeight: "700" }}>폴더 색상</Text>
+      <Text style={{ fontSize: 14, fontFamily: "NotoSansKR-Medium" }}>
+        폴더 색상
+      </Text>
       <View style={{ top: 24, flexDirection: "column" }}>
         <View style={{ top: 0, flexDirection: "row", paddingBottom: 16 }}>
           <TouchableOpacity
@@ -369,7 +379,9 @@ const BottomSheetInvite = ({
         flexDirection: "row",
       }}
     >
-      <Text style={{ fontSize: 14, fontWeight: "400" }}>친구초대</Text>
+      <Text style={{ fontSize: 14, fontFamily: "NotoSansKR-Regular" }}>
+        친구초대
+      </Text>
       <View>
         <TouchableOpacity
           onPress={() => {
@@ -399,7 +411,7 @@ const renderFolderUser = ({ item }) => {
       style={{
         height: 32,
         paddingHorizontal: 16,
-        paddingVertical: 8,
+        paddingVertical: 4,
         borderRadius: 16,
         marginHorizontal: 8,
         marginVertical: 20,
@@ -409,10 +421,9 @@ const renderFolderUser = ({ item }) => {
       <Text
         style={{
           height: 24,
-          fontWeight: "bold",
+          fontFamily: "NotoSansKR-Medium",
           fontSize: 16,
           letterSpacing: -0.5,
-          color: "black",
         }}
       >
         {item.name}

@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import {
   SafeAreaView,
   Text,
@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import * as Clipboard from "expo-clipboard";
-
+import SnackBar from "../components/SnackBar";
 import AppContext from "../components/AppContext";
 import GoBackHeader from "../components/GoBackHeader";
 import Copy from "../assets/icons/Friend.svg";
@@ -18,6 +18,7 @@ const ProfileScreen = ({ navigation }) => {
   const myName = myContext.myLastName + myContext.myFirstName;
   const myID = myContext.myID;
   const myEmail = myContext.myEmail;
+  const [visible, setVisible] = useState(false);
 
   const copyToClipboard = async (string) => {
     await Clipboard.setStringAsync(string);
@@ -34,24 +35,65 @@ const ProfileScreen = ({ navigation }) => {
           width: "100%",
           height: 24,
           marginTop: 24,
-          flexDirection: "row",
+          flexDirection: "column",
         }}
       >
-        <Text style={{ marginLeft: 24, fontSize: 14, fontWeight: "bold" }}>
+        <Text
+          style={{
+            marginLeft: 24,
+            fontSize: 14,
+            fontFamily: "NotoSansKR-Medium",
+          }}
+        >
           이름
         </Text>
-        <Text style={{ marginLeft: 24, fontWeight: "400" }}>{myName}</Text>
+        <View
+          style={{
+            flexDirection: "row",
+            top: 16,
+            height: 48,
+            left: 23,
+          }}
+        >
+          <Text
+            style={{
+              fontWeight: "400",
+              fontFamily: "NotoSansKR-Regular",
+              top: 12,
+              height: 36,
+            }}
+          >
+            {myContext.myLastName}
+          </Text>
+          <Text
+            style={{
+              fontWeight: "400",
+              fontFamily: "NotoSansKR-Regular",
+              left: 24,
+              top: 12,
+              height: 36,
+            }}
+          >
+            {myContext.myFirstName}
+          </Text>
+        </View>
       </View>
       <View
         style={{
           position: "absolute",
-          top: 177,
+          top: 241,
           width: "100%",
           height: 24,
           flexDirection: "row",
         }}
       >
-        <Text style={{ marginLeft: 24, fontSize: 14, fontWeight: "bold" }}>
+        <Text
+          style={{
+            marginLeft: 24,
+            fontSize: 14,
+            fontFamily: "NotoSansKR-Medium",
+          }}
+        >
           아이디
         </Text>
         <View
@@ -59,11 +101,15 @@ const ProfileScreen = ({ navigation }) => {
             marginLeft: 24,
             fontWeight: "400",
             flexDirection: "row",
+            fontFamily: "NotoSansKR-Regular",
           }}
         >
           <Text>{myID}</Text>
           <TouchableOpacity
-            onPress={() => copyToClipboard(myID)}
+            onPress={() => {
+              copyToClipboard(myID);
+              setVisible(true);
+            }}
             style={{ left: 16 }}
           >
             <Copy />
@@ -73,17 +119,37 @@ const ProfileScreen = ({ navigation }) => {
       <View
         style={{
           position: "absolute",
-          top: 225,
+          top: 289,
           width: "100%",
           height: 24,
           flexDirection: "row",
         }}
       >
-        <Text style={{ marginLeft: 24, fontSize: 14, fontWeight: "bold" }}>
+        <Text
+          style={{
+            marginLeft: 24,
+            fontSize: 14,
+            fontFamily: "NotoSansKR-Medium",
+          }}
+        >
           이메일
         </Text>
-        <Text style={{ marginLeft: 24, fontWeight: "400" }}>{myEmail}</Text>
+        <Text
+          style={{
+            marginLeft: 24,
+            fontFamily: "NotoSansKR-Regular",
+          }}
+        >
+          {myEmail}
+        </Text>
       </View>
+      <SnackBar
+        visible={visible}
+        onDismissSnackBar={() => {
+          setVisible(false);
+        }}
+        text={`아이디(@${myID})가 복사되었습니다.`}
+      />
     </View>
   );
 };
