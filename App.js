@@ -107,32 +107,32 @@ const App = () => {
             <Stack.Screen
               name="Tabs"
               component={Tabs}
-              options={{ headerShown: false, gestureEnabled: false }}
+              options={{ headerShown: false }}
             />
             <Stack.Screen
               name="MapSearchScreen1"
               component={MapSearchScreen1}
-              options={{ headerShown: false, gestureEnabled: false }}
+              options={{ headerShown: false }}
             />
             <Stack.Screen
               name="MapSearchScreen2"
               component={MapSearchScreen2}
-              options={{ headerShown: false, gestureEnabled: false }}
+              options={{ headerShown: false }}
             />
             <Stack.Screen
               name="MapSearchScreen3"
               component={MapSearchScreen3}
-              options={{ headerShown: false, gestureEnabled: false }}
+              options={{ headerShown: false }}
             />
             <Stack.Screen
               name="MapSearchScreen4"
               component={MapSearchScreen4}
-              options={{ headerShown: false, gestureEnabled: false }}
+              options={{ headerShown: false }}
             />
             <Stack.Screen
               name="SingleFolderScreen"
               component={SingleFolderScreen}
-              options={{ headerShown: false, gestureEnabled: false }}
+              options={{ headerShown: false }}
             />
             <Stack.Screen
               name="MakeFolderBottomSheetScreen"
@@ -158,59 +158,49 @@ const App = () => {
             <Stack.Screen
               name="SubSearchScreen1"
               component={SubSearchScreen1}
-              options={{
-                headerShown: false,
-                gestureEnabled: false,
-                presentation: "containedModal",
-              }}
+              options={{ headerShown: false }}
             />
             <Stack.Screen
               name="SubSearchScreen2"
               component={SubSearchScreen2}
-              options={{
-                headerShown: false,
-                gestureEnabled: false,
-                presentation: "containedModal",
-              }}
+              options={{ headerShown: false }}
             />
             <Stack.Screen
               name="EditScreen"
               component={EditScreen}
-              options={{ headerShown: false, presentation: "containedModal" }}
+              options={{ headerShown: false }}
             />
 
             <Stack.Screen
               name="ImageView"
               component={ImageView}
-              options={{
-                headerShown: false,
-                gestureEnabled: false,
-                presentation: "containedModal",
-              }}
+              options={{ headerShown: false }}
             />
             <Stack.Screen
               name="ProfileScreen"
               component={ProfileScreen}
-              options={{ headerShown: false, gestureEnabled: false }}
+              options={{ headerShown: false }}
             />
             <Stack.Screen
               name="FriendListScreen"
               component={FriendListScreen}
-              options={{ headerShown: false, gestureEnabled: false }}
+              options={{
+                headerShown: false,
+                presentation: "containedModal",
+              }}
             />
             <Stack.Screen
               name="InviteFriendScreen"
               component={InviteFriendScreen}
               options={{
                 headerShown: false,
-                gestureEnabled: true,
                 presentation: "fullScreenModal",
               }}
             />
             <Stack.Screen
               name="SuggestScreen"
               component={SuggestScreen}
-              options={{ headerShown: false, gestureEnabled: false }}
+              options={{ headerShown: false }}
             />
           </Stack.Navigator>
         </NavigationContainer>

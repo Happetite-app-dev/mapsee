@@ -9,12 +9,12 @@ import {
 } from "react-native";
 import { useQueryClient } from "react-query";
 import AddFolder from "../assets/icons/addfolder.svg";
-
+import { useIsFocused } from "@react-navigation/native";
 import { useUserQuery, useAllRecordQuery } from "../queries";
 
 import SearchData from "../assets/icons/searchData.svg";
 import AppContext from "../components/AppContext";
-import CreateNote from "../assets/icons/createNote.svg";
+import { CreateNote } from "../components/MapScreen/CreateNote";
 import { PopUpType4 } from "../components/PopUp";
 import RecordFlatList from "../components/StorageScreen/RecordFlatList";
 import SnackBar from "../components/SnackBar";
@@ -48,7 +48,7 @@ const exitData = async (myUID, folderID) => {
         "/folders/" + folderID + "/folderColor/" + myUID
       );
       remove(reference4);
-    })
+    });
   //사람이 없는 폴더에 나중에 사람이 추가될 가능성을 위해 일단 폴더를 남겨두자
   // .then(
   //   //지울 필요가 없음
@@ -124,6 +124,7 @@ const StorageScreen = ({ navigation, route }) => {
   const [visible, setVisible] = useState(false); // Snackbar
   const onToggleSnackBar = () => setVisible(!visible); // SnackbarButton -> 나중에는 없애기
   const onDismissSnackBar = () => setVisible(false); // Snackbar
+  const isFocused = useIsFocused();
 
   const [
     selectedFolderIDNameColorUserIDs,
@@ -148,7 +149,6 @@ const StorageScreen = ({ navigation, route }) => {
       });
     }
   }, [selectedFolderIDNameColorUserIDs]);
-
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.screenTitleView}>
@@ -181,18 +181,17 @@ const StorageScreen = ({ navigation, route }) => {
           </TouchableOpacity>
         </View>
       </View>
-
       <RecordFlatList
         recordList={
           allRecordQuery.data && userQuery.data?.folderIDs
             ? Object.entries(allRecordQuery.data).filter(([key, values]) => {
-              return values.folderID in userQuery.data?.folderIDs;
-            })
+                return values.folderID in userQuery.data?.folderIDs;
+              })
             : []
         }
         stackNavigation={navigation}
         ListHeaderComponent={
-          <View style={{ height: 80, marginBottom: 36 }}>
+          <View style={{ height: 80, marginBottom: 20 }}>
             <FolderList
               folderIDs={
                 userQuery.data?.folderIDs
@@ -214,16 +213,6 @@ const StorageScreen = ({ navigation, route }) => {
         }} // fetch로 데이터 호출
         refreshing={allRecordQuery.isLoading} // state
       />
-
-      <View
-        style={styles.createNote}
-        onTouchEndCapture={() => {
-          navigation.navigate("EditScreen", 0);
-        }}
-      >
-        <CreateNote style={{ position: "absolute" }} />
-      </View>
-
       <PopUpType4
         modalVisible={modalVisible}
         modalHandler={setModalVisible}
@@ -279,6 +268,11 @@ const StorageScreen = ({ navigation, route }) => {
         actionValue2="폴더 편집"
         actionValue3="나가기"
       />
+      <CreateNote
+        navigation={navigation}
+        isFocused={isFocused}
+        style={styles.createNote}
+      />
 
       <SnackBar
         visible={visible}
@@ -292,7 +286,10 @@ const StorageScreen = ({ navigation, route }) => {
 export default StorageScreen;
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "white" },
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+  },
   screenTitle: {
     fontWeight: "bold",
     fontSize: 16,
@@ -301,9 +298,11 @@ const styles = StyleSheet.create({
   },
   screenTitleView: {
     flexDirection: "row",
-    height: "7%",
+    height: 48,
     marginBottom: 20,
     alignItems: "center",
+    position: "relative",
+    width: "100%",
   },
   item: {
     flex: 0.5,
@@ -351,5 +350,4 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.15,
     shadowRadius: 3.5,
   },
-
 });

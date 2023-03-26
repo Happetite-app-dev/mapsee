@@ -2,34 +2,23 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useIsFocused } from "@react-navigation/native";
 import * as Location from "expo-location";
 import React, { useEffect, useState, useContext } from "react";
-import {
-  Image,
-  StyleSheet,
-  View,
-  SafeAreaView,
-  Button,
-  Animated,
-  TouchableOpacity,
-  Text,
-} from "react-native";
+import { StyleSheet, View, SafeAreaView, Text } from "react-native";
 import Geocoder from "react-native-geocoding";
 import MapView, { Marker } from "react-native-maps";
-import { Easing } from "react-native-reanimated";
 
 import { useUserQuery, useAllRecordQuery } from "../queries";
 
 import MyLocation from "../assets/icons/MyLocation.svg";
 import MyLocationMarker from "../assets/markers/MyLocation.svg";
-import CreateNote from "../assets/icons/createNote.svg";
 import SearchMain from "../assets/icons/searchMain.svg";
 import SearchBox from "../assets/image/searchBox.svg";
 import TargetMarker from "../assets/markers/selectedMarker.svg";
 import AppContext from "../components/AppContext";
 import RecordMarker from "../components/MapScreen/RecordMarker";
 import GeneratePushToken from "../modules/GeneratePushToken";
-const findCurrentLocationImage = require("../assets/image/findCurrentLocation.png");
 const mapStyle = require("../assets/mapDesign.json");
-
+import { CreateNote } from "../components/MapScreen/CreateNote";
+import { get } from "firebase/database";
 const SearchView = ({ navigation, origin }) => {
   return (
     <View
@@ -37,11 +26,10 @@ const SearchView = ({ navigation, origin }) => {
         width: "100%",
         height: 48,
         flexDirection: "row",
-
-        top: "7%",
-        position: "absolute",
+        top: "7.7%",
         alignItems: "center",
         left: 23,
+        position: "absolute",
       }}
       onTouchEndCapture={() =>
         navigation.navigate("MapSearchScreen1", {
@@ -77,8 +65,8 @@ const storeData = async (value) => {
 const getData = async () => {
   try {
     const value = await AsyncStorage.getItem("tutorial");
-    if (value !== null) {
-    }
+    console.log("function", value);
+    return value;
   } catch (e) {
     //
   }
@@ -136,28 +124,6 @@ async function getLocationPermission({ setCurrent, setOrigin }) {
   }));
 }
 
-const rotateValueHolder = new Animated.Value(0);
-
-const CurrentRotate = (isFocused) => {
-  if (isFocused) {
-    rotateValueHolder.setValue(0);
-    Animated.loop(
-      Animated.timing(rotateValueHolder, {
-        toValue: 1,
-        duration: 3000,
-        easing: Easing.linear,
-        useNativeDriver: false,
-      }),
-      { iteration: 4 }
-    ).start();
-  }
-};
-
-const RotateData = rotateValueHolder.interpolate({
-  inputRange: [0, 1],
-  outputRange: ["0deg", "360deg"],
-});
-
 const MapScreen = ({ navigation }) => {
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
@@ -188,6 +154,19 @@ const MapScreen = ({ navigation }) => {
   };
 
   useEffect(() => {
+    console.log("useEffect", getData());
+    if (getData()) {
+      console.log("null returned");
+      storeData("true");
+
+      gotoTutorial({ navigation, onChangeGetPermissions });
+    } else {
+      console.log("getData", getData());
+      onChangeGetPermissions(true);
+    }
+  }, []);
+
+  useEffect(() => {
     if (getPermissions) {
       Geocoder.init("AIzaSyDBq4tZ1QLm1R7iPH8O4dTvebVGWgkRPks", {
         language: "kor",
@@ -212,16 +191,6 @@ const MapScreen = ({ navigation }) => {
     // earse Target marker when come back from other screen
     if (targetShown && isFocused) setTargetShown(false);
   }, [isFocused]);
-
-  useEffect(() => {
-    if (getData == null) {
-      gotoTutorial({ navigation, onChangeGetPermissions });
-      storeData("true");
-    } else {
-      onChangeGetPermissions(true);
-    }
-    CurrentRotate(isFocused); //나중에 혹시나 수정 필요
-  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -289,22 +258,14 @@ const MapScreen = ({ navigation }) => {
           recordData={
             allRecordQuery.data && userQuery.data?.folderIDs
               ? Object.entries(allRecordQuery.data).filter(([key, record]) => {
-                return record.folderID in userQuery.data?.folderIDs;
-              })
+                  return record.folderID in userQuery.data?.folderIDs;
+                })
               : []
           }
           origin={origin}
         />
       </MapView>
       <SearchView navigation={navigation} origin={origin} />
-      <View
-        style={styles.createNote}
-        onTouchEndCapture={() => {
-          navigation.navigate("EditScreen", 0);
-        }}
-      >
-        <CreateNote style={{ position: "absolute" }} />
-      </View>
 
       <View
         style={styles.currentLocationButton}
@@ -317,20 +278,13 @@ const MapScreen = ({ navigation }) => {
           });
         }}
       >
-        <View
-          source={MyLocation}
-          resizeMode="contain"
-          style={{
-            position: "absolute",
-            width: 48,
-            height: 48,
-            borderRadius: 24,
-            tintColor: "grey",
-          }}
-        >
-          <MyLocation />
-        </View>
+        <MyLocation />
       </View>
+      <CreateNote
+        navigation={navigation}
+        isFocused={isFocused}
+        style={styles.createNote}
+      />
     </SafeAreaView>
   );
 };
@@ -345,15 +299,6 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
   },
-  currentLocationImage: {
-    position: "absolute",
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    left: 330,
-    top: 608,
-    tintColor: "grey",
-  },
   currentLocationButton: {
     position: "absolute",
     width: 48,
@@ -364,12 +309,12 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
   createNote: {
-    position: "absolute",
+    position: "relative",
     width: 48,
     height: 48,
     borderRadius: 24,
     left: 319,
-    bottom: 112,
+    bottom: 126,
     shadowColor: "black",
     shadowOffset: {
       width: 0,

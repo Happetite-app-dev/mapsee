@@ -1,3 +1,4 @@
+import { useIsFocused } from "@react-navigation/native";
 import { onValue, ref } from "firebase/database";
 import React, { useEffect, useRef, useState, useContext } from "react";
 import {
@@ -10,6 +11,7 @@ import {
 } from "react-native";
 
 import CreateNote from "../../assets/icons/createNote.svg";
+//import CreateNote from "./CreateNote";
 import { database } from "../../firebase";
 import AppContext from "../AppContext";
 import GoBackHeader from "../GoBackHeader";
@@ -61,7 +63,7 @@ const BottomSheetScreen = ({
 }) => {
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
-
+  const isFocused = useIsFocused();
   const gotoEditScreen = () => {
     return navigation.push("EditScreen", {
       placeName: targetName,
@@ -226,7 +228,7 @@ const BottomSheetScreen = ({
             underlayColor="white"
             onPress={gotoEditScreen}
           >
-            <CreateNote />
+            <CreateNote navigation={navigation} isFocused={isFocused} />
           </TouchableHighlight>
         </View>
       </View>

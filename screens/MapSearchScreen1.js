@@ -61,7 +61,7 @@ const SearchBox = ({
       placeholder="검색어를 입력하세요"
       enablePoweredByContainer={false}
       query={{
-        key: "AIzaSyA2FBudItIm0cVgwNOsuc8D9BKk0HUeUTs",
+        key: "AIzaSyDBq4tZ1QLm1R7iPH8O4dTvebVGWgkRPks",
         language: "kor",
         location: location[0] + ", " + location[1],
         radius: "1500",
@@ -165,7 +165,7 @@ const styles = StyleSheet.create({
       marginLeft: 63,
     },
     textInput: {
-      height: 24,
+      height: 26,
       width: 300,
       fontSize: 16,
       marginTop: 48,

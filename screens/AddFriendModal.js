@@ -90,77 +90,85 @@ const AddFriendModal = ({
   }, [friendUID]);
 
   return (
-    <View style={styles.centeredView}>
-      <Modal
-        animationType="none"
-        transparent
-        visible={modalVisible}
-        onRequestClose={() => {
-          //추후에 없앨 필요 있을 수도(ios)
-          Alert.alert("Modal has been closed.");
-          modalHandler(!modalVisible);
-        }}
-      >
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <Text style={styles.titleText}>아이디로 친구추가</Text>
-            <View
-              style={{
-                width: 312,
-                height: 48,
-                alignItems: "center",
-                borderBottomWidth: 1,
-                borderBottomColor: "#ADB1C5",
-                marginTop: 8,
-              }}
-            >
-              <TextInput
-                placeholder="친구 요청을 보낼 아이디를 입력해주세요"
-                value={newFriend}
-                onChangeText={(txt) => setNewFriend(txt)}
-                style={styles.textStyle}
-              />
-            </View>
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                width: 300,
-                height: 48,
-              }}
-            >
-              <Pressable
+    <View style={styles.container}>
+      {modalVisible ? (
+        <Modal
+          animationType="none"
+          transparent
+          visible={modalVisible}
+          onRequestClose={() => {
+            //추후에 없앨 필요 있을 수도(ios)
+            Alert.alert("Modal has been closed.");
+            modalHandler(!modalVisible);
+          }}
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Text style={styles.titleText}>아이디로 친구추가</Text>
+              <View
                 style={{
+                  width: 312,
+                  height: 48,
+                  alignItems: "center",
+                  borderBottomWidth: 1,
+                  borderBottomColor: "#ADB1C5",
                   marginTop: 8,
-                  ...styles.button,
-                  ...styles.buttonClose,
-                }}
-                onPress={() => modalHandler(!modalVisible)}
-              >
-                <Text style={styles.modalText}>취소</Text>
-              </Pressable>
-              <Pressable
-                style={{
-                  marginTop: 8,
-                  ...styles.button,
-                  ...styles.buttonClose,
-                }}
-                onPress={() => {
-                  getFriendUID(newFriend, handleFriendUID, handleFriendName);
-                  modalHandler(!modalVisible);
                 }}
               >
-                <Text style={styles.modalText}>요청</Text>
-              </Pressable>
+                <TextInput
+                  placeholder="친구 요청을 보낼 아이디를 입력해주세요"
+                  value={newFriend}
+                  onChangeText={(txt) => setNewFriend(txt)}
+                  style={styles.textStyle}
+                />
+              </View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  width: 300,
+                  height: 48,
+                }}
+              >
+                <Pressable
+                  style={{
+                    marginTop: 16,
+                    ...styles.button,
+                    ...styles.buttonClose,
+                  }}
+                  onPress={() => modalHandler(!modalVisible)}
+                >
+                  <Text style={styles.modalText}>취소</Text>
+                </Pressable>
+                <Pressable
+                  style={{
+                    marginTop: 16,
+                    ...styles.button,
+                    ...styles.buttonClose,
+                  }}
+                  onPress={() => {
+                    getFriendUID(newFriend, handleFriendUID, handleFriendName);
+                    modalHandler(!modalVisible);
+                  }}
+                >
+                  <Text style={styles.modalText}>요청</Text>
+                </Pressable>
+              </View>
             </View>
           </View>
-        </View>
-      </Modal>
+        </Modal>
+      ) : (
+        <View></View>
+      )}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "white",
+  },
   centeredView: {
     flex: 1,
     justifyContent: "center",

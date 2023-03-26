@@ -94,7 +94,7 @@ const MypageScreen = ({ navigation }) => {
                 copyToClipboard(myID);
                 setVisible(true);
               }}
-              style={{ left: 16 }}
+              style={{ left: 16, top: -1 }}
             >
               <Copy />
             </TouchableOpacity>
@@ -231,6 +231,11 @@ const MypageScreen = ({ navigation }) => {
               paddingLeft: 18,
             }}
             onPress={() => {
+              myContext.initMyUID(null);
+              myContext.initMyID(null);
+              myContext.initMyFirstName(null);
+              myContext.initMyLastName(null);
+              myContext.initMyEmail(null);
               gotoBeforeLoginScreen({ navigation });
             }}
           >
@@ -301,8 +306,10 @@ const styles = StyleSheet.create({
   screenTitle: { fontFamily: "NotoSansKR-Bold", fontSize: 16, left: 23 },
   screenTitleView: {
     flexDirection: "row",
-    height: 33,
+    height: 48,
     marginBottom: 20,
     alignItems: "center",
+    position: "relative",
+    width: "100%",
   },
 });

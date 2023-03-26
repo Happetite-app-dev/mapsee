@@ -53,29 +53,46 @@ const ProfileScreen = ({ navigation }) => {
             top: 16,
             height: 48,
             left: 23,
+            width: 344,
           }}
         >
-          <Text
+          <View
             style={{
-              fontWeight: "400",
-              fontFamily: "NotoSansKR-Regular",
-              top: 12,
-              height: 36,
+              borderBottomColor: "#ADB1C5",
+              borderBottomWidth: 1,
+              width: 80,
             }}
           >
-            {myContext.myLastName}
-          </Text>
-          <Text
+            <Text
+              style={{
+                fontWeight: "400",
+                fontFamily: "NotoSansKR-Regular",
+                top: 12,
+                height: 36,
+              }}
+            >
+              {myContext.myLastName}
+            </Text>
+          </View>
+          <View
             style={{
-              fontWeight: "400",
-              fontFamily: "NotoSansKR-Regular",
-              left: 24,
-              top: 12,
-              height: 36,
+              borderBottomColor: "#ADB1C5",
+              borderBottomWidth: 1,
+              width: 152,
+              marginLeft: 24,
             }}
           >
-            {myContext.myFirstName}
-          </Text>
+            <Text
+              style={{
+                fontWeight: "400",
+                fontFamily: "NotoSansKR-Regular",
+                top: 12,
+                height: 36,
+              }}
+            >
+              {myContext.myFirstName}
+            </Text>
+          </View>
         </View>
       </View>
       <View
@@ -110,7 +127,7 @@ const ProfileScreen = ({ navigation }) => {
               copyToClipboard(myID);
               setVisible(true);
             }}
-            style={{ left: 16 }}
+            style={{ left: 16, top: -4 }}
           >
             <Copy />
           </TouchableOpacity>

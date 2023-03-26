@@ -17,7 +17,7 @@ import {
 import Geocoder from "react-native-geocoding";
 import MapView, { Marker } from "react-native-maps";
 
-import { useUserQuery, useRecordQueries } from "../queries";
+import { useUserQuery, useRecordQueries, useAllRecordQuery } from "../queries";
 
 import CreateNote from "../assets/icons/createNote.svg";
 import TargetMarker from "../assets/markers/selectedMarker.svg";
@@ -71,14 +71,7 @@ const BottomSheetScreen = ({
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
   const userQuery = useUserQuery(myUID);
-
-  const folderIDList = userQuery.data?.folderIDs
-    ? Object.keys(userQuery.data.folderIDs)
-    : [];
-  const recordQueries = useRecordQueries(folderIDList);
-  const recordObjLists = folderIDList.reduce((acc, curr, idx) => {
-    return [...acc, [curr, recordQueries[idx]?.data]];
-  }, new Array());
+  const allRecordQuery = useAllRecordQuery();
 
   const gotoEditScreen = () => {
     return navigation.push("EditScreen", {
@@ -150,8 +143,8 @@ const BottomSheetScreen = ({
             기록{" "}
             {
               Object.values(
-                recordObjLists
-                  ? recordObjLists
+                allRecordQuery.data
+                  ? allRecordQuery.data
                       .filter((record) => {
                         return record.folderID in userQuery.data?.folderIDs;
                       })
@@ -226,8 +219,8 @@ const BottomSheetScreen = ({
         >
           <RecordFlatList
             recordList={
-              recordObjLists
-                ? recordObjLists.filter(([key, values]) => {
+              allRecordQuery.data
+                ? allRecordQuery.data.filter(([key, values]) => {
                     return values?.placeID === targetId;
                   })
                 : []

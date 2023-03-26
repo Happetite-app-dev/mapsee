@@ -798,7 +798,7 @@ const styles = StyleSheet.create({
     height: 60,
     flexDirection: "row",
     position: "absolute",
-    marginTop: 661,
+    marginTop: 660,
   },
 
   goBack: {

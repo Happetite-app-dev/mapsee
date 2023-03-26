@@ -198,14 +198,6 @@ const FriendListScreen = ({ navigation }) => {
           askValue="정말 차단하시겠어요?"
           actionValue="차단"
         />
-        <AddFriendModal
-          modalVisible={addModalVisible}
-          modalHandler={setAddModalVisible}
-          friendList={friendIDNameList}
-          onToggleSnackBar={onToggleSnackBar}
-          setRequestSent={(bool) => setRequestSent(bool)}
-          setRequestInfo={(info) => setRequestInfo(info)}
-        />
       </View>
       <SnackBar
         onDismissSnackBar={onDismissSnackBar}
@@ -218,6 +210,14 @@ const FriendListScreen = ({ navigation }) => {
             : "이미 추가된 친구입니다."
         }
         visible={visible}
+      />
+      <AddFriendModal
+        modalVisible={addModalVisible}
+        modalHandler={setAddModalVisible}
+        friendList={friendIDNameList}
+        onToggleSnackBar={onToggleSnackBar}
+        setRequestSent={(bool) => setRequestSent(bool)}
+        setRequestInfo={(info) => setRequestInfo(info)}
       />
     </View>
   );

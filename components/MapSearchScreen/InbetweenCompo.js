@@ -58,6 +58,7 @@ const InbetweenCompo = ({ name, history, setHistory, navigation }) => {
               fontSize: 14,
               color: "#5ED3CC",
               fontFamily: "NotoSansKR-Bold",
+              height: 15,
             }}
           >
             전체삭제
