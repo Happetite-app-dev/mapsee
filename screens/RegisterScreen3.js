@@ -17,6 +17,8 @@ import {
 
 import AppContext from "../components/AppContext";
 import { auth, database } from "../firebase";
+import GoBackHeader from "../components/GoBackHeader";
+import BottomButton from "../components/BottomButton";
 
 const { height } = Dimensions.get("window");
 
@@ -88,89 +90,60 @@ const RegisterScreen3 = ({ navigation, route }) => {
     });
   };
 
-  const ContinueButton = () => {
-    useEffect(() => {
-      setValid(false);
-      if (id.length !== 0) {
-        if (firstName.length !== 0) {
-          if (lastName.length !== 0) {
-            setValid(true);
-          }
-        }
-      }
-    }, [id, firstName, lastName]);
-    if (valid) {
-      return (
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity onPress={handleSignUp} style={styles.button}>
-            <View style={{ justifyContent: "center", alignItems: "center" }}>
-              <Text style={styles.buttonText}>계속하기</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-      );
-    } else {
-      return (
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.invalidButton}>
-            <View style={{ justifyContent: "center", alignItems: "center" }}>
-              <Text style={styles.invalidButtonText}>계속하기</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-      );
-    }
-  };
-
   return (
     <View style={styles.container}>
+      <GoBackHeader
+        text={"회원가입"}
+        rightButton="none"
+        goBackFunction={() => navigation.pop()}
+      />
+      <Text style={styles.textContainer}>아이디를 입력해주세요</Text>
       <View style={styles.inputContainer}>
-        <Text style={{ fontSize: 13, marginLeft: 14, marginTop: 20 }}>
-          아이디를 입력해주세요
-        </Text>
-        <View
-          style={{
-            borderBottomColor: "#ADB1C5",
-            borderBottomWidth: 1,
-            marginTop: 5,
-            paddingVertical: 10,
-            marginHorizontal: 10,
-          }}
-        >
-          <TextInput
-            placeholder="mapsee"
-            value={id}
-            onChangeText={(text) => setId(text)}
-            style={styles.input}
-          />
-        </View>
-        <Text style={{ fontSize: 13, marginLeft: 14, marginTop: 20 }}>
-          이름을 입력해주세요
-        </Text>
-        <View
-          style={{
-            borderBottomColor: "#ADB1C5",
-            borderBottomWidth: 1,
-            marginTop: 5,
-            paddingVertical: 10,
-            marginHorizontal: 10,
-          }}
-        >
-          <TextInput
-            placeholder="이름"
-            value={firstName}
-            onChangeText={(text) => setFirstName(text)}
-            style={styles.input}
-          />
+        <TextInput
+          placeholder="mapsee"
+          value={id}
+          onChangeText={(text) => setId(text)}
+          style={{ width: 344, ...styles.input }}
+        />
+      </View>
+      <Text style={styles.textContainer}>이름을 입력해주세요</Text>
+      <View
+        style={{
+          flexDirection: "row",
+          height: 48,
+          width: 344,
+        }}
+      >
+        <View style={styles.inputContainer1}>
           <TextInput
             placeholder="성"
             value={lastName}
             onChangeText={(text) => setLastName(text)}
-            style={styles.input}
+            style={{ marginRight: 24, width: 80, ...styles.input }}
+          />
+        </View>
+        <View style={styles.inputContainer2}>
+          <TextInput
+            placeholder="이름"
+            value={firstName}
+            onChangeText={(text) => setFirstName(text)}
+            style={{ width: 152, ...styles.input }}
           />
         </View>
       </View>
-      <ContinueButton />
+
+      <BottomButton
+        text={"회원가입"}
+        onPressFunction={() => {
+          handleSignUp();
+        }}
+        style={{
+          position: "absolute",
+          bottom: 40,
+          backgroundColor: "#5ED3CC",
+        }}
+        fontColor="white"
+      />
     </View>
   );
 };
@@ -179,28 +152,48 @@ export default RegisterScreen3;
 
 const styles = StyleSheet.create({
   container: {
-    height: height * 1.1,
-    justifyContent: "center",
-    alignItems: "center",
+    flex: 1,
     backgroundColor: "white",
   },
 
   textContainer: {
-    fontWeight: "600",
-    fontSize: 20,
-    marginBottom: 20,
-    alignItems: "flex-start",
-    marginLeft: 30,
+    fontSize: 24,
+    marginLeft: 23,
+    fontFamily: "NotoSansKR-Medium",
+    marginTop: 56,
   },
-
   inputContainer: {
-    flex: 0.7,
-    width: "90%",
+    marginTop: 16,
+    marginLeft: 23,
+    width: 344,
+    height: 48,
+    borderBottomColor: "#ADB1C5",
+    borderBottomWidth: 1,
+    flexDirection: "row",
+  },
+  inputContainer1: {
+    marginTop: 16,
+    marginLeft: 23,
+    width: 80,
+    height: 48,
+    borderBottomColor: "#ADB1C5",
+    borderBottomWidth: 1,
+    flexDirection: "row",
+  },
+  inputContainer2: {
+    marginTop: 16,
+    marginLeft: 23,
+    width: 152,
+    height: 48,
+    borderBottomColor: "#ADB1C5",
+    borderBottomWidth: 1,
+    flexDirection: "row",
   },
 
   input: {
     backgroundColor: "white",
     borderRadius: 10,
+    fontFamily: "NotoSansKR-Regular",
   },
 
   buttonContainer: {

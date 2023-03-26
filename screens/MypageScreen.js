@@ -94,7 +94,7 @@ const MypageScreen = ({ navigation }) => {
                 copyToClipboard(myID);
                 setVisible(true);
               }}
-              style={{ left: 16 }}
+              style={{ left: 16, top: -1 }}
             >
               <Copy />
             </TouchableOpacity>
@@ -301,8 +301,10 @@ const styles = StyleSheet.create({
   screenTitle: { fontFamily: "NotoSansKR-Bold", fontSize: 16, left: 23 },
   screenTitleView: {
     flexDirection: "row",
-    height: 33,
+    height: 48,
     marginBottom: 20,
     alignItems: "center",
+    position: "relative",
+    width: "100%",
   },
 });

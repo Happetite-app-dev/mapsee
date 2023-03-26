@@ -1,9 +1,12 @@
 import LottieView from "lottie-react-native";
 import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
+import Tutorial1 from "../assets/tutorial/tutorial1.svg";
+import Tutorial2 from "../assets/tutorial/tutorial2.svg";
+import Tutorial3 from "../assets/tutorial/tutorial3.svg";
+import Tutorial4 from "../assets/tutorial/tutorial4.svg";
 
 const TutorialScreen = ({ navigation, route }) => {
-  const { onChangeGetPermissions } = route.params;
   const [tuto1, setTuto1] = useState(true);
   const [tuto2, setTuto2] = useState(false);
   const [tuto3, setTuto3] = useState(false);
@@ -18,11 +21,7 @@ const TutorialScreen = ({ navigation, route }) => {
           setTuto2(true);
         }}
       >
-        <LottieView
-          source={require("../assets/tutorial01.json")}
-          autoPlay
-          loop
-        />
+        <Tutorial1 />
       </View>
     );
   }
@@ -35,11 +34,7 @@ const TutorialScreen = ({ navigation, route }) => {
           setTuto2(false), setTuto3(true);
         }}
       >
-        <LottieView
-          source={require("../assets/tutorial002.json")}
-          autoPlay
-          loop
-        />
+        <Tutorial2 />
       </View>
     );
   }
@@ -53,11 +48,7 @@ const TutorialScreen = ({ navigation, route }) => {
           setTuto4(true);
         }}
       >
-        <LottieView
-          source={require("../assets/tutorial003.json")}
-          autoPlay
-          loop
-        />
+        <Tutorial3 />
       </View>
     );
   }
@@ -68,14 +59,9 @@ const TutorialScreen = ({ navigation, route }) => {
         style={styles.container}
         onTouchEndCapture={() => {
           navigation.goBack();
-          onChangeGetPermissions(true);
         }}
       >
-        <LottieView
-          source={require("../assets/animation.json")}
-          autoPlay
-          loop
-        />
+        <Tutorial4 />
       </View>
     );
   }

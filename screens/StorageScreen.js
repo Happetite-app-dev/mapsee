@@ -191,7 +191,7 @@ const StorageScreen = ({ navigation, route }) => {
         }
         stackNavigation={navigation}
         ListHeaderComponent={
-          <View style={{ height: 80, marginBottom: 36 }}>
+          <View style={{ height: 80, marginBottom: 20 }}>
             <FolderList
               folderIDs={
                 userQuery.data?.folderIDs
@@ -286,7 +286,10 @@ const StorageScreen = ({ navigation, route }) => {
 export default StorageScreen;
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "white" },
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+  },
   screenTitle: {
     fontWeight: "bold",
     fontSize: 16,
@@ -295,9 +298,11 @@ const styles = StyleSheet.create({
   },
   screenTitleView: {
     flexDirection: "row",
-    height: "7%",
+    height: 48,
     marginBottom: 20,
     alignItems: "center",
+    position: "relative",
+    width: "100%",
   },
   item: {
     flex: 0.5,

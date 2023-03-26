@@ -18,6 +18,7 @@ import RecordMarker from "../components/MapScreen/RecordMarker";
 import GeneratePushToken from "../modules/GeneratePushToken";
 const mapStyle = require("../assets/mapDesign.json");
 import { CreateNote } from "../components/MapScreen/CreateNote";
+import { get } from "firebase/database";
 const SearchView = ({ navigation, origin }) => {
   return (
     <View
@@ -25,11 +26,10 @@ const SearchView = ({ navigation, origin }) => {
         width: "100%",
         height: 48,
         flexDirection: "row",
-
-        top: "7%",
-        position: "absolute",
+        top: "7.7%",
         alignItems: "center",
         left: 23,
+        position: "absolute",
       }}
       onTouchEndCapture={() =>
         navigation.navigate("MapSearchScreen1", {
@@ -65,8 +65,8 @@ const storeData = async (value) => {
 const getData = async () => {
   try {
     const value = await AsyncStorage.getItem("tutorial");
-    if (value !== null) {
-    }
+    console.log("function", value);
+    return value;
   } catch (e) {
     //
   }
@@ -154,6 +154,18 @@ const MapScreen = ({ navigation }) => {
   };
 
   useEffect(() => {
+    console.log("useEffect", getData());
+    if (getData()) {
+      console.log("null returned");
+      gotoTutorial({ navigation, onChangeGetPermissions });
+      storeData("true");
+    } else {
+      console.log("getData", getData());
+      onChangeGetPermissions(true);
+    }
+  }, []);
+
+  useEffect(() => {
     if (getPermissions) {
       Geocoder.init("AIzaSyDBq4tZ1QLm1R7iPH8O4dTvebVGWgkRPks", {
         language: "kor",
@@ -178,16 +190,6 @@ const MapScreen = ({ navigation }) => {
     // earse Target marker when come back from other screen
     if (targetShown && isFocused) setTargetShown(false);
   }, [isFocused]);
-
-  useEffect(() => {
-    if (getData == null) {
-      gotoTutorial({ navigation, onChangeGetPermissions });
-      storeData("true");
-    } else {
-      onChangeGetPermissions(true);
-    }
-    //CurrentRotate(isFocused); //나중에 혹시나 수정 필요
-  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -263,6 +265,7 @@ const MapScreen = ({ navigation }) => {
         />
       </MapView>
       <SearchView navigation={navigation} origin={origin} />
+
       <View
         style={styles.currentLocationButton}
         onTouchEndCapture={() => {

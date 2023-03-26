@@ -24,7 +24,6 @@ const CurrentRotate = (isFocused) => {
 };
 
 export const CreateNote = ({ navigation, style, isFocused }) => {
-  console.log(navigation, "\n", isFocused, "\n", style);
   const RotateData = rotateValueHolder.interpolate({
     inputRange: [0, 1],
     outputRange: ["0deg", "360deg"],

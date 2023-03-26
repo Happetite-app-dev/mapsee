@@ -13,6 +13,7 @@ import AppContext from "../components/AppContext";
 import BottomButton from "../components/BottomButton";
 import { auth, database } from "../firebase";
 import Mapsee from "../assets/image/Mapsee.svg";
+import { SafeAreaView } from "react-native-safe-area-context";
 const { height } = Dimensions.get("window");
 
 const db = database;
@@ -84,7 +85,7 @@ const BeforeLoginScreen = ({ navigation }) => {
   };
 
   return (
-    <View
+    <SafeAreaView
       style={{
         height,
         backgroundColor: "white",
@@ -95,16 +96,26 @@ const BeforeLoginScreen = ({ navigation }) => {
       <View style={{ padding: height * 0.3, marginBottom: height * 0.2 }}>
         <Mapsee />
       </View>
-      <TouchableOpacity onPress={() => gotoEmailScreen()} style={styles.button}>
-        <Text style={styles.buttonText}>로그인</Text>
-      </TouchableOpacity>
       <TouchableOpacity
+        style={styles.button}
         onPress={() => gotoRegisterScreen()}
-        style={styles.registerButton}
       >
-        <Text style={styles.registerButtonText}>이메일로 회원가입</Text>
+        <Text style={styles.buttonText}>이메일로 계속하기</Text>
       </TouchableOpacity>
-    </View>
+      <View style={{ flexDirection: "row", marginBottom: 48 }}>
+        <Text
+          style={{ fontFamily: "NotoSansKR-Bold", size: 12, color: "#545766" }}
+        >
+          이미 계정이 있으신가요?
+        </Text>
+        <Text
+          style={{ fontFamily: "NotoSansKR-Bold", size: 12, color: "#5ED3CC" }}
+          onPress={() => gotoEmailScreen()}
+        >
+          로그인
+        </Text>
+      </View>
+    </SafeAreaView>
   );
 };
 
@@ -118,28 +129,27 @@ const styles = StyleSheet.create({
   },
 
   button: {
-    backgroundColor: "#00CCBD",
-    width: "90%",
-    padding: 10,
+    backgroundColor: "#5ED3CC",
+    width: 344,
+    height: 48,
     borderRadius: 10,
+    justifyContent: "center",
     alignItems: "center",
-    marginTop: 15,
+    marginBottom: 24,
   },
 
   registerButton: {
-    backgroundColor: "white",
-    width: "90%",
-    padding: 10,
+    backgroundColor: "#F4F5F9",
+    width: 344,
+    height: 48,
     borderRadius: 10,
+    justifyContent: "center",
     alignItems: "center",
-    borderColor: "black",
-    borderWidth: 1,
-    marginTop: 15,
   },
 
   buttonText: {
     color: "white",
-    fontWeight: "700",
+    fontFamily: "NotoSansKR-Bold",
     fontSize: 16,
   },
 
@@ -147,5 +157,6 @@ const styles = StyleSheet.create({
     color: "black",
     fontWeight: "700",
     fontSize: 16,
+    fontFamily: "NotoSansKR-Bold",
   },
 });

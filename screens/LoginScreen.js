@@ -17,7 +17,7 @@ import {
 import BottomButton from "../components/BottomButton";
 import AppContext from "../components/AppContext";
 import { auth, database } from "../firebase";
-
+import GoBackHeader from "../components/GoBackHeader";
 const { height } = Dimensions.get("window");
 
 const db = database;
@@ -74,7 +74,7 @@ const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [valid, setValid] = useState(false);
-
+  const [secureTextEntry2, setSecureTextEntry2] = useState(true);
   const myContext = useContext(AppContext);
   const startTutorial = false;
   const initMyUID = (uid) => {
@@ -137,20 +137,15 @@ const LoginScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <View style={{ width: "100%", marginBottom: 10 }}>
-        <Text style={styles.textContainer}>로그인</Text>
-      </View>
-      <View style={styles.inputContainer}>
-        <Text style={{ fontSize: 13, marginLeft: 14 }}>이메일</Text>
-        <View
-          style={{
-            borderBottomColor: "#ADB1C5",
-            borderBottomWidth: 1,
-            marginTop: 5,
-            paddingVertical: 10,
-            marginHorizontal: 10,
-          }}
-        >
+      <View style={styles.container}>
+        <GoBackHeader
+          text={"로그인"}
+          rightButton="none"
+          goBackFunction={() => navigation.pop()}
+        />
+
+        <Text style={styles.textContainer}>이메일</Text>
+        <View style={styles.inputContainer}>
           <TextInput
             placeholder="mapsee@happetite.com"
             value={email}
@@ -158,28 +153,56 @@ const LoginScreen = ({ navigation }) => {
             style={styles.input}
           />
         </View>
-        <Text style={{ fontSize: 13, marginLeft: 14, marginTop: 20 }}>
-          비밀번호
-        </Text>
-        <View
-          style={{
-            borderBottomColor: "#ADB1C5",
-            borderBottomWidth: 1,
-            marginTop: 5,
-            paddingVertical: 10,
-            marginHorizontal: 10,
-          }}
-        >
+
+        <Text style={styles.textContainer}>비밀번호</Text>
+        <View style={styles.inputContainer}>
           <TextInput
-            placeholder="Password"
+            placeholder="password"
             value={password}
             onChangeText={(text) => setPassword(text)}
             style={styles.input}
-            secureTextEntry
+            secureTextEntry={secureTextEntry2}
           />
+          <Text
+            style={{
+              fontFamily: "NotoSansKR-Bold",
+              color: "#5ED3CC",
+              size: 12,
+              alignSelf: "center",
+              right: 0,
+              position: "absolute",
+            }}
+            onPress={() => {
+              if (secureTextEntry2) setSecureTextEntry2(false);
+              else setSecureTextEntry2(true);
+            }}
+          >
+            표시
+          </Text>
         </View>
+        <BottomButton
+          text={"계속하기"}
+          onPressFunction={() =>
+            handleLogin({
+              email,
+              password,
+              initMyUID,
+              initMyID,
+              initMyFirstName,
+              initMyLastName,
+              initMyEmail,
+              startTutorial,
+              navigation,
+            })
+          }
+          style={{
+            position: "absolute",
+            bottom: 40,
+            backgroundColor: "#5ED3CC",
+          }}
+          fontColor="white"
+        />
       </View>
-      <ContinueButton />
     </View>
   );
 };
@@ -188,28 +211,32 @@ export default LoginScreen;
 
 const styles = StyleSheet.create({
   container: {
-    height: height * 1.1,
-    justifyContent: "center",
-    alignItems: "center",
+    flex: 1,
     backgroundColor: "white",
   },
 
   textContainer: {
-    fontWeight: "600",
-    fontSize: 20,
-    marginBottom: 20,
-    alignItems: "flex-start",
-    marginLeft: 30,
+    fontSize: 24,
+    marginLeft: 23,
+    fontFamily: "NotoSansKR-Medium",
+    marginTop: 56,
   },
 
   inputContainer: {
-    height: 0.6 * height,
-    width: "90%",
+    marginTop: 16,
+    marginLeft: 23,
+    width: 344,
+    height: 48,
+    justifyContent: "center",
+    borderBottomColor: "#ADB1C5",
+    borderBottomWidth: 1,
   },
 
   input: {
     backgroundColor: "white",
     borderRadius: 10,
+    fontFamily: "NotoSansKR-Regular",
+    width: 344,
   },
 
   buttonContainer: {

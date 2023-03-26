@@ -13,6 +13,8 @@ import {
   TouchableOpacity,
   Dimensions,
 } from "react-native";
+import BottomButton from "../components/BottomButton";
+import GoBackHeader from "../components/GoBackHeader";
 
 import { auth } from "../firebase";
 
@@ -33,93 +35,77 @@ const RegisterScreen2 = ({ navigation, route }) => {
   const email = route.params;
   const [password, setPassword] = useState("");
   const [passwordCheck, setPasswordCheck] = useState("");
-  //const [id,setId]=useState('')
-  const [valid, setValid] = useState(false);
-
-  const ContinueButton = () => {
-    useEffect(() => {
-      if (password.length !== 0) {
-        if (password === passwordCheck) {
-          setValid(true);
-        } else {
-          setValid(false);
-        }
-      } else setValid(false);
-    }, [password, passwordCheck]);
-    if (valid) {
-      return (
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            onPress={() => handleSignUp({ email, password, navigation })}
-            style={styles.button}
-          >
-            <View style={{ justifyContent: "center", alignItems: "center" }}>
-              <Text style={styles.buttonText}>계속하기</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-      );
-    } else {
-      return (
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.invalidButton}>
-            <View style={{ justifyContent: "center", alignItems: "center" }}>
-              <Text style={styles.invalidButtonText}>계속하기</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-      );
-    }
-  };
+  const [secureTextEntry1, setSecureTextEntry1] = useState(true);
+  const [secureTextEntry2, setSecureTextEntry2] = useState(true);
 
   return (
     <View style={styles.container}>
-      <View style={{ width: "100%", marginBottom: 10 }}>
-        <Text style={styles.textContainer}>개인정보를 입력해주세요</Text>
-      </View>
+      <GoBackHeader
+        text={"회원가입"}
+        rightButton="none"
+        goBackFunction={() => navigation.pop()}
+      />
+
+      <Text style={styles.textContainer}>비밀번호 입력</Text>
       <View style={styles.inputContainer}>
-        <Text style={{ fontSize: 13, marginLeft: 14, marginTop: 20 }}>
-          비밀번호
-        </Text>
-        <View
+        <TextInput
+          placeholder="8자리 이상, 영문 소문자와 숫자를 포함해주세요"
+          value={password}
+          onChangeText={(text) => setPassword(text)}
+          style={styles.input}
+          secureTextEntry={secureTextEntry1}
+        />
+        <Text
           style={{
-            borderBottomColor: "#ADB1C5",
-            borderBottomWidth: 1,
-            marginTop: 5,
-            paddingVertical: 10,
-            marginHorizontal: 10,
+            fontFamily: "NotoSansKR-Bold",
+            color: "#5ED3CC",
+            size: 12,
+            alignSelf: "center",
+            right: 0,
+            position: "absolute",
+          }}
+          onPress={() => {
+            if (secureTextEntry1) setSecureTextEntry1(false);
+            else setSecureTextEntry1(true);
           }}
         >
-          <TextInput
-            placeholder="Password"
-            value={password}
-            onChangeText={(text) => setPassword(text)}
-            style={styles.input}
-            secureTextEntry
-          />
-        </View>
-        <Text style={{ fontSize: 13, marginLeft: 14, marginTop: 20 }}>
-          비밀번호 확인
+          표시
         </Text>
-        <View
-          style={{
-            borderBottomColor: "#ADB1C5",
-            borderBottomWidth: 1,
-            marginTop: 5,
-            paddingVertical: 10,
-            marginHorizontal: 10,
-          }}
-        >
-          <TextInput
-            placeholder="Password Check"
-            value={passwordCheck}
-            onChangeText={(text) => setPasswordCheck(text)}
-            style={styles.input}
-            secureTextEntry
-          />
-        </View>
       </View>
-      <ContinueButton />
+
+      <Text style={styles.textContainer}>비밀번호 확인</Text>
+      <View style={styles.inputContainer}>
+        <TextInput
+          placeholder="다시 한 번 입력해주세요"
+          value={passwordCheck}
+          onChangeText={(text) => setPasswordCheck(text)}
+          style={styles.input}
+          secureTextEntry={secureTextEntry2}
+        />
+        <Text
+          style={{
+            fontFamily: "NotoSansKR-Bold",
+            color: "#5ED3CC",
+            size: 12,
+            alignSelf: "center",
+            right: 0,
+            position: "absolute",
+          }}
+          onPress={() => {
+            if (secureTextEntry2) setSecureTextEntry2(false);
+            else setSecureTextEntry2(true);
+          }}
+        >
+          표시
+        </Text>
+      </View>
+      <BottomButton
+        text={"계속하기"}
+        onPressFunction={() => {
+          handleSignUp({ email, password, navigation });
+        }}
+        style={{ position: "absolute", bottom: 40 }}
+      />
     </View>
   );
 };
@@ -128,28 +114,31 @@ export default RegisterScreen2;
 
 const styles = StyleSheet.create({
   container: {
-    height: height * 1.1,
-    justifyContent: "center",
-    alignItems: "center",
+    flex: 1,
     backgroundColor: "white",
   },
-
   textContainer: {
-    fontWeight: "600",
-    fontSize: 20,
-    marginBottom: 20,
-    alignItems: "flex-start",
-    marginLeft: 30,
+    fontSize: 24,
+    marginLeft: 23,
+    fontFamily: "NotoSansKR-Medium",
+    marginTop: 56,
   },
 
   inputContainer: {
-    flex: 0.7,
-    width: "90%",
+    marginTop: 16,
+    marginLeft: 23,
+    width: 344,
+    height: 48,
+    borderBottomColor: "#ADB1C5",
+    borderBottomWidth: 1,
+    flexDirection: "row",
   },
 
   input: {
     backgroundColor: "white",
     borderRadius: 10,
+    fontFamily: "NotoSansKR-Regular",
+    width: 344,
   },
 
   buttonContainer: {
