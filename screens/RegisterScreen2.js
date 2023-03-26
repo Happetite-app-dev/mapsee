@@ -18,12 +18,13 @@ import GoBackHeader from "../components/GoBackHeader";
 
 import { auth } from "../firebase";
 
-const { height } = Dimensions.get("window");
 const handleSignUp = ({ email, password, navigation }) => {
+  console.log("goto registerscreen 3-1");
+
   createUserWithEmailAndPassword(auth, email, password)
     .then((userCredentials) => {
       const user = userCredentials.user;
-      //console.log(user.email);
+      console.log("goto registerscreen 3");
       navigation.navigate("RegisterScreen3", {
         uid: user.uid,
         email: user.email,

@@ -157,8 +157,9 @@ const MapScreen = ({ navigation }) => {
     console.log("useEffect", getData());
     if (getData()) {
       console.log("null returned");
-      gotoTutorial({ navigation, onChangeGetPermissions });
       storeData("true");
+
+      gotoTutorial({ navigation, onChangeGetPermissions });
     } else {
       console.log("getData", getData());
       onChangeGetPermissions(true);

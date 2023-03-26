@@ -231,6 +231,11 @@ const MypageScreen = ({ navigation }) => {
               paddingLeft: 18,
             }}
             onPress={() => {
+              myContext.initMyUID(null);
+              myContext.initMyID(null);
+              myContext.initMyFirstName(null);
+              myContext.initMyLastName(null);
+              myContext.initMyEmail(null);
               gotoBeforeLoginScreen({ navigation });
             }}
           >

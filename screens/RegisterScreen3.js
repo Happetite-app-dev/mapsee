@@ -20,8 +20,6 @@ import { auth, database } from "../firebase";
 import GoBackHeader from "../components/GoBackHeader";
 import BottomButton from "../components/BottomButton";
 
-const { height } = Dimensions.get("window");
-
 const saveUser = async ({ uid, email, id, firstName, lastName }) => {
   const db = database;
   const reference1 = ref(db, "/users/" + uid);
@@ -52,12 +50,12 @@ const gotoApp = ({
   //startTutorial 이 true라면 afterScreen.js로 이동필요
 };
 const RegisterScreen3 = ({ navigation, route }) => {
+  console.log("register screen 3!");
   const { uid, email } = route.params;
 
   const [id, setId] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [valid, setValid] = useState(false);
 
   const myContext = useContext(AppContext);
   const startTutorial = false;
@@ -78,6 +76,7 @@ const RegisterScreen3 = ({ navigation, route }) => {
   };
 
   const handleSignUp = () => {
+    console.log("handlesignup");
     saveUser({ uid, email, id, firstName, lastName });
     gotoApp({
       initMyUID,
@@ -135,6 +134,7 @@ const RegisterScreen3 = ({ navigation, route }) => {
       <BottomButton
         text={"회원가입"}
         onPressFunction={() => {
+          console.log("onpress function");
           handleSignUp();
         }}
         style={{
