@@ -20,7 +20,6 @@ import { useUserQuery, useAllRecordQuery } from "../queries";
 
 import MyLocation from "../assets/icons/MyLocation.svg";
 import MyLocationMarker from "../assets/markers/MyLocation.svg";
-import CreateNote from "../assets/icons/createNote.svg";
 import SearchMain from "../assets/icons/searchMain.svg";
 import SearchBox from "../assets/image/searchBox.svg";
 import TargetMarker from "../assets/markers/selectedMarker.svg";
@@ -29,7 +28,7 @@ import RecordMarker from "../components/MapScreen/RecordMarker";
 import GeneratePushToken from "../modules/GeneratePushToken";
 const findCurrentLocationImage = require("../assets/image/findCurrentLocation.png");
 const mapStyle = require("../assets/mapDesign.json");
-
+import { CreateNote } from "../components/MapScreen/CreateNote";
 const SearchView = ({ navigation, origin }) => {
   return (
     <View
@@ -136,28 +135,6 @@ async function getLocationPermission({ setCurrent, setOrigin }) {
   }));
 }
 
-const rotateValueHolder = new Animated.Value(0);
-
-const CurrentRotate = (isFocused) => {
-  if (isFocused) {
-    rotateValueHolder.setValue(0);
-    Animated.loop(
-      Animated.timing(rotateValueHolder, {
-        toValue: 1,
-        duration: 3000,
-        easing: Easing.linear,
-        useNativeDriver: false,
-      }),
-      { iteration: 4 }
-    ).start();
-  }
-};
-
-const RotateData = rotateValueHolder.interpolate({
-  inputRange: [0, 1],
-  outputRange: ["0deg", "360deg"],
-});
-
 const MapScreen = ({ navigation }) => {
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
@@ -220,7 +197,7 @@ const MapScreen = ({ navigation }) => {
     } else {
       onChangeGetPermissions(true);
     }
-    CurrentRotate(isFocused); //나중에 혹시나 수정 필요
+    //CurrentRotate(isFocused); //나중에 혹시나 수정 필요
   }, []);
 
   return (
@@ -289,23 +266,15 @@ const MapScreen = ({ navigation }) => {
           recordData={
             allRecordQuery.data && userQuery.data?.folderIDs
               ? Object.entries(allRecordQuery.data).filter(([key, record]) => {
-                return record.folderID in userQuery.data?.folderIDs;
-              })
+                  return record.folderID in userQuery.data?.folderIDs;
+                })
               : []
           }
           origin={origin}
         />
       </MapView>
       <SearchView navigation={navigation} origin={origin} />
-      <View
-        style={styles.createNote}
-        onTouchEndCapture={() => {
-          navigation.navigate("EditScreen", 0);
-        }}
-      >
-        <CreateNote style={{ position: "absolute" }} />
-      </View>
-
+      <CreateNote navigation={navigation} isFocused={isFocused} />
       <View
         style={styles.currentLocationButton}
         onTouchEndCapture={() => {
@@ -362,20 +331,5 @@ const styles = StyleSheet.create({
     left: 23,
     bottom: 112,
     backgroundColor: "white",
-  },
-  createNote: {
-    position: "absolute",
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    left: 319,
-    bottom: 112,
-    shadowColor: "black",
-    shadowOffset: {
-      width: 0,
-      height: 5,
-    },
-    shadowOpacity: 0.15,
-    shadowRadius: 3.5,
   },
 });
