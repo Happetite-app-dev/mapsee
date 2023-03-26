@@ -2,19 +2,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useIsFocused } from "@react-navigation/native";
 import * as Location from "expo-location";
 import React, { useEffect, useState, useContext } from "react";
-import {
-  Image,
-  StyleSheet,
-  View,
-  SafeAreaView,
-  Button,
-  Animated,
-  TouchableOpacity,
-  Text,
-} from "react-native";
+import { StyleSheet, View, SafeAreaView, Text } from "react-native";
 import Geocoder from "react-native-geocoding";
 import MapView, { Marker } from "react-native-maps";
-import { Easing } from "react-native-reanimated";
 
 import { useUserQuery, useAllRecordQuery } from "../queries";
 
@@ -26,7 +16,6 @@ import TargetMarker from "../assets/markers/selectedMarker.svg";
 import AppContext from "../components/AppContext";
 import RecordMarker from "../components/MapScreen/RecordMarker";
 import GeneratePushToken from "../modules/GeneratePushToken";
-const findCurrentLocationImage = require("../assets/image/findCurrentLocation.png");
 const mapStyle = require("../assets/mapDesign.json");
 import { CreateNote } from "../components/MapScreen/CreateNote";
 const SearchView = ({ navigation, origin }) => {
@@ -274,7 +263,6 @@ const MapScreen = ({ navigation }) => {
         />
       </MapView>
       <SearchView navigation={navigation} origin={origin} />
-      <CreateNote navigation={navigation} isFocused={isFocused} />
       <View
         style={styles.currentLocationButton}
         onTouchEndCapture={() => {
@@ -286,20 +274,13 @@ const MapScreen = ({ navigation }) => {
           });
         }}
       >
-        <View
-          source={MyLocation}
-          resizeMode="contain"
-          style={{
-            position: "absolute",
-            width: 48,
-            height: 48,
-            borderRadius: 24,
-            tintColor: "grey",
-          }}
-        >
-          <MyLocation />
-        </View>
+        <MyLocation />
       </View>
+      <CreateNote
+        navigation={navigation}
+        isFocused={isFocused}
+        style={styles.createNote}
+      />
     </SafeAreaView>
   );
 };
@@ -314,15 +295,6 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
   },
-  currentLocationImage: {
-    position: "absolute",
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    left: 330,
-    top: 608,
-    tintColor: "grey",
-  },
   currentLocationButton: {
     position: "absolute",
     width: 48,
@@ -331,5 +303,20 @@ const styles = StyleSheet.create({
     left: 23,
     bottom: 112,
     backgroundColor: "white",
+  },
+  createNote: {
+    position: "relative",
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    left: 319,
+    bottom: 126,
+    shadowColor: "black",
+    shadowOffset: {
+      width: 0,
+      height: 5,
+    },
+    shadowOpacity: 0.15,
+    shadowRadius: 3.5,
   },
 });

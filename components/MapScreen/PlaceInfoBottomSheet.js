@@ -9,11 +9,13 @@ import {
   Image,
 } from "react-native";
 
-import CreateNote from "../../assets/icons/createNote.svg";
+//import CreateNote from "../MapScreen/CreateNote";
+import { CreateNote } from "../../assets/icons/createNote.svg";
 import { database } from "../../firebase";
 import AppContext from "../AppContext";
 import GoBackHeader from "../GoBackHeader";
 import RecordFlatList from "../StorageScreen/RecordFlatList";
+import { useIsFocused } from "@react-navigation/native";
 const db = database;
 
 const bottomSheetImage = require("../../assets/image/bottomSheetScroll.png");
@@ -61,7 +63,7 @@ const BottomSheetScreen = ({
 }) => {
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
-
+  const isFocused = useIsFocused();
   const gotoEditScreen = () => {
     return navigation.push("EditScreen", {
       placeName: targetName,
@@ -121,7 +123,6 @@ const BottomSheetScreen = ({
       }
     });
   }, []);
-
   if (animationVal < 0) {
     return (
       //bottomsheet가 전체 화면을 덮기 전
@@ -205,29 +206,7 @@ const BottomSheetScreen = ({
             justifyContent: "center",
           }}
         >
-          <TouchableHighlight
-            style={{
-              position: "absolute",
-              alignItems: "center",
-              width: 48,
-              height: 48,
-              borderRadius: 24,
-              zIndex: 1,
-              bottom: 23,
-              shadowColor: "black",
-              shadowOffset: {
-                width: 0,
-                height: 5,
-              },
-              shadowOpacity: 0.25,
-              shadowRadius: 3.5,
-              elevation: 5, //only for ios
-            }}
-            underlayColor="white"
-            onPress={gotoEditScreen}
-          >
-            <CreateNote />
-          </TouchableHighlight>
+          <CreateNote />
         </View>
       </View>
     );
@@ -259,30 +238,8 @@ const BottomSheetScreen = ({
             stackNavigation={navigation}
           />
         </View>
-        <TouchableHighlight
-          style={{
-            position: "absolute",
-            bottom: 100,
-            right: 10,
-            alignItems: "center",
-            width: 48,
-            height: 48,
-            borderRadius: 24,
-            zIndex: 1,
 
-            shadowColor: "black",
-            shadowOffset: {
-              width: 0,
-              height: 5,
-            },
-            shadowOpacity: 0.25,
-            shadowRadius: 3.5,
-          }}
-          underlayColor="blue"
-          onPress={gotoEditScreen}
-        >
-          <CreateNote />
-        </TouchableHighlight>
+        <CreateNote />
       </View>
     );
   }
@@ -429,6 +386,38 @@ const styles = StyleSheet.create({
     width: 15,
     height: 15,
     position: "absolute",
+  },
+  createNote: {
+    position: "absolute",
+    alignItems: "center",
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    zIndex: 1,
+    bottom: 23,
+    shadowColor: "black",
+    shadowOffset: {
+      width: 0,
+      height: 5,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.5,
+    elevation: 5, //only for ios
+  },
+  createNote2: {
+    position: "relative",
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    left: 319,
+    bottom: 126,
+    shadowColor: "black",
+    shadowOffset: {
+      width: 0,
+      height: 5,
+    },
+    shadowOpacity: 0.15,
+    shadowRadius: 3.5,
   },
 });
 

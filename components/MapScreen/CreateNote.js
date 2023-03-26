@@ -1,8 +1,10 @@
-import { StyleSheet, View, Animated } from "react-native";
+import { View, Animated } from "react-native";
 import CreateNote_back from "../../assets/image/CreateNote_back";
 import CreateNote_front from "../../assets/image/CreateNote_front";
 import { Easing } from "react-native-reanimated";
 import { useEffect } from "react";
+import { useIsFetching } from "react-query";
+import { useIsFocused } from "@react-navigation/native";
 
 const rotateValueHolder = new Animated.Value(0);
 
@@ -21,7 +23,8 @@ const CurrentRotate = (isFocused) => {
   }
 };
 
-export const CreateNote = ({ navigation, isFocused }) => {
+export const CreateNote = ({ navigation, style, isFocused }) => {
+  console.log(navigation, "\n", isFocused, "\n", style);
   const RotateData = rotateValueHolder.interpolate({
     inputRange: [0, 1],
     outputRange: ["0deg", "360deg"],
@@ -33,7 +36,7 @@ export const CreateNote = ({ navigation, isFocused }) => {
 
   return (
     <View
-      style={styles.createNote}
+      style={style}
       onTouchEndCapture={() => {
         navigation.navigate("EditScreen", 0);
       }}
@@ -52,21 +55,3 @@ export const CreateNote = ({ navigation, isFocused }) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  createNote: {
-    position: "relative",
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    left: 319,
-    bottom: 112,
-    shadowColor: "black",
-    shadowOffset: {
-      width: 0,
-      height: 5,
-    },
-    shadowOpacity: 0.15,
-    shadowRadius: 3.5,
-  },
-});

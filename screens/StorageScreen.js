@@ -14,7 +14,7 @@ import { useUserQuery, useAllRecordQuery } from "../queries";
 
 import SearchData from "../assets/icons/searchData.svg";
 import AppContext from "../components/AppContext";
-import CreateNote from "../components/MapScreen/CreateNote";
+import { CreateNote } from "../components/MapScreen/CreateNote";
 import { PopUpType4 } from "../components/PopUp";
 import RecordFlatList from "../components/StorageScreen/RecordFlatList";
 import SnackBar from "../components/SnackBar";
@@ -124,6 +124,7 @@ const StorageScreen = ({ navigation, route }) => {
   const [visible, setVisible] = useState(false); // Snackbar
   const onToggleSnackBar = () => setVisible(!visible); // SnackbarButton -> 나중에는 없애기
   const onDismissSnackBar = () => setVisible(false); // Snackbar
+  const isFocused = useIsFocused();
 
   const [
     selectedFolderIDNameColorUserIDs,
@@ -148,7 +149,6 @@ const StorageScreen = ({ navigation, route }) => {
       });
     }
   }, [selectedFolderIDNameColorUserIDs]);
-  const isFocused = useIsFocused();
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.screenTitleView}>
@@ -181,7 +181,6 @@ const StorageScreen = ({ navigation, route }) => {
           </TouchableOpacity>
         </View>
       </View>
-
       <RecordFlatList
         recordList={
           allRecordQuery.data && userQuery.data?.folderIDs
@@ -214,8 +213,6 @@ const StorageScreen = ({ navigation, route }) => {
         }} // fetch로 데이터 호출
         refreshing={allRecordQuery.isLoading} // state
       />
-      <CreateNote isFocused={isFocused} navigation={navigation} />
-
       <PopUpType4
         modalVisible={modalVisible}
         modalHandler={setModalVisible}
@@ -270,6 +267,11 @@ const StorageScreen = ({ navigation, route }) => {
         }
         actionValue2="폴더 편집"
         actionValue3="나가기"
+      />
+      <CreateNote
+        navigation={navigation}
+        isFocused={isFocused}
+        style={styles.createNote}
       />
 
       <SnackBar
