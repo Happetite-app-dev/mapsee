@@ -17,11 +17,7 @@ import {
 import Geocoder from "react-native-geocoding";
 import MapView, { Marker } from "react-native-maps";
 
-import {
-  useUserQuery,
-  useRecordQueries,
-  useRecordIDListQuery,
-} from "../queries";
+import { useUserQuery, useAllRecordQuery } from "../queries";
 
 import TargetMarker from "../assets/markers/selectedMarker.svg";
 
@@ -81,16 +77,7 @@ const BottomSheetScreen = ({
   const myUID = myContext.myUID;
   const userQuery = useUserQuery(myUID);
 
-  const folderIDList = userQuery.data?.folderIDs
-    ? Object.keys(userQuery.data.folderIDs)
-    : [];
-  const { data: recordIDList } = useRecordIDListQuery(folderIDList);
-  const recordQueries = useRecordQueries(recordIDList ? recordIDList : []);
-  const recordObjLists = recordIDList
-    ? recordIDList.reduce((acc, curr, idx) => {
-        return [...acc, [curr, recordQueries[idx]?.data]];
-      }, new Array())
-    : [];
+  const allRecordQuery = useAllRecordQuery();
 
   return (
     //bottomsheet가 전체 화면을 덮기 전
@@ -151,16 +138,15 @@ const BottomSheetScreen = ({
         >
           기록{" "}
           {
-            //박정인 점검 필요
             Object.values(
-              recordObjLists
-                ? recordObjLists
-                    .filter((record) => {
-                      return record?.folderID in userQuery.data?.folderIDs;
-                    })
-                    .filter((record) => {
-                      return record?.placeID === targetId;
-                    })
+              allRecordQuery.data
+                ? Object.values(allRecordQuery.data)
+                  .filter((record) => {
+                    return record.folderID in userQuery.data?.folderIDs;
+                  })
+                  .filter((record) => {
+                    return record.placeID === targetId;
+                  })
                 : []
             ).length
           }

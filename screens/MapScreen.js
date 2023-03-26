@@ -15,11 +15,8 @@ import {
 import Geocoder from "react-native-geocoding";
 import MapView, { Marker } from "react-native-maps";
 import { Easing } from "react-native-reanimated";
-import {
-  useUserQuery,
-  useRecordQueries,
-  useRecordIDListQuery,
-} from "../queries";
+
+import { useUserQuery, useAllRecordQuery } from "../queries";
 
 import MyLocation from "../assets/icons/MyLocation.svg";
 import MyLocationMarker from "../assets/markers/MyLocation.svg";
@@ -37,13 +34,14 @@ const SearchView = ({ navigation, origin }) => {
   return (
     <View
       style={{
-        width: 344,
+        width: "100%",
         height: 48,
         flexDirection: "row",
-        left: 23,
-        top: 58,
+
+        top: "7%",
         position: "absolute",
         alignItems: "center",
+        left: 23,
       }}
       onTouchEndCapture={() =>
         navigation.navigate("MapSearchScreen1", {
@@ -165,16 +163,7 @@ const MapScreen = ({ navigation }) => {
   const myUID = myContext.myUID;
   const userQuery = useUserQuery(myUID);
 
-  const folderIDList = userQuery.data?.folderIDs
-    ? Object.keys(userQuery.data.folderIDs)
-    : [];
-  const { data: recordIDList } = useRecordIDListQuery(folderIDList);
-  const recordQueries = useRecordQueries(recordIDList ? recordIDList : []);
-  const recordObjLists = recordIDList
-    ? recordIDList.reduce((acc, curr, idx) => {
-        return [...acc, [curr, recordQueries[idx]?.data]];
-      }, new Array())
-    : [];
+  const allRecordQuery = useAllRecordQuery();
 
   const isFocused = useIsFocused();
   const [getPermissions, setGetPermissions] = useState(false);
@@ -282,7 +271,7 @@ const MapScreen = ({ navigation }) => {
         <Marker
           coordinate={target.lctn}
           opacity={targetShown ? 100 : 0}
-          style={{ zIndex: 1 }}
+          style={{ zIndex: 10000 }}
         >
           <TargetMarker />
         </Marker>
@@ -298,11 +287,10 @@ const MapScreen = ({ navigation }) => {
 
         <RecordMarker
           recordData={
-            recordQueries[recordQueries.length - 1]?.data &&
-            userQuery.data?.folderIDs
-              ? recordObjLists?.filter(([key, record]) => {
-                  return record?.folderID in userQuery.data?.folderIDs;
-                })
+            allRecordQuery.data && userQuery.data?.folderIDs
+              ? Object.entries(allRecordQuery.data).filter(([key, record]) => {
+                return record.folderID in userQuery.data?.folderIDs;
+              })
               : []
           }
           origin={origin}
@@ -329,7 +317,7 @@ const MapScreen = ({ navigation }) => {
           });
         }}
       >
-        <Animated.View
+        <View
           source={MyLocation}
           resizeMode="contain"
           style={{
@@ -338,11 +326,10 @@ const MapScreen = ({ navigation }) => {
             height: 48,
             borderRadius: 24,
             tintColor: "grey",
-            transform: [{ rotate: RotateData }],
           }}
         >
           <MyLocation />
-        </Animated.View>
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -353,8 +340,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    alignItems: "stretch",
-    justifyContent: "center",
   },
   map: {
     width: "100%",
