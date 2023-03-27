@@ -141,19 +141,15 @@ const BottomSheetScreen = ({
             }}
           >
             기록{" "}
-            {
-              Object.values(
-                allRecordQuery.data
-                  ? allRecordQuery.data
-                      .filter((record) => {
-                        return record.folderID in userQuery.data?.folderIDs;
-                      })
-                      .filter((record) => {
-                        return record.placeID === targetId;
-                      })
-                  : []
-              ).length
-            }
+            {allRecordQuery.data
+              ? Object.values(allRecordQuery.data)
+                  .filter((record) => {
+                    return record.folderID in userQuery.data?.folderIDs;
+                  })
+                  .filter((record) => {
+                    return record.placeID === targetId;
+                  }).length
+              : 0}
           </Text>
         </View>
         <View
@@ -219,10 +215,12 @@ const BottomSheetScreen = ({
         >
           <RecordFlatList
             recordList={
-              allRecordQuery.data
-                ? allRecordQuery.data.filter(([key, values]) => {
-                    return values?.placeID === targetId;
-                  })
+              allRecordQuery.data && userQuery.data?.folderIDs
+                ? Object.entries(allRecordQuery.data).filter(
+                    ([key, values]) => {
+                      return values.folderID in userQuery.data?.folderIDs;
+                    }
+                  )
                 : []
             } /// 수정필요
             stackNavigation={navigation}

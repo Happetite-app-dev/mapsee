@@ -65,7 +65,7 @@ const storeData = async (value) => {
 const getData = async () => {
   try {
     const value = await AsyncStorage.getItem("tutorial");
-    return value;
+    return JSON.parse(value);
   } catch (e) {
     //
   }
@@ -153,8 +153,8 @@ const MapScreen = ({ navigation }) => {
   };
 
   useEffect(() => {
-    if (getData()) {
-      storeData(true);
+    if (!getData()) {
+      storeData("true");
 
       gotoTutorial({ navigation, onChangeGetPermissions });
     } else {

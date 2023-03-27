@@ -35,6 +35,16 @@ const RegisterScreen2 = ({ navigation, route }) => {
   const [passwordCheck, setPasswordCheck] = useState("");
   const [secureTextEntry1, setSecureTextEntry1] = useState(true);
   const [secureTextEntry2, setSecureTextEntry2] = useState(true);
+  const [valid, setValid] = useState(false);
+  useEffect(() => {
+    if (password.length !== 0) {
+      if (password === passwordCheck) {
+        setValid(true);
+      } else {
+        setValid(false);
+      }
+    } else setValid(false);
+  }, [password, passwordCheck]);
 
   return (
     <View style={styles.container}>
@@ -100,7 +110,9 @@ const RegisterScreen2 = ({ navigation, route }) => {
       <BottomButton
         text={"계속하기"}
         onPressFunction={() => {
-          handleSignUp({ email, password, navigation });
+          if (valid) handleSignUp({ email, password, navigation });
+          else if (password.length !== 0) alert("비밀번호를 입력하세요");
+          else if (password !== passwordCheck) alert("비밀번호가 다릅니다");
         }}
         style={{ position: "absolute", bottom: 40 }}
       />
