@@ -41,12 +41,9 @@ import { PopUpType1, PopUpType2 } from "../components/PopUp";
 import SnackBar from "../components/SnackBar";
 import { storage, auth, database } from "../firebase";
 import SendPushNotification from "../modules/SendPushNotification";
-import { useRecordQuery } from "../queries";
+import { useFolderQuery, useRecordQuery, useUserQuery } from "../queries";
 
 const db = database;
-
-const defaultFolderID = "-NB6gdHZgh_liXbnuOLr";
-const defaultFolderName = "폴더1";
 
 const uploadImage = async (image, imageName, newRecordID) => {
   const imageRef = ref_storage(storage, `images/${newRecordID}/${imageName}`);
@@ -388,6 +385,13 @@ const EditScreen = ({ navigation, route }) => {
   const { recordID, placeID, placeName, address, lctn } = route.params;
   const query = useRecordQuery(recordID);
   const data = query.data;
+
+  const userQuery = useUserQuery(myUID);
+  const defaultFolderID = userQuery.data.folderIDs
+    ? Object.keys(userQuery.data.folderIDs)[0]
+    : null;
+  const defaultFolderQuery = useFolderQuery(defaultFolderID);
+  const defaultFolderName = defaultFolderQuery.data.folderName[myUID];
 
   const IsNewRecord = recordID === undefined; //data?.title === undefined; //지금 사용자가 작성하고 있는 record가 새로 만드는 record인지 기존에 있던 record인지를 알려주는 bool
   const IsRecordOwner = data?.userID === myUID; //기존의 기록인 경우, 그것이 자신의 기록인지 확인하는 bool

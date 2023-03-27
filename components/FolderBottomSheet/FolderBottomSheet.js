@@ -76,24 +76,35 @@ const FolderBottomSheet = ({
     <Animated.View
       style={{
         width: "100%",
-        backgroundColor: "#fff",
-        borderTopLeftRadius: 30,
-        borderTopRightRadius: 30,
-        borderWidth: 1,
-        borderColor: "#DDDFE9",
+        backgroundColor: "rgba(0, 0, 0, 0)",
         padding: 0,
         position: "absolute",
         zIndex: 3,
         alignItems: "center",
         justifyContent: "center",
-        height: 728,
+        height: "100%",
         alignSelf: "center",
         bottom: showAnimation,
-        elevation: 24,
+        //elevation: 24,
+      }}
+      onTouchEndCapture={() => {
+        setShow(false);
       }}
     >
       {isSelectingFolder ? (
-        <View style={{ width: "100%", height: "100%", alignItems: "center" }}>
+        <View
+          style={{
+            width: "100%",
+            height: 728,
+            alignItems: "center",
+            borderTopLeftRadius: 30,
+            borderTopRightRadius: 30,
+            borderWidth: 1,
+            borderColor: "#DDDFE9",
+            bottom: -58,
+            backgroundColor: "white",
+          }}
+        >
           <BottomSheetScroll style={{ top: 8 }} />
 
           <ScrollView

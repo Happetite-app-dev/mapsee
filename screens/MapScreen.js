@@ -26,10 +26,10 @@ const SearchView = ({ navigation, origin }) => {
         width: "100%",
         height: 48,
         flexDirection: "row",
-        top: "7.7%",
+        top: "0%",
         alignItems: "center",
         left: 23,
-        position: "absolute",
+        position: "relative",
       }}
       onTouchEndCapture={() =>
         navigation.navigate("MapSearchScreen1", {
@@ -293,7 +293,8 @@ const styles = StyleSheet.create({
   },
   map: {
     width: "100%",
-    height: "100%",
+    height: "120%",
+    position: "absolute",
   },
   currentLocationButton: {
     position: "absolute",
@@ -305,7 +306,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
   createNote: {
-    position: "relative",
+    position: "absolute",
     width: 48,
     height: 48,
     borderRadius: 24,
