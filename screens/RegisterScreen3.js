@@ -45,6 +45,7 @@ const gotoApp = ({
   initMyLastName();
   initMyEmail();
   if (!startTutorial) {
+    console.log("gotoApp");
     navigation.navigate("Tabs");
   }
   //startTutorial 이 true라면 afterScreen.js로 이동필요
