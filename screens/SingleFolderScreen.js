@@ -52,7 +52,7 @@ const exitData = async (myUID, folderID) => {
         "/folders/" + folderID + "/folderColor/" + myUID
       );
       remove(reference4);
-    })
+    });
   //사람이 없는 폴더에 나중에 사람이 추가될 가능성을 위해 일단 폴더를 남겨두자
   // .then(
   //   //지울 필요가 없음
@@ -82,24 +82,27 @@ const SingleFolderScreen = ({ navigation, route }) => {
   const [modalVisible, setModalVisible] = useState(false);
   return (
     <View style={{ height: "100%", width: "100%", backgroundColor: "white" }}>
-      <GoBackHeader
-        navigation={navigation}
-        text={query.data.folderName[myUID]}
-        folderColor={query.data.folderColor[myUID]}
-        isShareFolder={query.data.userIDs?.length >= 2}
-        rightButton="edit"
-        rightButtonFunction={() =>
-          gotoMakeFolderBottomSheetScreen({
-            navigation,
-            folderID,
-          })
-        }
-        rightButtonFunction2={() => setModalVisible(true)}
-      />
-      <RecordFlatList
-        recordList={recordDataSource}
-        stackNavigation={navigation}
-      />
+      <View style={{ height: "100%", width: "100%", backgroundColor: "white" }}>
+        <GoBackHeader
+          navigation={navigation}
+          text={query.data.folderName[myUID]}
+          folderColor={query.data.folderColor[myUID]}
+          isShareFolder={query.data.userIDs?.length >= 2}
+          rightButton="edit"
+          rightButtonFunction={() =>
+            gotoMakeFolderBottomSheetScreen({
+              navigation,
+              folderID,
+            })
+          }
+          rightButtonFunction2={() => setModalVisible(true)}
+        />
+        <RecordFlatList
+          recordList={recordDataSource}
+          stackNavigation={navigation}
+        />
+      </View>
+
       <PopUpType1
         modalVisible={modalVisible}
         modalHandler={setModalVisible}

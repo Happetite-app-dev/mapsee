@@ -113,9 +113,13 @@ const saveData = async (
       writeDate,
       title:
         title === undefined
-          ? `${timeNow.getFullYear().toString()}_${(
-              timeNow.getMonth() + 1
-            ).toString()}_${timeNow.getDay().toString()}_기록`
+          ? `${timeNow.getFullYear().toString().charAt(2)}${timeNow
+              .getFullYear()
+              .toString()
+              .charAt(3)}${(timeNow.getMonth() + 1 < 10
+              ? "0" + `${timeNow.getMonth() + 1}`
+              : timeNow.getMonth() + 1
+            ).toString()}${timeNow.getDate().toString()} 기록`
           : title,
       placeName: place,
       date: {
@@ -162,7 +166,7 @@ const saveData = async (
             });
             SendPushNotification({
               receiverUID: folderUserID,
-              title_: "기록추가타이틀",
+              title_: "기록추가타이틀", ///
               body_: "기록추가바디",
             });
           }
@@ -182,9 +186,13 @@ const saveData = async (
       writeDate,
       title:
         title == undefined
-          ? `${timeNow.getFullYear().toString()}_${(
-              timeNow.getMonth() + 1
-            ).toString()}_${timeNow.getDay().toString()}_기록`
+          ? `${timeNow.getFullYear().toString().charAt(2)}${timeNow
+              .getFullYear()
+              .toString()
+              .charAt(3)}${(timeNow.getMonth() + 1 < 10
+              ? "0" + `${timeNow.getMonth() + 1}`
+              : timeNow.getMonth() + 1
+            ).toString()}${timeNow.getDate().toString()} 기록`
           : title, //나중에 modify할 때 default title을 어떻게 할지를 기획한테 물어보기
       placeName: place,
       date: {
@@ -305,7 +313,7 @@ const storeRecord = async ({
       queryClient.invalidateQueries(["recordIDList"]);
     })
     .then(() => {
-      IsNewRecord ? navigation.pop() : navigation.navigate("Storage"); //realtimeDataBase가 모두 업데이트 된후
+      navigation.navigate("Storage"); //realtimeDataBase가 모두 업데이트 된후
     });
 };
 const removeData = async ({ recordID, folderID, placeID, queryClient }) => {
@@ -384,10 +392,10 @@ const EditScreen = ({ navigation, route }) => {
 
   const { recordID, placeID, placeName, address, lctn } = route.params;
   const query = useRecordQuery(recordID);
-  const data = query.data;
+  const data = query.data ? query.data : null;
 
   const userQuery = useUserQuery(myUID);
-  const defaultFolderID = userQuery.data.folderIDs
+  const defaultFolderID = userQuery.data?.folderIDs
     ? Object.keys(userQuery.data.folderIDs)[0]
     : null;
   const defaultFolderQuery = useFolderQuery(defaultFolderID);
@@ -469,7 +477,6 @@ const EditScreen = ({ navigation, route }) => {
           width: "100%",
           flexDirection: "row",
           alignItems: "center",
-          marginBottom: 16,
         }}
       >
         <View
@@ -488,9 +495,16 @@ const EditScreen = ({ navigation, route }) => {
             style={styles.titleText}
             onChangeText={(tle) => setTitle_(tle)}
             value={title_}
-            placeholder={`${timeNow2.getFullYear().toString()}_${(
-              timeNow2.getMonth() + 1
-            ).toString()}_${timeNow2.getDate().toString()}_기록`}
+            placeholder={`${timeNow2
+              .getFullYear()
+              .toString()
+              .charAt(2)}${timeNow2
+              .getFullYear()
+              .toString()
+              .charAt(3)}${(timeNow2.getMonth() + 1 < 10
+              ? "0" + `${timeNow2.getMonth() + 1}`
+              : timeNow2.getMonth() + 1
+            ).toString()}${timeNow2.getDate().toString()} 기록`}
           />
         </View>
         {IsRecordOwner && !isEditable && (
@@ -513,12 +527,12 @@ const EditScreen = ({ navigation, route }) => {
         )}
       </View>
       <ScrollView
-        style={{ width: "100%", marginTop: 32 }}
+        style={{ width: "100%", marginTop: 32, height: "100%" }}
         showsVerticalScrollIndicator={false}
         scrollEnabled
       >
         {selectedPhotos.length === 0 && !isEditable ? (
-          <></>
+          <View></View>
         ) : (
           <View style={{ height: 210, ...styles.imgPicker }}>
             {/* <Image source={RecordPhotoImage} /> */}
@@ -550,17 +564,32 @@ const EditScreen = ({ navigation, route }) => {
           style={{ height: 48, ...styles.item }}
         >
           <LocationImage />
-          <Text
-            style={{
-              height: 24,
-              lineHeight: 24,
-              fontSize: 14,
-              left: 12,
-              fontFamily: "NotoSansKR-Regular",
-            }}
-          >
-            {placeName_}
-          </Text>
+          {placeName_ ? (
+            <Text
+              style={{
+                height: 24,
+                lineHeight: 24,
+                fontSize: 14,
+                left: 12,
+                fontFamily: "NotoSansKR-Regular",
+              }}
+            >
+              {placeName_}
+            </Text>
+          ) : (
+            <Text
+              style={{
+                height: 24,
+                lineHeight: 24,
+                fontSize: 14,
+                left: 12,
+                fontFamily: "NotoSansKR-Regular",
+                color: "#ADB1C5",
+              }}
+            >
+              장소를 입력하세요
+            </Text>
+          )}
         </View>
         <View
           onTouchEndCapture={() => {
@@ -621,8 +650,8 @@ const EditScreen = ({ navigation, route }) => {
               onChangeText={(txt) => setText_(txt)}
               value={text_}
               multiline
-              placeholder="내용을 입력해주세요"
-              placeholderTextColor="grey"
+              placeholder="내용을 입력하세요"
+              placeholderTextColor="#ADB1C5"
             />
           </View>
         )}
@@ -634,7 +663,7 @@ const EditScreen = ({ navigation, route }) => {
                 setGoBackModalVisible(true);
                 IsNewRecord ? navigation.pop() : setIsEditable(false);
               }}
-              style={{ width: 160, padding: 15, marginRight: 7 }}
+              style={{ width: 160, marginRight: 7 }}
             >
               <Text
                 style={{
@@ -671,7 +700,7 @@ const EditScreen = ({ navigation, route }) => {
                   queryClient,
                 })
               }
-              style={{ width: 160, padding: 15, marginLeft: 7 }}
+              style={{ width: 160, marginLeft: 7 }}
             >
               <Text
                 style={{
@@ -685,6 +714,7 @@ const EditScreen = ({ navigation, route }) => {
           </View>
         )}
       </ScrollView>
+
       <FolderBottomSheet
         stackNavigation={navigation}
         show={showFolderBottomSheet}
@@ -694,6 +724,11 @@ const EditScreen = ({ navigation, route }) => {
         setFolderName={(f) => setFolderName_(f)}
         setFolderID={(f) => setFolderID_(f)}
         selectedFolderID={folderID_}
+      />
+      <SnackBar
+        visible={visible}
+        onDismissSnackBar={onDismissSnackBar}
+        text="최대 10개까지 사진 첨부 가능합니다."
       />
       <PopUpType1
         modalVisible={removeModalVisible}
@@ -744,12 +779,6 @@ const EditScreen = ({ navigation, route }) => {
         actionValue1="저장 안함"
         actionValue2="저장"
       />
-
-      <SnackBar
-        visible={visible}
-        onDismissSnackBar={onDismissSnackBar}
-        text="최대 10개까지 사진 첨부 가능합니다."
-      />
     </View>
   );
 };
@@ -757,10 +786,15 @@ const EditScreen = ({ navigation, route }) => {
 export default EditScreen;
 
 const styles = StyleSheet.create({
-  imgPicker: { marginTop: 16, width: "100%" },
+  imgPicker: {
+    width: "100%",
+    height: 148,
+    marginBottom: 24,
+  },
   item: {
     flex: 1,
     flexDirection: "row",
+
     marginLeft: 23,
   },
   label: {
@@ -799,10 +833,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     width: "100%",
-    height: 60,
+    height: 40,
     flexDirection: "row",
+    bottom: -30,
     position: "absolute",
-    marginTop: 660,
   },
 
   goBack: {

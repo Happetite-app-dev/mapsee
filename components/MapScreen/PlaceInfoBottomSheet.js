@@ -281,7 +281,16 @@ const BottomSheetScreen = ({
             shadowRadius: 3.5,
           }}
           underlayColor="blue"
-          onPress={gotoEditScreen}
+          onPress={() => {
+            toggleAnimation1();
+            console.log("editscreen");
+            navigation.navigate("EditScreen", {
+              placeName: targetName,
+              placeID: targetId,
+              address: targetAddress,
+              lctn: targetLctn,
+            });
+          }}
         >
           <CreateNote />
         </TouchableHighlight>

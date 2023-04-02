@@ -169,7 +169,9 @@ const FolderBottomSheet = ({
             onPressFunction={() => {
               if (Object.values(folderIDNameList).length >= 16)
                 onToggleSnackBar();
-              else setIsSelectingFolder(false);
+              else {
+                setIsSelectingFolder(false);
+              }
             }}
             text="새폴더 추가"
             style={{ bottom: 40 }}

@@ -289,12 +289,9 @@ const styles = StyleSheet.create({
     marginTop: 32,
   },
   recentSearch: {
-    width: 51,
-    height: 24,
     marginLeft: 23,
   },
   eraseAll: {
-    height: 12,
     marginRight: 23,
   },
   historyItem: {

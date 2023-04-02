@@ -14,7 +14,7 @@ const CurrentRotate = (isFocused) => {
     Animated.loop(
       Animated.timing(rotateValueHolder, {
         toValue: 1,
-        duration: 3000,
+        duration: 5000,
         easing: Easing.linear,
         useNativeDriver: false,
       }),

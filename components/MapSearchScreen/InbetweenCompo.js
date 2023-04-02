@@ -58,7 +58,6 @@ const InbetweenCompo = ({ name, history, setHistory, navigation }) => {
               fontSize: 14,
               color: "#5ED3CC",
               fontFamily: "NotoSansKR-Bold",
-              height: 20,
             }}
           >
             전체삭제
@@ -95,8 +94,6 @@ const styles = StyleSheet.create({
     marginTop: 32,
   },
   recentSearch: {
-    width: 51,
-    height: 24,
     marginLeft: 23,
   },
   eraseAll: {

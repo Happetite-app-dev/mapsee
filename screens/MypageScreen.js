@@ -65,6 +65,7 @@ const MypageScreen = ({ navigation }) => {
           top: 105,
           flexDirection: "column",
         }}
+        onTouchEndCapture={() => gotoProfileScreen({ navigation })}
       >
         <View>
           <Text
@@ -100,10 +101,7 @@ const MypageScreen = ({ navigation }) => {
             </TouchableOpacity>
           </View>
         </View>
-        <TouchableOpacity
-          onPress={() => gotoProfileScreen({ navigation })}
-          style={{ height: 20, width: 50, left: 352.5 }}
-        >
+        <TouchableOpacity style={{ height: 20, width: 50, left: 352.5 }}>
           <Arrow />
         </TouchableOpacity>
       </View>

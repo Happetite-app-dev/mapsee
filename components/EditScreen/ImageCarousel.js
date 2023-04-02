@@ -11,6 +11,7 @@ const ImageCarousel = ({ navigation, images }) => {
         style={{
           height: 148,
           width: 148,
+          radius: 8,
         }}
         onPress={() => {
           navigation.navigate("ImageView", item);

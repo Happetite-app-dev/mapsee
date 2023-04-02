@@ -14,7 +14,7 @@ import EditFolder from "../assets/icons/folderEdit.svg";
 import GoBack from "../assets/icons/goBack.svg";
 import ShareFolder from "../assets/icons/shareFolder.svg";
 import SmallFolder from "../assets/icons/SmallFolder.svg";
-
+import Leave from "../assets/icons/Leave.svg";
 const GoBackHeader = ({
   navigation,
   goBackFunction,
@@ -28,7 +28,7 @@ const GoBackHeader = ({
   return (
     <View
       style={{
-        height: 88,
+        height: 80,
         width: "100%",
         paddingTop: 32,
         backgroundColor: "white",
@@ -97,7 +97,7 @@ const GoBackHeader = ({
                 left: 330,
               }}
             >
-              <DeleteFolder />
+              <Leave />
             </TouchableOpacity>
           </View>
         ) : rightButton === "addFriend" ? (

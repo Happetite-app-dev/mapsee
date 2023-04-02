@@ -112,7 +112,7 @@ const BeforeLoginScreen = ({ navigation }) => {
           style={{ fontFamily: "NotoSansKR-Bold", size: 12, color: "#5ED3CC" }}
           onPress={() => gotoEmailScreen()}
         >
-          로그인
+          {" 로그인"}
         </Text>
       </View>
     </SafeAreaView>
