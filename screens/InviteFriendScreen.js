@@ -16,8 +16,6 @@ import AppContext from "../components/AppContext";
 import GoBackHeader from "../components/GoBackHeader";
 import { database } from "../firebase";
 
-const goBackImage = require("../assets/image/goBack.png");
-
 const db = database;
 
 const gotoMakeFolderBottomSheetScreen = ({ navigation }) => {

@@ -21,6 +21,7 @@ const addNewFolder = ({
   folderColor,
   folderUserIDs,
   queryClient,
+  setFolderColor,
 }) => {
   //친구초대한 사람한테 push알림 보내는 함수
   const reference1 = ref(db, "/folders"); //folders에 push
@@ -78,10 +79,15 @@ const addNewFolder = ({
   });
   setFolderIDNameList((prev) => ({
     ...prev,
-    [newFolderID]: { folderID: newFolderID, folderName },
+    [newFolderID]: {
+      folderID: newFolderID,
+      folderName,
+      folderColor,
+    },
   }));
   setFolderID(newFolderID);
   setFolderName(folderName);
+  setFolderColor(folderColor);
   // invalidate queries
   queryClient.invalidateQueries(["folders"]);
 };
@@ -91,6 +97,8 @@ const AddFolderBottomSheet = ({
   setFolderID,
   setFolderIDNameList,
   setShow,
+  setFolderColor,
+  setIsSelectingFolder,
 }) => {
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
@@ -121,8 +129,10 @@ const AddFolderBottomSheet = ({
         ]);
       });
     });
+    console.log("useEffect1");
   }, [newFolderUserIDs]);
   const onPressFunction = () => {
+    console.log("onPress");
     addNewFolder({
       myUID,
       myID,
@@ -135,12 +145,26 @@ const AddFolderBottomSheet = ({
       folderColor: newFolderColor,
       folderUserIDs: newFolderUserIDs,
       queryClient: queryClient,
+      setFolderColor: setFolderColor,
     });
-    setShow(false);
+    setShow(true);
+    setIsSelectingFolder(true);
   };
 
   return (
-    <View style={{ width: "100%", height: "100%" }}>
+    <View
+      style={{
+        width: "100%",
+        height: 728,
+        alignItems: "center",
+        borderTopLeftRadius: 30,
+        borderTopRightRadius: 30,
+        borderWidth: 1,
+        borderColor: "#DDDFE9",
+        bottom: -58,
+        backgroundColor: "white",
+      }}
+    >
       <DefaultFolderBottomSheet
         IsNewRecord
         newFolderName={newFolderName}

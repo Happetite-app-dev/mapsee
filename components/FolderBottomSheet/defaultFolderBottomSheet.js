@@ -445,8 +445,6 @@ const DefaultFolderBottomSheet = ({
   onChangeNewFolderUserIDs,
   folderUserIDs_,
 }) => {
-  console.log("newFolderColor", newFolderColor);
-
   return (
     <View style={{ width: "100%", height: "100%" }}>
       <BottomSheetTitle IsNewRecord={IsNewRecord} />

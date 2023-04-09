@@ -38,9 +38,14 @@ const DatePicker = ({ date1, setDate1, show, setShow, IsEditable }) => {
   };
 
   return (
-    <View style={{ position: "absolute", width: 330 }}>
-      <TouchableOpacity
-        onPress={() =>
+    <View
+      style={{
+        position: "absolute",
+        width: show ? 330 : 150,
+      }}
+    >
+      <View
+        onTouchEndCapture={() =>
           showDatepicker({ show, setDate1, setShow, date, IsEditable })
         }
       >
@@ -57,7 +62,7 @@ const DatePicker = ({ date1, setDate1, show, setShow, IsEditable }) => {
         ).toString()}월 ${date.getDate().toString()}일 (${getday(
           date.getDay()
         )})`}</Text>
-      </TouchableOpacity>
+      </View>
       {show && (
         <DateTimePicker
           display="spinner"

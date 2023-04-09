@@ -20,17 +20,17 @@ const RecordMarker = ({ recordData, origin }) => {
       ? Object.keys(userQuery.data?.folderIDs)
       : [];
 
-  const folderQueries = useFolderQueries(folderIDList)
+  const folderQueries = useFolderQueries(folderIDList);
 
   const data = folderIDList.reduce((acc, curr, idx) => {
-    return { ...acc, [curr]: folderQueries[idx].data }
-  }, new Object)
+    return { ...acc, [curr]: folderQueries[idx].data };
+  }, new Object());
 
   return recordData == null || recordData === undefined ? (
     <></>
   ) : (
     recordData.map(([key, record]) => {
-      const showMarker = Math.random();
+      //const showMarker = Math.random();
       const recordDate = new Date(
         record?.date?.year,
         record?.date?.month - 1,
@@ -46,7 +46,7 @@ const RecordMarker = ({ recordData, origin }) => {
         <Marker
           key={key}
           coordinate={record.lctn}
-          opacity={origin.latitudeDelta < 0.01 || showMarker > 0.5 ? 100 : 0}
+          opacity={100}
           style={{ zIndex: Math.round(dayDiff * 1000) }}
         >
           {dayDiff <= 3 ? <NewMarker /> : <Marker1 color={color} />}

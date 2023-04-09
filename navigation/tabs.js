@@ -67,7 +67,7 @@ const Tabs = ({ navigation }) => {
                       top: -16,
                     }}
                   />
-                  <MapOn width={24} height={24} />
+                  <MapOn width={24} height={24} style={{ top: -1 }} />
                 </View>
               ) : (
                 <MapOff width={24} height={24} />
@@ -98,7 +98,7 @@ const Tabs = ({ navigation }) => {
                       top: -16,
                     }}
                   />
-                  <StorageOn width={24} height={24} />
+                  <StorageOn width={24} height={24} style={{ top: -1 }} />
                 </View>
               ) : (
                 <StorageOff width={24} height={24} />
@@ -129,7 +129,7 @@ const Tabs = ({ navigation }) => {
                       top: -16,
                     }}
                   />
-                  <NoticeOn width={24} height={24} />
+                  <NoticeOn width={24} height={24} style={{ top: -1 }} />
                 </View>
               ) : (
                 <NoticeOff width={24} height={24} />
@@ -160,7 +160,7 @@ const Tabs = ({ navigation }) => {
                       top: -16,
                     }}
                   />
-                  <MypageOn width={24} height={24} />
+                  <MypageOn width={24} height={24} style={{ top: -1 }} />
                 </View>
               ) : (
                 <MypageOff width={24} height={24} />

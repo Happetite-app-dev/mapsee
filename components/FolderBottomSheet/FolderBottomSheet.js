@@ -29,6 +29,7 @@ const FolderBottomSheet = ({
   setFolderName,
   setFolderID,
   selectedFolderID,
+  setFolderColor,
 }) => {
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
@@ -58,7 +59,7 @@ const FolderBottomSheet = ({
     folderQueries[folderIDList.length - 1].isLoading;
 
   useEffect(() => {
-    setFolderIDNameList({});
+    setFolderIDNameList({}); // added Color too!!
     if (!isLoading) {
       Object.entries(folderIDList).forEach(([i, folderID]) => {
         setFolderIDNameList((prev) => ({
@@ -66,6 +67,7 @@ const FolderBottomSheet = ({
           [folderID]: {
             folderID: folderID,
             folderName: get(folderQueries[i].data, ["folderName", myUID]),
+            folderColor: get(folderQueries[i].data, ["folderColor", myUID]),
           },
         }));
       });
@@ -87,10 +89,19 @@ const FolderBottomSheet = ({
         bottom: showAnimation,
         //elevation: 24,
       }}
-      onTouchEndCapture={() => {
-        setShow(false);
-      }}
     >
+      <View
+        style={{
+          backgroundColor: "blue",
+          position: "absolute",
+          width: "100%",
+          height: 300,
+          top: 0,
+        }}
+        onTouchEndCapture={() => {
+          setShow(false);
+        }}
+      />
       {isSelectingFolder ? (
         <View
           style={{
@@ -111,29 +122,23 @@ const FolderBottomSheet = ({
             showsHorizontalScrollIndicator={false}
             style={{ width: "100%", top: 20 }}
           >
-            {Object.values(folderIDNameList).map(({ folderID, folderName }) => {
-              if (folderName != null)
-                return (
-                  <View
-                    style={{ alignItems: "center", height: 48 }}
-                    key={folderID}
-                  >
-                    <TouchableOpacity
-                      onPress={() => {
-                        setFolderName(folderName);
-                        setFolderID(folderID);
-                        setShow(false);
-                      }}
-                      style={{
-                        width: 344,
-                      }}
+            {Object.values(folderIDNameList).map(
+              ({ folderID, folderName, folderColor }) => {
+                if (folderName != null)
+                  return (
+                    <View
+                      style={{ alignItems: "center", height: 48 }}
+                      key={folderID}
                     >
-                      <View
+                      <TouchableOpacity
+                        onPress={() => {
+                          setFolderName(folderName);
+                          setFolderID(folderID);
+                          setFolderColor(folderColor);
+                          setShow(false);
+                        }}
                         style={{
-                          height: 40,
-                          flexDirection: "row",
-                          alignItems: "center",
-                          justifyContent: "space-between",
+                          width: 344,
                         }}
                       >
                         <View
@@ -141,29 +146,38 @@ const FolderBottomSheet = ({
                             height: 40,
                             flexDirection: "row",
                             alignItems: "center",
+                            justifyContent: "space-between",
                           }}
                         >
-                          <ListEcllipse />
-                          <Text
+                          <View
                             style={{
-                              fontSize: 14,
-                              left: 16,
-                              fontFamily: "NotoSansKR-Regular",
+                              height: 40,
+                              flexDirection: "row",
+                              alignItems: "center",
                             }}
                           >
-                            {folderName}
-                          </Text>
+                            <ListEcllipse color={folderColor} />
+                            <Text
+                              style={{
+                                fontSize: 14,
+                                left: 16,
+                                fontFamily: "NotoSansKR-Regular",
+                              }}
+                            >
+                              {folderName}
+                            </Text>
+                          </View>
+                          {selectedFolderID === folderID ? (
+                            <ControlFull />
+                          ) : (
+                            <ControlEmpty />
+                          )}
                         </View>
-                        {selectedFolderID === folderID ? (
-                          <ControlFull />
-                        ) : (
-                          <ControlEmpty />
-                        )}
-                      </View>
-                    </TouchableOpacity>
-                  </View>
-                );
-            })}
+                      </TouchableOpacity>
+                    </View>
+                  );
+              }
+            )}
           </ScrollView>
           <BottomButton
             onPressFunction={() => {
@@ -182,8 +196,10 @@ const FolderBottomSheet = ({
           stackNavigation={stackNavigation}
           setFolderName={(f) => setFolderName(f)}
           setFolderID={(f) => setFolderID(f)}
+          setFolderColor={(f) => setFolderColor(f)}
           setFolderIDNameList={(f) => setFolderIDNameList(f)}
           setShow={(s) => setShow(s)}
+          setIsSelectingFolder={(s) => setIsSelectingFolder(s)}
         />
       )}
       <SnackBar

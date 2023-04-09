@@ -23,6 +23,7 @@ import {
   unstable_batchedUpdates,
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { get } from "lodash";
 
 import ListEcllipse from "../assets/icons/ListEcllipse.svg";
 import DateImage from "../assets/icons/date.svg";
@@ -400,6 +401,7 @@ const EditScreen = ({ navigation, route }) => {
     : null;
   const defaultFolderQuery = useFolderQuery(defaultFolderID);
   const defaultFolderName = defaultFolderQuery.data.folderName[myUID];
+  const defaultFolderColor = defaultFolderQuery.data.folderColor[myUID];
 
   const IsNewRecord = recordID === undefined; //data?.title === undefined; //지금 사용자가 작성하고 있는 record가 새로 만드는 record인지 기존에 있던 record인지를 알려주는 bool
   const IsRecordOwner = data?.userID === myUID; //기존의 기록인 경우, 그것이 자신의 기록인지 확인하는 bool
@@ -422,6 +424,12 @@ const EditScreen = ({ navigation, route }) => {
   const [folderName_, setFolderName_] = useState(
     data?.folderName || defaultFolderName
   );
+  // Folder Query: folder 색상 받아오기...
+  const folderQuery = useFolderQuery(folderID_);
+  const [folderColor_, setFolderColor_] = useState(
+    get(folderQuery.data, ["folderColor", myUID]) || defaultFolderColor
+  );
+
   const [showFolderBottomSheet, setShowFolderBottomSheet] = useState(false);
   const [selectedPhotos, setSelectedPhotos] = useState(
     data?.photos !== undefined && data?.photos !== null
@@ -452,7 +460,8 @@ const EditScreen = ({ navigation, route }) => {
         : []
     );
     setText_(data?.text || "");
-  }, [query.isLoading]);
+    setFolderColor_(folderQuery.data?.folderColor[myUID] || defaultFolderColor);
+  }, [query.isLoading || folderQuery.isLoading]);
 
   const onToggleSnackBar = () => setVisible(!visible); // SnackbarButton -> 나중에는 없애기
   const onDismissSnackBar = () => setVisible(false); // Snackbar
@@ -554,14 +563,20 @@ const EditScreen = ({ navigation, route }) => {
         <View
           onTouchEndCapture={() => {
             showFolderBottomSheet && setShowFolderBottomSheet(false);
-            navigation.navigate("SubSearchScreen1", {
-              setPlaceID: (f) => setPlaceID_(f),
-              setPlaceName: (f) => setPlaceName_(f),
-              setAddress: (f) => setAddress_(f),
-              setLctn: (f) => setLctn_(f),
-            });
+            if (isEditable) {
+              navigation.navigate("SubSearchScreen1", {
+                setPlaceID: (f) => setPlaceID_(f),
+                setPlaceName: (f) => setPlaceName_(f),
+                setAddress: (f) => setAddress_(f),
+                setLctn: (f) => setLctn_(f),
+              });
+            }
           }}
-          style={{ height: 48, ...styles.item }}
+          style={{
+            height: 48,
+            width: 150,
+            ...styles.item,
+          }}
         >
           <LocationImage />
           {placeName_ ? (
@@ -596,7 +611,6 @@ const EditScreen = ({ navigation, route }) => {
             showFolderBottomSheet && setShowFolderBottomSheet(false);
           }}
           style={{
-            width: 350,
             height: showDatePicker ? 266 : 50,
             ...styles.item,
           }}
@@ -612,8 +626,8 @@ const EditScreen = ({ navigation, route }) => {
         </View>
         <View style={{ height: 50, ...styles.item }}>
           <FolderImage />
-          <TouchableOpacity
-            onPress={() => {
+          <View
+            onTouchEndCapture={() => {
               isEditable && setShowFolderBottomSheet(!showFolderBottomSheet);
             }}
             style={{
@@ -625,12 +639,11 @@ const EditScreen = ({ navigation, route }) => {
               flexDirection: "row",
             }}
           >
-            <ListEcllipse height={16} width={16} />
+            <ListEcllipse color={folderColor_} />
             <Text style={{ fontFamily: "NotoSansKR-Regular", left: 10 }}>
-              {" "}
-              {folderName_}{" "}
+              {folderName_}
             </Text>
-          </TouchableOpacity>
+          </View>
           <View
             onTouchEndCapture={() => {
               showFolderBottomSheet && setShowFolderBottomSheet(false);
@@ -724,6 +737,7 @@ const EditScreen = ({ navigation, route }) => {
         setFolderName={(f) => setFolderName_(f)}
         setFolderID={(f) => setFolderID_(f)}
         selectedFolderID={folderID_}
+        setFolderColor={(f) => setFolderColor_(f)}
       />
       <SnackBar
         visible={visible}
@@ -794,7 +808,7 @@ const styles = StyleSheet.create({
   item: {
     flex: 1,
     flexDirection: "row",
-
+    width: 150,
     marginLeft: 23,
   },
   label: {

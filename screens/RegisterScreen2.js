@@ -19,9 +19,12 @@ import GoBackHeader from "../components/GoBackHeader";
 import { auth } from "../firebase";
 
 const handleSignUp = ({ email, password, navigation }) => {
+  console.log("userCredentials created");
+
   createUserWithEmailAndPassword(auth, email, password)
     .then((userCredentials) => {
       const user = userCredentials.user;
+      console.log("userCredentials created");
       navigation.navigate("RegisterScreen3", {
         uid: user.uid,
         email: user.email,
@@ -111,8 +114,6 @@ const RegisterScreen2 = ({ navigation, route }) => {
         text={"계속하기"}
         onPressFunction={() => {
           if (valid) handleSignUp({ email, password, navigation });
-          else if (password.length !== 0) alert("비밀번호를 입력하세요");
-          else if (password !== passwordCheck) alert("비밀번호가 다릅니다");
         }}
         style={{ position: "absolute", bottom: 40 }}
       />

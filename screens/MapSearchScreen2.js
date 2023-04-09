@@ -245,7 +245,6 @@ const BottomSheetScreen = ({
             shadowOpacity: 0.15,
             shadowRadius: 3.5,
           }}
-          underlayColor="blue"
           onPress={gotoEditScreen}
         >
           <CreateNote resizeMode="contain" />

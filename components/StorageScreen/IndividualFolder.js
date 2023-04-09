@@ -19,6 +19,7 @@ const IndividualFolder = ({
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
   const query = useFolderQuery(folderID);
+  console.log(query.data.folderColor[myUID]);
   if (query.isLoading) return <Text>Loading</Text>;
   else if (query.error) return <Text>Error</Text>;
   return (

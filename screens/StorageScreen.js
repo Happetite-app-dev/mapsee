@@ -22,13 +22,13 @@ import FolderList from "../components/StorageScreen/FolderList";
 import { database } from "../firebase";
 const db = database;
 
-const exitFolder = async ({ myUID, folderID, navigation }) => {
-  await exitData(myUID, folderID).then(
+const exitFolder = async ({ myUID, folderID, navigation, queryClient }) => {
+  await exitData(myUID, folderID, queryClient).then(
     () => navigation.navigate("Storage") //realtimeDataBase가 모두 업데이트 된후
   );
 };
 
-const exitData = async (myUID, folderID) => {
+const exitData = async (myUID, folderID, queryClient) => {
   const reference1 = ref(db, "/users/" + myUID + "/folderIDs/" + folderID);
   await remove(reference1)
     .then(() => {
@@ -49,6 +49,8 @@ const exitData = async (myUID, folderID) => {
       );
       remove(reference4);
     });
+
+  queryClient.invalidateQueries(["folders", folderID]);
   //사람이 없는 폴더에 나중에 사람이 추가될 가능성을 위해 일단 폴더를 남겨두자
   // .then(
   //   //지울 필요가 없음
@@ -155,7 +157,7 @@ const StorageScreen = ({ navigation, route }) => {
         <Text style={styles.screenTitle}>보관함</Text>
         <View style={styles.twoRightButtons}>
           <TouchableOpacity
-            style={styles.firstButton}
+            style={styles.secondButton}
             onPress={() => {
               if (
                 userQuery.data?.folderIDs &&
@@ -175,9 +177,6 @@ const StorageScreen = ({ navigation, route }) => {
             }}
           >
             <AddFolder />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.secondButton}>
-            <SearchData />
           </TouchableOpacity>
         </View>
       </View>
@@ -257,6 +256,7 @@ const StorageScreen = ({ navigation, route }) => {
             myUID,
             folderID: longPressedFolder.folderID,
             navigation,
+            queryClient,
           });
         }}
         askValue={longPressedFolder.folderName}

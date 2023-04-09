@@ -13,6 +13,7 @@ import {
 import { TouchableOpacity } from "react-native-gesture-handler";
 
 import DeletePhoto from "../../assets/icons/deletePhoto.svg";
+import AddPhoto from "../../assets/icons/addPhoto";
 import ImageCarousel from "./ImageCarousel";
 const verifyPermissionsCam = async () => {
   const result = await Permissions.askAsync(Permissions.CAMERA);
@@ -109,7 +110,7 @@ const ImgPicker = ({
                   }}
                   style={styles.imagePreview}
                 >
-                  <Text style={{ fontSize: 40, color: "#5ED3CC" }}>+</Text>
+                  <AddPhoto width={148} height={148} />
                 </TouchableOpacity>
 
                 {pickedImages != null && pickedImages !== undefined ? (
@@ -152,15 +153,15 @@ const ImgPicker = ({
           </View>
         ) : (
           <View style={{ width: "100%" }}>
-            <TouchableOpacity
-              onPress={() => {
+            <View
+              onTouchEndCapture={() => {
                 if (pickedImages.length >= 10) onToggleSnackBar();
                 else takeImageHandlerLib(setPickedImages, onImageTaken);
               }}
               style={styles.imagePreviewCenter}
             >
-              <Text style={{ fontSize: 40, color: "#5ED3CC" }}>+</Text>
-            </TouchableOpacity>
+              <AddPhoto width={148} height={148} />
+            </View>
           </View>
         )
       ) : pickedImages.length === 0 ? (
@@ -186,10 +187,6 @@ const styles = StyleSheet.create({
   imagePreviewCenter: {
     width: 148,
     height: 148,
-    borderRadius: 10,
-    backgroundColor: "#F4F5F9",
-    justifyContent: "center",
-    alignItems: "center",
     left: width * 0.5 - 82,
   },
   imagePreview: {

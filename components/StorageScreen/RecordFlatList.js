@@ -30,7 +30,7 @@ const IndividualRecord = ({ item, stackNavigation }) => {
               <View>
                 <Image
                   style={{
-                    width: 160,
+                    width: 158,
                     height: 148,
                     borderTopLeftRadius: 8,
                     borderTopRightRadius: 8,

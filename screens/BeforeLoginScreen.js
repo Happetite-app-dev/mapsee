@@ -100,7 +100,7 @@ const BeforeLoginScreen = ({ navigation }) => {
         style={styles.button}
         onPress={() => gotoRegisterScreen()}
       >
-        <Text style={styles.buttonText}>이메일로 계속하기</Text>
+        <Text style={styles.buttonText}>이메일로 회원가입</Text>
       </TouchableOpacity>
       <View style={{ flexDirection: "row", marginBottom: 48 }}>
         <Text

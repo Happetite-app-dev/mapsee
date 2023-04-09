@@ -9,7 +9,7 @@ import MapView, { Marker } from "react-native-maps";
 import { useUserQuery, useAllRecordQuery } from "../queries";
 
 import MyLocation from "../assets/icons/MyLocation.svg";
-import MyLocationMarker from "../assets/markers/MyLocation.svg";
+import MyLocationMarker from "../assets/markers/MyLocation-2.svg";
 import SearchMain from "../assets/icons/searchMain.svg";
 import SearchBox from "../assets/image/searchBox.svg";
 import TargetMarker from "../assets/markers/selectedMarker.svg";
@@ -18,6 +18,7 @@ import RecordMarker from "../components/MapScreen/RecordMarker";
 import GeneratePushToken from "../modules/GeneratePushToken";
 const mapStyle = require("../assets/mapDesign.json");
 import { CreateNote } from "../components/MapScreen/CreateNote";
+import Selected3 from "../assets/markers/Selected3";
 import { get } from "firebase/database";
 const SearchView = ({ navigation, origin }) => {
   return (
@@ -233,23 +234,6 @@ const MapScreen = ({ navigation }) => {
           }
         }}
       >
-        <Marker
-          coordinate={target.lctn}
-          opacity={targetShown ? 100 : 0}
-          style={{ zIndex: 10000 }}
-        >
-          <TargetMarker />
-        </Marker>
-        <Marker
-          coordinate={{
-            latitude: current.latitude,
-            longitude: current.longitude,
-          }}
-          style={{ zIndex: 1000 }}
-        >
-          <MyLocationMarker />
-        </Marker>
-
         <RecordMarker
           recordData={
             allRecordQuery.data && userQuery.data?.folderIDs
@@ -260,6 +244,21 @@ const MapScreen = ({ navigation }) => {
           }
           origin={origin}
         />
+        <Marker
+          coordinate={target.lctn}
+          opacity={targetShown ? 100 : 0}
+          style={{ zIndex: 1000000000000 }}
+        >
+          <TargetMarker />
+        </Marker>
+        <Marker
+          coordinate={{
+            latitude: current.latitude,
+            longitude: current.longitude,
+          }}
+        >
+          <MyLocationMarker style={styles.MyLocationMarker} />
+        </Marker>
       </MapView>
       <SearchView navigation={navigation} origin={origin} />
 
@@ -311,7 +310,7 @@ const styles = StyleSheet.create({
     height: 48,
     borderRadius: 24,
     left: 319,
-    bottom: 126,
+    bottom: 112,
     shadowColor: "black",
     shadowOffset: {
       width: 0,
@@ -319,5 +318,14 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.15,
     shadowRadius: 3.5,
+  },
+  MyLocationMarker: {
+    shadowColor: "#5ED3CC",
+    shadowRadius: 3,
+    shadowOffset: {
+      width: 0,
+      height: 0,
+    },
+    shadowOpacity: 0.8,
   },
 });
