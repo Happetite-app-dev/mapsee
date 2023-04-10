@@ -23,8 +23,6 @@ import TargetMarker from "../assets/markers/selectedMarker.svg";
 
 import AppContext from "../components/AppContext";
 import GoBackHeader from "../components/GoBackHeader";
-import RecordMarker from "../components/MapScreen/RecordMarker";
-import RecordFlatList from "../components/StorageScreen/RecordFlatList";
 import BottomButton from "../components/BottomButton";
 
 const bottomSheetImage = require("../assets/image/bottomSheetScroll.png");
@@ -141,12 +139,12 @@ const BottomSheetScreen = ({
             Object.values(
               allRecordQuery.data
                 ? Object.values(allRecordQuery.data)
-                  .filter((record) => {
-                    return record.folderID in userQuery.data?.folderIDs;
-                  })
-                  .filter((record) => {
-                    return record.placeID === targetId;
-                  })
+                    .filter((record) => {
+                      return record.folderID in userQuery.data?.folderIDs;
+                    })
+                    .filter((record) => {
+                      return record.placeID === targetId;
+                    })
                 : []
             ).length
           }

@@ -107,6 +107,7 @@ const IndividualFriend = ({
 const FriendListScreen = ({ navigation }) => {
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
+  console.log("FriendListScreen");
 
   const [friendIDNameList, setFriendIDNameList] = useState([]);
   const [addModalVisible, setAddModalVisible] = useState(false);
@@ -154,6 +155,8 @@ const FriendListScreen = ({ navigation }) => {
       });
     }
   }, []);
+
+  useEffect(() => console.log(friendIDNameList), [friendIDNameList]);
   const renderFriendList = ({ item }) => (
     <IndividualFriend
       userID={item.userID}
@@ -164,14 +167,30 @@ const FriendListScreen = ({ navigation }) => {
     />
   );
   return (
-    <View style={styles.container}>
+    <View style={{ flex: 1, backgroundColor: "white" }}>
       <GoBackHeader
         navigation={navigation}
         text="친구목록"
         rightButton="addFriend"
         rightButtonFunction={() => setAddModalVisible(true)}
       />
-
+      <AddFriendModal
+        modalVisible={addModalVisible}
+        modalHandler={setAddModalVisible}
+        friendList={friendIDNameList}
+        onToggleSnackBar={onToggleSnackBar}
+        setRequestSent={(bool) => setRequestSent(bool)}
+        setRequestInfo={(info) => setRequestInfo(info)}
+      />
+      <PopUpType1
+        modalVisible={delModalVisible}
+        modalHandler={setDelModalVisible}
+        action={() => {
+          deleteFriend(myUID, delFriendUID);
+        }}
+        askValue="정말 차단하시겠어요?"
+        actionValue="차단"
+      />
       <View
         style={{
           position: "absolute",
@@ -187,16 +206,9 @@ const FriendListScreen = ({ navigation }) => {
           horizontal={false}
           style={{
             flex: 1,
+            width: "100%",
+            height: "100%",
           }}
-        />
-        <PopUpType1
-          modalVisible={delModalVisible}
-          modalHandler={setDelModalVisible}
-          action={() => {
-            deleteFriend(myUID, delFriendUID);
-          }}
-          askValue="정말 차단하시겠어요?"
-          actionValue="차단"
         />
       </View>
       <SnackBar
@@ -211,23 +223,8 @@ const FriendListScreen = ({ navigation }) => {
         }
         visible={visible}
       />
-      <AddFriendModal
-        modalVisible={addModalVisible}
-        modalHandler={setAddModalVisible}
-        friendList={friendIDNameList}
-        onToggleSnackBar={onToggleSnackBar}
-        setRequestSent={(bool) => setRequestSent(bool)}
-        setRequestInfo={(info) => setRequestInfo(info)}
-      />
     </View>
   );
 };
 
 export default FriendListScreen;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "white",
-  },
-});

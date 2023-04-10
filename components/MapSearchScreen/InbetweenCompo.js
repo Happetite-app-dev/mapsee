@@ -1,5 +1,5 @@
 import { Image, StyleSheet, Text, View, FlatList } from "react-native";
-import SearchHistory from "../../assets/icons/searchPlace.svg";
+import SearchHistory from "../../assets/icons/Location/Location.svg";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const storeData = async (value) => {

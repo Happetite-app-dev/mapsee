@@ -129,10 +129,8 @@ const AddFolderBottomSheet = ({
         ]);
       });
     });
-    console.log("useEffect1");
   }, [newFolderUserIDs]);
   const onPressFunction = () => {
-    console.log("onPress");
     addNewFolder({
       myUID,
       myID,

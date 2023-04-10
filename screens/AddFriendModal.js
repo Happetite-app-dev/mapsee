@@ -158,7 +158,7 @@ const AddFriendModal = ({
           </View>
         </Modal>
       ) : (
-        <View></View>
+        <View style={{ width: 0, height: 0 }}></View>
       )}
     </View>
   );

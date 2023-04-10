@@ -16,7 +16,7 @@ import {
 } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 
-import SearchMarker from "../assets/icons/marker.svg";
+import SearchMarker from "../assets/markers/searchMarker.svg";
 import GoBackHeader from "../components/GoBackHeader";
 
 const bottomSheetImage = require("../assets/image/bottomSheetScroll.png");

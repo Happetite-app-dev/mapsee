@@ -19,13 +19,15 @@ import MapView, { Marker } from "react-native-maps";
 
 import { useUserQuery, useRecordQueries, useAllRecordQuery } from "../queries";
 
-import CreateNote from "../assets/icons/createNote.svg";
+import { CreateNote } from "../components/MapScreen/CreateNote";
 import TargetMarker from "../assets/markers/selectedMarker.svg";
 
 import AppContext from "../components/AppContext";
 import GoBackHeader from "../components/GoBackHeader";
-import RecordMarker from "../components/MapScreen/RecordMarker";
 import RecordFlatList from "../components/StorageScreen/RecordFlatList";
+import { useIsFetching } from "react-query";
+import { useIsFocused } from "@react-navigation/native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const bottomSheetImage = require("../assets/image/bottomSheetScroll.png");
 const mapStyle = require("../assets/mapDesign.json");
@@ -81,7 +83,8 @@ const BottomSheetScreen = ({
       lctn: targetLctn,
     });
   };
-
+  const isFocused = useIsFocused();
+  console.log(CreateNote);
   if (animationVal < 0) {
     return (
       //bottomsheet가 전체 화면을 덮기 전
@@ -163,42 +166,24 @@ const BottomSheetScreen = ({
             toggleAnimation2(showAnimation, setAnimationValue)
           }
         />
-        <TouchableHighlight
-          style={{
-            position: "absolute",
-            alignItems: "center",
-            width: 48,
-            height: 48,
-            borderRadius: 24,
-            zIndex: 1,
-            top: 48,
-            left: 319,
-
-            shadowColor: "black",
-            shadowOffset: {
-              width: 0,
-              height: 5,
-            },
-            shadowOpacity: 0.15,
-            shadowRadius: 3.5,
-          }}
-          underlayColor="white"
-          onPress={gotoEditScreen}
-        >
-          <CreateNote resizeMode="contain" />
-        </TouchableHighlight>
+        <CreateNote
+          navigation={navigation}
+          isFocused={isFocused}
+          style={styles.createNote}
+        />
       </View>
     );
   } else {
     // TODO (@KhoDongwook) hook 루트로 빼기
     return (
       //bottomsheet가 전체 화면을 덮은 후
-      <View
+      <SafeAreaView
         style={{
           position: "absolute",
           width: "100%",
           height: "100%",
           backgroundColor: "white",
+          top: -8,
         }}
       >
         <GoBackHeader
@@ -211,14 +196,21 @@ const BottomSheetScreen = ({
           }}
         />
         <View
-          style={{ position: "absolute", top: 85, width: "100%", height: 600 }}
+          style={{
+            position: "relative",
+            width: "100%",
+            height: "100%",
+          }}
         >
           <RecordFlatList
             recordList={
               allRecordQuery.data && userQuery.data?.folderIDs
                 ? Object.entries(allRecordQuery.data).filter(
                     ([key, values]) => {
-                      return values.folderID in userQuery.data?.folderIDs;
+                      return (
+                        values.folderID in userQuery.data?.folderIDs &&
+                        values.placeID === targetId
+                      );
                     }
                   )
                 : []
@@ -226,17 +218,17 @@ const BottomSheetScreen = ({
             stackNavigation={navigation}
           />
         </View>
-        <TouchableHighlight
+
+        <CreateNote
+          isFocused={isFocused}
+          navigation={navigation}
           style={{
+            left: 319,
+            bottom: 103,
             position: "absolute",
-            bottom: 100,
-            right: 10,
-            alignItems: "center",
             width: 48,
             height: 48,
             borderRadius: 24,
-            zIndex: 1,
-
             shadowColor: "black",
             shadowOffset: {
               width: 0,
@@ -245,11 +237,8 @@ const BottomSheetScreen = ({
             shadowOpacity: 0.15,
             shadowRadius: 3.5,
           }}
-          onPress={gotoEditScreen}
-        >
-          <CreateNote resizeMode="contain" />
-        </TouchableHighlight>
-      </View>
+        />
+      </SafeAreaView>
     );
   }
 };
@@ -269,7 +258,7 @@ const BottomSheet = ({
       <Animated.View
         style={{
           width: "100%",
-          height: 844,
+          height: 884,
           backgroundColor: "white",
           borderTopLeftRadius: 30,
           borderTopRightRadius: 30,
@@ -417,6 +406,21 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 756,
     marginTop: 0,
+  },
+
+  createNote: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    left: 319,
+    top: 32,
+    shadowColor: "black",
+    shadowOffset: {
+      width: 0,
+      height: 5,
+    },
+    shadowOpacity: 0.15,
+    shadowRadius: 3.5,
   },
 });
 

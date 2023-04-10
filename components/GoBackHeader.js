@@ -7,11 +7,10 @@ import {
   TouchableHighlight,
 } from "react-native";
 
-import AddFriend from "../assets/icons/addFriend.svg";
-import Close from "../assets/icons/close.svg";
-import DeleteFolder from "../assets/icons/delete.svg";
-import EditFolder from "../assets/icons/folderEdit.svg";
-import GoBack from "../assets/icons/goBack.svg";
+import AddFriend from "../assets/icons/AddFriend.svg";
+import Close from "../assets/icons/Close.svg";
+import EditFolder from "../assets/icons/Edit.svg";
+import GoBack from "../assets/icons/BackArrow.svg";
 import ShareFolder from "../assets/icons/shareFolder.svg";
 import SmallFolder from "../assets/icons/SmallFolder.svg";
 import Leave from "../assets/icons/Leave.svg";
@@ -28,7 +27,7 @@ const GoBackHeader = ({
   return (
     <View
       style={{
-        height: 80,
+        height: 88,
         width: "100%",
         paddingTop: 32,
         backgroundColor: "white",
@@ -132,10 +131,10 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
   goBack: {
-    width: 32,
+    width: 24,
     height: 24,
     position: "absolute",
-    left: 31,
+    left: 23,
   },
   title: {
     width: 280,

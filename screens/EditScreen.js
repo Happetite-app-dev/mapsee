@@ -26,14 +26,13 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { get } from "lodash";
 
 import ListEcllipse from "../assets/icons/ListEcllipse.svg";
-import DateImage from "../assets/icons/date.svg";
-import DeleteFolder from "../assets/icons/delete.svg";
-import FolderImage from "../assets/icons/folder.svg";
-import EditFolder from "../assets/icons/folderEdit.svg";
-import FolderPrefix from "../assets/icons/folderPrefix.svg";
-import GoBack from "../assets/icons/goBack.svg";
-import LocationImage from "../assets/icons/location.svg";
-import WritingImage from "../assets/icons/writing.svg";
+import DateImage from "../assets/icons/Date.svg";
+import DeleteFolder from "../assets/icons/Delete.svg";
+import FolderImage from "../assets/icons/Folder.svg";
+import GoBack from "../assets/icons/BackArrow.svg";
+import LocationImage from "../assets/icons/Location/Location.svg";
+import WritingImage from "../assets/icons/Edit.svg";
+
 import AppContext from "../components/AppContext";
 import DatePicker from "../components/EditScreen/DatePicker";
 import FolderBottomSheet from "../components/FolderBottomSheet/FolderBottomSheet";
@@ -523,7 +522,7 @@ const EditScreen = ({ navigation, route }) => {
                 onPress={() => setIsEditable(true)}
                 style={styles.firstButton}
               >
-                <EditFolder />
+                <WritingImage />
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => setRemoveModalVisible(true)}
@@ -687,7 +686,9 @@ const EditScreen = ({ navigation, route }) => {
                 취소
               </Text>
             </TouchableOpacity>
-            <Text>|</Text>
+            <View
+              style={{ width: 1, height: 16, backgroundColor: "#ADB1C5" }}
+            />
             <TouchableOpacity
               onPress={() =>
                 storeRecord({

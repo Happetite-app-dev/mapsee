@@ -9,13 +9,15 @@ import {
   TouchableHighlight,
   Image,
 } from "react-native";
+import { useAllRecordQuery, useUserQuery } from "../../queries";
 
-import CreateNote from "../../assets/icons/createNote.svg";
-//import CreateNote from "./CreateNote";
+//import CreateNote from "../../assets/icons/createNote.svg";
+import { CreateNote } from "./CreateNote";
 import { database } from "../../firebase";
 import AppContext from "../AppContext";
 import GoBackHeader from "../GoBackHeader";
 import RecordFlatList from "../StorageScreen/RecordFlatList";
+import { SafeAreaView } from "react-native-safe-area-context";
 const db = database;
 
 const bottomSheetImage = require("../../assets/image/bottomSheetScroll.png");
@@ -60,70 +62,9 @@ const BottomSheetScreen = ({
   targetId,
   targetLctn,
   navigation,
+  recordDataSource,
 }) => {
-  const myContext = useContext(AppContext);
-  const myUID = myContext.myUID;
   const isFocused = useIsFocused();
-  const gotoEditScreen = () => {
-    return navigation.push("EditScreen", {
-      placeName: targetName,
-      placeID: targetId,
-      address: targetAddress,
-      lctn: targetLctn,
-    });
-  };
-
-  const [masterDataSource, setMasterDataSource] = useState({}); //shortened record가 쌓여있음 {recordID, title, folderID, placeName, date, text, photos}
-  useEffect(() => {
-    onValue(ref(db, "/users/" + myUID + "/folderIDs"), (snapshot) => {
-      if (snapshot.val() != null) {
-        //한 user가 folder를 갖고 있지 않을 수 있어!!
-        const folderIDList = Object.keys(snapshot.val()); //folderIDList 만들기
-        setMasterDataSource({}); //initializing masterDataSource
-        folderIDList.map((folderID) => {
-          //각 폴더에 대하여...
-          onValue(
-            ref(db, "/folders/" + folderID + "/placeRecords/" + targetId),
-            (snapshot2) => {
-              if (snapshot2.val() != (null || undefined)) {
-                //폴더는 있지만 빈폴더라서 record가 안에 없을 수 있어!!
-                Object.keys(snapshot2.val()).map((recordID) => {
-                  //folders의 placeRecord 속에 있는 각 placeID에 대응되는 recordIDObject들에 대하여....
-                  onValue(ref(db, "/records/" + recordID), (snapshot3) => {
-                    // console.log('----------------------------')
-                    // console.log(recordID)
-                    // console.log(snapshot3.val().address)
-                    //   console.log('placeName', snapshot3.val().placeName)
-                    //   console.log('targetName', targetName)
-                    //   console.log(snapshot3.val().placeName.includes(targetName))
-                    //   console.log(targetName.includes(snapshot3.val().placeName))
-                    if (
-                      snapshot3.val() != (null || undefined) &&
-                      (snapshot3.val().placeName.includes(targetName) ||
-                        targetName.includes(snapshot3.val().placeName) ||
-                        snapshot3.val().placeName == targetName)
-                    ) {
-                      //masterDataSource 채워주기 --> 기존 record를 지웠을 때, 없는 recordID를 찾아서 null이 masterDataSource에 들어가는 경우를 방지하고자 함
-                      // console.log('----------------------------')
-                      // console.log('placeName', snapshot3.val().placeName)
-                      // console.log('targetName', targetName)
-                      // console.log(snapshot3.val().placeName.includes(targetName))
-                      // console.log(targetName.includes(snapshot3.val().placeName))
-                      setMasterDataSource((prev) => ({
-                        ...prev,
-                        [recordID]: { recordID, recordData: snapshot3.val() },
-                      })); //{recordID: recordID, recordData:{title: ~~, date: ~~, lctn: ~~, text: ~~, placeName: ~~}}가 쌓여있음
-                    }
-                  });
-                });
-              }
-            }
-          );
-        });
-      }
-    });
-  }, []);
-
   if (animationVal < 0) {
     return (
       //bottomsheet가 전체 화면을 덮기 전
@@ -182,7 +123,7 @@ const BottomSheetScreen = ({
               fontFamily: "NotoSansKR-Regular",
             }}
           >
-            기록 {Object.values(masterDataSource).length}
+            기록 {recordDataSource.length}
           </Text>
         </View>
         <View
@@ -196,41 +137,11 @@ const BottomSheetScreen = ({
             toggleAnimation2(showAnimation, setAnimationValue)
           }
         />
-        <View
-          style={{
-            position: "absolute",
-            width: 48,
-            height: 48,
-            marginTop: 48,
-            marginLeft: 319,
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <TouchableHighlight
-            style={{
-              position: "absolute",
-              alignItems: "center",
-              width: 48,
-              height: 48,
-              borderRadius: 24,
-              zIndex: 1,
-              bottom: 23,
-              shadowColor: "black",
-              shadowOffset: {
-                width: 0,
-                height: 5,
-              },
-              shadowOpacity: 0.25,
-              shadowRadius: 3.5,
-              elevation: 5, //only for ios
-            }}
-            underlayColor="white"
-            onPress={gotoEditScreen}
-          >
-            <CreateNote navigation={navigation} isFocused={isFocused} />
-          </TouchableHighlight>
-        </View>
+        <CreateNote
+          navigation={navigation}
+          isFocused={isFocused}
+          style={styles.createNote}
+        />
       </View>
     );
   } else {
@@ -238,11 +149,12 @@ const BottomSheetScreen = ({
 
     return (
       //bottomsheet가 전체 화면을 덮은 후
-      <View
+      <SafeAreaView
         style={{
           position: "absolute",
           width: "100%",
           height: "100%",
+          top: -8,
         }}
       >
         <GoBackHeader
@@ -254,47 +166,37 @@ const BottomSheetScreen = ({
           }
         />
         <View
-          style={{ position: "absolute", top: 85, width: "100%", height: 600 }}
+          style={{
+            width: "100%",
+            height: "100%",
+          }}
         >
           <RecordFlatList
-            recordDataSource={Object.entries(masterDataSource)}
+            recordList={recordDataSource}
             stackNavigation={navigation}
           />
         </View>
-        <TouchableHighlight
+
+        <CreateNote
+          isFocused={isFocused}
+          navigation={navigation}
           style={{
+            left: 319,
+            bottom: 103,
             position: "absolute",
-            bottom: 100,
-            right: 10,
-            alignItems: "center",
             width: 48,
             height: 48,
             borderRadius: 24,
-            zIndex: 1,
-
             shadowColor: "black",
             shadowOffset: {
               width: 0,
               height: 5,
             },
-            shadowOpacity: 0.25,
+            shadowOpacity: 0.15,
             shadowRadius: 3.5,
           }}
-          underlayColor="blue"
-          onPress={() => {
-            toggleAnimation1();
-            console.log("editscreen");
-            navigation.navigate("EditScreen", {
-              placeName: targetName,
-              placeID: targetId,
-              address: targetAddress,
-              lctn: targetLctn,
-            });
-          }}
-        >
-          <CreateNote />
-        </TouchableHighlight>
-      </View>
+        />
+      </SafeAreaView>
     );
   }
 };
@@ -309,6 +211,7 @@ const BottomSheet = ({
   targetId,
   targetLctn,
   navigation,
+  recordDataSource,
 }) => {
   return (
     <View
@@ -330,8 +233,8 @@ const BottomSheet = ({
       <Animated.View
         style={{
           width: "100%",
-          height: 844, //조정 필요
-          backgroundColor: "#fff",
+          height: 884, //조정 필요,
+          backgroundColor: "white",
           borderTopLeftRadius: 30,
           borderTopRightRadius: 30,
           padding: 0,
@@ -354,6 +257,7 @@ const BottomSheet = ({
           targetId={targetId}
           targetLctn={targetLctn}
           navigation={navigation}
+          recordDataSource={recordDataSource}
         />
       </Animated.View>
     </View>
@@ -364,6 +268,19 @@ const PlaceInfoBottomSheet = ({ navigation, route }) => {
   const { targetName, targetAddress, targetId, targetLctn } = route.params;
   const [animationValue, setAnimationValue] = useState(-1000);
   const showAnimation = useRef(new Animated.Value(animationValue)).current;
+  const allRecordQuery = useAllRecordQuery();
+  const myContext = useContext(AppContext);
+  const myUID = myContext.myUID;
+  const userQuery = useUserQuery(myUID);
+  const recordDataSource =
+    allRecordQuery.data && userQuery.data?.folderIDs
+      ? Object.entries(allRecordQuery.data).filter(([key, record]) => {
+          return (
+            record.folderID in userQuery.data?.folderIDs &&
+            targetId === record.placeID
+          );
+        })
+      : [];
   useEffect(() => {
     toggleAnimation3(showAnimation, setAnimationValue);
   }, []);
@@ -379,6 +296,7 @@ const PlaceInfoBottomSheet = ({ navigation, route }) => {
         targetId={targetId}
         targetLctn={targetLctn}
         navigation={navigation}
+        recordDataSource={recordDataSource}
       />
     </View>
   );
@@ -440,6 +358,20 @@ const styles = StyleSheet.create({
     width: 15,
     height: 15,
     position: "absolute",
+  },
+  createNote: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    left: 319,
+    top: 32,
+    shadowColor: "black",
+    shadowOffset: {
+      width: 0,
+      height: 5,
+    },
+    shadowOpacity: 0.15,
+    shadowRadius: 3.5,
   },
 });
 

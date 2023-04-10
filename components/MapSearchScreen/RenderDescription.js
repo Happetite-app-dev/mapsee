@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from "react-native";
-import SearchHistory from "../../assets/icons/searchPlace.svg";
+import SearchHistory from "../../assets/icons/Location/Location.svg";
 
 const renderDescription = (data) => {
   return (

@@ -30,26 +30,29 @@ const RecordMarker = ({ recordData, origin }) => {
     <></>
   ) : (
     recordData.map(([key, record]) => {
-      //const showMarker = Math.random();
       const recordDate = new Date(
-        record?.date?.year,
-        record?.date?.month - 1,
-        record?.date?.day
+        record?.writeDate?.year,
+        record?.writeDate?.month - 1,
+        record?.writeDate?.day,
+        record?.writeDate?.hour,
+        record?.writeDate?.minute
       );
-      //console.log({ ...data }[record.folderID])
       const dayDiff = (currentDate - recordDate) / (1000 * 60 * 60 * 24);
       const color =
         get(data, [record.folderID, "folderColor", myUID]) ||
         get(data, [record.folderID, "initFoldercolor"]);
-
       return (
         <Marker
           key={key}
           coordinate={record.lctn}
           opacity={100}
-          style={{ zIndex: Math.round(dayDiff * 1000) }}
+          style={{ zIndex: Math.round(-dayDiff * 100000) }}
         >
-          {dayDiff <= 3 ? <NewMarker /> : <Marker1 color={color} />}
+          {dayDiff <= 3 ? (
+            <NewMarker color={color} />
+          ) : (
+            <Marker1 color={color} />
+          )}
         </Marker>
       );
     })

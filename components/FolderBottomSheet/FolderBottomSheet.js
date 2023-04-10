@@ -6,10 +6,10 @@ import { ScrollView } from "react-native-gesture-handler";
 import AppContext from "../AppContext";
 import AddFolderBottomSheet from "./AddFolderBottomSheet";
 import BottomButton from "../BottomButton";
-import BottomSheetScroll from "../../assets/icons/BottomSheetScroll.svg";
+import BottomSheetScroll from "../../assets/image/BottomSheetScroll.svg";
 import ListEcllipse from "../../assets/icons/ListEcllipse.svg";
-import ControlEmpty from "../../assets/icons/ControlEmpty.svg";
-import ControlFull from "../../assets/icons/ControlFull.svg";
+import ControlEmpty from "../../assets/image/ControlEmpty.svg";
+import ControlFull from "../../assets/image/ControlFull.svg";
 import SnackBar from "../SnackBar";
 import { get } from "lodash";
 

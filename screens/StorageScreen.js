@@ -8,11 +8,10 @@ import {
   SafeAreaView,
 } from "react-native";
 import { useQueryClient } from "react-query";
-import AddFolder from "../assets/icons/addfolder.svg";
+import AddFolder from "../assets/icons/Addfolder.svg";
 import { useIsFocused } from "@react-navigation/native";
 import { useUserQuery, useAllRecordQuery } from "../queries";
 
-import SearchData from "../assets/icons/searchData.svg";
 import AppContext from "../components/AppContext";
 import { CreateNote } from "../components/MapScreen/CreateNote";
 import { PopUpType4 } from "../components/PopUp";
@@ -205,7 +204,10 @@ const StorageScreen = ({ navigation, route }) => {
             />
           </View>
         }
-        style={{ height: "85%", marginTop: -20 }}
+        style={{
+          height: "85%",
+          marginBottom: "13%",
+        }}
         onRefresh={() => {
           queryClient.invalidateQueries(["all-records"]);
           queryClient.invalidateQueries(["folders"]); // 임시로!!!! 고쳐야해!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -288,7 +290,7 @@ export default StorageScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "white",
   },
   screenTitle: {
     fontWeight: "bold",
@@ -299,7 +301,6 @@ const styles = StyleSheet.create({
   screenTitleView: {
     flexDirection: "row",
     height: 48,
-    marginBottom: 20,
     alignItems: "center",
     position: "relative",
     width: "100%",
@@ -320,20 +321,14 @@ const styles = StyleSheet.create({
   },
   twoRightButtons: {
     position: "absolute",
-    right: 0,
-    width: 86,
-    height: 30,
+    right: 23,
+    height: 24,
     flexDirection: "row",
     alignItems: "center",
   },
-  firstButton: {
-    width: 30,
-    height: 30,
-  },
   secondButton: {
-    width: 30,
-    height: 30,
-    left: 10,
+    width: 24,
+    height: 24,
   },
   createNote: {
     position: "absolute",

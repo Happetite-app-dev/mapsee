@@ -8,10 +8,8 @@ import {
   TouchableOpacity,
   Dimensions,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import GoBackHeader from "../components/GoBackHeader";
 import BottomButton from "../components/BottomButton";
-const { height } = Dimensions.get("window");
 const handleSignUp = ({ navigation, email }) => {
   navigation.navigate("RegisterScreen2", email);
 };

@@ -5,11 +5,11 @@ import TimeDisplay from "./NoticeScreen/TimeDisplay";
 
 const ReceptFriendRequestList = ({ requesterUID, time }) => {
   const query = useUserQuery(requesterUID);
-  const requesterID = query.data?.id
-  const requesterFirstName = query.data?.firstName
-  const requesterLastName = query.data?.lastName
+  const requesterID = query.data?.id;
+  const requesterFirstName = query.data?.firstName;
+  const requesterLastName = query.data?.lastName;
   if (!query.data) {
-    return <></>
+    return <></>;
   } else {
     return (
       <View style={styles.container}>
@@ -20,20 +20,13 @@ const ReceptFriendRequestList = ({ requesterUID, time }) => {
             fontSize: 14,
           }}
         >
-          <Text style={{ fontWeight: "700" }}>
+          <Text style={{ fontFamily: "NotoSansKR-Bold" }}>
             {requesterLastName}
             {requesterFirstName}(@{requesterID})
           </Text>
           님과 친구가 되었습니다.
         </Text>
-        <Text
-          style={{
-            ...styles.text,
-            fontWeight: "700",
-            fontSize: 12,
-            color: "#545766",
-          }}
-        >
+        <Text style={styles.time}>
           <TimeDisplay time={time} />
         </Text>
       </View>
@@ -54,5 +47,15 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     lineHeight: 16,
     letterSpacing: -0.5,
+    fontFamily: "NotoSansKR-Regular",
+  },
+  time: {
+    alignSelf: "center",
+    lineHeight: 16,
+    letterSpacing: -0.5,
+    fontFamily: "NotoSansKR-Bold",
+    fontSize: 12,
+    color: "#545766",
+    left: 5,
   },
 });

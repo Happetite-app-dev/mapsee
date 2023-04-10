@@ -1,15 +1,14 @@
-import { useEffect, useState } from "react";
 import { Pressable, SafeAreaView, Text, View, StyleSheet } from "react-native";
 import { useUserQuery } from "../queries";
 import TimeDisplay from "./NoticeScreen/TimeDisplay";
 
 const DispatchFriendRequestList = ({ approverUID, time }) => {
   const query = useUserQuery(approverUID);
-  const approverID = query.data?.id
-  const approverFirstName = query.data?.firstName
-  const approverLastName = query.data?.lastName
+  const approverID = query.data?.id;
+  const approverFirstName = query.data?.firstName;
+  const approverLastName = query.data?.lastName;
   if (!query.data) {
-    return <></>
+    return <></>;
   } else {
     return (
       <View style={styles.container}>
@@ -20,20 +19,13 @@ const DispatchFriendRequestList = ({ approverUID, time }) => {
             fontSize: 14,
           }}
         >
-          <Text style={{ fontWeight: "700" }}>
+          <Text style={{ fontFamily: "NotoSansKR-Bold" }}>
             {approverLastName}
             {approverFirstName}(@{approverID})
           </Text>
           님이 친구 요청을 수락했습니다.
         </Text>
-        <Text
-          style={{
-            ...styles.text,
-            fontWeight: "700",
-            fontSize: 12,
-            color: "#545766",
-          }}
-        >
+        <Text style={styles.time}>
           <TimeDisplay time={time} />
         </Text>
       </View>
@@ -54,5 +46,15 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     lineHeight: 16,
     letterSpacing: -0.5,
+    fontFamily: "NotoSansKR-Regular",
+  },
+  time: {
+    alignSelf: "center",
+    lineHeight: 16,
+    letterSpacing: -0.5,
+    fontFamily: "NotoSansKR-Bold",
+    fontSize: 12,
+    color: "#545766",
+    left: 5,
   },
 });

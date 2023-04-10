@@ -23,7 +23,15 @@ const IndividualRecord = ({ item, stackNavigation }) => {
     <View style={styles.item}>
       <TouchableOpacity onPress={() => gotoEditScreen(stackNavigation, item)}>
         <View style={{ flexDirection: "column", justifyContent: "center" }}>
-          <View style={{ width: 158, height: 148, alignItems: "center" }}>
+          <View
+            style={{
+              width: 158,
+              height: 148,
+              alignItems: "center",
+              borderTopLeftRadius: 8,
+              borderTopRightRadius: 8,
+            }}
+          >
             {item[1].photos !== undefined &&
             item[1].photos !== null &&
             Object.values(item[1].photos).length >= 1 ? (

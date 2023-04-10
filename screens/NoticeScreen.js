@@ -1,12 +1,9 @@
-import { ref, onValue, set, push } from "firebase/database";
 import { useEffect, useState, useContext } from "react";
 import { SafeAreaView, Text, View, FlatList, StyleSheet } from "react-native";
 import { Snackbar } from "react-native-paper";
 import { useQueryClient } from "react-query";
-import { fetchAllFolder2, fetchAllNotice } from "../actions";
 import AppContext from "../components/AppContext";
 import NoticeRenderer from "../components/NoticeRenderer";
-import { database } from "../firebase";
 import { useAllNoticeQuery, useUserQuery } from "../queries";
 
 const NoticeScreen = ({ navigation }) => {

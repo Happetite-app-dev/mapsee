@@ -4,9 +4,9 @@ import React, { useEffect, useState } from "react";
 import { Image, StyleSheet, Text, View, FlatList } from "react-native";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 
-import Close from "../assets/icons/close.svg";
-import GoBack from "../assets/icons/goBack.svg";
-import SearchHistory from "../assets/icons/searchPlace.svg";
+import Close from "../assets/icons/Close.svg";
+import GoBack from "../assets/icons/BackArrow.svg";
+import SearchHistory from "../assets/icons/Location/Location.svg";
 import renderDescription from "../components/MapSearchScreen/RenderDescription";
 
 const storeData = async (value) => {

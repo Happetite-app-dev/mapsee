@@ -8,8 +8,9 @@ export const PopUpType1 = ({
   askValue,
   actionValue,
 }) => {
-  return (
-    <View style={styles.centeredView}>
+  console.log(modalVisible);
+  return modalVisible ? (
+    <View style={{ flex: 1 }}>
       <Modal
         animationType="none"
         transparent
@@ -52,6 +53,8 @@ export const PopUpType1 = ({
         </View>
       </Modal>
     </View>
+  ) : (
+    <></>
   );
 };
 
@@ -135,7 +138,8 @@ export const PopUpType4 = ({
   actionValue2,
   actionValue3,
 }) => {
-  return (
+  console.log("popup modal visible", modalVisible);
+  return modalVisible ? (
     <View
       style={{ ...styles.centeredView }}
       onTouchEnd={() => modalHandler(!modalVisible)}
@@ -198,6 +202,8 @@ export const PopUpType4 = ({
         </View>
       </Modal>
     </View>
+  ) : (
+    <View></View>
   );
 };
 

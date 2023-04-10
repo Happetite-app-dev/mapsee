@@ -7,13 +7,12 @@ import {
   TouchableOpacity,
   View,
   StyleSheet,
-  Image
+  Image,
 } from "react-native";
 import { useFolderQuery, useRecordQuery, useUserQuery } from "../queries";
 import AppContext from "./AppContext";
 import TimeDisplay from "./NoticeScreen/TimeDisplay";
-import DefaultImage from "../assets/image/default.svg"
-
+import DefaultImage from "../assets/image/default.svg";
 
 const gotoEditScreen = ({ navigation, recordID }) => {
   navigation.navigate("EditScreen", {
@@ -45,8 +44,7 @@ const ReceptRecordAddDoneList = ({
   const selectedPhotos =
     data?.photos !== undefined && data?.photos !== null
       ? Object.values(data?.photos)
-      : []
-  console.log(selectedPhotos[0])
+      : [];
   if (!userQuery.data || !folderQuery.data || !myUserQuery.data) {
     return <></>;
   } else if (
@@ -69,19 +67,11 @@ const ReceptRecordAddDoneList = ({
           </Text>
           에 기록을 남겼습니다.
         </Text>
-        <Text
-          style={{
-            ...styles.text,
-            fontSize: 12,
-            color: "#545766",
-            fontFamily: "NotoSansKR-Bold",
-          }}
-        >
+        <Text style={styles.time}>
           <TimeDisplay time={time} />
         </Text>
       </View>
-
-    )
+    );
   } else if (selectedPhotos[0] == undefined) {
     return (
       <TouchableOpacity
@@ -90,37 +80,37 @@ const ReceptRecordAddDoneList = ({
         }}
         style={styles.container}
       >
-        <View
-          style={{ flexDirection: "column", width: 276 }}
-        >
-          <Text
-            style={styles.text}
-          >
-            <Text style={{ fontWeight: "700" }}>
+        <View style={{ flexDirection: "row", width: 276 }}>
+          <Text style={styles.text}>
+            <Text style={{ fontFamily: "NotoSansKR-Bold" }}>
               {performerLastName}
               {performerFirstName}(@{performerID})
             </Text>
             님이
-            <Text style={{ fontWeight: "700" }}> 폴더[{folderName}]</Text>에 기록을
-            남겼습니다.
-          </Text>
-          <Text
-            style={{
-              ...styles.text,
-              fontWeight: "700",
-              fontSize: 12,
-              color: "#545766",
-            }}
-          >
-            <TimeDisplay time={time} />
+            <Text style={{ fontFamily: "NotoSansKR-Bold" }}>
+              {" "}
+              폴더[{folderName}]
+            </Text>
+            {"에 기록을 남겼습니다.   "}
+            <Text style={styles.time}>
+              <TimeDisplay time={time} />
+            </Text>
           </Text>
         </View>
-        <View>
-          <View style={{ borderRadius: 28, borderWidth: 1, width: 56, height: 56, borderColor: "#DDDFE9", alignItems: "center", justifyContent: "center" }}>
-            <View style={{ borderRadius: 24, width: 48, height: 48, backgroundColor: "#DDDFE9", alignItems: "center", justifyContent: "center" }}>
-              <DefaultImage />
-            </View>
-          </View>
+        <View
+          style={{
+            borderRadius: 28,
+            borderWidth: 1,
+            width: 56,
+            height: 56,
+            borderColor: "#DDDFE9",
+            alignItems: "center",
+            justifyContent: "center",
+            right: 0,
+            position: "absolute",
+          }}
+        >
+          <DefaultImage style={{ width: 48, height: 48, borderRadius: 24 }} />
         </View>
       </TouchableOpacity>
     );
@@ -132,35 +122,40 @@ const ReceptRecordAddDoneList = ({
         }}
         style={styles.container}
       >
-        <View
-          style={{ flexDirection: "column", width: 276 }}
-        >
-          <Text
-            style={styles.text}
-          >
-            <Text style={{ fontWeight: "700" }}>
+        <View style={{ flexDirection: "row", width: 276 }}>
+          <Text style={styles.text}>
+            <Text style={{ fontFamily: "NotoSansKR-Bold" }}>
               {performerLastName}
               {performerFirstName}(@{performerID})
             </Text>
             님이
-            <Text style={{ fontWeight: "700" }}> 폴더[{folderName}]</Text>에 기록을
-            남겼습니다.
-          </Text>
-          <Text
-            style={{
-              ...styles.text,
-              fontWeight: "700",
-              fontSize: 12,
-              color: "#545766",
-            }}
-          >
-            <TimeDisplay time={time} />
+            <Text style={{ fontFamily: "NotoSansKR-Bold" }}>
+              {" "}
+              폴더[{folderName}]
+            </Text>
+            {"에 기록을 남겼습니다.   "}
+            <Text style={styles.time}>
+              <TimeDisplay time={time} />
+            </Text>
           </Text>
         </View>
-        <View>
-          <View style={{ borderRadius: 28, borderWidth: 1, width: 56, height: 56, borderColor: "#DDDFE9", alignItems: "center", justifyContent: "center" }}>
-            <Image style={{ width: 48, height: 48, borderRadius: 24 }} source={{ uri: selectedPhotos[0] }} />
-          </View>
+        <View
+          style={{
+            borderRadius: 28,
+            borderWidth: 1,
+            width: 56,
+            height: 56,
+            borderColor: "#DDDFE9",
+            alignItems: "center",
+            justifyContent: "center",
+            right: 0,
+            position: "absolute",
+          }}
+        >
+          <Image
+            style={{ width: 48, height: 48, borderRadius: 24 }}
+            source={{ uri: selectedPhotos[0] }}
+          />
         </View>
       </TouchableOpacity>
     );
@@ -176,10 +171,20 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     marginBottom: 40,
   },
+
   text: {
-    alignSelf: "flex-start",
+    alignSelf: "center",
     lineHeight: 16,
     letterSpacing: -0.5,
     fontFamily: "NotoSansKR-Regular",
+  },
+  time: {
+    alignSelf: "center",
+    lineHeight: 16,
+    letterSpacing: -0.5,
+    fontFamily: "NotoSansKR-Bold",
+    fontSize: 12,
+    color: "#545766",
+    left: 5,
   },
 });

@@ -8,7 +8,7 @@ import MapView, { Marker } from "react-native-maps";
 
 import { useUserQuery, useAllRecordQuery } from "../queries";
 
-import MyLocation from "../assets/icons/MyLocation.svg";
+import MyLocation from "../assets/icons/Current.svg";
 import MyLocationMarker from "../assets/markers/MyLocation-2.svg";
 import SearchMain from "../assets/icons/searchMain.svg";
 import SearchBox from "../assets/image/searchBox.svg";
@@ -18,8 +18,7 @@ import RecordMarker from "../components/MapScreen/RecordMarker";
 import GeneratePushToken from "../modules/GeneratePushToken";
 const mapStyle = require("../assets/mapDesign.json");
 import { CreateNote } from "../components/MapScreen/CreateNote";
-import Selected3 from "../assets/markers/Selected3";
-import { get } from "firebase/database";
+
 const SearchView = ({ navigation, origin }) => {
   return (
     <View
@@ -247,7 +246,7 @@ const MapScreen = ({ navigation }) => {
         <Marker
           coordinate={target.lctn}
           opacity={targetShown ? 100 : 0}
-          style={{ zIndex: 1000000000000 }}
+          style={{ zIndex: 1 }}
         >
           <TargetMarker />
         </Marker>
@@ -273,7 +272,7 @@ const MapScreen = ({ navigation }) => {
           });
         }}
       >
-        <MyLocation />
+        <MyLocation style={{ top: 12, left: 12 }} />
       </View>
       <CreateNote
         navigation={navigation}
@@ -303,6 +302,8 @@ const styles = StyleSheet.create({
     left: 23,
     bottom: 112,
     backgroundColor: "white",
+    borderColor: "#DDDFE9",
+    borderWidth: 1,
   },
   createNote: {
     position: "absolute",

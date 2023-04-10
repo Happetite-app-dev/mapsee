@@ -9,18 +9,38 @@ import {
 } from "react-native";
 import { ScrollView, Switch, TextInput } from "react-native-gesture-handler";
 import BottomButton from "../BottomButton";
-import Arrow from "../../assets/icons/Arrow.svg";
+import Arrow from "../../assets/icons/Arrow Right.svg";
 const BottomSheetTitle = ({ IsNewRecord }) => {
   return (
     <View
-      style={{ top: 24, width: 61, height: 24, left: 23, marginBottom: 24 }}
+      style={{
+        top: 24,
+        width: 61,
+        height: 24,
+        left: 23,
+        marginBottom: 24,
+      }}
     >
       {IsNewRecord ? (
-        <Text style={{ fontSize: 16, fontFamily: "NotoSansKR-Medium" }}>
+        <Text
+          style={{
+            fontSize: 16,
+            fontFamily: "NotoSansKR-Medium",
+            lineHeight: 24,
+            height: 24,
+          }}
+        >
           폴더 추가
         </Text>
       ) : (
-        <Text style={{ fontSize: 16, fontFamily: "NotoSansKR-Medium" }}>
+        <Text
+          style={{
+            fontSize: 16,
+            fontFamily: "NotoSansKR-Medium",
+            lineHeight: 24,
+            height: 24,
+          }}
+        >
           폴더 수정
         </Text>
       )}
@@ -49,9 +69,13 @@ const BottomSheetName = ({ newFolderName, setNewFolderName }) => {
           lineHeight: 0,
         }}
         value={newFolderName}
-        onChangeText={(fdr) => setNewFolderName(fdr)}
+        onChangeText={(fdr) => {
+          if (fdr.length > 20) {
+            ///
+          } else setNewFolderName(fdr);
+        }}
         placeholder={"폴더 이름"}
-        placeholderTextColor="#000000"
+        placeholderTextColor="#ADB1C5"
       />
     </View>
   );
@@ -62,7 +86,13 @@ const BottomSheetColor = ({ newFolderColor, setNewFolderColor }) => {
     <View
       style={{ top: 24, width: 390, height: 128, left: 23, marginBottom: 24 }}
     >
-      <Text style={{ fontSize: 14, fontFamily: "NotoSansKR-Medium" }}>
+      <Text
+        style={{
+          fontSize: 14,
+          fontFamily: "NotoSansKR-Medium",
+          lineHeight: 24,
+        }}
+      >
         폴더 색상
       </Text>
       <View style={{ top: 24, flexDirection: "column" }}>
@@ -379,7 +409,14 @@ const BottomSheetInvite = ({
         flexDirection: "row",
       }}
     >
-      <Text style={{ fontSize: 14, fontFamily: "NotoSansKR-Regular" }}>
+      <Text
+        style={{
+          fontFamily: "NotoSansKR-Regular",
+          lineHeight: 24,
+          height: 24,
+          fontSize: 14,
+        }}
+      >
         친구초대
       </Text>
       <View>
@@ -394,8 +431,8 @@ const BottomSheetInvite = ({
           }}
           style={{
             marginLeft: 20,
-            height: 20,
-            width: 50,
+            height: 24,
+            width: 24,
           }}
         >
           <Arrow />
@@ -424,6 +461,7 @@ const renderFolderUser = ({ item }) => {
           fontFamily: "NotoSansKR-Medium",
           fontSize: 16,
           letterSpacing: -0.5,
+          lineHeight: 24,
         }}
       >
         {item.name}

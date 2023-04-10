@@ -8,10 +8,9 @@ import {
   TouchableOpacity,
   Text,
 } from "react-native";
-import Close from "../assets/icons/close.svg";
+import Close from "../assets/icons/Close.svg";
 
 const ImageView = ({ navigation, route }) => {
-  console.log(route.params);
   return (
     <SafeAreaView
       style={{

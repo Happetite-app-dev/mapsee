@@ -1,7 +1,6 @@
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useState } from "react";
 import { Text, View, Button } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
 const getday = (day) => {
   if (day == 0) {
     return "일";

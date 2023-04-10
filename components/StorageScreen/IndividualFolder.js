@@ -6,8 +6,7 @@ import { useFolderQuery } from "../../queries";
 import AppContext from "../AppContext";
 
 import PinFolder from "../../assets/icons/pinFolder.svg";
-import SearchData from "../../assets/icons/searchData.svg";
-import ShareFolder from "../../assets/icons/shareFolder2.svg";
+import ShareFolder from "../../assets/icons/Share.svg";
 import SingleFolder from "../../assets/icons/singleFolder.svg";
 
 const IndividualFolder = ({

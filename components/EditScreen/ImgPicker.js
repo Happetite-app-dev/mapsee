@@ -12,8 +12,8 @@ import {
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
-import DeletePhoto from "../../assets/icons/deletePhoto.svg";
-import AddPhoto from "../../assets/icons/addPhoto";
+import DeletePhoto from "../../assets/image/deletePhoto.svg";
+import AddPhoto from "../../assets/image/addPhoto";
 import ImageCarousel from "./ImageCarousel";
 const verifyPermissionsCam = async () => {
   const result = await Permissions.askAsync(Permissions.CAMERA);
