@@ -4,11 +4,11 @@ import React, { useEffect, useState } from "react";
 import { Image, StyleSheet, Text, View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
-
 import Close from "../assets/icons/Close.svg";
 import GoBack from "../assets/icons/BackArrow.svg";
 import InbetweenCompo from "../components/MapSearchScreen/InbetweenCompo";
 import renderDescription from "../components/MapSearchScreen/RenderDescription";
+
 const gotoSearch2Screen = ({ navigation, data }) => {
   navigation.navigate("MapSearchScreen2", data);
 };
@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
       marginLeft: 63,
     },
     textInput: {
-      height: 26,
+      height: 24,
       width: 300,
       fontSize: 16,
       marginTop: 48,
@@ -194,10 +194,10 @@ const styles = StyleSheet.create({
     position: "absolute",
   },
   goBack: {
-    width: 30,
-    height: 18,
-    marginTop: 51,
-    marginLeft: 31,
+    width: 24,
+    height: 24,
+    marginTop: 48,
+    marginLeft: 23,
   },
   goBackImage: {
     width: 9,
@@ -205,7 +205,12 @@ const styles = StyleSheet.create({
     resizeMode: "contain",
     tintColor: "black",
   },
-  goHome: { width: 15, height: 15, marginRight: 20.5, marginTop: 52.5 },
+  goHome: {
+    width: 24,
+    height: 24,
+    marginRight: 23,
+    marginTop: 48,
+  },
 });
 
 export default MapSearchScreen1;

@@ -19,6 +19,7 @@ import AppContext from "../components/AppContext";
 import { auth, database } from "../firebase";
 import GoBackHeader from "../components/GoBackHeader";
 import BottomButton from "../components/BottomButton";
+import SnackBar from "../components/SnackBar";
 
 const saveUser = async ({ uid, email, id, firstName, lastName }) => {
   const db = database;
@@ -65,6 +66,8 @@ const gotoApp = ({
   }
   //startTutorial 이 true라면 afterScreen.js로 이동필요
 };
+
+const regex = /^[ㄱ-ㅎ|가-힣|a-z|A-Z|0-9|]+$/;
 const RegisterScreen3 = ({ navigation, route }) => {
   console.log("register screen 3!");
   const { uid, email } = route.params;
@@ -72,7 +75,33 @@ const RegisterScreen3 = ({ navigation, route }) => {
   const [id, setId] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [valid, setValid] = useState(false);
+  const [visible, setVisible] = useState(false);
+  const [validFirst, setValidFirst] = useState(false);
+  const [validLast, setValidLast] = useState(false);
+  const [validID, setValidID] = useState(false);
 
+  useEffect(() => {
+    setValidFirst(regex.test(firstName));
+  }, [validFirst]);
+  useEffect(() => {
+    setValidFirst(regex.test(lastName));
+  }, [validLast]);
+  useEffect(() => {
+    setValidFirst(regex.test(firstName));
+  }, [validID]);
+
+  useEffect(() => {
+    if (
+      id.length >= 0 &&
+      id.length <= 20 &&
+      firstName.length >= 0 &&
+      firstName.length <= 10 &&
+      lastName.length >= 0 &&
+      lastName.length <= 10
+    )
+      setValid(true); // length validness
+  }, [id | firstName | lastName]);
   const myContext = useContext(AppContext);
   const startTutorial = false;
   const initMyUID = () => {
@@ -150,15 +179,22 @@ const RegisterScreen3 = ({ navigation, route }) => {
       <BottomButton
         text={"회원가입"}
         onPressFunction={() => {
-          console.log("onpress function");
-          handleSignUp();
+          if (valid) handleSignUp();
+          else setVisible(true);
         }}
         style={{
           position: "absolute",
           bottom: 40,
-          backgroundColor: "#5ED3CC",
+          backgroundColor: valid ? "#5ED3CC" : "#F4F5F9",
         }}
         fontColor="white"
+      />
+      <SnackBar
+        visible={visible}
+        onDismissSnackBar={() => {
+          setVisible(false);
+        }}
+        text={`이름을 10자리 이내로 입력해주세요.`}
       />
     </View>
   );

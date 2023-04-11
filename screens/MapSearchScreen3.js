@@ -68,7 +68,13 @@ const _renderRow = ({ navigation, item }) => {
       onPress={() => gotoSearch2Screen({ navigation, item })}
       underlayColor="#c8c7cc"
     >
-      <View style={{ flexDirection: "column", height: 84, marginLeft: 23 }}>
+      <View
+        style={{
+          flexDirection: "column",
+          height: 84,
+          marginLeft: 23,
+        }}
+      >
         <View style={styles.descriptionMainText}>
           <View
             style={{
@@ -132,21 +138,19 @@ const BottomSheet = ({ navigation, animation, name, data }) => {
         borderRadius: 16,
         elevation: 24,
       }}
+      onTouchEndCapture={() => {
+        const results = [name, data];
+        toggleAnimation(navigation, results);
+      }}
     >
-      <View
-        style={{ marginTop: 8, zIndex: 1 }}
-        onTouchEndCapture={() => {
-          const results = [name, data];
-          toggleAnimation(navigation, results);
-        }}
-      >
+      <View style={{ marginTop: 8, zIndex: 1 }}>
         <Image source={bottomSheetImage} />
       </View>
       <FlatList
         data={data}
         renderItem={({ item }) => _renderRow({ navigation, item })}
-        style={{ width: "100%" }}
-        scrollEnabled={false}
+        style={{ width: "100%", height: "100%" }}
+        scrollEnabled
       />
     </Animated.View>
   );

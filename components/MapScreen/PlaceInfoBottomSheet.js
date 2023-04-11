@@ -133,14 +133,18 @@ const BottomSheetScreen = ({
             width: "25%",
             height: "8%",
           }}
-          onTouchEndCapture={() =>
-            toggleAnimation2(showAnimation, setAnimationValue)
-          }
+          onTouchEndCapture={() => {
+            console.log("hi");
+            toggleAnimation2(showAnimation, setAnimationValue);
+          }}
         />
         <CreateNote
           navigation={navigation}
           isFocused={isFocused}
           style={styles.createNote}
+          onTouchFunction={() =>
+            toggleAnimation1(showAnimation, setAnimationValue)
+          }
         />
       </View>
     );

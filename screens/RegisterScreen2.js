@@ -15,6 +15,7 @@ import {
 } from "react-native";
 import BottomButton from "../components/BottomButton";
 import GoBackHeader from "../components/GoBackHeader";
+import SnackBar from "../components/SnackBar";
 
 import { auth } from "../firebase";
 
@@ -39,8 +40,10 @@ const RegisterScreen2 = ({ navigation, route }) => {
   const [secureTextEntry1, setSecureTextEntry1] = useState(true);
   const [secureTextEntry2, setSecureTextEntry2] = useState(true);
   const [valid, setValid] = useState(false);
+  const [visible, setVisible] = useState(true);
+
   useEffect(() => {
-    if (password.length !== 0) {
+    if (password.length !== 0 && password.length >= 6) {
       if (password === passwordCheck) {
         setValid(true);
       } else {
@@ -114,8 +117,20 @@ const RegisterScreen2 = ({ navigation, route }) => {
         text={"계속하기"}
         onPressFunction={() => {
           if (valid) handleSignUp({ email, password, navigation });
+          else setVisible(true);
         }}
-        style={{ position: "absolute", bottom: 40 }}
+        style={{
+          position: "absolute",
+          bottom: 40,
+          backgroundColor: valid ? "#5ED3CC" : "#F4F5F9",
+        }}
+      />
+      <SnackBar
+        visible={visible}
+        onDismissSnackBar={() => {
+          setVisible(false);
+        }}
+        text={`비밀번호를 다시 확인해주세요.`}
       />
     </View>
   );

@@ -92,7 +92,6 @@ const FolderBottomSheet = ({
     >
       <View
         style={{
-          backgroundColor: "blue",
           position: "absolute",
           width: "100%",
           height: 300,

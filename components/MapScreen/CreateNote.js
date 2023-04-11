@@ -23,7 +23,12 @@ const CurrentRotate = (isFocused) => {
   }
 };
 
-export const CreateNote = ({ navigation, style, isFocused }) => {
+export const CreateNote = ({
+  navigation,
+  style,
+  isFocused,
+  onTouchFunction,
+}) => {
   const RotateData = rotateValueHolder.interpolate({
     inputRange: [0, 1],
     outputRange: ["0deg", "360deg"],
@@ -47,6 +52,7 @@ export const CreateNote = ({ navigation, style, isFocused }) => {
           width: 48,
           height: 48,
         }}
+        onTouchEndCapture={onTouchFunction}
       >
         <CreateNote_back style={{ position: "absolute" }} />
       </Animated.View>

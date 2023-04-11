@@ -26,7 +26,7 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { get } from "lodash";
 
 import ListEcllipse from "../assets/icons/ListEcllipse.svg";
-import DateImage from "../assets/icons/Date.svg";
+import DateImage from "../assets/icons/date.svg";
 import DeleteFolder from "../assets/icons/Delete.svg";
 import FolderImage from "../assets/icons/Folder.svg";
 import GoBack from "../assets/icons/BackArrow.svg";
@@ -809,7 +809,7 @@ const styles = StyleSheet.create({
   item: {
     flex: 1,
     flexDirection: "row",
-    width: 150,
+    width: "100%",
     marginLeft: 23,
   },
   label: {
@@ -858,7 +858,7 @@ const styles = StyleSheet.create({
     width: 32,
     height: 24,
     position: "absolute",
-    left: 31,
+    left: 23,
   },
   title: {
     width: 304,

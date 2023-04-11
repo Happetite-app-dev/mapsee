@@ -13,6 +13,7 @@ const NoticeScreen = ({ navigation }) => {
   const query_modified = Object.entries(query.data || []).map((item) => {
     return { key: item[0], val: item[1] };
   });
+
   const queryClient = useQueryClient();
   const [visible, setVisible] = useState(false); // Snackbar
   const onToggleSnackBar = () => setVisible(!visible); // SnackbarButton -> 나중에는 없애기

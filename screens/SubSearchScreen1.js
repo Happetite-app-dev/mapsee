@@ -3,6 +3,7 @@ import { useIsFocused } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { Image, StyleSheet, Text, View, FlatList } from "react-native";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
+import * as Location from "expo-location";
 
 import Close from "../assets/icons/Close.svg";
 import GoBack from "../assets/icons/BackArrow.svg";
@@ -178,6 +179,25 @@ const SearchBox = ({
 const SubSearchScreen1 = ({ navigation, route }) => {
   const [name, setName] = useState("");
   const [history, setHistory] = useState([]);
+  const [current, setCurrent] = useState();
+
+  useEffect(() => {
+    async function getLocation() {
+      const location = await Location.getCurrentPositionAsync({});
+      console.log("function getLocation");
+      setCurrent({
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      });
+    }
+
+    getLocation();
+  });
+
+  useEffect(() => {
+    console.log(current);
+    console.log("Hi!");
+  }, [current]);
 
   useEffect(() => {
     async function fetchData() {
@@ -219,7 +239,7 @@ const SubSearchScreen1 = ({ navigation, route }) => {
         setName={(name) => setName(name)}
         history={history}
         setHistory={(history) => setHistory(history)}
-        location={[0, 0]}
+        location={[current.latitude, current.longitude]}
         navigation={navigation}
         setPlaceID={route.params.setPlaceID}
         setPlaceName={route.params.setPlaceName}
@@ -269,8 +289,8 @@ const styles = StyleSheet.create({
   goBack: {
     width: 30,
     height: 18,
-    marginTop: 51,
-    marginLeft: 31,
+    marginTop: 48,
+    marginLeft: 23,
   },
   goBackImage: {
     width: 9,
@@ -278,7 +298,7 @@ const styles = StyleSheet.create({
     resizeMode: "contain",
     tintColor: "black",
   },
-  goHome: { width: 15, height: 15, marginRight: 20.5, marginTop: 52.5 },
+  goHome: { width: 24, height: 24, marginRight: 23, marginTop: 48 },
 
   inbetweenCompo: {
     height: 24,
