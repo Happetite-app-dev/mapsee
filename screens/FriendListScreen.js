@@ -107,7 +107,6 @@ const IndividualFriend = ({
 const FriendListScreen = ({ navigation }) => {
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
-  console.log("FriendListScreen");
 
   const [friendIDNameList, setFriendIDNameList] = useState([]);
   const [addModalVisible, setAddModalVisible] = useState(false);
@@ -156,7 +155,6 @@ const FriendListScreen = ({ navigation }) => {
     }
   }, []);
 
-  useEffect(() => console.log(friendIDNameList), [friendIDNameList]);
   const renderFriendList = ({ item }) => (
     <IndividualFriend
       userID={item.userID}

@@ -8,7 +8,6 @@ export const PopUpType1 = ({
   askValue,
   actionValue,
 }) => {
-  console.log(modalVisible);
   return modalVisible ? (
     <View style={{ flex: 1 }}>
       <Modal
@@ -138,7 +137,6 @@ export const PopUpType4 = ({
   actionValue2,
   actionValue3,
 }) => {
-  console.log("popup modal visible", modalVisible);
   return modalVisible ? (
     <View
       style={{ ...styles.centeredView }}

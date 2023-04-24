@@ -36,7 +36,6 @@ const GoBackHeader = ({
       <View style={styles.buttons}>
         <View
           onTouchEndCapture={() => {
-            console.log("back through header");
             if (goBackFunction === undefined) navigation.goBack();
             else goBackFunction();
           }}
@@ -47,7 +46,6 @@ const GoBackHeader = ({
         <View
           style={styles.title}
           onTouchEndCapture={() => {
-            console.log("back through header");
             if (goBackFunction === undefined) navigation.goBack();
             else goBackFunction();
           }}

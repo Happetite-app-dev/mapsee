@@ -44,7 +44,7 @@ const toggleAnimation2 = (showAnimation, setAnimationValue) => {
 };
 const toggleAnimation3 = (showAnimation, setAnimationValue) => {
   //bottomsheet가 -1000일 때 보이게 하기, bottomsheet가 0일 때 뒤로 가기 버튼 눌러서 보이게만 하기
-  const val3 = -692;
+  const val3 = -724;
   Animated.timing(showAnimation, {
     useNativeDriver: false,
     toValue: val3,
@@ -134,7 +134,6 @@ const BottomSheetScreen = ({
             height: "8%",
           }}
           onTouchEndCapture={() => {
-            console.log("hi");
             toggleAnimation2(showAnimation, setAnimationValue);
           }}
         />

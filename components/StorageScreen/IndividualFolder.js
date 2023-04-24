@@ -18,7 +18,6 @@ const IndividualFolder = ({
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
   const query = useFolderQuery(folderID);
-  console.log(query.data.folderColor[myUID]);
   if (query.isLoading) return <Text>Loading</Text>;
   else if (query.error) return <Text>Error</Text>;
   return (
@@ -58,7 +57,7 @@ const IndividualFolder = ({
             {query.data.userIDs !== undefined &&
             Object.keys(query.data.userIDs).length > 1 ? (
               <ShareFolder
-                style={{ position: "absolute", top: 17, left: 25 }}
+                style={{ position: "absolute", marginTop: 10, marginLeft: 22 }}
               />
             ) : (
               <></>
@@ -77,6 +76,7 @@ const IndividualFolder = ({
                 position: "relative",
                 fontFamily: "NotoSansKR-Medium",
                 fontSize: 12,
+                lineHeight: 12,
               }}
             >
               {query.data.folderName[myUID]}

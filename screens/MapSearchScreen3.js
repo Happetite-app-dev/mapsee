@@ -125,6 +125,8 @@ const BottomSheet = ({ navigation, animation, name, data }) => {
       style={{
         width: "100%",
         backgroundColor: "white",
+        height: 433,
+
         borderTopLeftRadius: 30,
         borderTopRightRadius: 30,
         position: "absolute",
@@ -132,15 +134,10 @@ const BottomSheet = ({ navigation, animation, name, data }) => {
         zIndex: 1,
         alignItems: "center",
         justifyContent: "center",
-        maxHeight: 256,
         borderWidth: 1,
         borderColor: "#DDDFE9",
         borderRadius: 16,
         elevation: 24,
-      }}
-      onTouchEndCapture={() => {
-        const results = [name, data];
-        toggleAnimation(navigation, results);
       }}
     >
       <View style={{ marginTop: 8, zIndex: 1 }}>
@@ -166,7 +163,6 @@ const MapSearchScreen3 = ({ navigation, route }) => {
 
   const [latList, setLatList] = useState([]);
   const [lngList, setLngList] = useState([]);
-
   const onInsert = (data) => {
     data.map((item) => {
       Geocode.fromAddress(item.structured_formatting.main_text).then(

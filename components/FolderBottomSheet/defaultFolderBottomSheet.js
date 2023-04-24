@@ -71,7 +71,7 @@ const BottomSheetName = ({ newFolderName, setNewFolderName }) => {
         value={newFolderName}
         onChangeText={(fdr) => {
           if (fdr.length > 20) {
-            ///
+            alert("폴더 이름의 길이는 20자 미만이어야 합니다.");
           } else setNewFolderName(fdr);
         }}
         placeholder={"폴더 이름"}
@@ -452,7 +452,7 @@ const renderFolderUser = ({ item }) => {
         borderRadius: 16,
         marginHorizontal: 8,
         marginVertical: 20,
-        backgroundColor: "#F4F5F9",
+        backgroundColor: "#F2F2F2",
       }}
     >
       <Text
@@ -462,6 +462,7 @@ const renderFolderUser = ({ item }) => {
           fontSize: 16,
           letterSpacing: -0.5,
           lineHeight: 24,
+          fontWeight: "500",
         }}
       >
         {item.name}

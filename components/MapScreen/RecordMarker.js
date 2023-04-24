@@ -11,7 +11,7 @@ import AppContext from "../AppContext";
 const now = new Date();
 const currentDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
-const RecordMarker = ({ recordData, origin }) => {
+const RecordMarker = ({ recordData, origin, onPressFunction }) => {
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
   const userQuery = useUserQuery(myUID);
@@ -47,6 +47,9 @@ const RecordMarker = ({ recordData, origin }) => {
           coordinate={record.lctn}
           opacity={100}
           style={{ zIndex: Math.round(-dayDiff * 100000) }}
+          onPress={(data) => {
+            onPressFunction(data, record.placeName);
+          }}
         >
           {dayDiff <= 3 ? (
             <NewMarker color={color} />

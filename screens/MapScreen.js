@@ -242,6 +242,15 @@ const MapScreen = ({ navigation }) => {
               : []
           }
           origin={origin}
+          onPressFunction={(data, placeName) => {
+            targetingFromLocation({
+              lctn: data.nativeEvent.coordinate,
+              name: placeName,
+              setOrigin,
+              setTarget,
+              setTargetShown,
+            });
+          }}
         />
         <Marker
           coordinate={target.lctn}

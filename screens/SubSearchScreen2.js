@@ -47,7 +47,7 @@ const toggleAnimation2 = (showAnimation, setAnimationValue) => {
   setAnimationValue(val2);
 };
 const toggleAnimation3 = (showAnimation, setAnimationValue) => {
-  const val3 = -588;
+  const val3 = -660;
   Animated.timing(showAnimation, {
     useNativeDriver: false,
     toValue: val3,
@@ -159,7 +159,7 @@ const BottomSheetScreen = ({
           navigation.pop(2);
         }}
         text="장소 선택"
-        style={{ top: 168 }}
+        style={{ top: 136 }}
       />
     </View>
   );
@@ -184,7 +184,7 @@ const BottomSheet = ({
       <Animated.View
         style={{
           width: "100%",
-          height: 844,
+          height: 884,
           backgroundColor: "white",
           borderTopLeftRadius: 30,
           borderTopRightRadius: 30,

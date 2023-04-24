@@ -51,7 +51,7 @@ const toggleAnimation2 = (showAnimation, setAnimationValue) => {
   setAnimationValue(val2);
 };
 const toggleAnimation3 = (showAnimation, setAnimationValue) => {
-  const val3 = -692;
+  const val3 = -724;
   Animated.timing(showAnimation, {
     useNativeDriver: false,
     toValue: val3,
@@ -84,7 +84,6 @@ const BottomSheetScreen = ({
     });
   };
   const isFocused = useIsFocused();
-  console.log(CreateNote);
   if (animationVal < 0) {
     return (
       //bottomsheet가 전체 화면을 덮기 전
@@ -191,7 +190,6 @@ const BottomSheetScreen = ({
           text={targetName}
           rightButton="goHome"
           goBackFunction={() => {
-            console.log("done");
             toggleAnimation3(showAnimation, setAnimationValue);
           }}
         />

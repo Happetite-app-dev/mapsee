@@ -1,7 +1,14 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useIsFocused } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
-import { Image, StyleSheet, Text, View, FlatList } from "react-native";
+import {
+  Image,
+  StyleSheet,
+  Text,
+  View,
+  FlatList,
+  Keyboard,
+} from "react-native";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import * as Location from "expo-location";
 
@@ -121,6 +128,7 @@ const SearchBox = ({
           setLctn={setLctn}
         />
       }
+      getResultArray={Keyboard.dismiss}
       getSearchWord={(text) => {
         setName(text);
       }}
@@ -179,12 +187,11 @@ const SearchBox = ({
 const SubSearchScreen1 = ({ navigation, route }) => {
   const [name, setName] = useState("");
   const [history, setHistory] = useState([]);
-  const [current, setCurrent] = useState();
+  const [current, setCurrent] = useState([0, 0]);
 
   useEffect(() => {
     async function getLocation() {
       const location = await Location.getCurrentPositionAsync({});
-      console.log("function getLocation");
       setCurrent({
         latitude: location.coords.latitude,
         longitude: location.coords.longitude,
@@ -193,11 +200,6 @@ const SubSearchScreen1 = ({ navigation, route }) => {
 
     getLocation();
   });
-
-  useEffect(() => {
-    console.log(current);
-    console.log("Hi!");
-  }, [current]);
 
   useEffect(() => {
     async function fetchData() {
@@ -239,7 +241,12 @@ const SubSearchScreen1 = ({ navigation, route }) => {
         setName={(name) => setName(name)}
         history={history}
         setHistory={(history) => setHistory(history)}
-        location={[current.latitude, current.longitude]}
+        location={
+          [route.params.current.latitude, route.params.current.longitude] || [
+            current.latitude,
+            current.longitude,
+          ]
+        }
         navigation={navigation}
         setPlaceID={route.params.setPlaceID}
         setPlaceName={route.params.setPlaceName}

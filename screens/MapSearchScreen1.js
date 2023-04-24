@@ -8,6 +8,7 @@ import Close from "../assets/icons/Close.svg";
 import GoBack from "../assets/icons/BackArrow.svg";
 import InbetweenCompo from "../components/MapSearchScreen/InbetweenCompo";
 import renderDescription from "../components/MapSearchScreen/RenderDescription";
+import * as Location from "expo-location";
 
 const gotoSearch2Screen = ({ navigation, data }) => {
   navigation.navigate("MapSearchScreen2", data);
@@ -100,6 +101,19 @@ const SearchBox = ({
 const MapSearchScreen1 = ({ navigation, route }) => {
   const [name, setName] = useState("");
   const [history, setHistory] = useState([]);
+  const [current, setCurrent] = useState([0, 0]);
+
+  useEffect(() => {
+    async function getLocation() {
+      const location = await Location.getCurrentPositionAsync({});
+      setCurrent({
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      });
+    }
+
+    getLocation();
+  });
 
   useEffect(() => {
     async function fetchData() {

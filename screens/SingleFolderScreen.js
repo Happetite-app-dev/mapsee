@@ -90,7 +90,11 @@ const SingleFolderScreen = ({ navigation, route }) => {
           navigation={navigation}
           text={query.data.folderName[myUID]}
           folderColor={query.data.folderColor[myUID]}
-          isShareFolder={query.data.userIDs?.length >= 2}
+          isShareFolder={
+            query.data.userIDs !== undefined
+              ? Object.entries(query.data.userIDs).length >= 2
+              : false
+          }
           rightButton="edit"
           rightButtonFunction={() =>
             gotoMakeFolderBottomSheetScreen({

@@ -61,7 +61,6 @@ const gotoApp = ({
   initMyLastName();
   initMyEmail();
   if (!startTutorial) {
-    console.log("gotoApp");
     navigation.navigate("Tabs");
   }
   //startTutorial 이 true라면 afterScreen.js로 이동필요
@@ -69,7 +68,6 @@ const gotoApp = ({
 
 const regex = /^[ㄱ-ㅎ|가-힣|a-z|A-Z|0-9|]+$/;
 const RegisterScreen3 = ({ navigation, route }) => {
-  console.log("register screen 3!");
   const { uid, email } = route.params;
 
   const [id, setId] = useState("");
@@ -121,7 +119,6 @@ const RegisterScreen3 = ({ navigation, route }) => {
   };
 
   const handleSignUp = () => {
-    console.log("handlesignup");
     saveUser({ uid, email, id, firstName, lastName });
     gotoApp({
       initMyUID,

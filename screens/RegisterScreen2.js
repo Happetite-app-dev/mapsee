@@ -20,12 +20,9 @@ import SnackBar from "../components/SnackBar";
 import { auth } from "../firebase";
 
 const handleSignUp = ({ email, password, navigation }) => {
-  console.log("userCredentials created");
-
   createUserWithEmailAndPassword(auth, email, password)
     .then((userCredentials) => {
       const user = userCredentials.user;
-      console.log("userCredentials created");
       navigation.navigate("RegisterScreen3", {
         uid: user.uid,
         email: user.email,

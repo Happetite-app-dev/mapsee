@@ -1,6 +1,6 @@
 import { ref, onValue, set, push, remove } from "firebase/database";
 import { useQueryClient } from "react-query";
-
+import * as Location from "expo-location";
 import {
   ref as ref_storage,
   uploadBytes,
@@ -25,6 +25,7 @@ import {
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { get } from "lodash";
 
+import ShareFolder from "../assets/icons/Share copy.svg";
 import ListEcllipse from "../assets/icons/ListEcllipse.svg";
 import DateImage from "../assets/icons/date.svg";
 import DeleteFolder from "../assets/icons/Delete.svg";
@@ -380,6 +381,22 @@ const removeRecord = async ({
 };
 
 const EditScreen = ({ navigation, route }) => {
+  // Location for SubSearchScreen1
+  const [current, setCurrent] = useState([0, 0]);
+
+  useEffect(() => {
+    async function getLocation() {
+      const location = await Location.getCurrentPositionAsync({});
+      setCurrent({
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      });
+    }
+
+    getLocation();
+  });
+
+  //
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
   const myID = myContext.myID;
@@ -401,6 +418,10 @@ const EditScreen = ({ navigation, route }) => {
   const defaultFolderQuery = useFolderQuery(defaultFolderID);
   const defaultFolderName = defaultFolderQuery.data.folderName[myUID];
   const defaultFolderColor = defaultFolderQuery.data.folderColor[myUID];
+  const [isShareFolder, setIsShareFolder] = useState(
+    defaultFolderQuery.data.userIDs !== undefined &&
+      Object.keys(defaultFolderQuery.data.userIDs).length > 1
+  );
 
   const IsNewRecord = recordID === undefined; //data?.title === undefined; //지금 사용자가 작성하고 있는 record가 새로 만드는 record인지 기존에 있던 record인지를 알려주는 bool
   const IsRecordOwner = data?.userID === myUID; //기존의 기록인 경우, 그것이 자신의 기록인지 확인하는 bool
@@ -429,6 +450,8 @@ const EditScreen = ({ navigation, route }) => {
     get(folderQuery.data, ["folderColor", myUID]) || defaultFolderColor
   );
 
+  const writerUserQuery = useUserQuery(data?.userID);
+
   const [showFolderBottomSheet, setShowFolderBottomSheet] = useState(false);
   const [selectedPhotos, setSelectedPhotos] = useState(
     data?.photos !== undefined && data?.photos !== null
@@ -439,7 +462,6 @@ const EditScreen = ({ navigation, route }) => {
   const [removeModalVisible, setRemoveModalVisible] = useState(false);
   const [goBackModalVisible, setGoBackModalVisible] = useState(false);
   const [visible, setVisible] = useState(false); // Snackbar
-
   useEffect(() => {
     setPlaceID_(placeID || data?.placeID);
     setPlaceName_(placeName || data?.placeName);
@@ -461,6 +483,15 @@ const EditScreen = ({ navigation, route }) => {
     setText_(data?.text || "");
     setFolderColor_(folderQuery.data?.folderColor[myUID] || defaultFolderColor);
   }, [query.isLoading || folderQuery.isLoading]);
+
+  useEffect(() => {
+    if (folderQuery.data?.userIDs !== undefined) {
+      setFolderColor_(
+        folderQuery.data?.folderColor[myUID] || defaultFolderColor
+      );
+      setIsShareFolder(Object.keys(folderQuery.data.userIDs).length > 1);
+    }
+  }, [folderID_]);
 
   const onToggleSnackBar = () => setVisible(!visible); // SnackbarButton -> 나중에는 없애기
   const onDismissSnackBar = () => setVisible(false); // Snackbar
@@ -533,6 +564,35 @@ const EditScreen = ({ navigation, route }) => {
             </View>
           </View>
         )}
+        {IsRecordOwner || isEditable ? (
+          <></>
+        ) : (
+          <View
+            style={{
+              backgroundColor: "#F4F5F9",
+              height: 24,
+              right: 23,
+              position: "absolute",
+              lineHeight: 24,
+              paddingLeft: 16,
+              paddingRight: 16,
+              borderRadius: 12,
+              paddingTop: 4,
+            }}
+          >
+            <Text
+              style={{
+                height: 16,
+                fontFamily: "NotoSansKR-Medium",
+                alignContent: "center",
+                lineHeight: 16,
+                fontSize: 12,
+              }}
+            >
+              {writerUserQuery.data?.lastName + writerUserQuery.data?.firstName}
+            </Text>
+          </View>
+        )}
       </View>
       <ScrollView
         style={{ width: "100%", marginTop: 32, height: "100%" }}
@@ -568,6 +628,7 @@ const EditScreen = ({ navigation, route }) => {
                 setPlaceName: (f) => setPlaceName_(f),
                 setAddress: (f) => setAddress_(f),
                 setLctn: (f) => setLctn_(f),
+                current,
               });
             }
           }}
@@ -639,9 +700,25 @@ const EditScreen = ({ navigation, route }) => {
             }}
           >
             <ListEcllipse color={folderColor_} />
-            <Text style={{ fontFamily: "NotoSansKR-Regular", left: 10 }}>
+            <Text
+              style={{
+                fontFamily: "NotoSansKR-Regular",
+                left: 10,
+                lineHeight: 12,
+              }}
+            >
               {folderName_}
             </Text>
+            {(folderQuery.userIDs !== undefined &&
+              Object.entries(folderQuery.userIDs).length >= 2) ||
+            isShareFolder ? (
+              <ShareFolder
+                color="#ADB1C5"
+                style={{ left: 12, position: "relative" }}
+              />
+            ) : (
+              <></>
+            )}
           </View>
           <View
             onTouchEndCapture={() => {
