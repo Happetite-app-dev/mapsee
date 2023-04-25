@@ -76,7 +76,8 @@ const IndividualFolder = ({
                 position: "relative",
                 fontFamily: "NotoSansKR-Medium",
                 fontSize: 12,
-                lineHeight: 12,
+                lineHeight: 16,
+                height: 16,
               }}
             >
               {query.data.folderName[myUID]}

@@ -268,7 +268,6 @@ const InviteFriendScreen = ({ navigation, route }) => {
         rightButton="none"
         goBackFunction={() => {
           onChangeFolderUserIDs(folderUserNameIDs.map(({ userID }) => userID));
-          console.log("done");
           gotoMakeFolderBottomSheetScreen({ navigation });
         }}
       />

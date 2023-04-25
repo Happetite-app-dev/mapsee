@@ -55,7 +55,7 @@ const MypageScreen = ({ navigation }) => {
           <Text style={styles.screenTitle}>마이페이지</Text>
         </View>
       </View>
-      <View
+      <TouchableOpacity
         style={{
           position: "absolute",
           width: "100%",
@@ -63,7 +63,7 @@ const MypageScreen = ({ navigation }) => {
           top: 105,
           flexDirection: "column",
         }}
-        onTouchEndCapture={() => gotoProfileScreen({ navigation })}
+        onPress={() => gotoProfileScreen({ navigation })}
       >
         <View>
           <Text
@@ -103,7 +103,7 @@ const MypageScreen = ({ navigation }) => {
         <TouchableOpacity style={{ height: 20, width: 50, left: 352.5 }}>
           <Arrow />
         </TouchableOpacity>
-      </View>
+      </TouchableOpacity>
 
       <View
         style={{

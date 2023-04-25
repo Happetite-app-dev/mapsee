@@ -704,7 +704,8 @@ const EditScreen = ({ navigation, route }) => {
               style={{
                 fontFamily: "NotoSansKR-Regular",
                 left: 10,
-                lineHeight: 12,
+                lineHeight: 16,
+                height: 16,
               }}
             >
               {folderName_}

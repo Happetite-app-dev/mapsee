@@ -98,6 +98,17 @@ const addNewFolder = async ({
       //새로 추가된 친구에 대해 공통폴더이름, 색상 부여 필요
       //folderName 공통폴더이름 부여
       if (!originalFolderUserIDs.includes(folderUserID)) {
+        // 친구에게 초대할 때. 여기서 folder/userIDS/에 초대한 사람의 uid를 넣어주고, FALSE로 해두기! user/folderIDS/에 ㄴ
+        const reference3 = ref(
+          db,
+          `/folders/${folderID}/userIDs/${folderUserID}`
+        ); //folders/newfolderID/userIDs에 userID:true를 넣기
+        set(reference3, false);
+        const reference4 = ref(
+          db,
+          `users/${folderUserID}/folderIDs/${folderID}`
+        ); //user에 folderID를 넣고
+        set(reference4, false);
         const timeNow = new Date();
         const reference = ref(db, "/notices/" + folderUserID);
         push(reference, {

@@ -1,5 +1,13 @@
 import { useEffect, useState, useContext } from "react";
-import { SafeAreaView, Text, View, FlatList, StyleSheet } from "react-native";
+import {
+  SafeAreaView,
+  Text,
+  View,
+  FlatList,
+  StyleSheet,
+  ScrollView,
+  RefreshControl,
+} from "react-native";
 import { Snackbar } from "react-native-paper";
 import { useQueryClient } from "react-query";
 import AppContext from "../components/AppContext";
@@ -33,24 +41,44 @@ const NoticeScreen = ({ navigation }) => {
       <View style={styles.screenTitleView}>
         <Text style={styles.screenTitle}>알림</Text>
       </View>
-      <View style={{ alignItems: "center", height: "90%" }}>
-        <FlatList
-          onRefresh={() => {
-            queryClient.invalidateQueries(["all-notices"]);
-            queryClient.invalidateQueries(["users"]);
-            queryClient.invalidateQueries(["folders"]);
-          }} // fetch로 데이터 호출
-          refreshing={query.isLoading} // state
-          data={query_modified}
-          renderItem={renderNotice}
-          numColumns={1}
-          initialNumToRender={15}
-          windowSize={5}
-          style={{
-            width: "100%",
+      <View style={{ alignItems: "center" }}>
+        <ScrollView
+          style={{ height: "100%" }}
+          contentContainerStyle={{
+            flexDirection: "row",
+            alignSelf: "flex-end",
           }}
-        />
-
+          refreshControl={
+            <RefreshControl
+              refreshing={query.isLoading}
+              onRefresh={() => {
+                queryClient.invalidateQueries(["all-notices"]);
+                queryClient.invalidateQueries(["users"]);
+                queryClient.invalidateQueries(["folders"]);
+              }}
+            />
+          }
+        >
+          <FlatList
+            inverted
+            invertStickyHeaders
+            /*onRefresh={() => {
+              queryClient.invalidateQueries(["all-notices"]);
+              queryClient.invalidateQueries(["users"]);
+              queryClient.invalidateQueries(["folders"]);
+            }} // fetch로 데이터 호출
+            refreshing={query.isLoading} // state*/
+            data={query_modified}
+            renderItem={renderNotice}
+            numColumns={1}
+            initialNumToRender={15}
+            windowSize={5}
+            style={{
+              width: "100%",
+              height: "100%",
+            }}
+          />
+        </ScrollView>
         <Snackbar
           visible={visible}
           onDismiss={onDismissSnackBar}

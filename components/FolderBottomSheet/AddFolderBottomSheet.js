@@ -56,6 +56,17 @@ const addNewFolder = ({
       const now = new Date();
       set(referenceDate, now.toString());
     } else {
+      // 친구에게 초대할 때. 여기서 folder/userIDS/에 초대한 사람의 uid를 넣어주고, FALSE로 해두기!
+      const reference3 = ref(
+        db,
+        `/folders/${newFolderID}/userIDs/${folderUserID}`
+      ); //folders/newfolderID/userIDs에 userID:true를 넣기
+      set(reference3, false);
+      const reference4 = ref(
+        db,
+        `users/${folderUserID}/folderIDs/${newFolderID}`
+      ); //user에 folderID를 넣고
+      set(reference4, false);
       const timeNow = new Date();
       const reference = ref(db, "/notices/" + folderUserID);
       push(reference, {

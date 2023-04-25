@@ -264,8 +264,8 @@ const StorageScreen = ({ navigation, route }) => {
         askValue={longPressedFolder.folderName}
         actionValue1={
           longPressedFolder.folderFixedDate === undefined
-            ? "좌측 폴더 고정"
-            : "좌측 폴더 해제"
+            ? "폴더 고정"
+            : "폴더 고정 해제"
         }
         actionValue2="폴더 편집"
         actionValue3="나가기"

@@ -38,7 +38,7 @@ const toggleAnimation1 = (showAnimation, setAnimationValue) => {
   setAnimationValue(val);
 };
 const toggleAnimation2 = (showAnimation, setAnimationValue) => {
-  const val2 = 0;
+  const val2 = -660;
   Animated.timing(showAnimation, {
     useNativeDriver: false,
     toValue: val2,
