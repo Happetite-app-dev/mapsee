@@ -78,9 +78,18 @@ const ReceptRecordAddDoneList = ({
         onPress={() => {
           gotoEditScreen({ navigation, recordID });
         }}
-        style={styles.container}
+        style={{
+          width: 344,
+          alignSelf: "center",
+          flexDirection: "column",
+          marginBottom: 40,
+        }}
       >
-        <View style={{ flexDirection: "row", width: 276 }}>
+        <View
+          style={{
+            flexDirection: "row",
+          }}
+        >
           <Text style={styles.text}>
             <Text style={{ fontFamily: "NotoSansKR-Bold" }}>
               {performerLastName}
@@ -96,21 +105,6 @@ const ReceptRecordAddDoneList = ({
               <TimeDisplay time={time} />
             </Text>
           </Text>
-        </View>
-        <View
-          style={{
-            borderRadius: 28,
-            borderWidth: 1,
-            width: 56,
-            height: 56,
-            borderColor: "#DDDFE9",
-            alignItems: "center",
-            justifyContent: "center",
-            right: 0,
-            position: "absolute",
-          }}
-        >
-          <DefaultImage style={{ width: 48, height: 48, borderRadius: 24 }} />
         </View>
       </TouchableOpacity>
     );
@@ -120,7 +114,13 @@ const ReceptRecordAddDoneList = ({
         onPress={() => {
           gotoEditScreen({ navigation, recordID });
         }}
-        style={styles.container}
+        style={{
+          width: 344,
+          alignSelf: "center",
+          flexDirection: "column",
+          justifyContent: "center",
+          marginBottom: 40,
+        }}
       >
         <View style={{ flexDirection: "row", width: 276 }}>
           <Text style={styles.text}>
@@ -150,10 +150,15 @@ const ReceptRecordAddDoneList = ({
             justifyContent: "center",
             right: 0,
             position: "absolute",
+            marginBottom: 40,
           }}
         >
           <Image
-            style={{ width: 48, height: 48, borderRadius: 24 }}
+            style={{
+              width: 48,
+              height: 48,
+              borderRadius: 24,
+            }}
             source={{ uri: selectedPhotos[0] }}
           />
         </View>

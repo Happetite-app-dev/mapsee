@@ -42,7 +42,8 @@ export const CreateNote = ({
     <View
       style={style}
       onTouchEndCapture={() => {
-        navigation.navigate("EditScreen", 0);
+        navigation.push("EditScreen", 0);
+        console.log("createnote");
       }}
     >
       <Animated.View

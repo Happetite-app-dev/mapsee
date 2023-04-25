@@ -100,7 +100,10 @@ const MypageScreen = ({ navigation }) => {
             </TouchableOpacity>
           </View>
         </View>
-        <TouchableOpacity style={{ height: 20, width: 50, left: 352.5 }}>
+        <TouchableOpacity
+          style={{ height: 20, width: 50, left: 352.5 }}
+          onPress={() => gotoProfileScreen({ navigation })}
+        >
           <Arrow />
         </TouchableOpacity>
       </TouchableOpacity>
@@ -212,6 +215,7 @@ const MypageScreen = ({ navigation }) => {
           setVisible(false);
         }}
         text={`아이디(@${myID})가 복사되었습니다.`}
+        style={{ marginBottom: 70 }}
       />
     </SafeAreaView>
   );

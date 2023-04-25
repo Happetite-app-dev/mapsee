@@ -34,6 +34,14 @@ export const PopUpType1 = ({
               >
                 <Text style={styles.modalText}>취소</Text>
               </Pressable>
+              <View
+                style={{
+                  width: 1,
+                  height: 16,
+                  backgroundColor: "#ADB1C5",
+                  marginTop: 8,
+                }}
+              ></View>
               <Pressable
                 style={{
                   marginTop: 8,

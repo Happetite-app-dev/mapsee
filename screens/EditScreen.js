@@ -512,7 +512,7 @@ const EditScreen = ({ navigation, route }) => {
       <View
         style={{
           height: 56,
-          top: 32,
+          marginTop: 32,
           width: "100%",
           flexDirection: "row",
           alignItems: "center",
@@ -564,9 +564,62 @@ const EditScreen = ({ navigation, route }) => {
             </View>
           </View>
         )}
-        {IsRecordOwner || isEditable ? (
-          <></>
-        ) : (
+        {(isEditable && IsRecordOwner) || IsNewRecord ? (
+          <View
+            style={{
+              height: 24,
+              position: "absolute",
+              lineHeight: 24,
+              right: 0,
+            }}
+          >
+            <TouchableOpacity
+              onPress={() =>
+                storeRecord({
+                  navigation,
+                  myUID,
+                  myID,
+                  myFirstName,
+                  myLastName,
+                  title_,
+                  place: placeName_,
+                  placeID: placeID_,
+                  address: address_,
+                  lctn: lctn_,
+                  date_,
+                  folderID_,
+                  folderName_,
+                  selectedPhotos,
+                  text_,
+                  writeDate: data?.writeDate,
+                  recordID,
+                  originalfolderID,
+                  IsNewRecord,
+                  queryClient,
+                })
+              }
+              style={{
+                width: 40,
+                height: 35,
+                right: 23,
+              }}
+            >
+              <Text
+                style={{
+                  height: 16,
+                  fontFamily: "NotoSansKR-Bold",
+                  lineHeight: 24,
+                  fontSize: 14,
+                  color: "#5ED3CC",
+                  right: 0,
+                  position: "absolute",
+                }}
+              >
+                저장
+              </Text>
+            </TouchableOpacity>
+          </View>
+        ) : !IsRecordOwner && !isEditable ? (
           <View
             style={{
               backgroundColor: "#F4F5F9",
@@ -592,10 +645,16 @@ const EditScreen = ({ navigation, route }) => {
               {writerUserQuery.data?.lastName + writerUserQuery.data?.firstName}
             </Text>
           </View>
+        ) : (
+          <></>
         )}
       </View>
       <ScrollView
-        style={{ width: "100%", marginTop: 32, height: "100%" }}
+        style={{
+          width: "100%",
+          marginTop: 16,
+          height: "100%",
+        }}
         showsVerticalScrollIndicator={false}
         scrollEnabled
       >
@@ -704,7 +763,7 @@ const EditScreen = ({ navigation, route }) => {
               style={{
                 fontFamily: "NotoSansKR-Regular",
                 left: 10,
-                lineHeight: 16,
+                lineHeight: 18,
                 height: 16,
               }}
             >
@@ -715,7 +774,7 @@ const EditScreen = ({ navigation, route }) => {
             isShareFolder ? (
               <ShareFolder
                 color="#ADB1C5"
-                style={{ left: 12, position: "relative" }}
+                style={{ left: 12, position: "relative", top: -0.5 }}
               />
             ) : (
               <></>
@@ -743,66 +802,6 @@ const EditScreen = ({ navigation, route }) => {
               placeholder="내용을 입력하세요"
               placeholderTextColor="#ADB1C5"
             />
-          </View>
-        )}
-
-        {isEditable && (
-          <View style={{ ...styles.button }}>
-            <TouchableOpacity
-              onPress={() => {
-                setGoBackModalVisible(true);
-                IsNewRecord ? navigation.pop() : setIsEditable(false);
-              }}
-              style={{ width: 160, marginRight: 7 }}
-            >
-              <Text
-                style={{
-                  alignSelf: "center",
-                  fontFamily: "NotoSansKR-Bold",
-                }}
-              >
-                취소
-              </Text>
-            </TouchableOpacity>
-            <View
-              style={{ width: 1, height: 16, backgroundColor: "#ADB1C5" }}
-            />
-            <TouchableOpacity
-              onPress={() =>
-                storeRecord({
-                  navigation,
-                  myUID,
-                  myID,
-                  myFirstName,
-                  myLastName,
-                  title_,
-                  place: placeName_,
-                  placeID: placeID_,
-                  address: address_,
-                  lctn: lctn_,
-                  date_,
-                  folderID_,
-                  folderName_,
-                  selectedPhotos,
-                  text_,
-                  writeDate: data?.writeDate,
-                  recordID,
-                  originalfolderID,
-                  IsNewRecord,
-                  queryClient,
-                })
-              }
-              style={{ width: 160, marginLeft: 7 }}
-            >
-              <Text
-                style={{
-                  alignSelf: "center",
-                  fontFamily: "NotoSansKR-Bold",
-                }}
-              >
-                저장
-              </Text>
-            </TouchableOpacity>
           </View>
         )}
       </ScrollView>
@@ -838,39 +837,14 @@ const EditScreen = ({ navigation, route }) => {
         askValue="정말 삭제하시겠어요?"
         actionValue="삭제"
       />
-      <PopUpType2
+      <PopUpType1
         modalVisible={goBackModalVisible}
         modalHandler={setGoBackModalVisible}
-        action1={() => {
+        action={() => {
           navigation.goBack();
         }}
-        action2={() => {
-          storeRecord({
-            navigation,
-            myUID,
-            myID,
-            myFirstName,
-            myLastName,
-            title_,
-            place: placeName_,
-            placeID: placeID_,
-            address: address_,
-            lctn: lctn_,
-            date_,
-            folderID_,
-            folderName_,
-            selectedPhotos,
-            text_,
-            writeDate: data?.writeDate,
-            recordID,
-            originalfolderID,
-            IsNewRecord,
-            queryClient,
-          });
-        }}
-        askValue="변경 사항을 저장하시겠어요?"
-        actionValue1="저장 안함"
-        actionValue2="저장"
+        askValue="정말 기록을 그만두시겠어요?"
+        actionValue="그만두기"
       />
     </View>
   );
@@ -887,7 +861,7 @@ const styles = StyleSheet.create({
   item: {
     flex: 1,
     flexDirection: "row",
-    width: "100%",
+    width: 344,
     marginLeft: 23,
   },
   label: {

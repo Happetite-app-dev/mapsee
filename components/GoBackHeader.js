@@ -41,7 +41,7 @@ const GoBackHeader = ({
           }}
           style={styles.goBack}
         >
-          <GoBack height={24} />
+          <GoBack height={24} style={{ left: 23 }} />
         </View>
         <View
           style={styles.title}
@@ -129,10 +129,10 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
   goBack: {
-    width: 24,
-    height: 24,
+    width: 50,
+    height: 30,
     position: "absolute",
-    left: 23,
+    left: 0,
   },
   title: {
     width: 280,

@@ -141,9 +141,9 @@ const BottomSheetScreen = ({
           navigation={navigation}
           isFocused={isFocused}
           style={styles.createNote}
-          onTouchFunction={() =>
-            toggleAnimation1(showAnimation, setAnimationValue)
-          }
+          onTouchFunction={() => {
+            toggleAnimation1(showAnimation, setAnimationValue);
+          }}
         />
       </View>
     );

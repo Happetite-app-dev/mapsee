@@ -174,7 +174,7 @@ const MapScreen = ({ navigation }) => {
 
   useEffect(() => {
     if (targetShown) {
-      navigation.navigate("PlaceInfoBottomSheetScreen", {
+      navigation.push("PlaceInfoBottomSheetScreen", {
         targetName: target.name,
         targetAddress: target.address,
         targetId: target.id,
@@ -268,7 +268,7 @@ const MapScreen = ({ navigation }) => {
           <MyLocationMarker style={styles.MyLocationMarker} />
         </Marker>
       </MapView>
-      <SearchView navigation={navigation} origin={origin} />
+      <SearchView navigation={navigation} origin={current} />
 
       <View
         style={styles.currentLocationButton}

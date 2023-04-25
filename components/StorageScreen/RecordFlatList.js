@@ -9,8 +9,8 @@ import {
 } from "react-native";
 import AppContext from "../AppContext";
 
-import NoImageRecord1 from "../../assets/image/noImageRecord1.svg";
-import NoImageRecord2 from "../../assets/image/noImageRecord2.svg";
+import NoImageRecord1 from "../../assets/image/noImageRecord3.svg";
+import NoImageRecord2 from "../../assets/image/noImageRecord4.svg";
 import ShareFolder from "../../assets/icons/Share copy.svg";
 
 const gotoEditScreen = (stackNavigation, item) => {
@@ -71,7 +71,7 @@ const IndividualRecord = ({ item, stackNavigation, myUID }) => {
                 <NoImageRecord1
                   style={{
                     width: 80,
-                    height: 99,
+                    height: 96,
                     marginTop: 30,
                     marginLeft: 40,
                   }}

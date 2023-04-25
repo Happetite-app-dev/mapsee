@@ -17,6 +17,7 @@ const DispatchFriendRequestList = ({ approverUID, time }) => {
             ...styles.text,
             fontWeight: "400",
             fontSize: 14,
+            fontFamily: "NotoSansKR-Regular",
           }}
         >
           <Text style={{ fontFamily: "NotoSansKR-Bold" }}>

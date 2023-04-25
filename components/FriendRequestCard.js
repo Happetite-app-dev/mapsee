@@ -20,7 +20,14 @@ const FriendRequestCard = ({
     return (
       <View style={styles.container}>
         <View style={styles.textContainer}>
-          <Text style={{ ...styles.text, fontSize: 14, fontWeight: "400" }}>
+          <Text
+            style={{
+              ...styles.text,
+              fontSize: 14,
+              fontWeight: "400",
+              fontFamily: "NotoSansKR-Regular",
+            }}
+          >
             <Text style={{ fontFamily: "NotoSansKR-Bold" }}>
               {requesterLastName}
               {requesterFirstName}(@{requesterID})

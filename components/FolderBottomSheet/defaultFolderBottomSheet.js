@@ -450,7 +450,7 @@ const renderFolderUser = ({ item }) => {
         paddingHorizontal: 16,
         paddingVertical: 4,
         borderRadius: 16,
-        marginHorizontal: 8,
+        marginHorizontal: 4,
         marginVertical: 20,
         backgroundColor: "#F2F2F2",
       }}
@@ -510,7 +510,7 @@ const DefaultFolderBottomSheet = ({
         style={{
           width: "100%",
           height: 100,
-          marginLeft: 7,
+          marginLeft: 19,
         }}
       />
       <BottomSheetSave

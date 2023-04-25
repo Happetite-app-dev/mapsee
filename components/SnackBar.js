@@ -4,7 +4,7 @@ import { Snackbar } from "react-native-paper"; // Snackbar -> 요거 다운로�
 // 이만큼 그 screen 함수(?) 안에
 import Close from "../assets/icons/closeWhite.svg";
 
-const SnackBar = ({ visible, onDismissSnackBar, text }) => {
+const SnackBar = ({ visible, onDismissSnackBar, text, style }) => {
   return (
     <Snackbar
       visible={visible}
@@ -16,6 +16,7 @@ const SnackBar = ({ visible, onDismissSnackBar, text }) => {
         fontSize: 14,
         lineHeight: 24,
         letterSpacing: -0.5,
+        ...style,
       }}
       children={
         <View
