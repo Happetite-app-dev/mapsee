@@ -75,14 +75,6 @@ const BottomSheetScreen = ({
   const userQuery = useUserQuery(myUID);
   const allRecordQuery = useAllRecordQuery();
 
-  const gotoEditScreen = () => {
-    return navigation.push("EditScreen", {
-      placeName: targetName,
-      placeID: targetId,
-      address: targetAddress,
-      lctn: targetLctn,
-    });
-  };
   const isFocused = useIsFocused();
   if (animationVal < 0) {
     return (

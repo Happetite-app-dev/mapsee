@@ -1,14 +1,20 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useIsFocused } from "@react-navigation/native";
 import * as Location from "expo-location";
-import React, { useEffect, useState, useContext } from "react";
-import { StyleSheet, View, SafeAreaView, Text } from "react-native";
+import React, { useEffect, useState, useContext, useRef } from "react";
+import {
+  StyleSheet,
+  View,
+  SafeAreaView,
+  Text,
+  Animated,
+  Image,
+} from "react-native";
 import Geocoder from "react-native-geocoding";
 import MapView, { Marker } from "react-native-maps";
-
 import { useUserQuery, useAllRecordQuery } from "../queries";
 
-import MyLocation from "../assets/icons/Current.svg";
+import MyLocation from "../assets/icons/Location/MyLocation.svg";
 import MyLocationMarker from "../assets/markers/MyLocation-2.svg";
 import SearchMain from "../assets/icons/searchMain.svg";
 import SearchBox from "../assets/image/searchBox.svg";
@@ -18,6 +24,9 @@ import RecordMarker from "../components/MapScreen/RecordMarker";
 import GeneratePushToken from "../modules/GeneratePushToken";
 const mapStyle = require("../assets/mapDesign.json");
 import { CreateNote } from "../components/MapScreen/CreateNote";
+import GoBackHeader from "../components/GoBackHeader";
+import RecordFlatList from "../components/StorageScreen/RecordFlatList";
+const bottomSheetImage = require("../assets/image/bottomSheetScroll.png");
 
 const SearchView = ({ navigation, origin }) => {
   return (
@@ -127,6 +136,9 @@ const MapScreen = ({ navigation }) => {
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
   const userQuery = useUserQuery(myUID);
+  const [animationValue, setAnimationValue] = useState(0);
+
+  const showAnimation = useRef(new Animated.Value(animationValue)).current;
 
   const allRecordQuery = useAllRecordQuery();
 
@@ -268,6 +280,7 @@ const MapScreen = ({ navigation }) => {
           <MyLocationMarker style={styles.MyLocationMarker} />
         </Marker>
       </MapView>
+
       <SearchView navigation={navigation} origin={current} />
 
       <View
@@ -281,7 +294,7 @@ const MapScreen = ({ navigation }) => {
           });
         }}
       >
-        <MyLocation style={{ top: 12, left: 12 }} />
+        <MyLocation />
       </View>
       <CreateNote
         navigation={navigation}
@@ -311,8 +324,6 @@ const styles = StyleSheet.create({
     left: 23,
     bottom: 112,
     backgroundColor: "white",
-    borderColor: "#DDDFE9",
-    borderWidth: 1,
   },
   createNote: {
     position: "absolute",

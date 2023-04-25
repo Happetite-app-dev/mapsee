@@ -74,6 +74,7 @@ const BottomSheetScreen = ({
           width: "100%",
           height: "100%",
           flexDirection: "column",
+          backgroundColor: "rgba(0, 0, 0, 0)",
         }}
       >
         <View
@@ -137,6 +138,7 @@ const BottomSheetScreen = ({
             toggleAnimation2(showAnimation, setAnimationValue);
           }}
         />
+
         <CreateNote
           navigation={navigation}
           isFocused={isFocused}
@@ -158,6 +160,7 @@ const BottomSheetScreen = ({
           width: "100%",
           height: "100%",
           top: -8,
+          backgroundColor: "white",
         }}
       >
         <GoBackHeader
@@ -198,6 +201,9 @@ const BottomSheetScreen = ({
             shadowOpacity: 0.15,
             shadowRadius: 3.5,
           }}
+          onTouchFunction={() => {
+            toggleAnimation1(showAnimation, setAnimationValue);
+          }}
         />
       </SafeAreaView>
     );
@@ -229,7 +235,7 @@ const BottomSheet = ({
           height: 692,
         }}
         onTouchEndCapture={() => {
-          toggleAnimation1(showAnimation, setAnimationValue);
+          //toggleAnimation1(showAnimation, setAnimationValue);
           navigation.goBack();
         }}
       />
@@ -306,24 +312,9 @@ const PlaceInfoBottomSheet = ({ navigation, route }) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    width: "100%",
-    height: "100%",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    position: "relative",
-    backgroundColor: "white",
-  },
   map: {
     width: "100%",
     height: "100%",
-  },
-  buttons: {
-    height: 88,
-    width: "100%",
-    backgroundColor: "white",
-    flexDirection: "row",
-    position: "absolute",
   },
   goBack: {
     width: 30,

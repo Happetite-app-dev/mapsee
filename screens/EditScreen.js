@@ -381,6 +381,7 @@ const removeRecord = async ({
 };
 
 const EditScreen = ({ navigation, route }) => {
+  console.log("editscreen");
   // Location for SubSearchScreen1
   const [current, setCurrent] = useState([0, 0]);
 
@@ -416,10 +417,10 @@ const EditScreen = ({ navigation, route }) => {
     ? Object.keys(userQuery.data.folderIDs)[0]
     : null;
   const defaultFolderQuery = useFolderQuery(defaultFolderID);
-  const defaultFolderName = defaultFolderQuery.data.folderName[myUID];
-  const defaultFolderColor = defaultFolderQuery.data.folderColor[myUID];
+  const defaultFolderName = defaultFolderQuery?.data?.folderName[myUID];
+  const defaultFolderColor = defaultFolderQuery?.data?.folderColor[myUID];
   const [isShareFolder, setIsShareFolder] = useState(
-    defaultFolderQuery.data.userIDs !== undefined &&
+    defaultFolderQuery?.data?.userIDs !== undefined &&
       Object.keys(defaultFolderQuery.data.userIDs).length > 1
   );
 
