@@ -146,6 +146,7 @@ const BottomSheetScreen = ({
           onTouchFunction={() => {
             toggleAnimation1(showAnimation, setAnimationValue);
           }}
+          pop={true}
         />
       </View>
     );
@@ -204,6 +205,7 @@ const BottomSheetScreen = ({
           onTouchFunction={() => {
             toggleAnimation1(showAnimation, setAnimationValue);
           }}
+          pop={true}
         />
       </SafeAreaView>
     );

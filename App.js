@@ -154,7 +154,7 @@ const App = () => {
               component={PlaceInfoBottomSheetScreen}
               options={{
                 headerShown: false,
-                presentation: "modal",
+                presentation: "transparentModal",
                 gestureDirection: "vertical",
                 contentStyle: { backgroundColor: "transparent" },
               }}
