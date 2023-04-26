@@ -17,7 +17,7 @@
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
                BuildableName = "mapsee2207031.app"
                BlueprintName = "mapsee2207031"
-               ReferencedContainer = "container:mapsee2207031.xcodeproj">
+               ReferencedContainer = "container:mapsee.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -35,7 +35,7 @@
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
                BuildableName = "mapsee2207031Tests.xctest"
                BlueprintName = "mapsee2207031Tests"
-               ReferencedContainer = "container:mapsee2207031.xcodeproj">
+               ReferencedContainer = "container:mapsee.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -57,7 +57,7 @@
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
             BuildableName = "mapsee2207031.app"
             BlueprintName = "mapsee2207031"
-            ReferencedContainer = "container:mapsee2207031.xcodeproj">
+            ReferencedContainer = "container:mapsee.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -74,7 +74,7 @@
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
             BuildableName = "mapsee2207031.app"
             BlueprintName = "mapsee2207031"
-            ReferencedContainer = "container:mapsee2207031.xcodeproj">
+            ReferencedContainer = "container:mapsee.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
