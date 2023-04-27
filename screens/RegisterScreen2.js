@@ -37,7 +37,7 @@ const RegisterScreen2 = ({ navigation, route }) => {
   const [secureTextEntry1, setSecureTextEntry1] = useState(true);
   const [secureTextEntry2, setSecureTextEntry2] = useState(true);
   const [valid, setValid] = useState(false);
-  const [visible, setVisible] = useState(true);
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     if (password.length !== 0 && password.length >= 6) {

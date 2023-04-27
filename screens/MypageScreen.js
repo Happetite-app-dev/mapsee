@@ -12,6 +12,9 @@ import SnackBar from "../components/SnackBar";
 import * as Clipboard from "expo-clipboard";
 import * as Linking from "expo-linking";
 import * as StoreReview from "react-native-store-review";
+import { onValue, ref, remove, listAll } from "firebase/database";
+
+import { database } from "../firebase";
 
 import Rate from "../assets/icons/Rate.svg";
 import SNS from "../assets/icons/SNS.svg";
@@ -22,6 +25,8 @@ import FriendList from "../assets/icons/FriendsList.svg";
 import Copy from "../assets/image/Copy.svg";
 import Arrow from "../assets/icons/Arrow Right.svg";
 import AppContext from "../components/AppContext";
+import { PopUpType1, PopUpType2 } from "../components/PopUp";
+import { useQueryClient } from "react-query";
 
 const gotoProfileScreen = ({ navigation }) => {
   navigation.navigate("ProfileScreen");
@@ -42,7 +47,9 @@ const MypageScreen = ({ navigation }) => {
   const myContext = useContext(AppContext);
   const myID = myContext.myID;
   const myName = myContext.myLastName + myContext.myFirstName;
+  const queryClient = useQueryClient();
   const [visible, setVisible] = useState(false);
+  const [goBackModalVisible, setGoBackModalVisible] = useState(false);
 
   const copyToClipboard = async (string) => {
     await Clipboard.setStringAsync(string);
@@ -133,7 +140,7 @@ const MypageScreen = ({ navigation }) => {
             <Text style={styles.elementText}>친구 목록</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
+          <TouchableOpacity // 별점주기
             activeOpacity={0.6}
             style={styles.element}
             onPress={() => {
@@ -154,7 +161,7 @@ const MypageScreen = ({ navigation }) => {
             <Text style={styles.elementText}>인스타그램</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
+          <TouchableOpacity // 로그아웃
             activeOpacity={0.6}
             style={{
               height: 48,
@@ -164,6 +171,91 @@ const MypageScreen = ({ navigation }) => {
               paddingLeft: 18,
             }}
             onPress={() => {
+              setGoBackModalVisible(true);
+              /**
+               * myContext.initMyUID(null);
+              myContext.initMyID(null);
+              myContext.initMyFirstName(null);
+              myContext.initMyLastName(null);
+              myContext.initMyEmail(null);
+              gotoBeforeLoginScreen({ navigation });
+               */
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 14,
+                top: 3,
+                fontFamily: "NotoSansKR-Regular",
+                lineHeight: 24,
+              }}
+            >
+              로그아웃
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity // 탈퇴
+            activeOpacity={0.6}
+            style={{
+              height: 48,
+              width: "100%",
+              flexDirection: "row",
+              paddingTop: 24,
+              paddingLeft: 18,
+            }}
+            onPress={async () => {
+              // remove from friend's friend list
+              const friendRef = ref(
+                database,
+                "/users/" + myContext.myUID + "/friendUIDs"
+              );
+
+              onValue(friendRef, (snapshot) => {
+                if (snapshot.exists()) {
+                  const friendKeys = Object.keys(snapshot.val()); // get an array of the keys in the snapshot value
+                  friendKeys.forEach((friendUID) => {
+                    // iterate over the folder keys using forEach
+                    const reference1 = ref(
+                      database,
+                      "/users/" + friendUID + "/friendUIDs/" + myContext.myUID
+                    );
+                    remove(reference1);
+                  });
+                }
+              });
+
+              // remove from folder
+              const folderRef = ref(
+                database,
+                "/users/" + myContext.myUID + "/folderIDs"
+              );
+              onValue(folderRef, (snapshot) => {
+                if (snapshot.exists()) {
+                  const folderKeys = Object.keys(snapshot.val()); // get an array of the keys in the snapshot value
+                  folderKeys.forEach((folderUID) => {
+                    // iterate over the folder keys using forEach
+                    const reference1 = ref(
+                      database,
+                      "/folders/" + folderUID + "/userIDs/" + myContext.myUID
+                    );
+                    remove(reference1);
+                  });
+                }
+              }).catch(function (error) {
+                console.log("folder", error);
+              });
+
+              // remove from notices
+              const noticeRef = ref(database, "/notices/" + myContext.myUID);
+              remove(noticeRef);
+
+              // remove from users
+              const userRef = ref(database, "/users/" + myContext.myUID);
+              remove(userRef);
+
+              // invalidate queries
+              queryClient.invalidateQueries(["all-records"]);
+              queryClient.invalidateQueries(["all-notices"]);
+              // do same as logout
               myContext.initMyUID(null);
               myContext.initMyID(null);
               myContext.initMyFirstName(null);
@@ -180,7 +272,7 @@ const MypageScreen = ({ navigation }) => {
                 lineHeight: 24,
               }}
             >
-              로그아웃
+              탈퇴하기
             </Text>
           </TouchableOpacity>
         </View>
@@ -216,6 +308,20 @@ const MypageScreen = ({ navigation }) => {
         }}
         text={`아이디(@${myID})가 복사되었습니다.`}
         style={{ marginBottom: 70 }}
+      />
+      <PopUpType1
+        modalVisible={goBackModalVisible}
+        modalHandler={setGoBackModalVisible}
+        action={() => {
+          myContext.initMyUID(null);
+          myContext.initMyID(null);
+          myContext.initMyFirstName(null);
+          myContext.initMyLastName(null);
+          myContext.initMyEmail(null);
+          gotoBeforeLoginScreen({ navigation });
+        }}
+        askValue="정말 로그아웃 하시겠어요?"
+        actionValue="로그아웃"
       />
     </SafeAreaView>
   );

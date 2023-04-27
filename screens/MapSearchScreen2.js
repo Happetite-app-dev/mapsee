@@ -161,6 +161,10 @@ const BottomSheetScreen = ({
           navigation={navigation}
           isFocused={isFocused}
           style={styles.createNote}
+          placeID={targetId}
+          placeName={targetName}
+          address={targetAddress}
+          lctn={targetLctn}
         />
       </View>
     );

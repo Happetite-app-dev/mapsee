@@ -788,7 +788,7 @@ const EditScreen = ({ navigation, route }) => {
             style={{ flex: 1 }}
           />
         </View>
-        {!isEditable && (data.text === undefined || data.text.length === 0) ? (
+        {!isEditable && (data?.text === undefined || data.text.length === 0) ? (
           <></>
         ) : (
           <View style={{ ...styles.item }}>

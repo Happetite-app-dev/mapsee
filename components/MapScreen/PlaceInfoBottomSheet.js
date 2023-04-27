@@ -147,6 +147,10 @@ const BottomSheetScreen = ({
             toggleAnimation1(showAnimation, setAnimationValue);
           }}
           pop={true}
+          placeID={targetId}
+          placeName={targetName}
+          address={targetAddress}
+          lctn={targetLctn}
         />
       </View>
     );
@@ -206,6 +210,10 @@ const BottomSheetScreen = ({
             toggleAnimation1(showAnimation, setAnimationValue);
           }}
           pop={true}
+          placeID={targetId}
+          placeName={targetName}
+          address={targetAddress}
+          lctn={targetLctn}
         />
       </SafeAreaView>
     );
