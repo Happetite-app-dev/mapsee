@@ -16,7 +16,7 @@ import {
 } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 
-import SearchMarker from "../assets/icons/marker.svg";
+import SearchMarker from "../assets/markers/searchMarker.svg";
 import GoBackHeader from "../components/GoBackHeader";
 
 const bottomSheetImage = require("../assets/image/bottomSheetScroll.png");
@@ -68,7 +68,13 @@ const _renderRow = ({ navigation, item }) => {
       onPress={() => gotoSearch2Screen({ navigation, item })}
       underlayColor="#c8c7cc"
     >
-      <View style={{ flexDirection: "column", height: 84, marginLeft: 23 }}>
+      <View
+        style={{
+          flexDirection: "column",
+          height: 84,
+          marginLeft: 23,
+        }}
+      >
         <View style={styles.descriptionMainText}>
           <View
             style={{
@@ -119,6 +125,8 @@ const BottomSheet = ({ navigation, animation, name, data }) => {
       style={{
         width: "100%",
         backgroundColor: "white",
+        height: 433,
+
         borderTopLeftRadius: 30,
         borderTopRightRadius: 30,
         position: "absolute",
@@ -126,27 +134,20 @@ const BottomSheet = ({ navigation, animation, name, data }) => {
         zIndex: 1,
         alignItems: "center",
         justifyContent: "center",
-        maxHeight: 256,
         borderWidth: 1,
         borderColor: "#DDDFE9",
         borderRadius: 16,
         elevation: 24,
       }}
     >
-      <View
-        style={{ marginTop: 8, zIndex: 1 }}
-        onTouchEndCapture={() => {
-          const results = [name, data];
-          toggleAnimation(navigation, results);
-        }}
-      >
+      <View style={{ marginTop: 8, zIndex: 1 }}>
         <Image source={bottomSheetImage} />
       </View>
       <FlatList
         data={data}
         renderItem={({ item }) => _renderRow({ navigation, item })}
-        style={{ width: "100%" }}
-        scrollEnabled={false}
+        style={{ width: "100%", height: "100%" }}
+        scrollEnabled
       />
     </Animated.View>
   );
@@ -162,7 +163,6 @@ const MapSearchScreen3 = ({ navigation, route }) => {
 
   const [latList, setLatList] = useState([]);
   const [lngList, setLngList] = useState([]);
-
   const onInsert = (data) => {
     data.map((item) => {
       Geocode.fromAddress(item.structured_formatting.main_text).then(

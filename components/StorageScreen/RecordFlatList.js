@@ -1,4 +1,4 @@
-import React from "react";
+import { React, useContext } from "react";
 import {
   FlatList,
   StyleSheet,
@@ -7,9 +7,11 @@ import {
   TouchableOpacity,
   Image,
 } from "react-native";
+import AppContext from "../AppContext";
 
-import NoImageRecord1 from "../../assets/image/noImageRecord1.svg";
-import NoImageRecord2 from "../../assets/image/noImageRecord2.svg";
+import NoImageRecord1 from "../../assets/image/noImageRecord3.svg";
+import NoImageRecord2 from "../../assets/image/noImageRecord4.svg";
+import ShareFolder from "../../assets/icons/Share copy.svg";
 
 const gotoEditScreen = (stackNavigation, item) => {
   stackNavigation.navigate("EditScreen", {
@@ -17,35 +19,106 @@ const gotoEditScreen = (stackNavigation, item) => {
   });
 };
 
-const IndividualRecord = ({ item, stackNavigation }) => {
-  //console.log("item", item);
+const IndividualRecord = ({ item, stackNavigation, myUID }) => {
   return (
     <View style={styles.item}>
       <TouchableOpacity onPress={() => gotoEditScreen(stackNavigation, item)}>
         <View style={{ flexDirection: "column", justifyContent: "center" }}>
-          <View style={{ width: 158, height: 148, alignItems: "center" }}>
+          <View
+            style={{
+              width: 158,
+              height: 148,
+              alignItems: "center",
+              borderTopLeftRadius: 8,
+              borderTopRightRadius: 8,
+            }}
+          >
             {item[1].photos !== undefined &&
             item[1].photos !== null &&
             Object.values(item[1].photos).length >= 1 ? (
               <View>
                 <Image
                   style={{
-                    width: 160,
+                    width: 158,
                     height: 148,
                     borderTopLeftRadius: 8,
                     borderTopRightRadius: 8,
                   }}
                   source={{ uri: Object.values(item[1].photos)[0] }}
                 />
+                {item[1].userID != myUID ? (
+                  <ShareFolder
+                    style={{
+                      position: "absolute",
+                      marginTop: 116,
+                      marginLeft: 128,
+                    }}
+                    color="white"
+                  />
+                ) : (
+                  <></>
+                )}
               </View>
             ) : Math.random() < 0.5 ? (
-              <NoImageRecord1
-                style={{ width: 80, height: 99, marginTop: 30 }}
-              />
+              <View
+                style={{
+                  width: 158,
+                  height: 148,
+                  borderTopLeftRadius: 8,
+                  borderTopRightRadius: 8,
+                }}
+              >
+                <NoImageRecord1
+                  style={{
+                    width: 80,
+                    height: 96,
+                    marginTop: 30,
+                    marginLeft: 40,
+                  }}
+                />
+                {item[1].userID != myUID ? (
+                  <ShareFolder
+                    style={{
+                      position: "absolute",
+                      marginTop: 116,
+                      marginLeft: 128,
+                    }}
+                    color="#ADB1C5"
+                  />
+                ) : (
+                  <></>
+                )}
+              </View>
             ) : (
-              <NoImageRecord2
-                style={{ width: 80, height: 99, marginTop: 30 }}
-              />
+              <View
+                style={{
+                  width: 158,
+                  height: 148,
+                  borderTopLeftRadius: 8,
+                  borderTopRightRadius: 8,
+                }}
+              >
+                <NoImageRecord2
+                  style={{
+                    width: 80,
+                    height: 99,
+                    marginTop: 30,
+                    marginLeft: 40,
+                  }}
+                />
+                {item[1].userID != myUID ? (
+                  <ShareFolder
+                    style={{
+                      position: "absolute",
+                      marginTop: 116,
+                      marginLeft: 128,
+                    }}
+                    color="#ADB1C5"
+                  />
+                ) : (
+                  <></>
+                )}
+              </View>
             )}
           </View>
           <Text style={styles.title}>{item[1].title}</Text>
@@ -67,8 +140,15 @@ const RecordFlatList = ({
   onRefresh,
   refreshing,
 }) => {
+  const myContext = useContext(AppContext);
+  const myUID = myContext.myUID;
+
   const renderItem = ({ item }) => (
-    <IndividualRecord item={item} stackNavigation={stackNavigation} />
+    <IndividualRecord
+      item={item}
+      stackNavigation={stackNavigation}
+      myUID={myUID}
+    />
   );
 
   return (

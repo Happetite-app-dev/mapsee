@@ -8,10 +8,10 @@ import {
   TouchableOpacity,
   Dimensions,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import GoBackHeader from "../components/GoBackHeader";
 import BottomButton from "../components/BottomButton";
-const { height } = Dimensions.get("window");
+import SnackBar from "../components/SnackBar";
+
 const handleSignUp = ({ navigation, email }) => {
   navigation.navigate("RegisterScreen2", email);
 };
@@ -21,6 +21,12 @@ const validate = (text) => {
 };
 const RegisterScreen1 = ({ navigation }) => {
   const [email, setEmail] = useState("");
+  const [valid, setValid] = useState(false);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    if (validate(email)) setValid(true);
+  }, [email]);
 
   return (
     <View style={styles.container}>
@@ -34,14 +40,30 @@ const RegisterScreen1 = ({ navigation }) => {
         <TextInput
           placeholder="mapsee@happetite.com"
           value={email}
-          onChangeText={(text) => setEmail(text)}
+          onChangeText={(text) => {
+            setEmail(text);
+          }}
           style={styles.input}
         />
       </View>
       <BottomButton
         text={"계속하기"}
-        onPressFunction={() => handleSignUp({ navigation, email })}
-        style={{ position: "absolute", bottom: 40 }}
+        onPressFunction={() => {
+          if (valid) handleSignUp({ navigation, email });
+          else setVisible(true);
+        }}
+        style={{
+          position: "absolute",
+          bottom: 40,
+          backgroundColor: valid ? "#5ED3CC" : "#F4F5F9",
+        }}
+      />
+      <SnackBar
+        visible={visible}
+        onDismissSnackBar={() => {
+          setVisible(false);
+        }}
+        text={`이메일을 올바르게 입력하세요.`}
       />
     </View>
   );

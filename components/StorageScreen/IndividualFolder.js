@@ -6,8 +6,7 @@ import { useFolderQuery } from "../../queries";
 import AppContext from "../AppContext";
 
 import PinFolder from "../../assets/icons/pinFolder.svg";
-import SearchData from "../../assets/icons/searchData.svg";
-import ShareFolder from "../../assets/icons/shareFolder2.svg";
+import ShareFolder from "../../assets/icons/Share.svg";
 import SingleFolder from "../../assets/icons/singleFolder.svg";
 
 const IndividualFolder = ({
@@ -58,7 +57,7 @@ const IndividualFolder = ({
             {query.data.userIDs !== undefined &&
             Object.keys(query.data.userIDs).length > 1 ? (
               <ShareFolder
-                style={{ position: "absolute", top: 17, left: 25 }}
+                style={{ position: "absolute", marginTop: 10, marginLeft: 22 }}
               />
             ) : (
               <></>
@@ -75,8 +74,10 @@ const IndividualFolder = ({
             <Text
               style={{
                 position: "relative",
-                fontFamily: "NotoSansKR-Light",
-                fontSize: 10,
+                fontFamily: "NotoSansKR-Medium",
+                fontSize: 12,
+                lineHeight: 16,
+                height: 16,
               }}
             >
               {query.data.folderName[myUID]}

@@ -15,16 +15,14 @@ import {
 } from "react-native";
 import BottomButton from "../components/BottomButton";
 import GoBackHeader from "../components/GoBackHeader";
+import SnackBar from "../components/SnackBar";
 
 import { auth } from "../firebase";
 
 const handleSignUp = ({ email, password, navigation }) => {
-  console.log("goto registerscreen 3-1");
-
   createUserWithEmailAndPassword(auth, email, password)
     .then((userCredentials) => {
       const user = userCredentials.user;
-      console.log("goto registerscreen 3");
       navigation.navigate("RegisterScreen3", {
         uid: user.uid,
         email: user.email,
@@ -38,6 +36,18 @@ const RegisterScreen2 = ({ navigation, route }) => {
   const [passwordCheck, setPasswordCheck] = useState("");
   const [secureTextEntry1, setSecureTextEntry1] = useState(true);
   const [secureTextEntry2, setSecureTextEntry2] = useState(true);
+  const [valid, setValid] = useState(false);
+  const [visible, setVisible] = useState(true);
+
+  useEffect(() => {
+    if (password.length !== 0 && password.length >= 6) {
+      if (password === passwordCheck) {
+        setValid(true);
+      } else {
+        setValid(false);
+      }
+    } else setValid(false);
+  }, [password, passwordCheck]);
 
   return (
     <View style={styles.container}>
@@ -103,9 +113,21 @@ const RegisterScreen2 = ({ navigation, route }) => {
       <BottomButton
         text={"계속하기"}
         onPressFunction={() => {
-          handleSignUp({ email, password, navigation });
+          if (valid) handleSignUp({ email, password, navigation });
+          else setVisible(true);
         }}
-        style={{ position: "absolute", bottom: 40 }}
+        style={{
+          position: "absolute",
+          bottom: 40,
+          backgroundColor: valid ? "#5ED3CC" : "#F4F5F9",
+        }}
+      />
+      <SnackBar
+        visible={visible}
+        onDismissSnackBar={() => {
+          setVisible(false);
+        }}
+        text={`비밀번호를 다시 확인해주세요.`}
       />
     </View>
   );

@@ -23,8 +23,6 @@ import TargetMarker from "../assets/markers/selectedMarker.svg";
 
 import AppContext from "../components/AppContext";
 import GoBackHeader from "../components/GoBackHeader";
-import RecordMarker from "../components/MapScreen/RecordMarker";
-import RecordFlatList from "../components/StorageScreen/RecordFlatList";
 import BottomButton from "../components/BottomButton";
 
 const bottomSheetImage = require("../assets/image/bottomSheetScroll.png");
@@ -40,7 +38,7 @@ const toggleAnimation1 = (showAnimation, setAnimationValue) => {
   setAnimationValue(val);
 };
 const toggleAnimation2 = (showAnimation, setAnimationValue) => {
-  const val2 = 0;
+  const val2 = -660;
   Animated.timing(showAnimation, {
     useNativeDriver: false,
     toValue: val2,
@@ -49,7 +47,7 @@ const toggleAnimation2 = (showAnimation, setAnimationValue) => {
   setAnimationValue(val2);
 };
 const toggleAnimation3 = (showAnimation, setAnimationValue) => {
-  const val3 = -588;
+  const val3 = -660;
   Animated.timing(showAnimation, {
     useNativeDriver: false,
     toValue: val3,
@@ -141,12 +139,12 @@ const BottomSheetScreen = ({
             Object.values(
               allRecordQuery.data
                 ? Object.values(allRecordQuery.data)
-                  .filter((record) => {
-                    return record.folderID in userQuery.data?.folderIDs;
-                  })
-                  .filter((record) => {
-                    return record.placeID === targetId;
-                  })
+                    .filter((record) => {
+                      return record.folderID in userQuery.data?.folderIDs;
+                    })
+                    .filter((record) => {
+                      return record.placeID === targetId;
+                    })
                 : []
             ).length
           }
@@ -161,7 +159,7 @@ const BottomSheetScreen = ({
           navigation.pop(2);
         }}
         text="장소 선택"
-        style={{ top: 168 }}
+        style={{ top: 136 }}
       />
     </View>
   );
@@ -186,7 +184,7 @@ const BottomSheet = ({
       <Animated.View
         style={{
           width: "100%",
-          height: 844,
+          height: 884,
           backgroundColor: "white",
           borderTopLeftRadius: 30,
           borderTopRightRadius: 30,

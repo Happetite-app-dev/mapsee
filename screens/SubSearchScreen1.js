@@ -1,12 +1,20 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useIsFocused } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
-import { Image, StyleSheet, Text, View, FlatList } from "react-native";
+import {
+  Image,
+  StyleSheet,
+  Text,
+  View,
+  FlatList,
+  Keyboard,
+} from "react-native";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
+import * as Location from "expo-location";
 
-import Close from "../assets/icons/close.svg";
-import GoBack from "../assets/icons/goBack.svg";
-import SearchHistory from "../assets/icons/searchPlace.svg";
+import Close from "../assets/icons/Close.svg";
+import GoBack from "../assets/icons/BackArrow.svg";
+import SearchHistory from "../assets/icons/Location/Location.svg";
 import renderDescription from "../components/MapSearchScreen/RenderDescription";
 
 const storeData = async (value) => {
@@ -120,6 +128,7 @@ const SearchBox = ({
           setLctn={setLctn}
         />
       }
+      getResultArray={Keyboard.dismiss}
       getSearchWord={(text) => {
         setName(text);
       }}
@@ -178,6 +187,19 @@ const SearchBox = ({
 const SubSearchScreen1 = ({ navigation, route }) => {
   const [name, setName] = useState("");
   const [history, setHistory] = useState([]);
+  const [current, setCurrent] = useState([0, 0]);
+
+  useEffect(() => {
+    async function getLocation() {
+      const location = await Location.getCurrentPositionAsync({});
+      setCurrent({
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      });
+    }
+
+    getLocation();
+  });
 
   useEffect(() => {
     async function fetchData() {
@@ -219,7 +241,12 @@ const SubSearchScreen1 = ({ navigation, route }) => {
         setName={(name) => setName(name)}
         history={history}
         setHistory={(history) => setHistory(history)}
-        location={[0, 0]}
+        location={
+          [route.params.current.latitude, route.params.current.longitude] || [
+            current.latitude,
+            current.longitude,
+          ]
+        }
         navigation={navigation}
         setPlaceID={route.params.setPlaceID}
         setPlaceName={route.params.setPlaceName}
@@ -269,8 +296,8 @@ const styles = StyleSheet.create({
   goBack: {
     width: 30,
     height: 18,
-    marginTop: 51,
-    marginLeft: 31,
+    marginTop: 48,
+    marginLeft: 23,
   },
   goBackImage: {
     width: 9,
@@ -278,7 +305,7 @@ const styles = StyleSheet.create({
     resizeMode: "contain",
     tintColor: "black",
   },
-  goHome: { width: 15, height: 15, marginRight: 20.5, marginTop: 52.5 },
+  goHome: { width: 24, height: 24, marginRight: 23, marginTop: 48 },
 
   inbetweenCompo: {
     height: 24,
@@ -289,12 +316,9 @@ const styles = StyleSheet.create({
     marginTop: 32,
   },
   recentSearch: {
-    width: 51,
-    height: 24,
     marginLeft: 23,
   },
   eraseAll: {
-    height: 12,
     marginRight: 23,
   },
   historyItem: {

@@ -11,7 +11,7 @@ import * as Clipboard from "expo-clipboard";
 import SnackBar from "../components/SnackBar";
 import AppContext from "../components/AppContext";
 import GoBackHeader from "../components/GoBackHeader";
-import Copy from "../assets/icons/Friend.svg";
+import Copy from "../assets/image/Copy.svg";
 
 const ProfileScreen = ({ navigation }) => {
   const myContext = useContext(AppContext);

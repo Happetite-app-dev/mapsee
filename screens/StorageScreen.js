@@ -8,11 +8,10 @@ import {
   SafeAreaView,
 } from "react-native";
 import { useQueryClient } from "react-query";
-import AddFolder from "../assets/icons/addfolder.svg";
+import AddFolder from "../assets/icons/Addfolder.svg";
 import { useIsFocused } from "@react-navigation/native";
 import { useUserQuery, useAllRecordQuery } from "../queries";
 
-import SearchData from "../assets/icons/searchData.svg";
 import AppContext from "../components/AppContext";
 import { CreateNote } from "../components/MapScreen/CreateNote";
 import { PopUpType4 } from "../components/PopUp";
@@ -22,13 +21,13 @@ import FolderList from "../components/StorageScreen/FolderList";
 import { database } from "../firebase";
 const db = database;
 
-const exitFolder = async ({ myUID, folderID, navigation }) => {
-  await exitData(myUID, folderID).then(
+const exitFolder = async ({ myUID, folderID, navigation, queryClient }) => {
+  await exitData(myUID, folderID, queryClient).then(
     () => navigation.navigate("Storage") //realtimeDataBase가 모두 업데이트 된후
   );
 };
 
-const exitData = async (myUID, folderID) => {
+const exitData = async (myUID, folderID, queryClient) => {
   const reference1 = ref(db, "/users/" + myUID + "/folderIDs/" + folderID);
   await remove(reference1)
     .then(() => {
@@ -49,6 +48,8 @@ const exitData = async (myUID, folderID) => {
       );
       remove(reference4);
     });
+
+  queryClient.invalidateQueries(["folders", folderID]);
   //사람이 없는 폴더에 나중에 사람이 추가될 가능성을 위해 일단 폴더를 남겨두자
   // .then(
   //   //지울 필요가 없음
@@ -155,7 +156,7 @@ const StorageScreen = ({ navigation, route }) => {
         <Text style={styles.screenTitle}>보관함</Text>
         <View style={styles.twoRightButtons}>
           <TouchableOpacity
-            style={styles.firstButton}
+            style={styles.secondButton}
             onPress={() => {
               if (
                 userQuery.data?.folderIDs &&
@@ -175,9 +176,6 @@ const StorageScreen = ({ navigation, route }) => {
             }}
           >
             <AddFolder />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.secondButton}>
-            <SearchData />
           </TouchableOpacity>
         </View>
       </View>
@@ -206,7 +204,10 @@ const StorageScreen = ({ navigation, route }) => {
             />
           </View>
         }
-        style={{ height: "85%", marginTop: -20 }}
+        style={{
+          height: "85%",
+          marginBottom: "13%",
+        }}
         onRefresh={() => {
           queryClient.invalidateQueries(["all-records"]);
           queryClient.invalidateQueries(["folders"]); // 임시로!!!! 고쳐야해!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -257,13 +258,14 @@ const StorageScreen = ({ navigation, route }) => {
             myUID,
             folderID: longPressedFolder.folderID,
             navigation,
+            queryClient,
           });
         }}
         askValue={longPressedFolder.folderName}
         actionValue1={
           longPressedFolder.folderFixedDate === undefined
-            ? "좌측 폴더 고정"
-            : "좌측 폴더 해제"
+            ? "폴더 고정"
+            : "폴더 고정 해제"
         }
         actionValue2="폴더 편집"
         actionValue3="나가기"
@@ -288,7 +290,7 @@ export default StorageScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "white",
   },
   screenTitle: {
     fontWeight: "bold",
@@ -299,7 +301,6 @@ const styles = StyleSheet.create({
   screenTitleView: {
     flexDirection: "row",
     height: 48,
-    marginBottom: 20,
     alignItems: "center",
     position: "relative",
     width: "100%",
@@ -320,20 +321,14 @@ const styles = StyleSheet.create({
   },
   twoRightButtons: {
     position: "absolute",
-    right: 0,
-    width: 86,
-    height: 30,
+    right: 23,
+    height: 24,
     flexDirection: "row",
     alignItems: "center",
   },
-  firstButton: {
-    width: 30,
-    height: 30,
-  },
   secondButton: {
-    width: 30,
-    height: 30,
-    left: 10,
+    width: 24,
+    height: 24,
   },
   createNote: {
     position: "absolute",

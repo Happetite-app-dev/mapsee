@@ -1,5 +1,5 @@
-import { Image, StyleSheet, Text, View, FlatList } from "react-native";
-import SearchHistory from "../../assets/icons/searchPlace.svg";
+import { StyleSheet, Text, View } from "react-native";
+import SearchHistory from "../../assets/icons/Location/Location.svg";
 
 const renderDescription = (data) => {
   return (
@@ -12,7 +12,6 @@ const renderDescription = (data) => {
           <View
             style={{
               height: 24,
-              width: data.structured_formatting.main_text.length * 9 + 20,
             }}
           >
             <Text style={{ fontSize: 14, fontFamily: "NotoSansKR-Medium" }}>

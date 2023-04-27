@@ -7,14 +7,13 @@ import {
   TouchableHighlight,
 } from "react-native";
 
-import AddFriend from "../assets/icons/addFriend.svg";
-import Close from "../assets/icons/close.svg";
-import DeleteFolder from "../assets/icons/delete.svg";
-import EditFolder from "../assets/icons/folderEdit.svg";
-import GoBack from "../assets/icons/goBack.svg";
+import AddFriend from "../assets/icons/AddFriend.svg";
+import Close from "../assets/icons/Close.svg";
+import EditFolder from "../assets/icons/Edit.svg";
+import GoBack from "../assets/icons/BackArrow.svg";
 import ShareFolder from "../assets/icons/shareFolder.svg";
 import SmallFolder from "../assets/icons/SmallFolder.svg";
-
+import Leave from "../assets/icons/Leave.svg";
 const GoBackHeader = ({
   navigation,
   goBackFunction,
@@ -37,18 +36,16 @@ const GoBackHeader = ({
       <View style={styles.buttons}>
         <View
           onTouchEndCapture={() => {
-            console.log("back through header");
             if (goBackFunction === undefined) navigation.goBack();
             else goBackFunction();
           }}
           style={styles.goBack}
         >
-          <GoBack height={24} />
+          <GoBack height={24} style={{ left: 23 }} />
         </View>
         <View
           style={styles.title}
           onTouchEndCapture={() => {
-            console.log("back through header");
             if (goBackFunction === undefined) navigation.goBack();
             else goBackFunction();
           }}
@@ -97,7 +94,7 @@ const GoBackHeader = ({
                 left: 330,
               }}
             >
-              <DeleteFolder />
+              <Leave />
             </TouchableOpacity>
           </View>
         ) : rightButton === "addFriend" ? (
@@ -132,10 +129,10 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
   goBack: {
-    width: 32,
-    height: 24,
+    width: 50,
+    height: 30,
     position: "absolute",
-    left: 31,
+    left: 0,
   },
   title: {
     width: 280,

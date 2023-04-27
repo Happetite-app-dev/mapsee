@@ -3,7 +3,7 @@ import { Animated, View } from "react-native";
 import { useFolderQuery } from "../queries";
 import MakeFolderBottomSheet from "../components/FolderBottomSheet/MakeFolderBottomSheet";
 import { PopUpType1 } from "../components/PopUp";
-import BottomSheetScroll from "../assets/icons/BottomSheetScroll.svg";
+import BottomSheetScroll from "../assets/image/BottomSheetScroll.svg";
 
 const toggleAnimation = ({ showAnimation, setAnimationValue }) => {
   const val = -1000;
@@ -20,6 +20,7 @@ const MakeFolderBottomSheetScreen = ({ navigation, route }) => {
   const [animationValue, setAnimationValue] = useState(0);
   const showAnimation = useRef(new Animated.Value(animationValue)).current;
   const [modalVisible, setModalVisible] = useState(false);
+  const IsNewRecord = folderID === null;
   return (
     <View
       style={{ width: "100%", height: "100%", backgroundColor: "transparent" }}
@@ -62,7 +63,9 @@ const MakeFolderBottomSheetScreen = ({ navigation, route }) => {
           toggleAnimation({ showAnimation, setAnimationValue });
           navigation.goBack();
         }}
-        askValue="정말 폴더 생성을 그만두시겠어요?"
+        askValue={`정말 폴더 ${
+          IsNewRecord ? "생성" : "수정"
+        }을 그만두시겠어요?`}
         actionValue="그만두기"
       />
     </View>

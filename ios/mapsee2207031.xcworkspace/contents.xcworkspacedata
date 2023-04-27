@@ -2,9 +2,12 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:mapsee2207031.xcodeproj">
+      location = "absolute:/Users/jeongin/mapsee_xcode/ios/mapsee.xcodeproj">
    </FileRef>
    <FileRef
       location = "group:Pods/Pods.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:mapsee2207031.xcodeproj">
    </FileRef>
 </Workspace>

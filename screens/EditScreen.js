@@ -1,6 +1,6 @@
 import { ref, onValue, set, push, remove } from "firebase/database";
 import { useQueryClient } from "react-query";
-
+import * as Location from "expo-location";
 import {
   ref as ref_storage,
   uploadBytes,
@@ -23,16 +23,17 @@ import {
   unstable_batchedUpdates,
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { get } from "lodash";
 
+import ShareFolder from "../assets/icons/Share copy.svg";
 import ListEcllipse from "../assets/icons/ListEcllipse.svg";
 import DateImage from "../assets/icons/date.svg";
-import DeleteFolder from "../assets/icons/delete.svg";
-import FolderImage from "../assets/icons/folder.svg";
-import EditFolder from "../assets/icons/folderEdit.svg";
-import FolderPrefix from "../assets/icons/folderPrefix.svg";
-import GoBack from "../assets/icons/goBack.svg";
-import LocationImage from "../assets/icons/location.svg";
-import WritingImage from "../assets/icons/writing.svg";
+import DeleteFolder from "../assets/icons/Delete.svg";
+import FolderImage from "../assets/icons/Folder.svg";
+import GoBack from "../assets/icons/BackArrow.svg";
+import LocationImage from "../assets/icons/Location/Location.svg";
+import WritingImage from "../assets/icons/Edit.svg";
+
 import AppContext from "../components/AppContext";
 import DatePicker from "../components/EditScreen/DatePicker";
 import FolderBottomSheet from "../components/FolderBottomSheet/FolderBottomSheet";
@@ -41,12 +42,9 @@ import { PopUpType1, PopUpType2 } from "../components/PopUp";
 import SnackBar from "../components/SnackBar";
 import { storage, auth, database } from "../firebase";
 import SendPushNotification from "../modules/SendPushNotification";
-import { useRecordQuery } from "../queries";
+import { useFolderQuery, useRecordQuery, useUserQuery } from "../queries";
 
 const db = database;
-
-const defaultFolderID = "-NB6gdHZgh_liXbnuOLr";
-const defaultFolderName = "폴더1";
 
 const uploadImage = async (image, imageName, newRecordID) => {
   const imageRef = ref_storage(storage, `images/${newRecordID}/${imageName}`);
@@ -116,9 +114,13 @@ const saveData = async (
       writeDate,
       title:
         title === undefined
-          ? `${timeNow.getFullYear().toString()}_${(
-              timeNow.getMonth() + 1
-            ).toString()}_${timeNow.getDay().toString()}_기록`
+          ? `${timeNow.getFullYear().toString().charAt(2)}${timeNow
+              .getFullYear()
+              .toString()
+              .charAt(3)}${(timeNow.getMonth() + 1 < 10
+              ? "0" + `${timeNow.getMonth() + 1}`
+              : timeNow.getMonth() + 1
+            ).toString()}${timeNow.getDate().toString()} 기록`
           : title,
       placeName: place,
       date: {
@@ -165,7 +167,7 @@ const saveData = async (
             });
             SendPushNotification({
               receiverUID: folderUserID,
-              title_: "기록추가타이틀",
+              title_: "기록추가타이틀", ///
               body_: "기록추가바디",
             });
           }
@@ -185,9 +187,13 @@ const saveData = async (
       writeDate,
       title:
         title == undefined
-          ? `${timeNow.getFullYear().toString()}_${(
-              timeNow.getMonth() + 1
-            ).toString()}_${timeNow.getDay().toString()}_기록`
+          ? `${timeNow.getFullYear().toString().charAt(2)}${timeNow
+              .getFullYear()
+              .toString()
+              .charAt(3)}${(timeNow.getMonth() + 1 < 10
+              ? "0" + `${timeNow.getMonth() + 1}`
+              : timeNow.getMonth() + 1
+            ).toString()}${timeNow.getDate().toString()} 기록`
           : title, //나중에 modify할 때 default title을 어떻게 할지를 기획한테 물어보기
       placeName: place,
       date: {
@@ -308,7 +314,7 @@ const storeRecord = async ({
       queryClient.invalidateQueries(["recordIDList"]);
     })
     .then(() => {
-      IsNewRecord ? navigation.pop() : navigation.navigate("Storage"); //realtimeDataBase가 모두 업데이트 된후
+      navigation.navigate("Storage"); //realtimeDataBase가 모두 업데이트 된후
     });
 };
 const removeData = async ({ recordID, folderID, placeID, queryClient }) => {
@@ -375,6 +381,23 @@ const removeRecord = async ({
 };
 
 const EditScreen = ({ navigation, route }) => {
+  console.log("editscreen");
+  // Location for SubSearchScreen1
+  const [current, setCurrent] = useState([0, 0]);
+
+  useEffect(() => {
+    async function getLocation() {
+      const location = await Location.getCurrentPositionAsync({});
+      setCurrent({
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      });
+    }
+
+    getLocation();
+  });
+
+  //
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
   const myID = myContext.myID;
@@ -387,7 +410,19 @@ const EditScreen = ({ navigation, route }) => {
 
   const { recordID, placeID, placeName, address, lctn } = route.params;
   const query = useRecordQuery(recordID);
-  const data = query.data;
+  const data = query.data ? query.data : null;
+
+  const userQuery = useUserQuery(myUID);
+  const defaultFolderID = userQuery.data?.folderIDs
+    ? Object.keys(userQuery.data.folderIDs)[0]
+    : null;
+  const defaultFolderQuery = useFolderQuery(defaultFolderID);
+  const defaultFolderName = defaultFolderQuery?.data?.folderName[myUID];
+  const defaultFolderColor = defaultFolderQuery?.data?.folderColor[myUID];
+  const [isShareFolder, setIsShareFolder] = useState(
+    defaultFolderQuery?.data?.userIDs !== undefined &&
+      Object.keys(defaultFolderQuery.data.userIDs).length > 1
+  );
 
   const IsNewRecord = recordID === undefined; //data?.title === undefined; //지금 사용자가 작성하고 있는 record가 새로 만드는 record인지 기존에 있던 record인지를 알려주는 bool
   const IsRecordOwner = data?.userID === myUID; //기존의 기록인 경우, 그것이 자신의 기록인지 확인하는 bool
@@ -410,6 +445,14 @@ const EditScreen = ({ navigation, route }) => {
   const [folderName_, setFolderName_] = useState(
     data?.folderName || defaultFolderName
   );
+  // Folder Query: folder 색상 받아오기...
+  const folderQuery = useFolderQuery(folderID_);
+  const [folderColor_, setFolderColor_] = useState(
+    get(folderQuery.data, ["folderColor", myUID]) || defaultFolderColor
+  );
+
+  const writerUserQuery = useUserQuery(data?.userID);
+
   const [showFolderBottomSheet, setShowFolderBottomSheet] = useState(false);
   const [selectedPhotos, setSelectedPhotos] = useState(
     data?.photos !== undefined && data?.photos !== null
@@ -420,7 +463,6 @@ const EditScreen = ({ navigation, route }) => {
   const [removeModalVisible, setRemoveModalVisible] = useState(false);
   const [goBackModalVisible, setGoBackModalVisible] = useState(false);
   const [visible, setVisible] = useState(false); // Snackbar
-
   useEffect(() => {
     setPlaceID_(placeID || data?.placeID);
     setPlaceName_(placeName || data?.placeName);
@@ -440,7 +482,17 @@ const EditScreen = ({ navigation, route }) => {
         : []
     );
     setText_(data?.text || "");
-  }, [query.isLoading]);
+    setFolderColor_(folderQuery.data?.folderColor[myUID] || defaultFolderColor);
+  }, [query.isLoading || folderQuery.isLoading]);
+
+  useEffect(() => {
+    if (folderQuery.data?.userIDs !== undefined) {
+      setFolderColor_(
+        folderQuery.data?.folderColor[myUID] || defaultFolderColor
+      );
+      setIsShareFolder(Object.keys(folderQuery.data.userIDs).length > 1);
+    }
+  }, [folderID_]);
 
   const onToggleSnackBar = () => setVisible(!visible); // SnackbarButton -> 나중에는 없애기
   const onDismissSnackBar = () => setVisible(false); // Snackbar
@@ -461,11 +513,10 @@ const EditScreen = ({ navigation, route }) => {
       <View
         style={{
           height: 56,
-          top: 32,
+          marginTop: 32,
           width: "100%",
           flexDirection: "row",
           alignItems: "center",
-          marginBottom: 16,
         }}
       >
         <View
@@ -484,9 +535,16 @@ const EditScreen = ({ navigation, route }) => {
             style={styles.titleText}
             onChangeText={(tle) => setTitle_(tle)}
             value={title_}
-            placeholder={`${timeNow2.getFullYear().toString()}_${(
-              timeNow2.getMonth() + 1
-            ).toString()}_${timeNow2.getDate().toString()}_기록`}
+            placeholder={`${timeNow2
+              .getFullYear()
+              .toString()
+              .charAt(2)}${timeNow2
+              .getFullYear()
+              .toString()
+              .charAt(3)}${(timeNow2.getMonth() + 1 < 10
+              ? "0" + `${timeNow2.getMonth() + 1}`
+              : timeNow2.getMonth() + 1
+            ).toString()}${timeNow2.getDate().toString()} 기록`}
           />
         </View>
         {IsRecordOwner && !isEditable && (
@@ -496,7 +554,7 @@ const EditScreen = ({ navigation, route }) => {
                 onPress={() => setIsEditable(true)}
                 style={styles.firstButton}
               >
-                <EditFolder />
+                <WritingImage />
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => setRemoveModalVisible(true)}
@@ -507,141 +565,15 @@ const EditScreen = ({ navigation, route }) => {
             </View>
           </View>
         )}
-      </View>
-      <ScrollView
-        style={{ width: "100%", marginTop: 32 }}
-        showsVerticalScrollIndicator={false}
-        scrollEnabled
-      >
-        {selectedPhotos.length === 0 && !isEditable ? (
-          <></>
-        ) : (
-          <View style={{ height: 210, ...styles.imgPicker }}>
-            {/* <Image source={RecordPhotoImage} /> */}
-            <ImgPicker
-              onImageTaken={(photo) => {
-                setSelectedPhotos((selectedPhotos) => [
-                  ...selectedPhotos,
-                  photo,
-                ]);
-              }}
-              onImageErased={(photos) => setSelectedPhotos(() => photos)}
-              defaultPhotos={selectedPhotos}
-              IsEditable={isEditable}
-              onToggleSnackBar={onToggleSnackBar}
-              navigation={navigation}
-            />
-          </View>
-        )}
-        <View
-          onTouchEndCapture={() => {
-            showFolderBottomSheet && setShowFolderBottomSheet(false);
-            navigation.navigate("SubSearchScreen1", {
-              setPlaceID: (f) => setPlaceID_(f),
-              setPlaceName: (f) => setPlaceName_(f),
-              setAddress: (f) => setAddress_(f),
-              setLctn: (f) => setLctn_(f),
-            });
-          }}
-          style={{ height: 48, ...styles.item }}
-        >
-          <LocationImage />
-          <Text
+        {(isEditable && IsRecordOwner) || IsNewRecord ? (
+          <View
             style={{
               height: 24,
+              position: "absolute",
               lineHeight: 24,
-              fontSize: 14,
-              left: 12,
-              fontFamily: "NotoSansKR-Regular",
+              right: 0,
             }}
           >
-            {placeName_}
-          </Text>
-        </View>
-        <View
-          onTouchEndCapture={() => {
-            showFolderBottomSheet && setShowFolderBottomSheet(false);
-          }}
-          style={{
-            width: 350,
-            height: showDatePicker ? 266 : 50,
-            ...styles.item,
-          }}
-        >
-          <DateImage />
-          <DatePicker
-            date1={date_}
-            setDate1={(date1) => setDate_(date1)}
-            show={showDatePicker}
-            setShow={(show1) => setShowDatePicker(show1)}
-            IsEditable={isEditable}
-          />
-        </View>
-        <View style={{ height: 50, ...styles.item }}>
-          <FolderImage />
-          <TouchableOpacity
-            onPress={() => {
-              isEditable && setShowFolderBottomSheet(!showFolderBottomSheet);
-            }}
-            style={{
-              width: 100,
-              height: 40,
-              left: 10,
-              bottom: 7,
-              alignItems: "center",
-              flexDirection: "row",
-            }}
-          >
-            <ListEcllipse height={16} width={16} />
-            <Text style={{ fontFamily: "NotoSansKR-Regular", left: 10 }}>
-              {" "}
-              {folderName_}{" "}
-            </Text>
-          </TouchableOpacity>
-          <View
-            onTouchEndCapture={() => {
-              showFolderBottomSheet && setShowFolderBottomSheet(false);
-            }}
-            style={{ flex: 1 }}
-          />
-        </View>
-        {!isEditable && (data.text === undefined || data.text.length === 0) ? (
-          <></>
-        ) : (
-          <View style={{ ...styles.item }}>
-            <WritingImage />
-            <TextInput
-              editable={isEditable}
-              selectTextOnFocus={isEditable}
-              style={styles.record}
-              onChangeText={(txt) => setText_(txt)}
-              value={text_}
-              multiline
-              placeholder="내용을 입력해주세요"
-              placeholderTextColor="grey"
-            />
-          </View>
-        )}
-
-        {isEditable && (
-          <View style={{ ...styles.button }}>
-            <TouchableOpacity
-              onPress={() => {
-                setGoBackModalVisible(true);
-                IsNewRecord ? navigation.pop() : setIsEditable(false);
-              }}
-              style={{ width: 160, padding: 15, marginRight: 7 }}
-            >
-              <Text
-                style={{
-                  alignSelf: "center",
-                  fontFamily: "NotoSansKR-Bold",
-                }}
-              >
-                취소
-              </Text>
-            </TouchableOpacity>
-            <Text>|</Text>
             <TouchableOpacity
               onPress={() =>
                 storeRecord({
@@ -667,20 +599,214 @@ const EditScreen = ({ navigation, route }) => {
                   queryClient,
                 })
               }
-              style={{ width: 160, padding: 15, marginLeft: 7 }}
+              style={{
+                width: 40,
+                height: 35,
+                right: 23,
+              }}
             >
               <Text
                 style={{
-                  alignSelf: "center",
+                  height: 16,
                   fontFamily: "NotoSansKR-Bold",
+                  lineHeight: 24,
+                  fontSize: 14,
+                  color: "#5ED3CC",
+                  right: 0,
+                  position: "absolute",
                 }}
               >
                 저장
               </Text>
             </TouchableOpacity>
           </View>
+        ) : !IsRecordOwner && !isEditable ? (
+          <View
+            style={{
+              backgroundColor: "#F4F5F9",
+              height: 24,
+              right: 23,
+              position: "absolute",
+              lineHeight: 24,
+              paddingLeft: 16,
+              paddingRight: 16,
+              borderRadius: 12,
+              paddingTop: 4,
+            }}
+          >
+            <Text
+              style={{
+                height: 16,
+                fontFamily: "NotoSansKR-Medium",
+                alignContent: "center",
+                lineHeight: 16,
+                fontSize: 12,
+              }}
+            >
+              {writerUserQuery.data?.lastName + writerUserQuery.data?.firstName}
+            </Text>
+          </View>
+        ) : (
+          <></>
+        )}
+      </View>
+      <ScrollView
+        style={{
+          width: "100%",
+          marginTop: 16,
+          height: "100%",
+        }}
+        showsVerticalScrollIndicator={false}
+        scrollEnabled
+      >
+        {selectedPhotos.length === 0 && !isEditable ? (
+          <View></View>
+        ) : (
+          <View style={{ height: 210, ...styles.imgPicker }}>
+            {/* <Image source={RecordPhotoImage} /> */}
+            <ImgPicker
+              onImageTaken={(photo) => {
+                setSelectedPhotos((selectedPhotos) => [
+                  ...selectedPhotos,
+                  photo,
+                ]);
+              }}
+              onImageErased={(photos) => setSelectedPhotos(() => photos)}
+              defaultPhotos={selectedPhotos}
+              IsEditable={isEditable}
+              onToggleSnackBar={onToggleSnackBar}
+              navigation={navigation}
+            />
+          </View>
+        )}
+        <View
+          onTouchEndCapture={() => {
+            showFolderBottomSheet && setShowFolderBottomSheet(false);
+            if (isEditable) {
+              navigation.navigate("SubSearchScreen1", {
+                setPlaceID: (f) => setPlaceID_(f),
+                setPlaceName: (f) => setPlaceName_(f),
+                setAddress: (f) => setAddress_(f),
+                setLctn: (f) => setLctn_(f),
+                current,
+              });
+            }
+          }}
+          style={{
+            height: 48,
+            width: 150,
+            ...styles.item,
+          }}
+        >
+          <LocationImage />
+          {placeName_ ? (
+            <Text
+              style={{
+                height: 24,
+                lineHeight: 24,
+                fontSize: 14,
+                left: 12,
+                fontFamily: "NotoSansKR-Regular",
+              }}
+            >
+              {placeName_}
+            </Text>
+          ) : (
+            <Text
+              style={{
+                height: 24,
+                lineHeight: 24,
+                fontSize: 14,
+                left: 12,
+                fontFamily: "NotoSansKR-Regular",
+                color: "#ADB1C5",
+              }}
+            >
+              장소를 입력하세요
+            </Text>
+          )}
+        </View>
+        <View
+          onTouchEndCapture={() => {
+            showFolderBottomSheet && setShowFolderBottomSheet(false);
+          }}
+          style={{
+            height: showDatePicker ? 266 : 50,
+            ...styles.item,
+          }}
+        >
+          <DateImage />
+          <DatePicker
+            date1={date_}
+            setDate1={(date1) => setDate_(date1)}
+            show={showDatePicker}
+            setShow={(show1) => setShowDatePicker(show1)}
+            IsEditable={isEditable}
+          />
+        </View>
+        <View style={{ height: 50, ...styles.item }}>
+          <FolderImage />
+          <View
+            onTouchEndCapture={() => {
+              isEditable && setShowFolderBottomSheet(!showFolderBottomSheet);
+            }}
+            style={{
+              width: 100,
+              height: 40,
+              left: 10,
+              bottom: 7,
+              alignItems: "center",
+              flexDirection: "row",
+            }}
+          >
+            <ListEcllipse color={folderColor_} />
+            <Text
+              style={{
+                fontFamily: "NotoSansKR-Regular",
+                left: 10,
+                lineHeight: 18,
+                height: 16,
+              }}
+            >
+              {folderName_}
+            </Text>
+            {(folderQuery.userIDs !== undefined &&
+              Object.entries(folderQuery.userIDs).length >= 2) ||
+            isShareFolder ? (
+              <ShareFolder
+                color="#ADB1C5"
+                style={{ left: 12, position: "relative", top: -0.5 }}
+              />
+            ) : (
+              <></>
+            )}
+          </View>
+          <View
+            onTouchEndCapture={() => {
+              showFolderBottomSheet && setShowFolderBottomSheet(false);
+            }}
+            style={{ flex: 1 }}
+          />
+        </View>
+        {!isEditable && (data.text === undefined || data.text.length === 0) ? (
+          <></>
+        ) : (
+          <View style={{ ...styles.item }}>
+            <WritingImage />
+            <TextInput
+              editable={isEditable}
+              selectTextOnFocus={isEditable}
+              style={styles.record}
+              onChangeText={(txt) => setText_(txt)}
+              value={text_}
+              multiline
+              placeholder="내용을 입력하세요"
+              placeholderTextColor="#ADB1C5"
+            />
+          </View>
         )}
       </ScrollView>
+
       <FolderBottomSheet
         stackNavigation={navigation}
         show={showFolderBottomSheet}
@@ -690,6 +816,12 @@ const EditScreen = ({ navigation, route }) => {
         setFolderName={(f) => setFolderName_(f)}
         setFolderID={(f) => setFolderID_(f)}
         selectedFolderID={folderID_}
+        setFolderColor={(f) => setFolderColor_(f)}
+      />
+      <SnackBar
+        visible={visible}
+        onDismissSnackBar={onDismissSnackBar}
+        text="최대 10개까지 사진 첨부 가능합니다."
       />
       <PopUpType1
         modalVisible={removeModalVisible}
@@ -706,45 +838,14 @@ const EditScreen = ({ navigation, route }) => {
         askValue="정말 삭제하시겠어요?"
         actionValue="삭제"
       />
-      <PopUpType2
+      <PopUpType1
         modalVisible={goBackModalVisible}
         modalHandler={setGoBackModalVisible}
-        action1={() => {
+        action={() => {
           navigation.goBack();
         }}
-        action2={() => {
-          storeRecord({
-            navigation,
-            myUID,
-            myID,
-            myFirstName,
-            myLastName,
-            title_,
-            place: placeName_,
-            placeID: placeID_,
-            address: address_,
-            lctn: lctn_,
-            date_,
-            folderID_,
-            folderName_,
-            selectedPhotos,
-            text_,
-            writeDate: data?.writeDate,
-            recordID,
-            originalfolderID,
-            IsNewRecord,
-            queryClient,
-          });
-        }}
-        askValue="변경 사항을 저장하시겠어요?"
-        actionValue1="저장 안함"
-        actionValue2="저장"
-      />
-
-      <SnackBar
-        visible={visible}
-        onDismissSnackBar={onDismissSnackBar}
-        text="최대 10개까지 사진 첨부 가능합니다."
+        askValue="정말 기록을 그만두시겠어요?"
+        actionValue="그만두기"
       />
     </View>
   );
@@ -753,10 +854,15 @@ const EditScreen = ({ navigation, route }) => {
 export default EditScreen;
 
 const styles = StyleSheet.create({
-  imgPicker: { marginTop: 16, width: "100%" },
+  imgPicker: {
+    width: "100%",
+    height: 148,
+    marginBottom: 24,
+  },
   item: {
     flex: 1,
     flexDirection: "row",
+    width: 344,
     marginLeft: 23,
   },
   label: {
@@ -795,17 +901,17 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     width: "100%",
-    height: 60,
+    height: 40,
     flexDirection: "row",
+    bottom: -30,
     position: "absolute",
-    marginTop: 660,
   },
 
   goBack: {
     width: 32,
     height: 24,
     position: "absolute",
-    left: 31,
+    left: 23,
   },
   title: {
     width: 304,

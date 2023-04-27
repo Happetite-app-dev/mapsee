@@ -21,6 +21,7 @@ const addNewFolder = ({
   folderColor,
   folderUserIDs,
   queryClient,
+  setFolderColor,
 }) => {
   //친구초대한 사람한테 push알림 보내는 함수
   const reference1 = ref(db, "/folders"); //folders에 push
@@ -55,6 +56,17 @@ const addNewFolder = ({
       const now = new Date();
       set(referenceDate, now.toString());
     } else {
+      // 친구에게 초대할 때. 여기서 folder/userIDS/에 초대한 사람의 uid를 넣어주고, FALSE로 해두기!
+      const reference3 = ref(
+        db,
+        `/folders/${newFolderID}/userIDs/${folderUserID}`
+      ); //folders/newfolderID/userIDs에 userID:true를 넣기
+      set(reference3, false);
+      const reference4 = ref(
+        db,
+        `users/${folderUserID}/folderIDs/${newFolderID}`
+      ); //user에 folderID를 넣고
+      set(reference4, false);
       const timeNow = new Date();
       const reference = ref(db, "/notices/" + folderUserID);
       push(reference, {
@@ -78,10 +90,15 @@ const addNewFolder = ({
   });
   setFolderIDNameList((prev) => ({
     ...prev,
-    [newFolderID]: { folderID: newFolderID, folderName },
+    [newFolderID]: {
+      folderID: newFolderID,
+      folderName,
+      folderColor,
+    },
   }));
   setFolderID(newFolderID);
   setFolderName(folderName);
+  setFolderColor(folderColor);
   // invalidate queries
   queryClient.invalidateQueries(["folders"]);
 };
@@ -91,6 +108,8 @@ const AddFolderBottomSheet = ({
   setFolderID,
   setFolderIDNameList,
   setShow,
+  setFolderColor,
+  setIsSelectingFolder,
 }) => {
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
@@ -135,12 +154,26 @@ const AddFolderBottomSheet = ({
       folderColor: newFolderColor,
       folderUserIDs: newFolderUserIDs,
       queryClient: queryClient,
+      setFolderColor: setFolderColor,
     });
-    setShow(false);
+    setShow(true);
+    setIsSelectingFolder(true);
   };
 
   return (
-    <View style={{ width: "100%", height: "100%" }}>
+    <View
+      style={{
+        width: "100%",
+        height: 728,
+        alignItems: "center",
+        borderTopLeftRadius: 30,
+        borderTopRightRadius: 30,
+        borderWidth: 1,
+        borderColor: "#DDDFE9",
+        bottom: -58,
+        backgroundColor: "white",
+      }}
+    >
       <DefaultFolderBottomSheet
         IsNewRecord
         newFolderName={newFolderName}

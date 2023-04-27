@@ -145,6 +145,11 @@ const App = () => {
               }}
             />
             <Stack.Screen
+              name="EditScreen"
+              component={EditScreen}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
               name="PlaceInfoBottomSheetScreen"
               component={PlaceInfoBottomSheetScreen}
               options={{
@@ -163,11 +168,6 @@ const App = () => {
             <Stack.Screen
               name="SubSearchScreen2"
               component={SubSearchScreen2}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="EditScreen"
-              component={EditScreen}
               options={{ headerShown: false }}
             />
 

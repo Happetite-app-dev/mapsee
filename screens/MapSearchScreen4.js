@@ -9,8 +9,6 @@ import {
   Image,
 } from "react-native";
 
-import Close from "../assets/icons/close.svg";
-import GoBack from "../assets/icons/goBack.svg";
 import GoBackHeader from "../components/GoBackHeader";
 Geocode.setApiKey("AIzaSyDBq4tZ1QLm1R7iPH8O4dTvebVGWgkRPks");
 Geocode.setLanguage("ko");

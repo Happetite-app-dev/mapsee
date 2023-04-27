@@ -16,9 +16,9 @@ const FolderInviteRequestCard = ({
   const myUID = myContext.myUID;
 
   const userQuery = useUserQuery(requesterUID);
-  const requesterID = userQuery.data?.id
-  const requesterFirstName = userQuery.data?.firstName
-  const requesterLastName = userQuery.data?.lastName
+  const requesterID = userQuery.data?.id;
+  const requesterFirstName = userQuery.data?.firstName;
+  const requesterLastName = userQuery.data?.lastName;
 
   const folderQuery = useFolderQuery(folderID);
   // const folderName = folderQuery.data?.folderName[myUID] ?
@@ -33,22 +33,15 @@ const FolderInviteRequestCard = ({
       <View style={styles.container}>
         <View style={styles.textContainer}>
           <Text style={{ ...styles.text, fontSize: 14, fontWeight: "400" }}>
-            <Text style={{ fontWeight: "700" }}>
+            <Text style={{ fontFamily: "NotoSansKR-Bold" }}>
               {requesterLastName}
               {requesterFirstName}(@{requesterID})
             </Text>
             님이
-            <Text style={{ fontWeight: "700" }}> {folderName}</Text>에
-            회원님을 초대했습니다.
+            <Text style={{ fontFamily: "NotoSansKR-Bold" }}> {folderName}</Text>
+            에 회원님을 초대했습니다.
           </Text>
-          <Text
-            style={{
-              ...styles.text,
-              fontWeight: "700",
-              fontSize: 12,
-              color: "#545766",
-            }}
-          >
+          <Text style={styles.time}>
             <TimeDisplay time={time} />
           </Text>
         </View>
@@ -57,9 +50,7 @@ const FolderInviteRequestCard = ({
             onPress={denyRequest}
             style={{ ...styles.button, right: 22 }}
           >
-            <Text style={styles.buttonText}>
-              거절
-            </Text>
+            <Text style={styles.buttonText}>거절</Text>
           </Pressable>
           <View style={styles.buttonBorder} />
           <Pressable
@@ -68,9 +59,7 @@ const FolderInviteRequestCard = ({
             }}
             style={{ ...styles.button, left: 22 }}
           >
-            <Text style={styles.buttonText}>
-              수락
-            </Text>
+            <Text style={styles.buttonText}>수락</Text>
           </Pressable>
         </View>
       </View>
@@ -87,7 +76,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     backgroundColor: "#F4F5F9",
     marginBottom: 40,
-    alignSelf: "center"
+    alignSelf: "center",
   },
   textContainer: {
     top: 16,
@@ -99,6 +88,16 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     lineHeight: 16,
     letterSpacing: -0.5,
+    fontFamily: "NotoSansKR-Regular",
+  },
+  time: {
+    alignSelf: "center",
+    lineHeight: 16,
+    letterSpacing: -0.5,
+    fontFamily: "NotoSansKR-Bold",
+    fontSize: 12,
+    color: "#545766",
+    left: 5,
   },
   buttonContainer: {
     top: 36,
@@ -115,9 +114,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   buttonText: {
-    fontWeight: "700",
+    fontFamily: "NotoSansKR-Bold",
     fontSize: 14,
-    letterSpacing: 1.2
+    letterSpacing: 1.2,
   },
   buttonBorder: {
     height: 16,

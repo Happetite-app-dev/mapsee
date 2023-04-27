@@ -12,14 +12,15 @@ import SnackBar from "../components/SnackBar";
 import * as Clipboard from "expo-clipboard";
 import * as Linking from "expo-linking";
 import * as StoreReview from "react-native-store-review";
+
 import Rate from "../assets/icons/Rate.svg";
 import SNS from "../assets/icons/SNS.svg";
-import Suggest from "../assets/icons/folderEdit.svg";
-import NoticeOn from "../assets/icons/notice_on.svg";
-import SuggestBox from "../assets/icons/suggestBox.svg";
-import FriendList from "../assets/icons/friendsList.svg";
-import Copy from "../assets/icons/Friend.svg";
-import Arrow from "../assets/icons/Arrow.svg";
+import Suggest from "../assets/icons/Folderedit.svg";
+import NoticeOn from "../assets/icons/Notice/Notice with Alarm.svg";
+import SuggestBox from "../assets/image/suggestBox.svg";
+import FriendList from "../assets/icons/FriendsList.svg";
+import Copy from "../assets/image/Copy.svg";
+import Arrow from "../assets/icons/Arrow Right.svg";
 import AppContext from "../components/AppContext";
 
 const gotoProfileScreen = ({ navigation }) => {
@@ -37,9 +38,6 @@ const openInstagram = () => {
   Linking.openURL("https://www.instagram.com/mapsee_happetite/");
 };
 
-const gotoSuggestScreen = ({ navigation }) => {
-  navigation.navigate("SuggestScreen");
-};
 const MypageScreen = ({ navigation }) => {
   const myContext = useContext(AppContext);
   const myID = myContext.myID;
@@ -57,7 +55,7 @@ const MypageScreen = ({ navigation }) => {
           <Text style={styles.screenTitle}>마이페이지</Text>
         </View>
       </View>
-      <View
+      <TouchableOpacity
         style={{
           position: "absolute",
           width: "100%",
@@ -65,6 +63,7 @@ const MypageScreen = ({ navigation }) => {
           top: 105,
           flexDirection: "column",
         }}
+        onPress={() => gotoProfileScreen({ navigation })}
       >
         <View>
           <Text
@@ -73,6 +72,7 @@ const MypageScreen = ({ navigation }) => {
               left: 23,
               fontSize: 16,
               fontFamily: "NotoSansKR-Medium",
+              lineHeight: 24,
             }}
           >
             {myName}
@@ -101,12 +101,12 @@ const MypageScreen = ({ navigation }) => {
           </View>
         </View>
         <TouchableOpacity
-          onPress={() => gotoProfileScreen({ navigation })}
           style={{ height: 20, width: 50, left: 352.5 }}
+          onPress={() => gotoProfileScreen({ navigation })}
         >
           <Arrow />
         </TouchableOpacity>
-      </View>
+      </TouchableOpacity>
 
       <View
         style={{
@@ -127,98 +127,31 @@ const MypageScreen = ({ navigation }) => {
           <TouchableOpacity
             activeOpacity={0.6}
             onPress={() => gotoFriendListSreen({ navigation })}
-            style={{
-              height: 48,
-              width: "100%",
-              flexDirection: "row",
-              paddingTop: 24,
-              paddingLeft: 18,
-            }}
+            style={styles.element}
           >
             <FriendList />
-            <Text
-              style={{
-                fontSize: 14,
-                left: 14,
-                top: 3,
-                fontFamily: "NotoSansKR-Medium",
-              }}
-            >
-              친구 목록
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            activeOpacity={0.6}
-            style={{
-              height: 48,
-              width: "100%",
-              flexDirection: "row",
-              paddingTop: 24,
-              paddingLeft: 18,
-            }}
-          >
-            <NoticeOn />
-            <Text
-              style={{
-                fontSize: 14,
-                left: 14,
-                top: 3,
-                fontFamily: "NotoSansKR-Medium",
-              }}
-            >
-              알림
-            </Text>
+            <Text style={styles.elementText}>친구 목록</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             activeOpacity={0.6}
-            style={{
-              height: 48,
-              width: "100%",
-              flexDirection: "row",
-              paddingTop: 24,
-              paddingLeft: 18,
-            }}
+            style={styles.element}
             onPress={() => {
               StoreReview.requestReview();
             }}
           >
             <Rate />
-            <Text
-              style={{
-                fontSize: 14,
-                left: 14,
-                top: 3,
-                fontFamily: "NotoSansKR-Medium",
-              }}
-            >
-              별점주기
-            </Text>
+            <Text style={styles.elementText}>별점주기</Text>
           </TouchableOpacity>
           <TouchableOpacity
             activeOpacity={0.6}
-            style={{
-              height: 48,
-              width: "100%",
-              flexDirection: "row",
-              paddingTop: 24,
-              paddingLeft: 18,
-            }}
+            style={styles.element}
             onPress={() => {
               openInstagram();
             }}
           >
             <SNS />
-            <Text
-              style={{
-                fontSize: 14,
-                left: 14,
-                top: 3,
-                fontFamily: "NotoSansKR-Medium",
-              }}
-            >
-              인스타그램
-            </Text>
+            <Text style={styles.elementText}>인스타그램</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -240,7 +173,12 @@ const MypageScreen = ({ navigation }) => {
             }}
           >
             <Text
-              style={{ fontSize: 14, top: 3, fontFamily: "NotoSansKR-Regular" }}
+              style={{
+                fontSize: 14,
+                top: 3,
+                fontFamily: "NotoSansKR-Regular",
+                lineHeight: 24,
+              }}
             >
               로그아웃
             </Text>
@@ -255,32 +193,19 @@ const MypageScreen = ({ navigation }) => {
             top: 24,
             textAlign: "center",
             fontFamily: "NotoSansKR-Regular",
+            lineHeight: 24,
           }}
         >
           버전 00.00.01
         </Text>
       </View>
       <TouchableOpacity
-        style={{
-          height: 48,
-          width: "100%",
-          alignItems: "center",
-          flexDirection: "row",
-          left: 23,
-          top: 550,
-        }}
+        style={styles.suggest}
         onPress={() => navigation.navigate("SuggestScreen")}
       >
         <SuggestBox style={{ position: "absolute" }} />
         <Suggest style={{ position: "relative", left: 16 }} />
-        <Text
-          style={{
-            left: 37,
-            color: "#5ED3CC",
-            fontSize: 14,
-            fontFamily: "NotoSansKR-Medium",
-          }}
-        >
+        <Text style={styles.suggestText}>
           더 나은 맵시를 위해 의견을 주세요!
         </Text>
       </TouchableOpacity>
@@ -290,6 +215,7 @@ const MypageScreen = ({ navigation }) => {
           setVisible(false);
         }}
         text={`아이디(@${myID})가 복사되었습니다.`}
+        style={{ marginBottom: 70 }}
       />
     </SafeAreaView>
   );
@@ -311,5 +237,32 @@ const styles = StyleSheet.create({
     alignItems: "center",
     position: "relative",
     width: "100%",
+  },
+  element: {
+    height: 48,
+    width: "100%",
+    flexDirection: "row",
+    paddingTop: 24,
+    paddingLeft: 18,
+  },
+  elementText: {
+    fontSize: 14,
+    left: 14,
+    top: 3,
+    fontFamily: "NotoSansKR-Medium",
+    lineHeight: 24,
+  },
+  suggestText: {
+    left: 37,
+    color: "#5ED3CC",
+    fontSize: 14,
+    fontFamily: "NotoSansKR-Medium",
+  },
+  suggest: {
+    left: 23,
+    top: 556,
+    position: "relative",
+    flexDirection: "row",
+    alignItems: "center",
   },
 });

@@ -14,7 +14,7 @@ const CurrentRotate = (isFocused) => {
     Animated.loop(
       Animated.timing(rotateValueHolder, {
         toValue: 1,
-        duration: 3000,
+        duration: 5000,
         easing: Easing.linear,
         useNativeDriver: false,
       }),
@@ -23,7 +23,13 @@ const CurrentRotate = (isFocused) => {
   }
 };
 
-export const CreateNote = ({ navigation, style, isFocused }) => {
+export const CreateNote = ({
+  navigation,
+  style,
+  isFocused,
+  onTouchFunction,
+  pop,
+}) => {
   const RotateData = rotateValueHolder.interpolate({
     inputRange: [0, 1],
     outputRange: ["0deg", "360deg"],
@@ -37,7 +43,9 @@ export const CreateNote = ({ navigation, style, isFocused }) => {
     <View
       style={style}
       onTouchEndCapture={() => {
-        navigation.navigate("EditScreen", 0);
+        if (pop) navigation.pop();
+        navigation.push("EditScreen", 0);
+        console.log("createnote");
       }}
     >
       <Animated.View
@@ -47,6 +55,7 @@ export const CreateNote = ({ navigation, style, isFocused }) => {
           width: 48,
           height: 48,
         }}
+        onTouchEndCapture={onTouchFunction}
       >
         <CreateNote_back style={{ position: "absolute" }} />
       </Animated.View>

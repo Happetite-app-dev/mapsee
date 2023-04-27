@@ -1,15 +1,21 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useIsFocused } from "@react-navigation/native";
 import * as Location from "expo-location";
-import React, { useEffect, useState, useContext } from "react";
-import { StyleSheet, View, SafeAreaView, Text } from "react-native";
+import React, { useEffect, useState, useContext, useRef } from "react";
+import {
+  StyleSheet,
+  View,
+  SafeAreaView,
+  Text,
+  Animated,
+  Image,
+} from "react-native";
 import Geocoder from "react-native-geocoding";
 import MapView, { Marker } from "react-native-maps";
-
 import { useUserQuery, useAllRecordQuery } from "../queries";
 
-import MyLocation from "../assets/icons/MyLocation.svg";
-import MyLocationMarker from "../assets/markers/MyLocation.svg";
+import MyLocation from "../assets/icons/Location/MyLocation.svg";
+import MyLocationMarker from "../assets/markers/MyLocation-2.svg";
 import SearchMain from "../assets/icons/searchMain.svg";
 import SearchBox from "../assets/image/searchBox.svg";
 import TargetMarker from "../assets/markers/selectedMarker.svg";
@@ -18,7 +24,10 @@ import RecordMarker from "../components/MapScreen/RecordMarker";
 import GeneratePushToken from "../modules/GeneratePushToken";
 const mapStyle = require("../assets/mapDesign.json");
 import { CreateNote } from "../components/MapScreen/CreateNote";
-import { get } from "firebase/database";
+import GoBackHeader from "../components/GoBackHeader";
+import RecordFlatList from "../components/StorageScreen/RecordFlatList";
+const bottomSheetImage = require("../assets/image/bottomSheetScroll.png");
+
 const SearchView = ({ navigation, origin }) => {
   return (
     <View
@@ -26,10 +35,10 @@ const SearchView = ({ navigation, origin }) => {
         width: "100%",
         height: 48,
         flexDirection: "row",
-        top: "7.7%",
+        top: "0%",
         alignItems: "center",
         left: 23,
-        position: "absolute",
+        position: "relative",
       }}
       onTouchEndCapture={() =>
         navigation.navigate("MapSearchScreen1", {
@@ -65,8 +74,7 @@ const storeData = async (value) => {
 const getData = async () => {
   try {
     const value = await AsyncStorage.getItem("tutorial");
-    console.log("function", value);
-    return value;
+    return JSON.parse(value);
   } catch (e) {
     //
   }
@@ -128,6 +136,9 @@ const MapScreen = ({ navigation }) => {
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
   const userQuery = useUserQuery(myUID);
+  const [animationValue, setAnimationValue] = useState(0);
+
+  const showAnimation = useRef(new Animated.Value(animationValue)).current;
 
   const allRecordQuery = useAllRecordQuery();
 
@@ -154,14 +165,11 @@ const MapScreen = ({ navigation }) => {
   };
 
   useEffect(() => {
-    console.log("useEffect", getData());
-    if (getData()) {
-      console.log("null returned");
+    if (!getData()) {
       storeData("true");
 
       gotoTutorial({ navigation, onChangeGetPermissions });
     } else {
-      console.log("getData", getData());
       onChangeGetPermissions(true);
     }
   }, []);
@@ -178,7 +186,7 @@ const MapScreen = ({ navigation }) => {
 
   useEffect(() => {
     if (targetShown) {
-      navigation.navigate("PlaceInfoBottomSheetScreen", {
+      navigation.push("PlaceInfoBottomSheetScreen", {
         targetName: target.name,
         targetAddress: target.address,
         targetId: target.id,
@@ -237,23 +245,6 @@ const MapScreen = ({ navigation }) => {
           }
         }}
       >
-        <Marker
-          coordinate={target.lctn}
-          opacity={targetShown ? 100 : 0}
-          style={{ zIndex: 10000 }}
-        >
-          <TargetMarker />
-        </Marker>
-        <Marker
-          coordinate={{
-            latitude: current.latitude,
-            longitude: current.longitude,
-          }}
-          style={{ zIndex: 1000 }}
-        >
-          <MyLocationMarker />
-        </Marker>
-
         <RecordMarker
           recordData={
             allRecordQuery.data && userQuery.data?.folderIDs
@@ -263,9 +254,34 @@ const MapScreen = ({ navigation }) => {
               : []
           }
           origin={origin}
+          onPressFunction={(data, placeName) => {
+            targetingFromLocation({
+              lctn: data.nativeEvent.coordinate,
+              name: placeName,
+              setOrigin,
+              setTarget,
+              setTargetShown,
+            });
+          }}
         />
+        <Marker
+          coordinate={target.lctn}
+          opacity={targetShown ? 100 : 0}
+          style={{ zIndex: 1 }}
+        >
+          <TargetMarker />
+        </Marker>
+        <Marker
+          coordinate={{
+            latitude: current.latitude,
+            longitude: current.longitude,
+          }}
+        >
+          <MyLocationMarker style={styles.MyLocationMarker} />
+        </Marker>
       </MapView>
-      <SearchView navigation={navigation} origin={origin} />
+
+      <SearchView navigation={navigation} origin={current} />
 
       <View
         style={styles.currentLocationButton}
@@ -297,7 +313,8 @@ const styles = StyleSheet.create({
   },
   map: {
     width: "100%",
-    height: "100%",
+    height: "120%",
+    position: "absolute",
   },
   currentLocationButton: {
     position: "absolute",
@@ -309,12 +326,12 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
   createNote: {
-    position: "relative",
+    position: "absolute",
     width: 48,
     height: 48,
     borderRadius: 24,
     left: 319,
-    bottom: 126,
+    bottom: 112,
     shadowColor: "black",
     shadowOffset: {
       width: 0,
@@ -322,5 +339,14 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.15,
     shadowRadius: 3.5,
+  },
+  MyLocationMarker: {
+    shadowColor: "#5ED3CC",
+    shadowRadius: 3,
+    shadowOffset: {
+      width: 0,
+      height: 0,
+    },
+    shadowOpacity: 0.8,
   },
 });

@@ -3,16 +3,17 @@ import * as Permissions from "expo-permissions";
 import React, { useEffect, useState } from "react";
 import {
   View,
-  Button,
   Text,
   StyleSheet,
   Image,
   Alert,
   ScrollView,
+  Dimensions,
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
-import DeletePhoto from "../../assets/icons/deletePhoto.svg";
+import DeletePhoto from "../../assets/image/deletePhoto.svg";
+import AddPhoto from "../../assets/image/+";
 import ImageCarousel from "./ImageCarousel";
 const verifyPermissionsCam = async () => {
   const result = await Permissions.askAsync(Permissions.CAMERA);
@@ -94,61 +95,75 @@ const ImgPicker = ({
   return (
     <View style={styles.imagePicker}>
       {IsEditable ? (
-        <View>
-          <View style={{ height: 148, width: 360 }}>
-            <ScrollView
-              showsHorizontalScrollIndicator={false}
-              horizontal
-              style={{ height: 148, marginLeft: 7 }}
-            >
-              <TouchableOpacity
-                onPress={() => {
-                  if (pickedImages.length >= 10) onToggleSnackBar();
-                  else takeImageHandlerLib(setPickedImages, onImageTaken);
-                }}
-                style={styles.imagePreview}
+        pickedImages.length !== 0 ? (
+          <View>
+            <View style={{ height: 148, width: 360 }}>
+              <ScrollView
+                showsHorizontalScrollIndicator={false}
+                horizontal
+                style={{ height: 148, marginLeft: 7 }}
               >
-                <Text style={{ fontSize: 40, color: "#5ED3CC" }}>+</Text>
-              </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    if (pickedImages.length >= 10) onToggleSnackBar();
+                    else takeImageHandlerLib(setPickedImages, onImageTaken);
+                  }}
+                  style={styles.imagePreview}
+                >
+                  <AddPhoto width={148} height={148} />
+                </TouchableOpacity>
 
-              {pickedImages != null && pickedImages !== undefined ? (
-                pickedImages.map((image) => {
-                  return (
-                    <View
-                      style={{
-                        position: "relative",
-                        marginRight: 164,
-                      }}
-                    >
-                      <Image style={styles.image} source={{ uri: image }} />
+                {pickedImages != null && pickedImages !== undefined ? (
+                  pickedImages.map((image) => {
+                    return (
                       <View
-                        onTouchEndCapture={() => {
-                          deleteImage(
-                            image,
-                            pickedImages,
-                            setPickedImages,
-                            onImageErased
-                          );
-                        }}
                         style={{
-                          width: 24,
-                          height: 24,
-                          marginTop: 8,
-                          marginLeft: 116,
-                          position: "absolute",
+                          position: "relative",
+                          marginRight: 164,
                         }}
                       >
-                        <DeletePhoto />
+                        <Image style={styles.image} source={{ uri: image }} />
+                        <View
+                          onTouchEndCapture={() => {
+                            deleteImage(
+                              image,
+                              pickedImages,
+                              setPickedImages,
+                              onImageErased
+                            );
+                          }}
+                          style={{
+                            width: 24,
+                            height: 24,
+                            marginTop: 8,
+                            marginLeft: 116,
+                            position: "absolute",
+                          }}
+                        >
+                          <DeletePhoto />
+                        </View>
                       </View>
-                    </View>
-                  );
-                })
-              ) : (
-                <></>
-              )}
-            </ScrollView>
+                    );
+                  })
+                ) : (
+                  <></>
+                )}
+              </ScrollView>
+            </View>
           </View>
-        </View>
+        ) : (
+          <View style={{ width: "100%" }}>
+            <View
+              onTouchEndCapture={() => {
+                if (pickedImages.length >= 10) onToggleSnackBar();
+                else takeImageHandlerLib(setPickedImages, onImageTaken);
+              }}
+              style={styles.imagePreviewCenter}
+            >
+              <AddPhoto width={148} height={148} />
+            </View>
+          </View>
+        )
       ) : pickedImages.length === 0 ? (
         <></>
       ) : (
@@ -162,13 +177,17 @@ const ImgPicker = ({
     </View>
   );
 };
-
+const width = Dimensions.get("window").width;
 const styles = StyleSheet.create({
   imagePicker: {
     alignItems: "center",
-    marginBottom: 15,
     flexDirection: "row",
     paddingLeft: 10,
+  },
+  imagePreviewCenter: {
+    width: 148,
+    height: 148,
+    left: width * 0.5 - 82,
   },
   imagePreview: {
     width: 148,

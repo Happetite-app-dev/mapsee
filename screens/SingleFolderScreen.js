@@ -1,4 +1,4 @@
-import { ref, onValue, remove } from "firebase/database";
+import { ref, remove } from "firebase/database";
 import { useContext, useState } from "react";
 import { View } from "react-native";
 
@@ -8,7 +8,7 @@ import { PopUpType1 } from "../components/PopUp";
 import RecordFlatList from "../components/StorageScreen/RecordFlatList";
 import { database } from "../firebase";
 import { useAllRecordQuery, useFolderQuery } from "../queries";
-import SmallFolder from "../assets/icons/SmallFolder.svg";
+import { QueryClient, useQueryClient } from "react-query";
 
 const gotoMakeFolderBottomSheetScreen = ({
   navigation,
@@ -26,10 +26,13 @@ const gotoMakeFolderBottomSheetScreen = ({
     recordDataSource,
   });
 };
-const exitFolder = async ({ myUID, folderID, navigation }) => {
+const exitFolder = async ({ myUID, folderID, navigation, queryClient }) => {
   await exitData(myUID, folderID).then(
     () => navigation.navigate("Storage") //realtimeDataBase가 모두 업데이트 된후
   );
+  queryClient.invalidateQueries(["folders", folderID]);
+  queryClient.invalidateQueries(["records"]);
+  queryClient.invalidateQueries(["recordIDList"]);
 };
 const exitData = async (myUID, folderID) => {
   const db = database;
@@ -52,7 +55,7 @@ const exitData = async (myUID, folderID) => {
         "/folders/" + folderID + "/folderColor/" + myUID
       );
       remove(reference4);
-    })
+    });
   //사람이 없는 폴더에 나중에 사람이 추가될 가능성을 위해 일단 폴더를 남겨두자
   // .then(
   //   //지울 필요가 없음
@@ -71,7 +74,7 @@ const SingleFolderScreen = ({ navigation, route }) => {
   const { folderID } = route.params;
   const query = useFolderQuery(folderID);
   const allRecordQuery = useAllRecordQuery();
-
+  const queryClient = useQueryClient();
   const recordDataSource = Object.entries(allRecordQuery.data).filter(
     function ([key, values]) {
       // Applying filter for the inserted text in search bar
@@ -82,30 +85,37 @@ const SingleFolderScreen = ({ navigation, route }) => {
   const [modalVisible, setModalVisible] = useState(false);
   return (
     <View style={{ height: "100%", width: "100%", backgroundColor: "white" }}>
-      <GoBackHeader
-        navigation={navigation}
-        text={query.data.folderName[myUID]}
-        folderColor={query.data.folderColor[myUID]}
-        isShareFolder={query.data.userIDs?.length >= 2}
-        rightButton="edit"
-        rightButtonFunction={() =>
-          gotoMakeFolderBottomSheetScreen({
-            navigation,
-            folderID,
-          })
-        }
-        rightButtonFunction2={() => setModalVisible(true)}
-      />
-      <RecordFlatList
-        recordList={recordDataSource}
-        stackNavigation={navigation}
-      />
+      <View style={{ height: "100%", width: "100%", backgroundColor: "white" }}>
+        <GoBackHeader
+          navigation={navigation}
+          text={query.data.folderName[myUID]}
+          folderColor={query.data.folderColor[myUID]}
+          isShareFolder={
+            query.data.userIDs !== undefined
+              ? Object.entries(query.data.userIDs).length >= 2
+              : false
+          }
+          rightButton="edit"
+          rightButtonFunction={() =>
+            gotoMakeFolderBottomSheetScreen({
+              navigation,
+              folderID,
+            })
+          }
+          rightButtonFunction2={() => setModalVisible(true)}
+        />
+        <RecordFlatList
+          recordList={recordDataSource}
+          stackNavigation={navigation}
+        />
+      </View>
+
       <PopUpType1
         modalVisible={modalVisible}
         modalHandler={setModalVisible}
-        action={() => exitFolder({ myUID, folderID, navigation })}
-        askValue="정말 삭제하시겠어요?"
-        actionValue="삭제"
+        action={() => exitFolder({ myUID, folderID, navigation, queryClient })}
+        askValue="정말 폴더에서 나가시겠어요?"
+        actionValue="나가기"
       />
     </View>
   );

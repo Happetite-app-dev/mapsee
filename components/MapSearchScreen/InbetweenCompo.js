@@ -1,5 +1,5 @@
 import { Image, StyleSheet, Text, View, FlatList } from "react-native";
-import SearchHistory from "../../assets/icons/searchPlace.svg";
+import SearchHistory from "../../assets/icons/Location/Location.svg";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const storeData = async (value) => {
@@ -58,7 +58,6 @@ const InbetweenCompo = ({ name, history, setHistory, navigation }) => {
               fontSize: 14,
               color: "#5ED3CC",
               fontFamily: "NotoSansKR-Bold",
-              height: 15,
             }}
           >
             전체삭제
@@ -95,12 +94,10 @@ const styles = StyleSheet.create({
     marginTop: 32,
   },
   recentSearch: {
-    width: 51,
-    height: 24,
     marginLeft: 23,
   },
   eraseAll: {
-    height: 12,
+    height: 20,
     marginRight: 23,
   },
   historyItem: {

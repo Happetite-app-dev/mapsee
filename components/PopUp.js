@@ -8,8 +8,8 @@ export const PopUpType1 = ({
   askValue,
   actionValue,
 }) => {
-  return (
-    <View style={styles.centeredView}>
+  return modalVisible ? (
+    <View style={{ flex: 1 }}>
       <Modal
         animationType="none"
         transparent
@@ -34,6 +34,14 @@ export const PopUpType1 = ({
               >
                 <Text style={styles.modalText}>취소</Text>
               </Pressable>
+              <View
+                style={{
+                  width: 1,
+                  height: 16,
+                  backgroundColor: "#ADB1C5",
+                  marginTop: 8,
+                }}
+              ></View>
               <Pressable
                 style={{
                   marginTop: 8,
@@ -52,6 +60,8 @@ export const PopUpType1 = ({
         </View>
       </Modal>
     </View>
+  ) : (
+    <></>
   );
 };
 
@@ -135,7 +145,7 @@ export const PopUpType4 = ({
   actionValue2,
   actionValue3,
 }) => {
-  return (
+  return modalVisible ? (
     <View
       style={{ ...styles.centeredView }}
       onTouchEnd={() => modalHandler(!modalVisible)}
@@ -149,55 +159,72 @@ export const PopUpType4 = ({
         }}
       >
         <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <View style={styles.askView}>
-              <Text style={styles.askText}>{askValue}</Text>
+          <View style={styles.popup4modalView}>
+            <View
+              style={{
+                marginTop: 0,
+                width: 312,
+                height: 16,
+                alignItems: "center",
+              }}
+            >
+              <Text
+                style={{
+                  width: 312,
+                  height: 16,
+                  marginTop: 24,
+                  fontSize: 16,
+                  lineHeight: 16,
+                  letterSpacing: -0.5,
+                  fontFamily: "NotoSansKR-Medium",
+                  fontWeight: "500",
+                }}
+              >
+                {askValue}
+              </Text>
             </View>
-            <View style={styles.buttonView}>
+            <View
+              style={{
+                flexDirection: "column",
+                justifyContent: "space-between",
+                width: 312,
+                height: 48,
+                marginTop: 48,
+              }}
+            >
               <Pressable
                 style={{
-                  marginTop: 8,
-                  ...styles.button,
-                  ...styles.buttonClose,
+                  marginTop: 0,
+                  width: "100%",
+                  height: 16,
                 }}
                 onPress={() => {
                   modalHandler(!modalVisible);
                   action1();
                 }}
               >
-                <Text style={styles.modalText}>{actionValue1} </Text>
+                <Text style={styles.popup4Text}>{actionValue1} </Text>
               </Pressable>
               <Pressable
                 style={{
                   marginTop: 8,
-                  ...styles.button,
-                  ...styles.buttonClose,
+                  width: "100%",
+                  height: 16,
                 }}
                 onPress={() => {
                   modalHandler(!modalVisible);
                   action2();
                 }}
               >
-                <Text style={styles.modalText}>{actionValue2} </Text>
-              </Pressable>
-              <Pressable
-                style={{
-                  marginTop: 8,
-                  ...styles.button,
-                  ...styles.buttonClose,
-                }}
-                onPress={() => {
-                  modalHandler(!modalVisible);
-                  action3();
-                }}
-              >
-                <Text style={styles.modalText}>{actionValue3} </Text>
+                <Text style={styles.popup4Text}>{actionValue2} </Text>
               </Pressable>
             </View>
           </View>
         </View>
       </Modal>
     </View>
+  ) : (
+    <View></View>
   );
 };
 
@@ -206,7 +233,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 22,
+    backgroundColor: "rgba(0, 0, 0, 0.4)",
   },
   modalView: {
     borderColor: "#DDDFE9",
@@ -246,8 +273,8 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 0,
     letterSpacing: -0.5,
-    fontWeight: "400",
     textAlign: "center",
+    fontFamily: "NotoSansKR-Medium",
   },
   modalText: {
     flex: 1,
@@ -256,5 +283,23 @@ const styles = StyleSheet.create({
     letterSpacing: 1.2,
     alignSelf: "center",
     fontWeight: "700",
+    fontFamily: "NotoSansKR-Bold",
+  },
+  popup4Text: {
+    flex: 1,
+    fontSize: 14,
+    lineHeight: 16,
+    letterSpacing: 1.2,
+    fontWeight: "400",
+    fontFamily: "NotoSansKR-Regular",
+  },
+  popup4modalView: {
+    borderColor: "#DDDFE9",
+    borderWidth: 1,
+    backgroundColor: "white",
+    borderRadius: 16,
+    alignItems: "center",
+    width: 344,
+    height: 136,
   },
 });

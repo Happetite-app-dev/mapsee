@@ -73,10 +73,7 @@ const SuggestScreen = ({ navigation }) => {
         text={"의견 보내기"}
         style={{ top: 592 }}
         onPressFunction={() => {
-          console.log("pressed");
-          sendEmail("parkjeong02@gmail.com", "mapsee", "this is dmmm").then(
-            () => console.log("email sent")
-          );
+          sendEmail("parkjeong02@gmail.com", "mapsee", "this is dmmm").then();
         }}
       />
     </View>

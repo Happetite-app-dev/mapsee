@@ -11,7 +11,7 @@ import AppContext from "../AppContext";
 const now = new Date();
 const currentDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
-const RecordMarker = ({ recordData, origin }) => {
+const RecordMarker = ({ recordData, origin, onPressFunction }) => {
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
   const userQuery = useUserQuery(myUID);
@@ -20,36 +20,42 @@ const RecordMarker = ({ recordData, origin }) => {
       ? Object.keys(userQuery.data?.folderIDs)
       : [];
 
-  const folderQueries = useFolderQueries(folderIDList)
+  const folderQueries = useFolderQueries(folderIDList);
 
   const data = folderIDList.reduce((acc, curr, idx) => {
-    return { ...acc, [curr]: folderQueries[idx].data }
-  }, new Object)
+    return { ...acc, [curr]: folderQueries[idx].data };
+  }, new Object());
 
   return recordData == null || recordData === undefined ? (
     <></>
   ) : (
     recordData.map(([key, record]) => {
-      const showMarker = Math.random();
       const recordDate = new Date(
-        record?.date?.year,
-        record?.date?.month - 1,
-        record?.date?.day
+        record?.writeDate?.year,
+        record?.writeDate?.month - 1,
+        record?.writeDate?.day,
+        record?.writeDate?.hour,
+        record?.writeDate?.minute
       );
-      //console.log({ ...data }[record.folderID])
       const dayDiff = (currentDate - recordDate) / (1000 * 60 * 60 * 24);
       const color =
         get(data, [record.folderID, "folderColor", myUID]) ||
         get(data, [record.folderID, "initFoldercolor"]);
-
       return (
         <Marker
           key={key}
           coordinate={record.lctn}
-          opacity={origin.latitudeDelta < 0.01 || showMarker > 0.5 ? 100 : 0}
-          style={{ zIndex: Math.round(dayDiff * 1000) }}
+          opacity={100}
+          style={{ zIndex: Math.round(-dayDiff * 100000) }}
+          onPress={(data) => {
+            onPressFunction(data, record.placeName);
+          }}
         >
-          {dayDiff <= 3 ? <NewMarker /> : <Marker1 color={color} />}
+          {dayDiff <= 3 ? (
+            <NewMarker color={color} />
+          ) : (
+            <Marker1 color={color} />
+          )}
         </Marker>
       );
     })
