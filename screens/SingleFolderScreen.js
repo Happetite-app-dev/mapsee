@@ -1,4 +1,4 @@
-import { ref, remove } from "firebase/database";
+import { onValue, ref, remove } from "firebase/database";
 import { useContext, useState } from "react";
 import { View } from "react-native";
 
@@ -27,14 +27,13 @@ const gotoMakeFolderBottomSheetScreen = ({
   });
 };
 const exitFolder = async ({ myUID, folderID, navigation, queryClient }) => {
-  await exitData(myUID, folderID).then(
-    () => navigation.navigate("Storage") //realtimeDataBase가 모두 업데이트 된후
+  await exitData(myUID, folderID, queryClient).then(
+    () => {
+      navigation.navigate("Storage");
+    } //realtimeDataBase가 모두 업데이트 된후}
   );
-  queryClient.invalidateQueries(["folders", folderID]);
-  queryClient.invalidateQueries(["records"]);
-  queryClient.invalidateQueries(["recordIDList"]);
 };
-const exitData = async (myUID, folderID) => {
+const exitData = async (myUID, folderID, queryClient) => {
   const db = database;
   const reference1 = ref(db, "/users/" + myUID + "/folderIDs/" + folderID);
   await remove(reference1)
@@ -55,7 +54,24 @@ const exitData = async (myUID, folderID) => {
         "/folders/" + folderID + "/folderColor/" + myUID
       );
       remove(reference4);
-    });
+    })
+    .then(
+      () => {
+        onValue(ref(db, "/folders/" + folderID + "/userIDs"), (snapshot) => {
+          if (!snapshot.hasChildren()) {
+            const reference3 = ref(db, "/folders/" + folderID);
+            remove(reference3);
+          }
+        });
+
+        queryClient.invalidateQueries(["folders", folderID]);
+        queryClient.invalidateQueries(["records"]);
+        queryClient.invalidateQueries(["recordIDList"]);
+        queryClient.invalidateQueries(["users", myUID]);
+      }
+      //지울 필요가 없음
+    );
+
   //사람이 없는 폴더에 나중에 사람이 추가될 가능성을 위해 일단 폴더를 남겨두자
   // .then(
   //   //지울 필요가 없음
@@ -88,8 +104,8 @@ const SingleFolderScreen = ({ navigation, route }) => {
       <View style={{ height: "100%", width: "100%", backgroundColor: "white" }}>
         <GoBackHeader
           navigation={navigation}
-          text={query.data.folderName[myUID]}
-          folderColor={query.data.folderColor[myUID]}
+          text={query?.data?.folderName[myUID]}
+          folderColor={query?.data?.folderColor[myUID]}
           isShareFolder={
             query.data.userIDs !== undefined
               ? Object.entries(query.data.userIDs).length >= 2

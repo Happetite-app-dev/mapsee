@@ -213,9 +213,9 @@ const FriendListScreen = ({ navigation }) => {
         onDismissSnackBar={onDismissSnackBar}
         text={
           requestSent
-            ? requestInfo[0] +
-              "(" +
-              requestInfo[1] +
+            ? requestInfo[1] +
+              "(@" +
+              requestInfo[0] +
               ")님께 친구 요청을 전달했습니다!"
             : "이미 추가된 친구입니다."
         }

@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
   },
   goBack: {
     width: 50,
-    height: 30,
+    height: 24,
     position: "absolute",
     left: 0,
   },

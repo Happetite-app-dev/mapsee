@@ -15,6 +15,7 @@ import ReceptRecordAddDoneList from "./ReceptRecordAddDoneList";
 //ID를 UID에서 갖고 오는 식으로 바꿔야 될수도
 
 import { database } from "../firebase";
+import { useUserQuery, useFolderQuery } from "../queries";
 
 const db = database;
 const acceptFriendRequest = async ({ myUID, noticeKey, requesterUID }) => {
@@ -22,18 +23,16 @@ const acceptFriendRequest = async ({ myUID, noticeKey, requesterUID }) => {
   //   ref(db, "/notices/" + myUID + "/" + noticeKey + "/type/"), //remove할지 추후에 고려 필요
   //   "recept_friend_request_accept_inact"
   // );
-  remove(
-    ref(db, "/notices/" + myUID + "/" + noticeKey)
-  );
+  remove(ref(db, "/notices/" + myUID + "/" + noticeKey));
   push(ref(db, "/notices/" + myUID), {
     type: "recept_friend_request_accept_act",
     requesterUID,
-    time: new Date().getTime()
+    time: new Date().getTime(),
   });
   push(ref(db, "/notices/" + requesterUID), {
     type: "dispatch_friend_request_accept_act",
     approverUID: myUID,
-    time: new Date().getTime()
+    time: new Date().getTime(),
   });
   set(ref(db, "/users/" + myUID + "/friendUIDs/" + requesterUID), true);
   set(ref(db, "/users/" + requesterUID + "/friendUIDs/" + myUID), true);
@@ -43,6 +42,8 @@ const acceptFolderInviteRequest = async ({
   noticeKey,
   requesterUID,
   folderID,
+  myContext,
+  folderData,
 }) => {
   onValue(ref(db, `/folders/${folderID}/initFolderName`), (snapshot1) => {
     const folderName = snapshot1.val();
@@ -61,29 +62,31 @@ const acceptFolderInviteRequest = async ({
   //초대한 사람에게 폴더 초대 수락했다고 알림보내기(push, 내부)
   SendPushNotification({
     receiverUID: requesterUID,
-    title_: "폴더초대수락타이틀",
-    body_: "폴더초대수락바디",
+    title_: "mapsee 맵시", // 폴더 초대 수락 알림
+    body_: `${myContext.myLastName + myContext.myFirstName}(@${
+      myContext.myID
+    })님이 폴더[${
+      folderData?.folderName[myUID] || folderData.initFolderName
+    }] 초대를 수락했습니다.`, // ~~님이 ~~폴더에 초대를 수락하였습니다.
   });
   push(ref(db, "/notices/" + myUID), {
     type: "recept_folderInvite_request_accept_act",
     requesterUID,
     folderID,
-    time: new Date().getTime()
+    time: new Date().getTime(),
   });
   push(ref(db, "/notices/" + requesterUID), {
     type: "dispatch_folderInvite_request_accept_act",
     approverUID: myUID,
     folderID,
-    time: new Date().getTime()
+    time: new Date().getTime(),
   });
   //notice/myUID/noticeKey에 접근해서 type 바꾸기 -> remove 할지 추후에 고려 필요
   // set(
   //   ref(db, "/notices/" + myUID + "/" + noticeKey + "/type/"), //remove할지 추후에 고려 필요
   //   "recept_folderInvite_request_accept_inact"
   // );
-  remove(
-    ref(db, "/notices/" + myUID + "/" + noticeKey)
-  );
+  remove(ref(db, "/notices/" + myUID + "/" + noticeKey));
 };
 
 const denyFriendRequest = async ({ myUID, noticeKey, onToggleSnackBar }) => {
@@ -91,20 +94,20 @@ const denyFriendRequest = async ({ myUID, noticeKey, onToggleSnackBar }) => {
   //   ref(db, "/notices/" + myUID + "/" + noticeKey + "/type/"),
   //   "recept_friend_request_deny_inact"
   // );
-  remove(
-    ref(db, "/notices/" + myUID + "/" + noticeKey)
-  );
+  remove(ref(db, "/notices/" + myUID + "/" + noticeKey));
   onToggleSnackBar();
 };
 
-const denyFolderInviteRequest = async ({ myUID, noticeKey, onToggleSnackBar }) => {
+const denyFolderInviteRequest = async ({
+  myUID,
+  noticeKey,
+  onToggleSnackBar,
+}) => {
   // set(
   //   ref(db, "/notices/" + myUID + "/" + noticeKey + "/type/"),
   //   "recept_folderInvite_request_deny_inact"
   // );
-  remove(
-    ref(db, "/notices/" + myUID + "/" + noticeKey)
-  );
+  remove(ref(db, "/notices/" + myUID + "/" + noticeKey));
   onToggleSnackBar();
 };
 
@@ -112,6 +115,9 @@ const NoticeRenderer = ({ navigation, item, onToggleSnackBar }) => {
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
   const queryClient = useQueryClient();
+  const requesterData = useUserQuery(["users", item.val.requesterUID]).data;
+  const folderData = useFolderQuery(["folders", item.val.folderID]).data;
+
   switch (item.val.type) {
     case "recept_friend_request": //친구 요청 수신 - 수락 거절 안 한 활성화된 새로운 알림
       return (
@@ -168,9 +174,12 @@ const NoticeRenderer = ({ navigation, item, onToggleSnackBar }) => {
               noticeKey: item.key,
               requesterUID: item.val.requesterUID,
               folderID: item.val.folderID,
+              myName: myContext.myLastName + myContext.myFirstName,
+              myContext,
+              folderData,
             }).then(() => {
               queryClient.invalidateQueries(["all-notices"]);
-            })
+            });
           }}
           denyRequest={async () =>
             await denyFolderInviteRequest({

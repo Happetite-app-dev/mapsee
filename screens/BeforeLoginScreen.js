@@ -7,14 +7,15 @@ import {
   TouchableOpacity,
   Text,
   Dimensions,
+  SafeAreaView,
 } from "react-native";
 
 import AppContext from "../components/AppContext";
 import BottomButton from "../components/BottomButton";
 import { auth, database } from "../firebase";
 import Mapsee from "../assets/image/Mapsee.svg";
-import { SafeAreaView } from "react-native-safe-area-context";
-const { height } = Dimensions.get("window");
+//import { SafeAreaView } from "react-native-safe-area-context";
+const { height, width } = Dimensions.get("window");
 
 const db = database;
 const gotoApp = ({
@@ -87,22 +88,26 @@ const BeforeLoginScreen = ({ navigation }) => {
   return (
     <SafeAreaView
       style={{
-        height,
-        backgroundColor: "white",
+        flex: 1,
         alignItems: "center",
         justifyContent: "center",
+        backgroundColor: "white",
       }}
     >
-      <View style={{ padding: height * 0.3, marginBottom: height * 0.2 }}>
-        <Mapsee />
-      </View>
+      <Mapsee
+        style={{
+          position: "absolute",
+          top: height * 0.5 - 70,
+          left: width * 0.5 - 97,
+        }}
+      />
       <TouchableOpacity
         style={styles.button}
         onPress={() => gotoRegisterScreen()}
       >
         <Text style={styles.buttonText}>이메일로 회원가입</Text>
       </TouchableOpacity>
-      <View style={{ flexDirection: "row", marginBottom: 48 }}>
+      <View style={{ flexDirection: "row", bottom: 48, position: "absolute" }}>
         <Text
           style={{ fontFamily: "NotoSansKR-Bold", size: 12, color: "#545766" }}
         >
@@ -135,7 +140,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     justifyContent: "center",
     alignItems: "center",
-    marginBottom: 24,
+    bottom: 96,
+    position: "absolute",
   },
 
   registerButton: {

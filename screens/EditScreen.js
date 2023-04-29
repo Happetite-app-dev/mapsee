@@ -33,6 +33,7 @@ import FolderImage from "../assets/icons/Folder.svg";
 import GoBack from "../assets/icons/BackArrow.svg";
 import LocationImage from "../assets/icons/Location/Location.svg";
 import WritingImage from "../assets/icons/Edit.svg";
+import Upload from "../assets/icons/Upload.svg";
 
 import AppContext from "../components/AppContext";
 import DatePicker from "../components/EditScreen/DatePicker";
@@ -91,7 +92,9 @@ const saveData = async (
   text,
   writeDate_,
   recordID,
-  originalfolderID
+  originalfolderID,
+  myName,
+  myID
 ) => {
   const timeNow = new Date();
   const writeDate = writeDate_ || {
@@ -167,8 +170,8 @@ const saveData = async (
             });
             SendPushNotification({
               receiverUID: folderUserID,
-              title_: "기록추가타이틀", ///
-              body_: "기록추가바디",
+              title_: "mapsee 맵시", ///
+              body_: `${myName}(@${myID})님이 폴더[${folderName}]에 기록을 남겼습니다.`, // ~님이 ~폴더에 기록을 남겼습니다.
             });
           }
         });
@@ -290,6 +293,7 @@ const storeRecord = async ({
   originalfolderID,
   IsNewRecord,
   queryClient,
+  myName,
 }) => {
   await saveData(
     myUID,
@@ -305,7 +309,9 @@ const storeRecord = async ({
     text_,
     writeDate,
     recordID,
-    originalfolderID
+    originalfolderID,
+    myName,
+    myID
   )
     .then(() => {
       queryClient.invalidateQueries(["users", myUID]);
@@ -381,7 +387,6 @@ const removeRecord = async ({
 };
 
 const EditScreen = ({ navigation, route }) => {
-  console.log("editscreen");
   // Location for SubSearchScreen1
   const [current, setCurrent] = useState([0, 0]);
 
@@ -597,27 +602,16 @@ const EditScreen = ({ navigation, route }) => {
                   originalfolderID,
                   IsNewRecord,
                   queryClient,
+                  myName: myContext.myLastName + myContext.myFirstName,
                 })
               }
               style={{
-                width: 40,
-                height: 35,
+                width: 24,
+                height: 24,
                 right: 23,
               }}
             >
-              <Text
-                style={{
-                  height: 16,
-                  fontFamily: "NotoSansKR-Bold",
-                  lineHeight: 24,
-                  fontSize: 14,
-                  color: "#5ED3CC",
-                  right: 0,
-                  position: "absolute",
-                }}
-              >
-                저장
-              </Text>
+              <Upload />
             </TouchableOpacity>
           </View>
         ) : !IsRecordOwner && !isEditable ? (
@@ -788,7 +782,7 @@ const EditScreen = ({ navigation, route }) => {
             style={{ flex: 1 }}
           />
         </View>
-        {!isEditable && (data.text === undefined || data.text.length === 0) ? (
+        {!isEditable && (data?.text === undefined || data.text.length === 0) ? (
           <></>
         ) : (
           <View style={{ ...styles.item }}>

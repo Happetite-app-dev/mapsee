@@ -70,6 +70,8 @@ const BottomSheetScreen = ({
   setPlaceName,
   setAddress,
   setLctn,
+
+  fromThree,
 }) => {
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
@@ -156,7 +158,7 @@ const BottomSheetScreen = ({
           setPlaceName(targetName);
           setAddress(targetAddress);
           setLctn(targetLctn);
-          navigation.pop(2);
+          navigation.pop(fromThree ? 3 : 2);
         }}
         text="장소 선택"
         style={{ top: 136 }}
@@ -178,6 +180,7 @@ const BottomSheet = ({
   setPlaceName,
   setAddress,
   setLctn,
+  fromThree,
 }) => {
   return (
     <View>
@@ -212,6 +215,7 @@ const BottomSheet = ({
           setPlaceName={(f) => setPlaceName(f)}
           setAddress={(f) => setAddress(f)}
           setLctn={(f) => setLctn(f)}
+          fromThree={fromThree}
         />
       </Animated.View>
     </View>
@@ -220,23 +224,49 @@ const BottomSheet = ({
 
 const SubSearchScreen2 = ({ navigation, route }) => {
   const [animationValue, setAnimationValue] = useState(0);
+  console.log(route.params.details);
   const showAnimation = useRef(new Animated.Value(animationValue)).current;
 
   const mapRef = React.createRef();
+
   const [target, setTarget] = useState({
     lctn: {
-      latitude: route.params.details.geometry.location.lat,
-      longitude: route.params.details.geometry.location.lng,
+      latitude:
+        //route.params.geometry.location?.lat ||
+        route.params.details.geometry.location.lat,
+      longitude:
+        //route.params.geometry.location?.lng ||
+        route.params.details.geometry.location.lng,
     },
     latitudeDelta: 0.0016,
     longitudeDelta: 0.0012,
+    //route.params.name ||
     name: route.params.details.name,
-    address:
-      route.params.details.address || route.params.details.formatted_address,
-    id: route.params.details.id || route.params.details.place_id,
+    //route.params.address ||
+    address: route.params.details.formatted_address,
+    //route.params.id ||
+    id: route.params.details.place_id,
+  });
+  const [targetShown, setTargetShown] = useState(true);
+  const [region, setRegion] = useState({
+    latitude: target.lctn.latitude,
+    longitude: target.lctn.longitude,
+    latitudeDelta: target.latitudeDelta,
+    longitudeDelta: target.longitudeDelta,
   });
 
-  const [targetShown, setTargetShown] = useState(true);
+  const [loaded, setLoaded] = useState(false);
+  const onRegionChangeComplete = (region) => {
+    if (!loaded) {
+      if (
+        region.latitude != region.latitude ||
+        region.longitude != region.longitude
+      ) {
+        mapRef.animateToRegion(region, 1);
+      }
+      setLoaded(true);
+    }
+  };
 
   useEffect(() => {
     toggleAnimation3(showAnimation, setAnimationValue);
@@ -276,12 +306,8 @@ const SubSearchScreen2 = ({ navigation, route }) => {
         provider="google"
         ref={mapRef}
         style={styles.map}
-        region={{
-          latitude: target.lctn.latitude,
-          longitude: target.lctn.longitude,
-          latitudeDelta: 0.0016,
-          longitudeDelta: 0.0012,
-        }}
+        region={region}
+        onRegionChangeComplete={onRegionChangeComplete}
         onPoiClick={(data) => {
           targetingFromLocation(
             data.nativeEvent.coordinate,
@@ -322,6 +348,7 @@ const SubSearchScreen2 = ({ navigation, route }) => {
         setPlaceName={(f) => route.params.setPlaceName(f)}
         setAddress={(f) => route.params.setAddress(f)}
         setLctn={(f) => route.params.setLctn(f)}
+        fromThree={route.params.fromThree}
       />
     </View>
   );

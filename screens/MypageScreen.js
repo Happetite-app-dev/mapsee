@@ -12,7 +12,10 @@ import SnackBar from "../components/SnackBar";
 import * as Clipboard from "expo-clipboard";
 import * as Linking from "expo-linking";
 import * as StoreReview from "react-native-store-review";
+import { onValue, ref, remove, listAll } from "firebase/database";
 
+import { database, auth } from "../firebase";
+import { deleteUser, updateCurrentUser } from "firebase/auth";
 import Rate from "../assets/icons/Rate.svg";
 import SNS from "../assets/icons/SNS.svg";
 import Suggest from "../assets/icons/Folderedit.svg";
@@ -22,6 +25,8 @@ import FriendList from "../assets/icons/FriendsList.svg";
 import Copy from "../assets/image/Copy.svg";
 import Arrow from "../assets/icons/Arrow Right.svg";
 import AppContext from "../components/AppContext";
+import { PopUpType1, PopUpType2 } from "../components/PopUp";
+import { useQueryClient } from "react-query";
 
 const gotoProfileScreen = ({ navigation }) => {
   navigation.navigate("ProfileScreen");
@@ -39,10 +44,14 @@ const openInstagram = () => {
 };
 
 const MypageScreen = ({ navigation }) => {
+  const user = auth.currentUser;
+
   const myContext = useContext(AppContext);
   const myID = myContext.myID;
   const myName = myContext.myLastName + myContext.myFirstName;
+  const queryClient = useQueryClient();
   const [visible, setVisible] = useState(false);
+  const [goBackModalVisible, setGoBackModalVisible] = useState(false);
 
   const copyToClipboard = async (string) => {
     await Clipboard.setStringAsync(string);
@@ -133,7 +142,7 @@ const MypageScreen = ({ navigation }) => {
             <Text style={styles.elementText}>친구 목록</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
+          <TouchableOpacity // 별점주기
             activeOpacity={0.6}
             style={styles.element}
             onPress={() => {
@@ -154,7 +163,7 @@ const MypageScreen = ({ navigation }) => {
             <Text style={styles.elementText}>인스타그램</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
+          <TouchableOpacity // 로그아웃
             activeOpacity={0.6}
             style={{
               height: 48,
@@ -164,12 +173,15 @@ const MypageScreen = ({ navigation }) => {
               paddingLeft: 18,
             }}
             onPress={() => {
-              myContext.initMyUID(null);
+              setGoBackModalVisible(true);
+              /**
+               * myContext.initMyUID(null);
               myContext.initMyID(null);
               myContext.initMyFirstName(null);
               myContext.initMyLastName(null);
               myContext.initMyEmail(null);
               gotoBeforeLoginScreen({ navigation });
+               */
             }}
           >
             <Text
@@ -216,6 +228,21 @@ const MypageScreen = ({ navigation }) => {
         }}
         text={`아이디(@${myID})가 복사되었습니다.`}
         style={{ marginBottom: 70 }}
+      />
+      <PopUpType1
+        modalVisible={goBackModalVisible}
+        modalHandler={setGoBackModalVisible}
+        action={() => {
+          myContext.initMyUID(undefined);
+          myContext.initMyID(undefined);
+          myContext.initMyFirstName(undefined);
+          myContext.initMyLastName(undefined);
+          myContext.initMyEmail(undefined);
+          gotoBeforeLoginScreen({ navigation });
+          updateCurrentUser(auth, null);
+        }}
+        askValue="정말 로그아웃 하시겠어요?"
+        actionValue="로그아웃"
       />
     </SafeAreaView>
   );

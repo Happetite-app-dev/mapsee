@@ -17,6 +17,10 @@ import GoBack from "../assets/icons/BackArrow.svg";
 import SearchHistory from "../assets/icons/Location/Location.svg";
 import renderDescription from "../components/MapSearchScreen/RenderDescription";
 
+const gotoSearch3Screen = ({ navigation, data }) => {
+  navigation.navigate("SubSearchScreen3", data);
+};
+
 const storeData = async (value) => {
   try {
     const jsonValue = JSON.stringify(value);
@@ -128,7 +132,28 @@ const SearchBox = ({
           setLctn={setLctn}
         />
       }
-      getResultArray={Keyboard.dismiss}
+      getResultArray={(dataSource) => {
+        navigation.navigate("SubSearchScreen3", {
+          name,
+          dataSource,
+          setPlaceID: (f) => setPlaceID(f),
+          setPlaceName: (f) => setPlaceName(f),
+          setAddress: (f) => setAddress(f),
+          setLctn: (f) => setLctn(f),
+        });
+        /*gotoSearch3Screen({
+          navigation,
+          data: [
+            name,
+            dataSource,
+            setPlaceID: (f) => setPlaceID(f),
+            setPlaceName: (f) => setPlaceName(f),
+            setAddress: (f) => setAddress(f),
+            setLctn: (f) => setLctn(f),
+          ],
+        });*/
+        //onClick(navigation, name, dataSource);
+      }}
       getSearchWord={(text) => {
         setName(text);
       }}

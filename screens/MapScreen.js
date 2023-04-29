@@ -74,9 +74,12 @@ const storeData = async (value) => {
 const getData = async () => {
   try {
     const value = await AsyncStorage.getItem("tutorial");
-    return JSON.parse(value);
+    if (value !== null) {
+      const data = JSON.parse(value);
+      return data;
+    }
   } catch (e) {
-    //
+    console.log(e.message);
   }
 };
 
@@ -165,14 +168,19 @@ const MapScreen = ({ navigation }) => {
   };
 
   useEffect(() => {
-    if (!getData()) {
-      storeData("true");
+    async function startTutorial() {
+      const data = await getData();
+      if (!data) {
+        storeData("true");
 
-      gotoTutorial({ navigation, onChangeGetPermissions });
-    } else {
-      onChangeGetPermissions(true);
+        gotoTutorial({ navigation, onChangeGetPermissions });
+      } else {
+        console.log(data);
+        onChangeGetPermissions(true);
+      }
     }
-  }, []);
+    startTutorial();
+  }, [isFocused]);
 
   useEffect(() => {
     if (getPermissions) {
@@ -267,7 +275,7 @@ const MapScreen = ({ navigation }) => {
         <Marker
           coordinate={target.lctn}
           opacity={targetShown ? 100 : 0}
-          style={{ zIndex: 1 }}
+          style={{ zIndex: 10000000 }}
         >
           <TargetMarker />
         </Marker>
