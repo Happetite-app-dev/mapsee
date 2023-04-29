@@ -2,6 +2,7 @@ import { View, TextInput, Text, Linking } from "react-native";
 import BottomButton from "../components/BottomButton";
 import qs from "qs";
 import GoBackHeader from "../components/GoBackHeader";
+import { useState } from "react";
 
 async function sendEmail(to, subject, body, options = {}) {
   const { cc, bcc } = options;
@@ -31,6 +32,7 @@ async function sendEmail(to, subject, body, options = {}) {
 }
 
 const SuggestScreen = ({ navigation }) => {
+  const [text, setText] = useState("");
   return (
     <View style={{ backgroundColor: "white", flex: 1 }}>
       <GoBackHeader
@@ -67,13 +69,16 @@ const SuggestScreen = ({ navigation }) => {
             fontFamily: "NotoSansKR-Medium",
           }}
           placeholder="이런 부분을 이렇게 고쳤으면 좋겠어요!"
+          onChangeText={(text) => {
+            setText(text);
+          }}
         />
       </View>
       <BottomButton
         text={"의견 보내기"}
         style={{ top: 592 }}
         onPressFunction={() => {
-          sendEmail("parkjeong02@gmail.com", "mapsee", "this is dmmm").then();
+          sendEmail("happetite23@gmail.com", "mapsee", text).then();
         }}
       />
     </View>

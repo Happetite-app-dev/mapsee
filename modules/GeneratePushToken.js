@@ -6,7 +6,7 @@ import { Platform } from "react-native";
 import { database } from "../firebase";
 const db = database;
 const saveToken = async (token, myUID) => {
-  const reference1 = ref(db, "/users/" + myUID + "/pushToken");
+  const reference1 = ref(db, "/users/" + myUID + "/pushToken/");
   set(reference1, token);
 };
 

@@ -14,8 +14,8 @@ import * as Linking from "expo-linking";
 import * as StoreReview from "react-native-store-review";
 import { onValue, ref, remove, listAll } from "firebase/database";
 
-import { database } from "../firebase";
-
+import { database, auth } from "../firebase";
+import { deleteUser, updateCurrentUser } from "firebase/auth";
 import Rate from "../assets/icons/Rate.svg";
 import SNS from "../assets/icons/SNS.svg";
 import Suggest from "../assets/icons/Folderedit.svg";
@@ -44,6 +44,8 @@ const openInstagram = () => {
 };
 
 const MypageScreen = ({ navigation }) => {
+  const user = auth.currentUser;
+
   const myContext = useContext(AppContext);
   const myID = myContext.myID;
   const myName = myContext.myLastName + myContext.myFirstName;
@@ -193,88 +195,6 @@ const MypageScreen = ({ navigation }) => {
               로그아웃
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity // 탈퇴
-            activeOpacity={0.6}
-            style={{
-              height: 48,
-              width: "100%",
-              flexDirection: "row",
-              paddingTop: 24,
-              paddingLeft: 18,
-            }}
-            onPress={async () => {
-              // remove from friend's friend list
-              const friendRef = ref(
-                database,
-                "/users/" + myContext.myUID + "/friendUIDs"
-              );
-
-              onValue(friendRef, (snapshot) => {
-                if (snapshot.exists()) {
-                  const friendKeys = Object.keys(snapshot.val()); // get an array of the keys in the snapshot value
-                  friendKeys.forEach((friendUID) => {
-                    // iterate over the folder keys using forEach
-                    const reference1 = ref(
-                      database,
-                      "/users/" + friendUID + "/friendUIDs/" + myContext.myUID
-                    );
-                    remove(reference1);
-                  });
-                }
-              });
-
-              // remove from folder
-              const folderRef = ref(
-                database,
-                "/users/" + myContext.myUID + "/folderIDs"
-              );
-              onValue(folderRef, (snapshot) => {
-                if (snapshot.exists()) {
-                  const folderKeys = Object.keys(snapshot.val()); // get an array of the keys in the snapshot value
-                  folderKeys.forEach((folderUID) => {
-                    // iterate over the folder keys using forEach
-                    const reference1 = ref(
-                      database,
-                      "/folders/" + folderUID + "/userIDs/" + myContext.myUID
-                    );
-                    remove(reference1);
-                  });
-                }
-              }).catch(function (error) {
-                console.log("folder", error);
-              });
-
-              // remove from notices
-              const noticeRef = ref(database, "/notices/" + myContext.myUID);
-              remove(noticeRef);
-
-              // remove from users
-              const userRef = ref(database, "/users/" + myContext.myUID);
-              remove(userRef);
-
-              // invalidate queries
-              queryClient.invalidateQueries(["all-records"]);
-              queryClient.invalidateQueries(["all-notices"]);
-              // do same as logout
-              myContext.initMyUID(null);
-              myContext.initMyID(null);
-              myContext.initMyFirstName(null);
-              myContext.initMyLastName(null);
-              myContext.initMyEmail(null);
-              gotoBeforeLoginScreen({ navigation });
-            }}
-          >
-            <Text
-              style={{
-                fontSize: 14,
-                top: 3,
-                fontFamily: "NotoSansKR-Regular",
-                lineHeight: 24,
-              }}
-            >
-              탈퇴하기
-            </Text>
-          </TouchableOpacity>
         </View>
         <Text
           style={{
@@ -313,12 +233,13 @@ const MypageScreen = ({ navigation }) => {
         modalVisible={goBackModalVisible}
         modalHandler={setGoBackModalVisible}
         action={() => {
-          myContext.initMyUID(null);
-          myContext.initMyID(null);
-          myContext.initMyFirstName(null);
-          myContext.initMyLastName(null);
-          myContext.initMyEmail(null);
+          myContext.initMyUID(undefined);
+          myContext.initMyID(undefined);
+          myContext.initMyFirstName(undefined);
+          myContext.initMyLastName(undefined);
+          myContext.initMyEmail(undefined);
           gotoBeforeLoginScreen({ navigation });
+          updateCurrentUser(auth, null);
         }}
         askValue="정말 로그아웃 하시겠어요?"
         actionValue="로그아웃"

@@ -2,6 +2,7 @@ import {
   getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  updateCurrentUser,
 } from "firebase/auth";
 import React, { useEffect, useState } from "react";
 import {
@@ -23,6 +24,7 @@ const handleSignUp = ({ email, password, navigation }) => {
   createUserWithEmailAndPassword(auth, email, password)
     .then((userCredentials) => {
       const user = userCredentials.user;
+      updateCurrentUser(auth, user);
       navigation.navigate("RegisterScreen3", {
         uid: user.uid,
         email: user.email,
@@ -60,7 +62,7 @@ const RegisterScreen2 = ({ navigation, route }) => {
       <Text style={styles.textContainer}>비밀번호 입력</Text>
       <View style={styles.inputContainer}>
         <TextInput
-          placeholder="8자리 이상, 영문 소문자와 숫자를 포함해주세요"
+          placeholder="6자리 이상 비밀번호를 입력해 주세요"
           value={password}
           onChangeText={(text) => setPassword(text)}
           style={styles.input}
@@ -121,6 +123,7 @@ const RegisterScreen2 = ({ navigation, route }) => {
           bottom: 40,
           backgroundColor: valid ? "#5ED3CC" : "#F4F5F9",
         }}
+        fontColor={valid ? "white" : "black"}
       />
       <SnackBar
         visible={visible}

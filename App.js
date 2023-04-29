@@ -24,8 +24,11 @@ import RegisterScreen3 from "./screens/RegisterScreen3";
 import SingleFolderScreen from "./screens/SingleFolderScreen";
 import SubSearchScreen1 from "./screens/SubSearchScreen1";
 import SubSearchScreen2 from "./screens/SubSearchScreen2";
+import SubSearchScreen3 from "./screens/SubSearchScreen3";
+
 import SuggestScreen from "./screens/SuggestScreen";
 import TutorialScreen from "./screens/TutorialScreen";
+import WithdrawalScreen from "./screens/WithdrawalScreen";
 import ImageView from "./screens/ImageView";
 const Stack = createNativeStackNavigator();
 const queryClient = new QueryClient();
@@ -170,7 +173,11 @@ const App = () => {
               component={SubSearchScreen2}
               options={{ headerShown: false }}
             />
-
+            <Stack.Screen
+              name="SubSearchScreen3"
+              component={SubSearchScreen3}
+              options={{ headerShown: false }}
+            />
             <Stack.Screen
               name="ImageView"
               component={ImageView}
@@ -200,6 +207,11 @@ const App = () => {
             <Stack.Screen
               name="SuggestScreen"
               component={SuggestScreen}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="WithdrawalScreen"
+              component={WithdrawalScreen}
               options={{ headerShown: false }}
             />
           </Stack.Navigator>

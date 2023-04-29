@@ -20,78 +20,76 @@ const IndividualFolder = ({
   const query = useFolderQuery(folderID);
   if (query.isLoading) return <Text>Loading</Text>;
   else if (query.error) return <Text>Error</Text>;
-  return (
-    query.data && (
-      <TouchableOpacity
-        onPress={() => {
-          setSelectedFolderIDNameColorUserIDs({
-            folderID,
-            folderName: query.data.folderName[myUID],
-            folderColor: query.data.folderColor[myUID],
-            folderUserIDs: query.data.userIDs
-              ? Object.keys(query.data.userIDs)
-              : [],
-          });
-          //gotoSingleFolderScreen();
-        }}
-        onLongPress={() => {
-          setLongPressedFolder({
-            folderID,
-            folderName: query.data.folderName[myUID],
-            folderColor: query.data.folderColor[myUID],
-            folderUserIDs: query.data.userIDs,
-            folderFixedDate: query.data.fixedDate?.[myUID],
-          });
-          setModalVisible(true);
-        }}
-        style={{ height: 65 }}
-        activeOpacity={0.2}
-      >
-        <View style={{ marginLeft: 20, marginRight: 20 }}>
-          <View style={{ position: "relative" }}>
-            <SingleFolder
-              color={
-                query.data?.folderColor[myUID] || query.data.initFolderColor
-              }
+  return query?.data ? (
+    <TouchableOpacity
+      onPress={() => {
+        setSelectedFolderIDNameColorUserIDs({
+          folderID,
+          folderName: query.data.folderName[myUID],
+          folderColor: query.data.folderColor[myUID],
+          folderUserIDs: query.data.userIDs
+            ? Object.keys(query.data.userIDs)
+            : [],
+        });
+        //gotoSingleFolderScreen();
+      }}
+      onLongPress={() => {
+        setLongPressedFolder({
+          folderID,
+          folderName: query.data.folderName[myUID],
+          folderColor: query.data.folderColor[myUID],
+          folderUserIDs: query.data.userIDs,
+          folderFixedDate: query.data.fixedDate?.[myUID],
+        });
+        setModalVisible(true);
+      }}
+      style={{ height: 65 }}
+      activeOpacity={0.2}
+    >
+      <View style={{ marginLeft: 20, marginRight: 20 }}>
+        <View style={{ position: "relative" }}>
+          <SingleFolder
+            color={query.data?.folderColor[myUID] || query.data.initFolderColor}
+          />
+          {query.data.userIDs !== undefined &&
+          Object.keys(query.data.userIDs).length > 1 ? (
+            <ShareFolder
+              style={{ position: "absolute", marginTop: 10, marginLeft: 22 }}
             />
-            {query.data.userIDs !== undefined &&
-            Object.keys(query.data.userIDs).length > 1 ? (
-              <ShareFolder
-                style={{ position: "absolute", marginTop: 10, marginLeft: 22 }}
-              />
-            ) : (
-              <></>
-            )}
-          </View>
-          <View
+          ) : (
+            <></>
+          )}
+        </View>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            top: 8,
+            justifyContent: "center",
+          }}
+        >
+          <Text
             style={{
-              flexDirection: "row",
-              alignItems: "center",
-              top: 8,
-              justifyContent: "center",
+              position: "relative",
+              fontFamily: "NotoSansKR-Medium",
+              fontSize: 12,
+              lineHeight: 16,
+              height: 16,
             }}
           >
-            <Text
-              style={{
-                position: "relative",
-                fontFamily: "NotoSansKR-Medium",
-                fontSize: 12,
-                lineHeight: 16,
-                height: 16,
-              }}
-            >
-              {query.data.folderName[myUID]}
-            </Text>
-            {query.data.fixedDate !== undefined &&
-            query.data.fixedDate[myUID] !== undefined ? (
-              <PinFolder style={{ position: "relative", left: 3 }} />
-            ) : (
-              <></>
-            )}
-          </View>
+            {query.data.folderName[myUID]}
+          </Text>
+          {query.data.fixedDate !== undefined &&
+          query.data.fixedDate[myUID] !== undefined ? (
+            <PinFolder style={{ position: "relative", left: 3 }} />
+          ) : (
+            <></>
+          )}
         </View>
-      </TouchableOpacity>
-    )
+      </View>
+    </TouchableOpacity>
+  ) : (
+    <></>
   );
 };
 

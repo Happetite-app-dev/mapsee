@@ -25,21 +25,35 @@ const mapStyle = require("../assets/mapDesign.json");
 Geocode.setApiKey("AIzaSyDBq4tZ1QLm1R7iPH8O4dTvebVGWgkRPks");
 Geocode.setLanguage("ko");
 
-const gotoSearch2Screen = ({ navigation, item }) => {
+const gotoSearch2Screen = ({
+  navigation,
+  item,
+  setPlaceID,
+  setPlaceName,
+  setAddress,
+  setLctn,
+}) => {
   Geocode.fromAddress(item.structured_formatting.main_text).then(
     (response) => {
       const { lat, lng } = response.results[0].geometry.location;
       const newPlace = {
-        geometry: { location: { lat, lng } },
-        name: item.structured_formatting.main_text,
-        address: item.structured_formatting.secondary_text,
-        id: item.place_id,
+        details: {
+          geometry: { location: { lat, lng } },
+          name: item.structured_formatting.main_text,
+          address: item.structured_formatting.secondary_text,
+          id: item.place_id,
+        },
+        setPlaceID: (f) => setPlaceID(f),
+        setPlaceName: (f) => setPlaceName(f),
+        setAddress: (f) => setAddress(f),
+        setLctn: (f) => setLctn(f),
+        fromThree: true,
       };
 
-      navigation.navigate("MapSearchScreen2", newPlace);
+      navigation.navigate("SubSearchScreen2", newPlace);
     },
     (error) => {
-      console.error("cannot move to MapSearchScreen2", error);
+      console.error("cannot move to SubSearchScreen2", error);
     }
   );
 };
@@ -62,10 +76,26 @@ const getLngDelta = (numbers, average) => {
   return 10 * Math.max(...diff);
 };
 
-const _renderRow = ({ navigation, item }) => {
+const _renderRow = ({
+  navigation,
+  item,
+  setPlaceID,
+  setPlaceName,
+  setAddress,
+  setLctn,
+}) => {
   return (
     <TouchableHighlight
-      onPress={() => gotoSearch2Screen({ navigation, item })}
+      onPress={() =>
+        gotoSearch2Screen({
+          navigation,
+          item,
+          setPlaceID,
+          setPlaceName,
+          setAddress,
+          setLctn,
+        })
+      }
       underlayColor="#c8c7cc"
     >
       <View
@@ -115,11 +145,16 @@ const _renderRow = ({ navigation, item }) => {
   );
 };
 
-const toggleAnimation = (navigation, results) => {
-  navigation.navigate("MapSearchScreen4", results);
-};
-
-const BottomSheet = ({ navigation, animation, name, data }) => {
+const BottomSheet = ({
+  navigation,
+  animation,
+  name,
+  data,
+  setPlaceID,
+  setPlaceName,
+  setAddress,
+  setLctn,
+}) => {
   return (
     <Animated.View
       style={{
@@ -145,7 +180,16 @@ const BottomSheet = ({ navigation, animation, name, data }) => {
       </View>
       <FlatList
         data={data}
-        renderItem={({ item }) => _renderRow({ navigation, item })}
+        renderItem={({ item }) =>
+          _renderRow({
+            navigation,
+            item,
+            setPlaceID: (f) => setPlaceID(f),
+            setPlaceName: (f) => setPlaceName(f),
+            setAddress: (f) => setAddress(f),
+            setLctn: (f) => setLctn(f),
+          })
+        }
         style={{ width: "100%", height: "100%" }}
         scrollEnabled
       />
@@ -153,7 +197,7 @@ const BottomSheet = ({ navigation, animation, name, data }) => {
   );
 };
 
-const MapSearchScreen3 = ({ navigation, route }) => {
+const SubSearchScreen3 = ({ navigation, route }) => {
   const mapRef = React.createRef();
   const [origin, setOrigin] = useState([0, 0]);
   const [delta, setDelta] = useState([0.016, 0.012]);
@@ -183,7 +227,7 @@ const MapSearchScreen3 = ({ navigation, route }) => {
     });
   };
   useEffect(() => {
-    onInsert(route.params[1]);
+    onInsert(route.params.dataSource);
   }, []);
 
   useEffect(() => {
@@ -201,31 +245,22 @@ const MapSearchScreen3 = ({ navigation, route }) => {
     }
   }, [origin]);
 
-  const [loaded, setLoaded] = useState(false);
-  const onRegionChangeComplete = (region) => {
-    if (!loaded) {
-      if (
-        region.latitude != region.latitude ||
-        region.longitude != region.longitude
-      ) {
-        mapRef.animateToRegion(region, 1);
-      }
-      setLoaded(true);
-    }
-  };
-
   return (
     <View>
       <GoBackHeader
         navigation={navigation}
-        text={route.params[0]}
+        text={route.params.name}
         rightButton="goHome"
       />
       <BottomSheet
         navigation={navigation}
         animation={showAnimation}
-        data={route.params[1]}
-        name={route.params[0]}
+        data={route.params.dataSource}
+        name={route.params.name}
+        setPlaceID={route.params.setPlaceID}
+        setPlaceName={route.params.setPlaceName}
+        setAddress={route.params.setAddress}
+        setLctn={route.params.setLctn}
       />
       <MapView
         showsBuildings={false}
@@ -262,8 +297,6 @@ const styles = StyleSheet.create({
   map: {
     width: "100%",
     height: "100%",
-    position: "relative",
-    //top: -200,
   },
   buttons: {
     height: 88,
@@ -340,4 +373,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MapSearchScreen3;
+export default SubSearchScreen3;

@@ -2,6 +2,7 @@ import {
   getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  updateCurrentUser,
 } from "firebase/auth";
 import { ref, onValue, set, push, remove, off } from "firebase/database";
 import React, { useEffect, useState, useContext } from "react";
@@ -184,7 +185,7 @@ const RegisterScreen3 = ({ navigation, route }) => {
           bottom: 40,
           backgroundColor: valid ? "#5ED3CC" : "#F4F5F9",
         }}
-        fontColor="white"
+        fontColor={valid ? "white" : "black"}
       />
       <SnackBar
         visible={visible}
