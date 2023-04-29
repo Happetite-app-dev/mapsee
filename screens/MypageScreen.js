@@ -196,20 +196,6 @@ const MypageScreen = ({ navigation }) => {
             </Text>
           </TouchableOpacity>
         </View>
-        <Text
-          style={{
-            fontSize: 12,
-            color: "#ADB1C5",
-            width: 344,
-            left: 23,
-            top: 24,
-            textAlign: "center",
-            fontFamily: "NotoSansKR-Regular",
-            lineHeight: 24,
-          }}
-        >
-          버전 00.00.01
-        </Text>
       </View>
       <TouchableOpacity
         style={styles.suggest}
@@ -221,6 +207,23 @@ const MypageScreen = ({ navigation }) => {
           더 나은 맵시를 위해 의견을 주세요!
         </Text>
       </TouchableOpacity>
+      <Text
+        style={{
+          fontSize: 12,
+          color: "#ADB1C5",
+          width: 344,
+          left: 23,
+          bottom: 120,
+          textAlign: "center",
+          fontFamily: "NotoSansKR-Regular",
+          lineHeight: 24,
+          position: "absolute",
+          height: 24,
+          backgroundColor: "white",
+        }}
+      >
+        버전 00.00.01
+      </Text>
       <SnackBar
         visible={visible}
         onDismissSnackBar={() => {
@@ -287,9 +290,11 @@ const styles = StyleSheet.create({
   },
   suggest: {
     left: 23,
-    top: 556,
-    position: "relative",
+    bottom: 152,
+    position: "absolute",
     flexDirection: "row",
     alignItems: "center",
+    height: 48,
+    width: 344,
   },
 });
