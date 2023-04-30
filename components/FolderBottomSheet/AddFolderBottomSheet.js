@@ -83,8 +83,10 @@ const addNewFolder = ({
       });
       SendPushNotification({
         receiverUID: folderUserID,
-        title_: "새폴더초대타이틀",
-        body_: "새폴더초대바디",
+        title_: "mapsee 맵시",
+        body_: `${
+          myLastName + myFirstName
+        }(@${myID})님이 폴더[${folderName}]에 초대했습니다.`, // 닉네임(@아이디)님이 폴더[폴더이름]에 초대했습니다.
       });
     }
   });

@@ -31,8 +31,9 @@ const getFriendUID = (newFriend, handleFriendUID, handleFriendName) => {
   });
 };
 
-const callFriendRequest = (friendUID, myUID) => {
+const callFriendRequest = (friendUID, myUID, myName, myID) => {
   if (friendUID != undefined) {
+    console.log("callFriend");
     const timeNow = new Date();
     const reference = ref(db, "/notices/" + friendUID);
     push(reference, {
@@ -43,8 +44,8 @@ const callFriendRequest = (friendUID, myUID) => {
     });
     SendPushNotification({
       receiverUID: friendUID,
-      title_: "친구추가타이틀",
-      body_: "친구추가바디",
+      title_: "mapsee 맵시", // 친구 추가 알림
+      body_: `${myName}(@${myID})님이 친구 요청을 보냈습니다.`, // ~~님이 친구 요청을 보냈습니다.
     });
   } else {
   }
@@ -59,7 +60,9 @@ const AddFriendModal = ({
   setRequestInfo,
 }) => {
   const myContext = useContext(AppContext);
+  const myName = myContext.myLastName + myContext.myFirstName;
   const myUID = myContext.myUID;
+  const myID = myContext.myID;
   const [newFriend, setNewFriend] = useState("");
   const [friendUID, setFriendUID] = useState(undefined);
   const [friendName, setFriendName] = useState(undefined);
@@ -80,7 +83,7 @@ const AddFriendModal = ({
         setRequestSent(false);
         onToggleSnackBar();
       } else {
-        callFriendRequest(friendUID, myUID);
+        callFriendRequest(friendUID, myUID, myName, myID);
         setRequestSent(true);
         setRequestInfo([newFriend, friendName]); // newFriend: friend ID
         onToggleSnackBar();

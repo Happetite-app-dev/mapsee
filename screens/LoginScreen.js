@@ -2,6 +2,7 @@ import {
   getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  updateCurrentUser,
 } from "firebase/auth";
 import { ref, onValue, set, push, remove, off } from "firebase/database";
 import React, { useEffect, useState, useContext } from "react";
@@ -57,6 +58,7 @@ const handleLogin = ({
   signInWithEmailAndPassword(auth, email, password)
     .then((userCredentials) => {
       const user = userCredentials.user;
+      updateCurrentUser(auth, user);
       gotoApp({
         myUID_: user.uid,
         initMyUID,
@@ -93,47 +95,13 @@ const LoginScreen = ({ navigation }) => {
     myContext.initMyEmail(email);
   };
 
-  const ContinueButton = () => {
-    useEffect(() => {
-      if (email.length !== 0) {
-        if (password.length !== 0) {
-          setValid(true);
-        } else setValid(false);
+  useEffect(() => {
+    if (email.length !== 0) {
+      if (password.length !== 0) {
+        setValid(true);
       } else setValid(false);
-    }, [email, password]);
-    if (valid) {
-      return (
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            onPress={() =>
-              handleLogin({
-                email,
-                password,
-                initMyUID,
-                initMyID,
-                initMyFirstName,
-                initMyLastName,
-                initMyEmail,
-                startTutorial,
-                navigation,
-              })
-            }
-            style={styles.button}
-          >
-            <View style={{ justifyContent: "center", alignItems: "center" }}>
-              <Text style={styles.buttonText}>계속하기</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-      );
-    } else {
-      return (
-        <View style={styles.buttonContainer}>
-          <BottomButton text={"계속하기"} />
-        </View>
-      );
-    }
-  };
+    } else setValid(false);
+  }, [email, password]);
 
   return (
     <View style={styles.container}>
@@ -198,9 +166,9 @@ const LoginScreen = ({ navigation }) => {
           style={{
             position: "absolute",
             bottom: 40,
-            backgroundColor: "#5ED3CC",
+            backgroundColor: valid ? "#5ED3CC" : "#F4F5F9",
           }}
-          fontColor="white"
+          fontColor={valid ? "white" : "black"}
         />
       </View>
     </View>

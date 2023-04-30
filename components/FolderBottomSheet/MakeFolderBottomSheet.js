@@ -29,6 +29,9 @@ const addNewFolder = async ({
   IsNewRecord,
   myUID,
   queryClient,
+  myLastName,
+  myFirstName,
+  myID,
 }) => {
   if (IsNewRecord) {
     //새 기록이면 친구초대한 모든 사람 대상으로 데이터베이스 수정(-->이건 나 말고 다른 사람에게는 해당X) 및 알림 보내기
@@ -77,8 +80,10 @@ const addNewFolder = async ({
         });
         SendPushNotification({
           receiverUID: folderUserID,
-          title_: "새폴더초대타이틀",
-          body_: "새폴더초대바디",
+          title_: "mapsee 맵시", //새 폴더 초대 알림
+          body_: `${
+            myLastName + myFirstName
+          }(@${myID})님이 폴더[${folderName}]에 초대했습니다.`, // ~~님이 ~~폴더에 초대하였습니다.
         });
       }
     });
@@ -120,8 +125,10 @@ const addNewFolder = async ({
         });
         SendPushNotification({
           receiverUID: folderUserID,
-          title_: "피어나 뭐해요?",
-          body_: "뉴진스 덕질해요",
+          title_: "mapsee 맵시",
+          body_: `${
+            myLastName + myFirstName
+          }(@${myID})님이 폴더[${folderName}]에 초대했습니다.`,
         });
       }
     });

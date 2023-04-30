@@ -161,6 +161,10 @@ const BottomSheetScreen = ({
           navigation={navigation}
           isFocused={isFocused}
           style={styles.createNote}
+          placeID={targetId}
+          placeName={targetName}
+          address={targetAddress}
+          lctn={targetLctn}
         />
       </View>
     );
@@ -323,6 +327,19 @@ const MapSearchScreen2 = ({ navigation, route }) => {
     toggleAnimation3(showAnimation, setAnimationValue);
   };
 
+  const [loaded, setLoaded] = useState(false);
+  const onRegionChangeComplete = (region) => {
+    if (!loaded) {
+      if (
+        region.latitude != region.latitude ||
+        region.longitude != region.longitude
+      ) {
+        mapRef.animateToRegion(region, 1);
+      }
+      setLoaded(true);
+    }
+  };
+
   return (
     <View>
       <GoBackHeader
@@ -331,6 +348,7 @@ const MapSearchScreen2 = ({ navigation, route }) => {
         rightButton="goHome"
       />
       <MapView
+        onRegionChangeComplete={onRegionChangeComplete}
         showsBuildings={false}
         customMapStyle={mapStyle}
         provider="google"

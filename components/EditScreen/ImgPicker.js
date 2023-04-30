@@ -75,8 +75,22 @@ const takeImageHandlerCam = async (setPickedImages, onImageTaken) => {
 
 const deleteImage = (image, pickedImages, setPickedImages, onImageErased) => {
   const idx = pickedImages.indexOf(image); // findIndex = find + indexOf
-  pickedImages.splice(idx, 1);
-  setPickedImages((prev) => prev.splice(idx, 1));
+  const firstImage = pickedImages[0];
+  const secondImage = pickedImages.length >= 2 ? pickedImages[1] : undefined;
+
+  if (!(pickedImages.length === 2 && pickedImages[1] === image)) {
+    console.log("spliced");
+    pickedImages.splice(idx, 1);
+  }
+  setPickedImages((prev) => {
+    if (pickedImages.length === 2 && pickedImages[1] === image) {
+      return [firstImage];
+    } else if (pickedImages.length === 2 && pickedImages[0] === image) {
+      return [secondImage];
+    } else {
+      return prev;
+    }
+  });
   onImageErased(pickedImages);
 };
 
@@ -91,6 +105,7 @@ const ImgPicker = ({
   const [pickedImages, setPickedImages] = useState(defaultPhotos);
   useEffect(() => {
     if (pickedImages === undefined) setPickedImages([]);
+    console.log(pickedImages);
   }, [pickedImages]);
   return (
     <View style={styles.imagePicker}>

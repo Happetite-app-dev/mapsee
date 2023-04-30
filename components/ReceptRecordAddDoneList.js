@@ -54,7 +54,12 @@ const ReceptRecordAddDoneList = ({
     ).some((item) => item[recordID])
   ) {
     return (
-      <View style={styles.container}>
+      <TouchableOpacity
+        onPress={() => {
+          gotoEditScreen({ navigation, recordID });
+        }}
+        style={styles.container}
+      >
         <Text style={styles.text}>
           <Text style={{ fontFamily: "NotoSansKR-Bold" }}>
             {performerLastName}
@@ -70,7 +75,7 @@ const ReceptRecordAddDoneList = ({
         <Text style={styles.time}>
           <TimeDisplay time={time} />
         </Text>
-      </View>
+      </TouchableOpacity>
     );
   } else if (selectedPhotos[0] == undefined) {
     return (

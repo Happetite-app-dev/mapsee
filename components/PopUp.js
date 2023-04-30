@@ -40,8 +40,9 @@ export const PopUpType1 = ({
                   height: 16,
                   backgroundColor: "#ADB1C5",
                   marginTop: 8,
+                  fontSize: 14,
                 }}
-              ></View>
+              />
               <Pressable
                 style={{
                   marginTop: 8,
@@ -171,13 +172,13 @@ export const PopUpType4 = ({
               <Text
                 style={{
                   width: 312,
-                  height: 16,
                   marginTop: 24,
                   fontSize: 16,
                   lineHeight: 16,
                   letterSpacing: -0.5,
                   fontFamily: "NotoSansKR-Medium",
                   fontWeight: "500",
+                  height: 16,
                 }}
               >
                 {askValue}
@@ -292,6 +293,7 @@ const styles = StyleSheet.create({
     letterSpacing: 1.2,
     fontWeight: "400",
     fontFamily: "NotoSansKR-Regular",
+    height: 16,
   },
   popup4modalView: {
     borderColor: "#DDDFE9",

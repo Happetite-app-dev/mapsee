@@ -57,6 +57,7 @@ const RegisterScreen1 = ({ navigation }) => {
           bottom: 40,
           backgroundColor: valid ? "#5ED3CC" : "#F4F5F9",
         }}
+        fontColor={valid ? "white" : "black"}
       />
       <SnackBar
         visible={visible}

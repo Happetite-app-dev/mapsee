@@ -253,14 +253,6 @@ const StorageScreen = ({ navigation, route }) => {
             recordDataSource: {},
           });
         }}
-        action3={() => {
-          exitFolder({
-            myUID,
-            folderID: longPressedFolder.folderID,
-            navigation,
-            queryClient,
-          });
-        }}
         askValue={longPressedFolder.folderName}
         actionValue1={
           longPressedFolder.folderFixedDate === undefined
@@ -268,7 +260,6 @@ const StorageScreen = ({ navigation, route }) => {
             : "폴더 고정 해제"
         }
         actionValue2="폴더 편집"
-        actionValue3="나가기"
       />
       <CreateNote
         navigation={navigation}

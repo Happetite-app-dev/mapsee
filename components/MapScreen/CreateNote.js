@@ -29,6 +29,10 @@ export const CreateNote = ({
   isFocused,
   onTouchFunction,
   pop,
+  placeID,
+  placeName,
+  address,
+  lctn,
 }) => {
   const RotateData = rotateValueHolder.interpolate({
     inputRange: [0, 1],
@@ -44,8 +48,13 @@ export const CreateNote = ({
       style={style}
       onTouchEndCapture={() => {
         if (pop) navigation.pop();
-        navigation.push("EditScreen", 0);
-        console.log("createnote");
+        navigation.push("EditScreen", {
+          recordID: undefined,
+          placeID,
+          placeName,
+          address,
+          lctn,
+        });
       }}
     >
       <Animated.View

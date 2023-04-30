@@ -20,7 +20,7 @@ const DispatchFriendRequestList = ({ approverUID, time }) => {
             fontFamily: "NotoSansKR-Regular",
           }}
         >
-          <Text style={{ fontFamily: "NotoSansKR-Bold" }}>
+          <Text style={{ fontFamily: "NotoSansKR-Bold", fontWeight: "700" }}>
             {approverLastName}
             {approverFirstName}(@{approverID})
           </Text>
