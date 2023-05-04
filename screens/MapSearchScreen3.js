@@ -176,9 +176,7 @@ const MapSearchScreen3 = ({ navigation, route }) => {
             return [...lngList, lng];
           });
         },
-        (error) => {
-          console.error(error);
-        }
+        (error) => {}
       );
     });
   };
@@ -228,6 +226,7 @@ const MapSearchScreen3 = ({ navigation, route }) => {
         name={route.params[0]}
       />
       <MapView
+        onRegionChangeComplete={onRegionChangeComplete}
         showsBuildings={false}
         customMapStyle={mapStyle}
         provider="google"

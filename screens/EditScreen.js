@@ -580,7 +580,8 @@ const EditScreen = ({ navigation, route }) => {
             }}
           >
             <TouchableOpacity
-              onPress={() =>
+              onPress={() => {
+                console.log("pressed");
                 storeRecord({
                   navigation,
                   myUID,
@@ -603,8 +604,8 @@ const EditScreen = ({ navigation, route }) => {
                   IsNewRecord,
                   queryClient,
                   myName: myContext.myLastName + myContext.myFirstName,
-                })
-              }
+                });
+              }}
               style={{
                 width: 24,
                 height: 24,
