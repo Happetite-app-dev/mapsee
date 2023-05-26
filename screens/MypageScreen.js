@@ -278,7 +278,6 @@ const styles = StyleSheet.create({
   elementText: {
     fontSize: 14,
     left: 14,
-    top: 3,
     fontFamily: "NotoSansKR-Medium",
     lineHeight: 24,
   },

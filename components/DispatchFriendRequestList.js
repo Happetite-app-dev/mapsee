@@ -57,5 +57,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#545766",
     left: 5,
+    fontWeight: "700",
   },
 });

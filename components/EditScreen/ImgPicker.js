@@ -13,16 +13,12 @@ import {
 import { TouchableOpacity } from "react-native-gesture-handler";
 
 import DeletePhoto from "../../assets/image/deletePhoto.svg";
-import AddPhoto from "../../assets/image/+";
+import AddPhoto from "../../assets/image/+.svg";
 import ImageCarousel from "./ImageCarousel";
 const verifyPermissionsCam = async () => {
   const result = await Permissions.askAsync(Permissions.CAMERA);
   if (result.status !== "granted") {
-    Alert.alert(
-      "Insufficient permissions!",
-      "You need to grant camera permissions to use this app.",
-      [{ text: "Okay" }]
-    );
+    //Alert.alert("권한이 없습니다", "카메라 사용을 위해 권한을 허용해주세요.", [      { text: "Okay" },    ]);
     return false;
   }
   return true;
@@ -31,11 +27,7 @@ const verifyPermissionsCam = async () => {
 const verifyPermissionsLib = async () => {
   const result = await Permissions.askAsync(Permissions.MEDIA_LIBRARY);
   if (result.status !== "granted") {
-    Alert.alert(
-      "Insufficient permissions!",
-      "You need to grant camera permissions to use this app.",
-      [{ text: "Okay" }]
-    );
+    //Alert.alert("권한이 없습니다", "사진 사용을 위해 권한을 허용해주세요.", [      { text: "Okay" },    ]);
     return false;
   }
   return true;
@@ -79,7 +71,6 @@ const deleteImage = (image, pickedImages, setPickedImages, onImageErased) => {
   const secondImage = pickedImages.length >= 2 ? pickedImages[1] : undefined;
 
   if (!(pickedImages.length === 2 && pickedImages[1] === image)) {
-    console.log("spliced");
     pickedImages.splice(idx, 1);
   }
   setPickedImages((prev) => {
@@ -105,7 +96,6 @@ const ImgPicker = ({
   const [pickedImages, setPickedImages] = useState(defaultPhotos);
   useEffect(() => {
     if (pickedImages === undefined) setPickedImages([]);
-    console.log(pickedImages);
   }, [pickedImages]);
   return (
     <View style={styles.imagePicker}>

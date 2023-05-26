@@ -15,6 +15,8 @@ import {
   Image,
 } from "react-native";
 import MapView, { Marker } from "react-native-maps";
+import Qs from "qs";
+import Geocoder from "react-native-geocoding";
 
 import SearchMarker from "../assets/markers/searchMarker.svg";
 import GoBackHeader from "../components/GoBackHeader";
@@ -24,6 +26,9 @@ const mapStyle = require("../assets/mapDesign.json");
 
 Geocode.setApiKey("AIzaSyDBq4tZ1QLm1R7iPH8O4dTvebVGWgkRPks");
 Geocode.setLanguage("ko");
+const url = "https://maps.googleapis.com/maps/api";
+const requestShouldUseWithCredentials = () =>
+  url === "https://maps.googleapis.com/maps/api";
 
 const gotoSearch2Screen = ({
   navigation,
@@ -33,7 +38,65 @@ const gotoSearch2Screen = ({
   setAddress,
   setLctn,
 }) => {
-  Geocode.fromAddress(item.structured_formatting.main_text).then(
+  const request = new XMLHttpRequest();
+  request.timeout = 20000;
+  request.ontimeout = () =>
+    console.warn("google places autocomplete: request timeout");
+
+  request.onreadystatechange = () => {
+    if (request.readyState !== 4) {
+      return;
+    }
+    if (request.status === 200) {
+      const responseJSON = JSON.parse(request.responseText);
+      if (responseJSON.status === "OK") {
+        // if (_isMounted === true) {
+        const details = responseJSON.result;
+        // props.onPress(rowData, details);
+        const newPlace = {
+          details: {
+            geometry: {
+              location: {
+                lat: details.geometry.location.lat,
+                lng: details.geometry.location.lng,
+              },
+            },
+            name: details.name,
+            address: details.formatted_address,
+            formatted_address: details.formatted_address,
+            id: details.place_id,
+            place_id: details.place_id,
+          },
+          setPlaceID: (f) => setPlaceID(f),
+          setPlaceName: (f) => setPlaceName(f),
+          setAddress: (f) => setAddress(f),
+          setLctn: (f) => setLctn(f),
+          fromThree: true,
+        };
+
+        navigation.navigate("SubSearchScreen2", newPlace);
+        // }
+      } else {
+        console.warn("google places autocomplete: " + responseJSON.status);
+      }
+    }
+  };
+
+  request.open(
+    "GET",
+    `${url}/place/details/json?` +
+      Qs.stringify({
+        key: "AIzaSyDBq4tZ1QLm1R7iPH8O4dTvebVGWgkRPks",
+        placeid: item.place_id,
+        language: "kor",
+        ...{},
+      })
+  );
+  request.withCredentials = requestShouldUseWithCredentials();
+
+  request.send();
+
+  /*Geocode.fromAddress(item.structured_formatting.main_text).then(
     (response) => {
       const { lat, lng } = response.results[0].geometry.location;
       const newPlace = {
@@ -55,7 +118,7 @@ const gotoSearch2Screen = ({
     (error) => {
       console.error("cannot move to SubSearchScreen2", error);
     }
-  );
+  );*/
 };
 
 const getAverage = (numbers) => {
@@ -156,16 +219,16 @@ const BottomSheet = ({
   setLctn,
 }) => {
   return (
-    <Animated.View
+    <View
       style={{
         width: "100%",
         backgroundColor: "white",
-        height: 433,
+        height: 256,
 
         borderTopLeftRadius: 30,
         borderTopRightRadius: 30,
         position: "absolute",
-        bottom: animation,
+        bottom: 0,
         zIndex: 1,
         alignItems: "center",
         justifyContent: "center",
@@ -192,8 +255,9 @@ const BottomSheet = ({
         }
         style={{ width: "100%", height: "100%" }}
         scrollEnabled
+        keyExtractor={(item) => item.place_id}
       />
-    </Animated.View>
+    </View>
   );
 };
 
@@ -220,9 +284,7 @@ const SubSearchScreen3 = ({ navigation, route }) => {
             return [...lngList, lng];
           });
         },
-        (error) => {
-          console.error(error);
-        }
+        (error) => {}
       );
     });
   };
@@ -245,8 +307,60 @@ const SubSearchScreen3 = ({ navigation, route }) => {
     }
   }, [origin]);
 
+  const [loaded, setLoaded] = useState(false);
+  const onRegionChangeComplete = (region) => {
+    if (!loaded) {
+      if (
+        region.latitude != region.latitude ||
+        region.longitude != region.longitude
+      ) {
+        mapRef.animateToRegion(region, 1);
+      }
+      setLoaded(true);
+    }
+  };
+
+  const targetingFromLocation = ({
+    lctn,
+    name,
+    setPlaceID,
+    setPlaceName,
+    setAddress,
+    setLctn,
+  }) => {
+    Geocoder.from(lctn)
+      .then((json) => {
+        const addressComponent = json.results[0].formatted_address;
+
+        const newPlace = {
+          details: {
+            geometry: {
+              location: {
+                lat: lctn.latitude,
+                lng: lctn.longitude,
+              },
+            },
+            name: name,
+            address: addressComponent,
+            id: json.results[0].place_id,
+            place_id: json.results[0].place_id,
+            formatted_address: addressComponent,
+          },
+          setPlaceID: (f) => setPlaceID(f),
+          setPlaceName: (f) => setPlaceName(f),
+          setAddress: (f) => setAddress(f),
+          setLctn: (f) => setLctn(f),
+          fromThree: true,
+        };
+
+        navigation.navigate("SubSearchScreen2", newPlace);
+      })
+      .then(() => {})
+      .catch((error) => console.warn(error));
+  };
+
   return (
-    <View>
+    <View style={{ flex: 1 }}>
       <GoBackHeader
         navigation={navigation}
         text={route.params.name}
@@ -263,24 +377,40 @@ const SubSearchScreen3 = ({ navigation, route }) => {
         setLctn={route.params.setLctn}
       />
       <MapView
+        onPoiClick={(data) => {
+          targetingFromLocation({
+            lctn: data.nativeEvent.coordinate,
+            name: data.nativeEvent.name.split("\n")[0],
+            setPlaceID: route.params.setPlaceID,
+            setPlaceName: route.params.setPlaceName,
+            setAddress: route.params.setAddress,
+            setLctn: route.params.setLctn,
+          });
+        }}
+        onRegionChangeComplete={onRegionChangeComplete}
         showsBuildings={false}
         customMapStyle={mapStyle}
         provider="google"
         ref={mapRef}
         style={styles.map}
         region={{
-          latitude: origin[0] == null ? 0 : origin[0] - delta[0] * 0.35,
+          latitude: origin[0] == null ? 0 : origin[0] - delta[0] * 0.2,
           longitude: origin[1] == null ? 0 : origin[1],
-          latitudeDelta: delta[0],
-          longitudeDelta: delta[1],
+          latitudeDelta:
+            delta[0] > 0 ? delta[0] : delta[1] > 0 ? (delta[0] * 4) / 3 : 0.008,
+          longitudeDelta:
+            delta[1] > 0 ? delta[1] : delta[0] > 0 ? (delta[1] * 3) / 4 : 0.006,
         }}
       >
         {latList.map((item, index) => {
-          return (
-            <Marker coordinate={{ latitude: item, longitude: lngList[index] }}>
-              <SearchMarker />
-            </Marker>
-          );
+          if (!(item == null || lngList[index] == null))
+            return (
+              <Marker
+                coordinate={{ latitude: item, longitude: lngList[index] }}
+              >
+                <SearchMarker />
+              </Marker>
+            );
         })}
       </MapView>
     </View>

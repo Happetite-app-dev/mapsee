@@ -21,7 +21,7 @@ const ReceptFriendRequestList = ({ requesterUID, time }) => {
             fontFamily: "NotoSansKR-Regular",
           }}
         >
-          <Text style={{ fontFamily: "NotoSansKR-Bold" }}>
+          <Text style={{ fontFamily: "NotoSansKR-Bold", fontWeight: "700" }}>
             {requesterLastName}
             {requesterFirstName}(@{requesterID})
           </Text>
@@ -58,5 +58,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#545766",
     left: 5,
+    fontWeight: "700",
   },
 });

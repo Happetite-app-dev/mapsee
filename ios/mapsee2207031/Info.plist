@@ -17,7 +17,7 @@
 	<key>CFBundlePackageType</key>
 	<string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0.0</string>
+	<string>1.0.1</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
@@ -30,7 +30,9 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>2</string>
+	<string>5</string>
+	<key>LSApplicationCategoryType</key>
+	<string></string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -39,6 +41,20 @@
 		<true/>
 		<key>NSExceptionDomains</key>
 		<dict>
+			<key>New Exception Domain</key>
+			<dict>
+				<key>NSExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
+				<key>NSIncludesSubdomains</key>
+				<true/>
+			</dict>
+			<key>New Exception Domain 1</key>
+			<dict>
+				<key>NSExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
+				<key>NSIncludesSubdomains</key>
+				<true/>
+			</dict>
 			<key>localhost</key>
 			<dict>
 				<key>NSExceptionAllowsInsecureHTTPLoads</key>
@@ -47,7 +63,7 @@
 		</dict>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>게시글 사진첨부기능 사용을 위해 사진 라이브러리 액세스 동의가 필요합니다. 설정에서 이를 변경할 수 있습니다.</string>
+	<string>게시글 사진 첨부 기능 사용을 위해 사진 라이브러리 액세스 동의가 필요합니다. 설정에서 이를 변경할 수 있습니다.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>지도에 위치 표시 및 거리순 정렬을 위해 위치정보 액세스 동의가 필요합니다.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
@@ -57,7 +73,9 @@
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Allow $(PRODUCT_NAME) to access your microphone</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>게시글 사진첨부기능 사용을 위해 사진 라이브러리 액세스 동의가 필요합니다. 설정에서 이를 변경할 수 있습니다.</string>
+	<string>게시글 사진 첨부 기능 사용을 위해 사진 라이브러리 액세스 동의가 필요합니다. 설정에서 이를 변경할 수 있습니다.</string>
+	<key>NSUserNotificationsUsageDescription</key>
+	<string></string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>NotoSansKR-Regular.otf</string>

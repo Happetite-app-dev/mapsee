@@ -269,13 +269,12 @@ const styles = StyleSheet.create({
   },
   askText: {
     width: 312,
-    height: 16,
-    marginTop: 16,
     fontSize: 14,
     lineHeight: 0,
     letterSpacing: -0.5,
     textAlign: "center",
     fontFamily: "NotoSansKR-Medium",
+    marginTop: 8,
   },
   modalText: {
     flex: 1,

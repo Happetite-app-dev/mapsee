@@ -252,7 +252,7 @@ const SubSearchScreen1 = ({ navigation, route }) => {
 
         <View
           onTouchEndCapture={() => {
-            navigation.navigate("Map");
+            navigation.goBack();
           }}
           style={styles.goHome}
         >
@@ -296,13 +296,19 @@ const styles = StyleSheet.create({
     textInputContainer: {
       width: 280,
       marginLeft: 63,
+      marginBottom: 16,
+      marginTop: 48,
+      alignItems: "center",
+      height: 24,
     },
     textInput: {
-      height: 24,
       width: 300,
       fontSize: 16,
-      marginTop: 48,
-      marginBottom: 16,
+      fontFamily: "NotoSansKR-Regular",
+      lineHeight: 24,
+      borderRadius: 0,
+      paddingVertical: 0,
+      paddingHorizontal: 0,
     },
     separator: { height: 0 },
     row: {

@@ -1,5 +1,5 @@
 import { useIsFocused } from "@react-navigation/native";
-import { ref, onValue, set, push, remove, off } from "firebase/database";
+import { ref, onValue, set, push, remove, off, query } from "firebase/database";
 import { useContext, useEffect, useState } from "react";
 import {
   SafeAreaView,
@@ -18,14 +18,21 @@ import { PopUpType1 } from "../components/PopUp";
 import SnackBar from "../components/SnackBar";
 import { database } from "../firebase";
 import AddFriendModal from "./AddFriendModal";
+import { useQueryClient } from "react-query";
+import { useAllUserQuery, useUserQuery } from "../queries";
 
 const db = database;
 
-const deleteFriend = async (myUID, friendUID) => {
+const deleteFriend = async (myUID, friendUID, queryClient) => {
+  console.log(myUID, friendUID);
   const reference1 = ref(db, "/users/" + myUID + "/friendUIDs/" + friendUID);
   await remove(reference1).then(() => {
     const reference2 = ref(db, "/users/" + friendUID + "/friendUIDs/" + myUID);
-    remove(reference2);
+    remove(reference2).then(() => {
+      queryClient.invalidateQueries(["users", myUID]);
+      queryClient.invalidateQueries(["all-users"]);
+      console.log("deleted");
+    });
   });
 };
 
@@ -107,12 +114,14 @@ const IndividualFriend = ({
 const FriendListScreen = ({ navigation }) => {
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
+  const queryClient = useQueryClient();
 
-  const [friendIDNameList, setFriendIDNameList] = useState([]);
+  const [friendIDNameList, setFriendIDNameList] = useState({});
   const [addModalVisible, setAddModalVisible] = useState(false);
   const [delModalVisible, setDelModalVisible] = useState(false);
   const [delFriendUID, setDelFriendUID] = useState(undefined);
   const isFocused = useIsFocused();
+  const [refreshing, setRefreshing] = useState(false);
 
   const [requestSent, setRequestSent] = useState(false);
   const [requestInfo, setRequestInfo] = useState([]);
@@ -120,9 +129,29 @@ const FriendListScreen = ({ navigation }) => {
   const [visible, setVisible] = useState(false); // Snackbar
   const onToggleSnackBar = () => setVisible(!visible); // SnackbarButton -> 나중에는 없애기
   const onDismissSnackBar = () => setVisible(false); // Snackbar
+
+  const userQuery = useUserQuery(myUID);
+  const allUserQuery = useAllUserQuery();
+  console.log(userQuery.data);
+
   useEffect(() => {
-    if (isFocused) {
-      setFriendIDNameList([]);
+    if (isFocused || !refreshing) {
+      setRefreshing(true);
+      if (userQuery.data && allUserQuery.data) {
+        console.log("changing");
+        setFriendIDNameList({});
+        for (const friendUID in userQuery.data.friendUIDs) {
+          const friendData = allUserQuery.data[friendUID];
+          setFriendIDNameList((prev) => ({
+            ...prev,
+            [friendUID]: {
+              id: friendData.id,
+              name: friendData.lastName + friendData.firstName,
+            },
+          }));
+        }
+      }
+      /*setFriendIDNameList([]);
       onValue(ref(db, "/users/" + myUID + "/friendUIDs"), (snapshot) => {
         if (snapshot.val() != null) {
           //한 user가 folder를 갖고 있지 않을 수 있어!!
@@ -152,18 +181,21 @@ const FriendListScreen = ({ navigation }) => {
           });
         }
       });
+    }*/
     }
-  }, []);
+  }, [isFocused, userQuery.isLoading, allUserQuery.isLoading, refreshing]);
 
-  const renderFriendList = ({ item }) => (
-    <IndividualFriend
-      userID={item.userID}
-      id={item.id}
-      name={item.name}
-      setDelFriendUID={setDelFriendUID}
-      setDelModalVisible={setDelModalVisible}
-    />
-  );
+  const renderFriendList = ({ item }) => {
+    return (
+      <IndividualFriend
+        userID={item.uid}
+        id={item.id}
+        name={item.name}
+        setDelFriendUID={setDelFriendUID}
+        setDelModalVisible={setDelModalVisible}
+      />
+    );
+  };
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
       <GoBackHeader
@@ -184,7 +216,7 @@ const FriendListScreen = ({ navigation }) => {
         modalVisible={delModalVisible}
         modalHandler={setDelModalVisible}
         action={() => {
-          deleteFriend(myUID, delFriendUID);
+          deleteFriend(myUID, delFriendUID, queryClient);
         }}
         askValue="정말 차단하시겠어요?"
         actionValue="차단"
@@ -198,14 +230,31 @@ const FriendListScreen = ({ navigation }) => {
         }}
       >
         <FlatList
-          data={friendIDNameList}
+          data={
+            friendIDNameList !== undefined
+              ? Object.entries(friendIDNameList).map(([uid, { id, name }]) => ({
+                  uid: uid,
+                  id: id,
+                  name: name,
+                }))
+              : []
+          }
           renderItem={renderFriendList}
-          keyExtractor={(item) => item.userID}
+          keyExtractor={(item) => item.id}
           horizontal={false}
           style={{
             flex: 1,
             width: "100%",
             height: "100%",
+          }}
+          extraData={friendIDNameList}
+          refreshing={userQuery.isFetching || allUserQuery.isFetching}
+          onRefresh={() => {
+            queryClient.invalidateQueries(["users", myUID]);
+            queryClient.invalidateQueries(["all-users"]).then(() => {
+              console.log("all-users invalidated");
+            });
+            setRefreshing(false);
           }}
         />
       </View>

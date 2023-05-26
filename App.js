@@ -103,14 +103,14 @@ const App = () => {
               component={AfterLoginScreen}
             />
             <Stack.Screen
-              options={{ headerShown: false, presentation: "transparentModal" }}
-              name="TutorialScreen"
-              component={TutorialScreen}
-            />
-            <Stack.Screen
               name="Tabs"
               component={Tabs}
               options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              options={{ headerShown: false, presentation: "transparentModal" }}
+              name="TutorialScreen"
+              component={TutorialScreen}
             />
             <Stack.Screen
               name="MapSearchScreen1"

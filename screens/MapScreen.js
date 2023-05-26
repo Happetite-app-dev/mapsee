@@ -175,7 +175,6 @@ const MapScreen = ({ navigation }) => {
 
         gotoTutorial({ navigation, onChangeGetPermissions });
       } else {
-        console.log(data);
         onChangeGetPermissions(true);
       }
     }

@@ -1,6 +1,6 @@
 import { View, Animated } from "react-native";
-import CreateNote_back from "../../assets/image/CreateNote_back";
-import CreateNote_front from "../../assets/image/CreateNote_front";
+import CreateNote_back from "../../assets/image/CreateNote_back.svg";
+import CreateNote_front from "../../assets/image/CreateNote_front.svg";
 import { Easing } from "react-native-reanimated";
 import { useEffect } from "react";
 import { useIsFetching } from "react-query";

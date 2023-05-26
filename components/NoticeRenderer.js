@@ -116,7 +116,7 @@ const NoticeRenderer = ({ navigation, item, onToggleSnackBar }) => {
   const myUID = myContext.myUID;
   const queryClient = useQueryClient();
   const requesterData = useUserQuery(["users", item.val.requesterUID]).data;
-  const folderData = useFolderQuery(["folders", item.val.folderID]).data;
+  const folderData = useFolderQuery(item.val.folderID).data;
 
   switch (item.val.type) {
     case "recept_friend_request": //친구 요청 수신 - 수락 거절 안 한 활성화된 새로운 알림

@@ -33,16 +33,19 @@ const FolderInviteRequestCard = ({
       <View style={styles.container}>
         <View style={styles.textContainer}>
           <Text style={{ ...styles.text, fontSize: 14, fontWeight: "400" }}>
-            <Text style={{ fontFamily: "NotoSansKR-Bold" }}>
+            <Text style={{ fontFamily: "NotoSansKR-Bold", fontWeight: "700" }}>
               {requesterLastName}
               {requesterFirstName}(@{requesterID})
             </Text>
             님이
-            <Text style={{ fontFamily: "NotoSansKR-Bold" }}> {folderName}</Text>
-            에 회원님을 초대했습니다.
-          </Text>
-          <Text style={styles.time}>
-            <TimeDisplay time={time} />
+            <Text style={{ fontFamily: "NotoSansKR-Bold", fontWeight: "700" }}>
+              {" "}
+              {folderName}
+            </Text>
+            에 회원님을 초대했습니다. {"  "}
+            <Text style={styles.time}>
+              <TimeDisplay time={time} />
+            </Text>
           </Text>
         </View>
         <View style={styles.buttonContainer}>
@@ -72,37 +75,42 @@ export default FolderInviteRequestCard;
 const styles = StyleSheet.create({
   container: {
     width: 344,
-    height: 112,
     borderRadius: 16,
     backgroundColor: "#F4F5F9",
-    marginBottom: 40,
     alignSelf: "center",
+    flex: 1,
+    marginBottom: 40,
   },
   textContainer: {
     top: 16,
-    height: 24,
-    marginHorizontal: 16,
+    marginBottom: 16,
     flexDirection: "row",
+    alignItems: "flex-start", // 컨테이너 상단에 정렬
+    width: 312,
+    marginHorizontal: 16,
   },
   text: {
     alignSelf: "center",
-    lineHeight: 16,
+    lineHeight: 20,
     letterSpacing: -0.5,
     fontFamily: "NotoSansKR-Regular",
   },
   time: {
-    alignSelf: "center",
     lineHeight: 16,
     letterSpacing: -0.5,
     fontFamily: "NotoSansKR-Bold",
     fontSize: 12,
     color: "#545766",
     left: 5,
+    bottom: 0,
+    height: 16,
+    position: "absolute",
+    fontWeight: "700",
   },
   buttonContainer: {
-    top: 36,
     height: 40,
-    marginHorizontal: 16,
+    marginTop: 16,
+    marginBottom: 16,
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",

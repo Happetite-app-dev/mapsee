@@ -69,6 +69,7 @@ const InbetweenCompo = ({ name, history, setHistory, navigation }) => {
         renderItem={renderHistoryItem}
         extraData={history}
         style={{ marginTop: 24 }}
+        inverted={true}
       />
     </View>
   ) : (
@@ -91,7 +92,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 32,
+    marginTop: 16,
   },
   recentSearch: {
     marginLeft: 23,

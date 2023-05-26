@@ -61,12 +61,12 @@ const ReceptRecordAddDoneList = ({
         style={styles.container}
       >
         <Text style={styles.text}>
-          <Text style={{ fontFamily: "NotoSansKR-Bold" }}>
+          <Text style={{ fontFamily: "NotoSansKR-Bold", fontWeight: "700" }}>
             {performerLastName}
             {performerFirstName}(@{performerID})
           </Text>
           님이
-          <Text style={{ fontFamily: "NotoSansKR-Bold" }}>
+          <Text style={{ fontFamily: "NotoSansKR-Bold", fontWeight: "700" }}>
             {" "}
             폴더[{folderName}]
           </Text>
