@@ -23,6 +23,7 @@ import { useQueryClient } from "react-query";
 import BottomButton from "../components/BottomButton";
 import GoBackHeader from "../components/GoBackHeader";
 import Suggest from "../assets/icons/FolderEdit.svg";
+
 import SuggestBox from "../assets/image/suggestBox.svg";
 
 const gotoBeforeLoginScreen = ({ navigation }) => {
@@ -181,6 +182,7 @@ const WithdrawalScreen = ({ navigation }) => {
             .catch((err) => {
               console.log(err);
             });
+
         }}
       >
         <SuggestBox style={{ position: "absolute" }} />
@@ -193,6 +195,7 @@ const WithdrawalScreen = ({ navigation }) => {
           if (valid) setGoBackModalVisible(true);
           else setVisible(true);
         }}
+
         style={{
           backgroundcolor: valid ? "#5ED3CC" : "#F4F5F9",
           bottom: 40,
@@ -220,6 +223,7 @@ const WithdrawalScreen = ({ navigation }) => {
         }}
         text="탈퇴 사유를 입력해 주세요."
       />
+
     </View>
   );
 };

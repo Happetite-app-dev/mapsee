@@ -33,6 +33,7 @@ const getFriendUID = (newFriend, handleFriendUID, handleFriendName) => {
 
 const callFriendRequest = (friendUID, myUID, myName, myID) => {
   if (friendUID != undefined) {
+    console.log("callFriend");
     const timeNow = new Date();
     const reference = ref(db, "/notices/" + friendUID);
     push(reference, {

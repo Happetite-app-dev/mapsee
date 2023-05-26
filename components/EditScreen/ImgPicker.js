@@ -71,7 +71,7 @@ const deleteImage = (image, pickedImages, setPickedImages, onImageErased) => {
   const secondImage = pickedImages.length >= 2 ? pickedImages[1] : undefined;
 
   if (!(pickedImages.length === 2 && pickedImages[1] === image)) {
-    pickedImages.splice(idx, 1);
+    console.log("spliced");
   }
   setPickedImages((prev) => {
     if (pickedImages.length === 2 && pickedImages[1] === image) {
@@ -96,6 +96,7 @@ const ImgPicker = ({
   const [pickedImages, setPickedImages] = useState(defaultPhotos);
   useEffect(() => {
     if (pickedImages === undefined) setPickedImages([]);
+    console.log(pickedImages);
   }, [pickedImages]);
   return (
     <View style={styles.imagePicker}>

@@ -90,7 +90,6 @@ const RegisterScreen2 = ({ navigation, route }) => {
   const [valid, setValid] = useState(false);
   const [visible, setVisible] = useState(false);
   const [snackbarText, setSnackbarText] = useState("");
-
   useEffect(() => {
     if (password.length !== 0 && password.length >= 6) {
       if (password === passwordCheck) {

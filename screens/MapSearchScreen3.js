@@ -286,7 +286,6 @@ const MapSearchScreen3 = ({ navigation, route }) => {
 
   const [loaded, setLoaded] = useState(false);
   const onRegionChangeComplete = (region) => {
-    console.log(region);
     if (!loaded) {
       if (
         region.latitude != region.latitude ||

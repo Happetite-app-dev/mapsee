@@ -18,6 +18,7 @@ import MapView, { Marker } from "react-native-maps";
 import Qs from "qs";
 import Geocoder from "react-native-geocoding";
 
+
 import SearchMarker from "../assets/markers/searchMarker.svg";
 import GoBackHeader from "../components/GoBackHeader";
 
@@ -29,6 +30,7 @@ Geocode.setLanguage("ko");
 const url = "https://maps.googleapis.com/maps/api";
 const requestShouldUseWithCredentials = () =>
   url === "https://maps.googleapis.com/maps/api";
+
 
 const gotoSearch2Screen = ({
   navigation,
@@ -97,6 +99,7 @@ const gotoSearch2Screen = ({
   request.send();
 
   /*Geocode.fromAddress(item.structured_formatting.main_text).then(
+
     (response) => {
       const { lat, lng } = response.results[0].geometry.location;
       const newPlace = {
@@ -225,10 +228,12 @@ const BottomSheet = ({
         backgroundColor: "white",
         height: 256,
 
+
         borderTopLeftRadius: 30,
         borderTopRightRadius: 30,
         position: "absolute",
         bottom: 0,
+
         zIndex: 1,
         alignItems: "center",
         justifyContent: "center",
@@ -258,6 +263,7 @@ const BottomSheet = ({
         keyExtractor={(item) => item.place_id}
       />
     </View>
+
   );
 };
 
@@ -285,6 +291,7 @@ const SubSearchScreen3 = ({ navigation, route }) => {
           });
         },
         (error) => {}
+
       );
     });
   };
@@ -361,6 +368,7 @@ const SubSearchScreen3 = ({ navigation, route }) => {
 
   return (
     <View style={{ flex: 1 }}>
+
       <GoBackHeader
         navigation={navigation}
         text={route.params.name}
@@ -388,6 +396,7 @@ const SubSearchScreen3 = ({ navigation, route }) => {
           });
         }}
         onRegionChangeComplete={onRegionChangeComplete}
+
         showsBuildings={false}
         customMapStyle={mapStyle}
         provider="google"
@@ -411,6 +420,7 @@ const SubSearchScreen3 = ({ navigation, route }) => {
                 <SearchMarker />
               </Marker>
             );
+
         })}
       </MapView>
     </View>

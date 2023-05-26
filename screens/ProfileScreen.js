@@ -82,6 +82,7 @@ const ProfileScreen = ({ navigation }) => {
 
             queryClient.invalidateQueries(["users", myContext.myUID]);
             setEditable(false);
+
           }
         }}
       >

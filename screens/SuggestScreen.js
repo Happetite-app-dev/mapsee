@@ -5,6 +5,7 @@ import GoBackHeader from "../components/GoBackHeader";
 import { useState } from "react";
 import SnackBar from "../components/SnackBar";
 
+
 async function sendEmail(to, subject, body, options = {}) {
   const { cc, bcc } = options;
 
@@ -36,6 +37,7 @@ const SuggestScreen = ({ navigation }) => {
   const [text, setText] = useState("");
   const [valid, setValid] = useState(false);
   const [visible, setVisible] = useState(false);
+
   return (
     <View style={{ backgroundColor: "white", flex: 1 }}>
       <GoBackHeader
@@ -74,6 +76,7 @@ const SuggestScreen = ({ navigation }) => {
           placeholder="이런 부분을 이렇게 고쳤으면 좋겠어요!"
           onChangeText={(text) => {
             setValid(true);
+
             setText(text);
           }}
         />
@@ -92,6 +95,7 @@ const SuggestScreen = ({ navigation }) => {
         visible={visible}
         onDismissSnackBar={() => {
           setVisible(false);
+
         }}
       />
     </View>
