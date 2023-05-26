@@ -28,16 +28,19 @@ const FriendRequestCard = ({
               fontFamily: "NotoSansKR-Regular",
             }}
           >
-            <Text style={{ fontFamily: "NotoSansKR-Bold" }}>
+            <Text style={{ fontFamily: "NotoSansKR-Bold", fontWeight: "700" }}>
               {requesterLastName}
               {requesterFirstName}(@{requesterID})
             </Text>
             님이
-            <Text style={{ fontFamily: "NotoSansKR-Bold" }}> 친구요청</Text>을
-            보냈습니다.
-          </Text>
-          <Text style={styles.time}>
-            <TimeDisplay time={time} />
+            <Text style={{ fontFamily: "NotoSansKR-Bold", fontWeight: "700" }}>
+              {" "}
+              친구요청
+            </Text>
+            을 보냈습니다.{"  "}
+            <Text style={styles.time}>
+              <TimeDisplay time={time} />
+            </Text>
           </Text>
         </View>
         <View style={styles.buttonContainer}>
@@ -64,28 +67,42 @@ export default FriendRequestCard;
 const styles = StyleSheet.create({
   container: {
     width: 344,
-    height: 112,
     borderRadius: 16,
     backgroundColor: "#F4F5F9",
-    marginBottom: 40,
     alignSelf: "center",
+    flex: 1,
+    marginBottom: 40,
   },
   textContainer: {
     top: 16,
-    height: 24,
-    marginHorizontal: 16,
+    marginBottom: 16,
     flexDirection: "row",
+    alignItems: "flex-start", // 컨테이너 상단에 정렬
+    width: 312,
+    marginHorizontal: 16,
   },
   text: {
     alignSelf: "center",
-    lineHeight: 16,
+    lineHeight: 20,
     letterSpacing: -0.5,
     fontFamily: "NotoSansKR-Regular",
   },
+  time: {
+    lineHeight: 16,
+    letterSpacing: -0.5,
+    fontFamily: "NotoSansKR-Bold",
+    fontSize: 12,
+    color: "#545766",
+    left: 5,
+    bottom: 0,
+    height: 16,
+    position: "absolute",
+    fontWeight: "700",
+  },
   buttonContainer: {
-    top: 36,
     height: 40,
-    marginHorizontal: 16,
+    marginTop: 16,
+    marginBottom: 16,
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
@@ -100,20 +117,12 @@ const styles = StyleSheet.create({
     fontFamily: "NotoSansKR-Bold",
     fontSize: 14,
     letterSpacing: 1.2,
+    fontWeight: "700",
   },
   buttonBorder: {
     height: 16,
     width: 0,
     borderColor: "#DDDFE9",
     borderWidth: 1,
-  },
-  time: {
-    alignSelf: "center",
-    lineHeight: 16,
-    letterSpacing: -0.5,
-    fontFamily: "NotoSansKR-Bold",
-    fontSize: 12,
-    color: "#545766",
-    left: 5,
   },
 });

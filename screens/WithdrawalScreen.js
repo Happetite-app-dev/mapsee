@@ -22,7 +22,8 @@ import { PopUpType1, PopUpType2 } from "../components/PopUp";
 import { useQueryClient } from "react-query";
 import BottomButton from "../components/BottomButton";
 import GoBackHeader from "../components/GoBackHeader";
-import Suggest from "../assets/icons/Folderedit.svg";
+import Suggest from "../assets/icons/FolderEdit.svg";
+
 import SuggestBox from "../assets/image/suggestBox.svg";
 
 const gotoBeforeLoginScreen = ({ navigation }) => {
@@ -175,7 +176,13 @@ const WithdrawalScreen = ({ navigation }) => {
         style={styles.suggest}
         onPress={() => {
           console.log("send email");
-          sendEmail("happetite23@gmail.com", "mapsee 탈퇴", "").then();
+          setValid(true);
+          sendEmail("happetite23@gmail.com", "mapsee 탈퇴", "")
+            .then()
+            .catch((err) => {
+              console.log(err);
+            });
+
         }}
       >
         <SuggestBox style={{ position: "absolute" }} />
@@ -184,7 +191,11 @@ const WithdrawalScreen = ({ navigation }) => {
       </TouchableOpacity>
       <BottomButton
         text="탈퇴하기"
-        onPressFunction={() => setGoBackModalVisible(true)}
+        onPressFunction={() => {
+          if (valid) setGoBackModalVisible(true);
+          else setVisible(true);
+        }}
+
         style={{
           backgroundcolor: valid ? "#5ED3CC" : "#F4F5F9",
           bottom: 40,
@@ -205,6 +216,14 @@ const WithdrawalScreen = ({ navigation }) => {
         askValue="정말 탈퇴하시겠어요?"
         actionValue="탈퇴하기"
       />
+      <SnackBar
+        visible={visible}
+        onDismissSnackBar={() => {
+          setVisible(false);
+        }}
+        text="탈퇴 사유를 입력해 주세요."
+      />
+
     </View>
   );
 };

@@ -73,9 +73,7 @@ const AddFriendModal = ({
     setFriendName(name);
   };
   const containsUID = (friendUID) => {
-    const newArray = friendList.filter((item) => item.userID == friendUID);
-    if (newArray.length >= 1) return true;
-    else return false;
+    return friendUID in friendList;
   };
   useEffect(() => {
     if (friendUID !== undefined) {
@@ -88,7 +86,6 @@ const AddFriendModal = ({
         setRequestInfo([newFriend, friendName]); // newFriend: friend ID
         onToggleSnackBar();
       }
-      setFriendUID(undefined);
     }
   }, [friendUID]);
 
@@ -203,9 +200,7 @@ const styles = StyleSheet.create({
   },
   textStyle: {
     width: 312,
-    height: 16,
     fontSize: 14,
-    lineHeight: 0,
     letterSpacing: -0.5,
     fontFamily: "NotoSansKR-Regular",
     top: 16,

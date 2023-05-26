@@ -60,8 +60,6 @@ const ProfileScreen = ({ navigation }) => {
             myContext.initMyLastName(lastName);
             myContext.initMyEmail(email);
 
-            setEditable(false);
-
             updateEmail(user, email).then(() => {
               console.log("email updated");
             });
@@ -83,6 +81,8 @@ const ProfileScreen = ({ navigation }) => {
             set(emailRef, email);
 
             queryClient.invalidateQueries(["users", myContext.myUID]);
+            setEditable(false);
+
           }
         }}
       >

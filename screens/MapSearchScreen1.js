@@ -2,7 +2,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useIsFocused } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { Image, StyleSheet, Text, View } from "react-native";
-import { FlatList } from "react-native-gesture-handler";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import Close from "../assets/icons/Close.svg";
 import GoBack from "../assets/icons/BackArrow.svg";
@@ -176,14 +175,19 @@ const styles = StyleSheet.create({
     textInputContainer: {
       width: 280,
       marginLeft: 63,
+      marginBottom: 16,
+      marginTop: 48,
+      alignItems: "center",
+      height: 24,
     },
     textInput: {
-      height: 24,
       width: 300,
       fontSize: 16,
-      marginTop: 48,
-      marginBottom: 16,
       fontFamily: "NotoSansKR-Regular",
+      lineHeight: 24,
+      borderRadius: 0,
+      paddingVertical: 0,
+      paddingHorizontal: 0,
     },
     separator: { height: 0 },
     row: {
@@ -193,12 +197,11 @@ const styles = StyleSheet.create({
     },
   },
   inbetweenCompo: {
-    height: 24,
+    height: 0,
     width: "100%",
     alignItems: "center",
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 32,
   },
   buttons: {
     height: 88,

@@ -1,4 +1,5 @@
 import DateTimePicker from "@react-native-community/datetimepicker";
+//import DateTimePicker from "react-native-date-picker";
 import { useState } from "react";
 import { Text, View, Button } from "react-native";
 const getday = (day) => {

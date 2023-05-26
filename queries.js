@@ -6,22 +6,27 @@ import {
   fetchRecord,
   fetchAllRecord,
   fetchAllNotice,
+  fetchAllUser,
 } from "./actions";
-
 
 export const useUserQuery = (UID) =>
   useQuery(["users", UID], () => fetchUser(UID));
+
+export const useAllUserQuery = () =>
+  useQuery(["all-users"], () => fetchAllUser());
 
 export const useFolderQuery = (folderID) =>
   useQuery(["folders", folderID], () => fetchFolder(folderID));
 
 export const useFolderQueries = (folderIDList) =>
-  useQueries(folderIDList.map((folderID) => {
-    return {
-      queryKey: ["folders", folderID],
-      queryFn: () => fetchFolder(folderID)
-    }
-  }))
+  useQueries(
+    folderIDList.map((folderID) => {
+      return {
+        queryKey: ["folders", folderID],
+        queryFn: () => fetchFolder(folderID),
+      };
+    })
+  );
 
 export const useRecordQuery = (recordID) =>
   useQuery(["records", recordID], () => fetchRecord(recordID));

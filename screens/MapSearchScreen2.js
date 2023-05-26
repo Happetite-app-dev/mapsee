@@ -138,7 +138,9 @@ const BottomSheetScreen = ({
             {allRecordQuery.data
               ? Object.values(allRecordQuery.data)
                   .filter((record) => {
-                    return record.folderID in userQuery.data?.folderIDs;
+                    if (!userQuery.data?.folderIDs && !record.folderID)
+                      return record.folderID in userQuery.data?.folderIDs;
+                    else return false;
                   })
                   .filter((record) => {
                     return record.placeID === targetId;
@@ -283,6 +285,7 @@ const BottomSheet = ({
 };
 
 const MapSearchScreen2 = ({ navigation, route }) => {
+  console.log("MapSearchScreen2", route.params);
   const [animationValue, setAnimationValue] = useState(0);
 
   const showAnimation = useRef(new Animated.Value(animationValue)).current;

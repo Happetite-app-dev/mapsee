@@ -1,5 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import Geocode from "react-geocode";
+import Geocoder from "react-native-geocoding";
+
 import {
   StyleSheet,
   Text,
@@ -15,18 +17,78 @@ import {
   Image,
 } from "react-native";
 import MapView, { Marker } from "react-native-maps";
-
+import Qs from "qs";
 import SearchMarker from "../assets/markers/searchMarker.svg";
 import GoBackHeader from "../components/GoBackHeader";
 
 const bottomSheetImage = require("../assets/image/bottomSheetScroll.png");
 const mapStyle = require("../assets/mapDesign.json");
 
-Geocode.setApiKey("AIzaSyDBq4tZ1QLm1R7iPH8O4dTvebVGWgkRPks");
-Geocode.setLanguage("ko");
+//Geocode.setApiKey("AIzaSyDBq4tZ1QLm1R7iPH8O4dTvebVGWgkRPks");
+//Geocode.setLanguage("ko");
+
+const url = "https://maps.googleapis.com/maps/api";
+const requestShouldUseWithCredentials = () =>
+  url === "https://maps.googleapis.com/maps/api";
 
 const gotoSearch2Screen = ({ navigation, item }) => {
-  Geocode.fromAddress(item.structured_formatting.main_text).then(
+  // fetch details
+  const request = new XMLHttpRequest();
+  request.timeout = 20000;
+  request.ontimeout = () =>
+    console.warn("google places autocomplete: request timeout");
+
+  request.onreadystatechange = () => {
+    if (request.readyState !== 4) {
+      return;
+    }
+    if (request.status === 200) {
+      const responseJSON = JSON.parse(request.responseText);
+      if (responseJSON.status === "OK") {
+        // if (_isMounted === true) {
+        const details = responseJSON.result;
+        // props.onPress(rowData, details);
+
+        const newPlace = {
+          geometry: {
+            location: {
+              lat: details.geometry.location.lat,
+              lng: details.geometry.location.lng,
+            },
+          },
+          name: details.name,
+          formatted_address: details.formatted_address,
+          place_id: details.place_id,
+          structured_formatting: { main_text: details.name },
+        };
+
+        navigation.navigate("MapSearchScreen2", newPlace);
+        // }
+      } else {
+        console.warn("google places autocomplete: " + responseJSON.status);
+      }
+    }
+  };
+
+  request.open(
+    "GET",
+    `${url}/place/details/json?` +
+      Qs.stringify({
+        key: "AIzaSyDBq4tZ1QLm1R7iPH8O4dTvebVGWgkRPks",
+        placeid: item.place_id,
+        language: "kor",
+        ...{},
+      })
+  );
+  request.withCredentials = requestShouldUseWithCredentials();
+
+  request.send();
+};
+
+//const gotoSearch2Screen = async ({ navigation, item }) => {
+//const details = _onPress(item);
+
+/*Geocode.fromAddress(item.structured_formatting.main_text).then(
     (response) => {
       const { lat, lng } = response.results[0].geometry.location;
       const newPlace = {
@@ -41,8 +103,8 @@ const gotoSearch2Screen = ({ navigation, item }) => {
     (error) => {
       console.error("cannot move to MapSearchScreen2", error);
     }
-  );
-};
+  );*/
+//};
 
 const getAverage = (numbers) => {
   if (numbers.length === 0) return 0;
@@ -63,10 +125,28 @@ const getLngDelta = (numbers, average) => {
 };
 
 const _renderRow = ({ navigation, item }) => {
+  /**
+   * 
+   *  const newPlace = {
+          geometry: {
+            location: {
+              lat: details.geometry.location.lat,
+              lng: details.geometry.location.lng,
+            },
+          },
+          name: details.name,
+          formatted_address: details.formatted_address,
+          place_id: details.place_id,
+          structured_formatting: { main_text: details.name },
+        };
+   */
   return (
     <TouchableHighlight
       onPress={() => gotoSearch2Screen({ navigation, item })}
       underlayColor="#c8c7cc"
+      style={{
+        height: 84,
+      }}
     >
       <View
         style={{
@@ -115,29 +195,25 @@ const _renderRow = ({ navigation, item }) => {
   );
 };
 
-const toggleAnimation = (navigation, results) => {
-  navigation.navigate("MapSearchScreen4", results);
-};
-
-const BottomSheet = ({ navigation, animation, name, data }) => {
+const BottomSheet = ({ navigation, data }) => {
   return (
-    <Animated.View
+    <View
       style={{
         width: "100%",
         backgroundColor: "white",
-        height: 433,
+        height: 256, // 433
 
         borderTopLeftRadius: 30,
         borderTopRightRadius: 30,
         position: "absolute",
-        bottom: animation,
-        zIndex: 1,
+        bottom: 0,
+        zIndex: 0,
         alignItems: "center",
         justifyContent: "center",
         borderWidth: 1,
         borderColor: "#DDDFE9",
         borderRadius: 16,
-        elevation: 24,
+        //elevation: 24,
       }}
     >
       <View style={{ marginTop: 8, zIndex: 1 }}>
@@ -146,10 +222,11 @@ const BottomSheet = ({ navigation, animation, name, data }) => {
       <FlatList
         data={data}
         renderItem={({ item }) => _renderRow({ navigation, item })}
-        style={{ width: "100%", height: "100%" }}
+        style={{ width: "100%" }}
         scrollEnabled
+        keyExtractor={(item) => item.place_id}
       />
-    </Animated.View>
+    </View>
   );
 };
 
@@ -163,8 +240,16 @@ const MapSearchScreen3 = ({ navigation, route }) => {
 
   const [latList, setLatList] = useState([]);
   const [lngList, setLngList] = useState([]);
-  const onInsert = (data) => {
-    data.map((item) => {
+  const [target, setTarget] = useState({});
+  const onInsert = (detailList) => {
+    detailList.map((item) => {
+      /*setLatList((latList) => {
+        return [...latList, details.geometry.location.lat];
+      });
+
+      setLngList((lngList) => {
+        return [...lngList, details.geometry.location.lng];
+      });*/
       Geocode.fromAddress(item.structured_formatting.main_text).then(
         (response) => {
           const { lat, lng } = response.results[0].geometry.location;
@@ -176,9 +261,7 @@ const MapSearchScreen3 = ({ navigation, route }) => {
             return [...lngList, lng];
           });
         },
-        (error) => {
-          console.error(error);
-        }
+        (error) => {}
       );
     });
   };
@@ -214,44 +297,75 @@ const MapSearchScreen3 = ({ navigation, route }) => {
     }
   };
 
+  const targetingFromLocation = (lctn, name) => {
+    Geocoder.from(lctn)
+      .then((json) => {
+        const addressComponent = json.results[0].formatted_address;
+        const target = {
+          geometry: {
+            location: {
+              lat: lctn.latitude,
+              lng: lctn.longitude,
+            },
+          },
+          structured_formatting: { main_text: name },
+          formatted_address: addressComponent,
+          place_id: json.results[0].place_id,
+          name: name,
+        };
+
+        navigation.navigate("MapSearchScreen2", target);
+      })
+      .then(() => {})
+      .catch((error) => console.warn(error));
+  };
+
   return (
-    <View>
+    <View style={{ flex: 1 }}>
       <GoBackHeader
         navigation={navigation}
         text={route.params[0]}
         rightButton="goHome"
       />
-      <BottomSheet
-        navigation={navigation}
-        animation={showAnimation}
-        data={route.params[1]}
-        name={route.params[0]}
-      />
+      <BottomSheet navigation={navigation} data={route.params[1]} />
       <MapView
+        onPoiClick={(data) => {
+          targetingFromLocation(
+            data.nativeEvent.coordinate,
+            data.nativeEvent.name.split("\n")[0]
+          );
+        }}
+        onRegionChangeComplete={onRegionChangeComplete}
         showsBuildings={false}
         customMapStyle={mapStyle}
         provider="google"
         ref={mapRef}
         style={styles.map}
         region={{
-          latitude: origin[0] == null ? 0 : origin[0] - delta[0] * 0.35,
+          latitude: origin[0] == null ? 0 : origin[0] - delta[1] * 0.2,
           longitude: origin[1] == null ? 0 : origin[1],
-          latitudeDelta: delta[0],
-          longitudeDelta: delta[1],
+          latitudeDelta:
+            delta[0] > 0 ? delta[0] : delta[1] > 0 ? (delta[0] * 4) / 3 : 0.008,
+          longitudeDelta:
+            delta[1] > 0 ? delta[1] : delta[0] > 0 ? (delta[1] * 3) / 4 : 0.006,
         }}
       >
         {latList.map((item, index) => {
-          return (
-            <Marker coordinate={{ latitude: item, longitude: lngList[index] }}>
-              <SearchMarker />
-            </Marker>
-          );
+          if (!(item == null || lngList[index] == null))
+            return (
+              <Marker
+                coordinate={{ latitude: item, longitude: lngList[index] }}
+              >
+                <SearchMarker />
+              </Marker>
+            );
         })}
       </MapView>
     </View>
   );
 };
-
+/**
+ */
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -263,6 +377,7 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     position: "relative",
+    zIndex: -1,
     //top: -200,
   },
   buttons: {

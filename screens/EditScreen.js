@@ -468,6 +468,8 @@ const EditScreen = ({ navigation, route }) => {
   const [removeModalVisible, setRemoveModalVisible] = useState(false);
   const [goBackModalVisible, setGoBackModalVisible] = useState(false);
   const [visible, setVisible] = useState(false); // Snackbar
+  const [visibleUpload, setVisibleUpload] = useState(false); // Snackbar
+
   useEffect(() => {
     setPlaceID_(placeID || data?.placeID);
     setPlaceName_(placeName || data?.placeName);
@@ -501,6 +503,9 @@ const EditScreen = ({ navigation, route }) => {
 
   const onToggleSnackBar = () => setVisible(!visible); // SnackbarButton -> 나중에는 없애기
   const onDismissSnackBar = () => setVisible(false); // Snackbar
+  const onToggleSnackBarUpload = () => setVisibleUpload(true); // Snackbar
+  const onDismissSnackBarUpload = () => setVisibleUpload(false); // Snackbar
+
   return query.isLoading ? (
     <Text>로딩중</Text>
   ) : query.isError ? (
@@ -580,38 +585,47 @@ const EditScreen = ({ navigation, route }) => {
             }}
           >
             <TouchableOpacity
-              onPress={() =>
-                storeRecord({
-                  navigation,
-                  myUID,
-                  myID,
-                  myFirstName,
-                  myLastName,
-                  title_,
-                  place: placeName_,
-                  placeID: placeID_,
-                  address: address_,
-                  lctn: lctn_,
-                  date_,
-                  folderID_,
-                  folderName_,
-                  selectedPhotos,
-                  text_,
-                  writeDate: data?.writeDate,
-                  recordID,
-                  originalfolderID,
-                  IsNewRecord,
-                  queryClient,
-                  myName: myContext.myLastName + myContext.myFirstName,
-                })
-              }
               style={{
-                width: 24,
+                width: 72,
                 height: 24,
-                right: 23,
+                right: 0,
+              }}
+              onPress={() => {
+                console.log("pressed");
+                console.log(placeID_);
+                if (placeID_ == undefined) onToggleSnackBarUpload();
+                else
+                  storeRecord({
+                    navigation,
+                    myUID,
+                    myID,
+                    myFirstName,
+                    myLastName,
+                    title_,
+                    place: placeName_,
+                    placeID: placeID_,
+                    address: address_,
+                    lctn: lctn_,
+                    date_,
+                    folderID_,
+                    folderName_,
+                    selectedPhotos,
+                    text_,
+                    writeDate: data?.writeDate,
+                    recordID,
+                    originalfolderID,
+                    IsNewRecord,
+                    queryClient,
+                    myName: myContext.myLastName + myContext.myFirstName,
+                  });
               }}
             >
-              <Upload />
+              <Upload
+                style={{
+                  right: 23,
+                  position: "absolute",
+                }}
+              />
             </TouchableOpacity>
           </View>
         ) : !IsRecordOwner && !isEditable ? (
@@ -816,6 +830,11 @@ const EditScreen = ({ navigation, route }) => {
         visible={visible}
         onDismissSnackBar={onDismissSnackBar}
         text="최대 10개까지 사진 첨부 가능합니다."
+      />
+      <SnackBar
+        visible={visibleUpload}
+        onDismissSnackBar={onDismissSnackBarUpload}
+        text="장소를 입력하세요."
       />
       <PopUpType1
         modalVisible={removeModalVisible}

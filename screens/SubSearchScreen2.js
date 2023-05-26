@@ -154,6 +154,7 @@ const BottomSheetScreen = ({
       </View>
       <BottomButton
         onPressFunction={() => {
+          console.log(targetId);
           setPlaceID(targetId);
           setPlaceName(targetName);
           setAddress(targetAddress);
@@ -223,8 +224,9 @@ const BottomSheet = ({
 };
 
 const SubSearchScreen2 = ({ navigation, route }) => {
+  console.log("SubSearchScreen2", route.params);
   const [animationValue, setAnimationValue] = useState(0);
-  console.log(route.params.details);
+  //console.log(route.params.details);
   const showAnimation = useRef(new Animated.Value(animationValue)).current;
 
   const mapRef = React.createRef();

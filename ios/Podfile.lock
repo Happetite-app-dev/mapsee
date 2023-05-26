@@ -283,6 +283,8 @@ PODS:
   - React-jsinspector (0.69.6)
   - React-logger (0.69.6):
     - glog
+  - react-native-date-picker (4.2.13):
+    - React-Core
   - react-native-geolocation (3.0.4):
     - React-Core
   - react-native-geolocation-service (5.3.1):
@@ -369,7 +371,7 @@ PODS:
     - React-Core
   - RNCClipboard (1.11.2):
     - React-Core
-  - RNDateTimePicker (6.2.0):
+  - RNDateTimePicker (7.0.1):
     - React-Core
   - RNGestureHandler (2.6.0):
     - React-Core
@@ -454,6 +456,7 @@ DEPENDENCIES:
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
+  - react-native-date-picker (from `../node_modules/react-native-date-picker`)
   - "react-native-geolocation (from `../node_modules/@react-native-community/geolocation`)"
   - react-native-geolocation-service (from `../node_modules/react-native-geolocation-service`)
   - react-native-google-maps (from `../node_modules/react-native-maps`)
@@ -566,6 +569,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
   React-logger:
     :path: "../node_modules/react-native/ReactCommon/logger"
+  react-native-date-picker:
+    :path: "../node_modules/react-native-date-picker"
   react-native-geolocation:
     :path: "../node_modules/@react-native-community/geolocation"
   react-native-geolocation-service:
@@ -671,6 +676,7 @@ SPEC CHECKSUMS:
   React-jsiexecutor: c61b60de03b3474e5749b8a8fd8e6507630d62c4
   React-jsinspector: eaacb698c5af7a99131bc1933806372c20222dfd
   React-logger: ebb4d31bbbe4f1a8a1a9b658d7429210b8f68160
+  react-native-date-picker: 04e866ba4e7857f83abd504ad42e787f0f02ae00
   react-native-geolocation: 3ed60c3d7f613c36b777b9fd0bc3453214e1b0d5
   react-native-geolocation-service: 608e1da71a1ac31b4de64d9ef2815f697978c55b
   react-native-google-maps: 8231ffa015bf8b222c2e2661fa9163cdb609a224
@@ -690,7 +696,7 @@ SPEC CHECKSUMS:
   ReactCommon: fe7580b9d10f00249facf25659e0ec051320cc8a
   RNCAsyncStorage: 8616bd5a58af409453ea4e1b246521bb76578d60
   RNCClipboard: 3f0451a8100393908bea5c5c5b16f96d45f30bfc
-  RNDateTimePicker: 30e6733efc179d1e49d6008ea5fce42cdc9aeeca
+  RNDateTimePicker: e073697ac3e8a378968d68ab0581fef542b8af8a
   RNGestureHandler: 920eb17f5b1e15dae6e5ed1904045f8f90e0b11e
   RNHoleView: c3453e318b03be013cf21726063a19bcaa3f8d2d
   RNRate: ef3bcff84f39bb1d1e41c5593d3eea4aab2bd73a
@@ -701,6 +707,6 @@ SPEC CHECKSUMS:
   RNSVG: 302bfc9905bd8122f08966dc2ce2d07b7b52b9f8
   Yoga: 75bf4b0131cfb46a659cd0c13309b79a6fcff66d
 
-PODFILE CHECKSUM: 941b3756b5b09e01aace6436c3a849d1aa3892b9
+PODFILE CHECKSUM: 74454ac2f36bbdcc73266268978e0698137a43c7
 
 COCOAPODS: 1.12.1

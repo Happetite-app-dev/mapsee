@@ -32,12 +32,15 @@ const DispatchFolderInviteRequestList = ({
     return (
       <View style={styles.container}>
         <Text style={styles.text}>
-          <Text style={{ fontFamily: "NotoSansKR-Bold" }}>
+          <Text style={{ fontFamily: "NotoSansKR-Bold", fontWeight: "700" }}>
             {approverLastName}
             {approverFirstName}(@{approverID})
           </Text>
           님이
-          <Text style={{ fontFamily: "NotoSansKR-Bold" }}> {folderName} </Text>
+          <Text style={{ fontFamily: "NotoSansKR-Bold", fontWeight: "700" }}>
+            {" "}
+            {folderName}{" "}
+          </Text>
           초대를 수락했습니다.
         </Text>
         <Text style={styles.time}>
@@ -57,12 +60,15 @@ const DispatchFolderInviteRequestList = ({
         style={styles.container}
       >
         <Text style={styles.text}>
-          <Text style={{ fontFamily: "NotoSansKR-Bold" }}>
+          <Text style={{ fontFamily: "NotoSansKR-Bold", fontWeight: "700" }}>
             {approverLastName}
             {approverFirstName}(@{approverID})
           </Text>
           님이
-          <Text style={{ fontFamily: "NotoSansKR-Bold" }}> {folderName} </Text>
+          <Text style={{ fontFamily: "NotoSansKR-Bold", fontWeight: "700" }}>
+            {" "}
+            {folderName}{" "}
+          </Text>
           초대를 수락했습니다.
         </Text>
         <Text style={styles.time}>
@@ -96,5 +102,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#545766",
     left: 5,
+    fontWeight: "700",
   },
 });

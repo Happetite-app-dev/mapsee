@@ -18,7 +18,7 @@ import { database, auth } from "../firebase";
 import { deleteUser, updateCurrentUser } from "firebase/auth";
 import Rate from "../assets/icons/Rate.svg";
 import SNS from "../assets/icons/SNS.svg";
-import Suggest from "../assets/icons/Folderedit.svg";
+import Suggest from "../assets/icons/FolderEdit.svg";
 import NoticeOn from "../assets/icons/Notice/Notice with Alarm.svg";
 import SuggestBox from "../assets/image/suggestBox.svg";
 import FriendList from "../assets/icons/FriendsList.svg";
@@ -278,7 +278,6 @@ const styles = StyleSheet.create({
   elementText: {
     fontSize: 14,
     left: 14,
-    top: 3,
     fontFamily: "NotoSansKR-Medium",
     lineHeight: 24,
   },

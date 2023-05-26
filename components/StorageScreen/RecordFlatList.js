@@ -157,14 +157,18 @@ const RecordFlatList = ({
         recordList
           ? recordList.sort(function (a, b) {
               const date1 = new Date(
-                a[1].date.year,
-                a[1].date.month,
-                a[1].date.day
+                a[1].writeDate.year,
+                a[1].writeDate.month,
+                a[1].writeDate.day,
+                a[1].writeDate.hour,
+                a[1].writeDate.minute
               );
               const date2 = new Date(
-                b[1].date.year,
-                b[1].date.month,
-                b[1].date.day
+                b[1].writeDate.year,
+                b[1].writeDate.month,
+                b[1].writeDate.day,
+                b[1].writeDate.hour,
+                b[1].writeDate.minute
               );
               return date2 - date1;
             })

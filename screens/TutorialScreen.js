@@ -1,10 +1,10 @@
 import LottieView from "lottie-react-native";
 import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
-import Tutorial1 from "../assets/tutorial/tutorial1.svg";
-import Tutorial2 from "../assets/tutorial/tutorial2.svg";
-import Tutorial3 from "../assets/tutorial/tutorial3.svg";
-import Tutorial4 from "../assets/tutorial/tutorial4.svg";
+import Tutorial1 from "../assets/tutorial/tutorial-0.svg";
+import Tutorial2 from "../assets/tutorial/tutorial-1.svg";
+import Tutorial3 from "../assets/tutorial/tutorial-2.svg";
+import Tutorial4 from "../assets/tutorial/tutorial-3.svg";
 
 const TutorialScreen = ({ navigation, route }) => {
   const [tuto1, setTuto1] = useState(true);
@@ -21,7 +21,7 @@ const TutorialScreen = ({ navigation, route }) => {
           setTuto2(true);
         }}
       >
-        <Tutorial1 />
+        <Tutorial1 style={{ flex: 1 }} />
       </View>
     );
   }
@@ -34,7 +34,7 @@ const TutorialScreen = ({ navigation, route }) => {
           setTuto2(false), setTuto3(true);
         }}
       >
-        <Tutorial2 />
+        <Tutorial2 style={{ flex: 1 }} />
       </View>
     );
   }
@@ -48,7 +48,7 @@ const TutorialScreen = ({ navigation, route }) => {
           setTuto4(true);
         }}
       >
-        <Tutorial3 />
+        <Tutorial3 style={{ flex: 1 }} />
       </View>
     );
   }
@@ -58,10 +58,12 @@ const TutorialScreen = ({ navigation, route }) => {
       <View
         style={styles.container}
         onTouchEndCapture={() => {
+          console.log("tuto4", route.params);
+          route.params.onChangeGetPermissions(true);
           navigation.goBack();
         }}
       >
-        <Tutorial4 />
+        <Tutorial4 style={{ flex: 1 }} />
       </View>
     );
   }
@@ -70,7 +72,7 @@ const TutorialScreen = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "rgba(0,0,0,0.4)",
+    backgroundColor: "rgba(0,0,0,0)",
     alignItems: "stretch",
     justifyContent: "center",
   },

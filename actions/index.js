@@ -13,6 +13,10 @@ export const fetchUser = async (UID) => {
   return await onValueAsync(ref(db, "/users/" + UID));
 };
 
+export const fetchAllUser = async () => {
+  return await onValueAsync(ref(db, "/users/"));
+};
+
 export const fetchRecord = async (recordID) => {
   return await onValueAsync(ref(db, "/records/" + recordID));
 };
@@ -22,14 +26,12 @@ export const fetchAllRecord = async () => {
 };
 
 export const fetchAllFolderObject = async (UID) => {
-  return await onValueAsync(ref(db, "/users/" + UID + "/folderIDs"))
-}
+  return await onValueAsync(ref(db, "/users/" + UID + "/folderIDs"));
+};
 
 export const fetchAllFolder = async () => {
   return await onValueAsync(ref(db, "/folders/"));
 };
-
-
 
 export const fetchAllNotice = async (UID) => {
   return await onValueAsync(ref(db, "/notices/" + UID));

@@ -56,14 +56,15 @@ const gotoApp = ({
   startTutorial,
   navigation,
 }) => {
+  console.log("init start");
+
   initMyUID();
   initMyID();
   initMyFirstName();
   initMyLastName();
   initMyEmail();
-  if (!startTutorial) {
-    navigation.navigate("Tabs");
-  }
+  console.log("init end");
+  navigation.navigate("Tabs");
   //startTutorial 이 true라면 afterScreen.js로 이동필요
 };
 
@@ -119,16 +120,17 @@ const RegisterScreen3 = ({ navigation, route }) => {
     myContext.initMyEmail(email);
   };
 
-  const handleSignUp = () => {
-    saveUser({ uid, email, id, firstName, lastName });
-    gotoApp({
-      initMyUID,
-      initMyID,
-      initMyFirstName,
-      initMyLastName,
-      initMyEmail,
-      startTutorial,
-      navigation,
+  const handleSignUp = async () => {
+    console.log("handleSignUp");
+    await saveUser({ uid, email, id, firstName, lastName }).then(() => {
+      console.log("init start");
+      initMyUID();
+      initMyID();
+      initMyFirstName();
+      initMyLastName();
+      initMyEmail();
+      console.log("init end");
+      navigation.navigate("Tabs");
     });
   };
 
@@ -177,6 +179,7 @@ const RegisterScreen3 = ({ navigation, route }) => {
       <BottomButton
         text={"회원가입"}
         onPressFunction={() => {
+          console.log("bottombutton", valid);
           if (valid) handleSignUp();
           else setVisible(true);
         }}

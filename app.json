@@ -4,7 +4,7 @@
       [
         "expo-notifications",
         {
-          "icon": "./assets/icons/notification-icon.png",
+          "icon": "./assets/push_notification.png",
           "color": "#ffffff"
         }
       ]

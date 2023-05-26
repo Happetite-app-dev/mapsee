@@ -8,7 +8,7 @@ const SnackBar = ({ visible, onDismissSnackBar, text, style }) => {
   return (
     <Snackbar
       visible={visible}
-      duration={3000}
+      duration={1500}
       onDismiss={onDismissSnackBar}
       style={{
         backgroundColor: "#545766",

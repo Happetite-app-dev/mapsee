@@ -38,23 +38,19 @@ const ReceptFolderInviteRequestList = ({
     return (
       <View style={styles.container}>
         <Text style={styles.text}>
-          <Text style={{ fontFamily: "NotoSansKR-Bold" }}>
+          <Text style={{ fontFamily: "NotoSansKR-Bold", fontWeight: "700" }}>
             {requesterLastName}
             {requesterFirstName}(@{requesterID})
           </Text>
           님의
-          <Text style={{ fontFamily: "NotoSansKR-Bold" }}> {folderName} </Text>
-          초대를 수락했습니다.
-        </Text>
-        <Text
-          style={{
-            ...styles.text,
-            fontWeight: "700",
-            fontSize: 12,
-            color: "#545766",
-          }}
-        >
-          <TimeDisplay time={time} />
+          <Text style={{ fontFamily: "NotoSansKR-Bold", fontWeight: "700" }}>
+            {" "}
+            {folderName}{" "}
+          </Text>
+          초대를 수락했습니다. {"  "}
+          <Text style={styles.time}>
+            <TimeDisplay time={time} />
+          </Text>
         </Text>
       </View>
     );
@@ -102,12 +98,15 @@ const styles = StyleSheet.create({
     fontFamily: "NotoSansKR-Regular",
   },
   time: {
-    alignSelf: "center",
     lineHeight: 16,
     letterSpacing: -0.5,
     fontFamily: "NotoSansKR-Bold",
     fontSize: 12,
     color: "#545766",
-    left: 5,
+    left: 20,
+    bottom: 0,
+    height: 16,
+    position: "absolute",
+    fontWeight: "700",
   },
 });

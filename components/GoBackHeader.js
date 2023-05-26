@@ -36,6 +36,7 @@ const GoBackHeader = ({
       <View style={styles.buttons}>
         <View
           onTouchEndCapture={() => {
+            console.log("touched");
             if (goBackFunction === undefined) navigation.goBack();
             else goBackFunction();
           }}
@@ -43,13 +44,7 @@ const GoBackHeader = ({
         >
           <GoBack height={24} style={{ left: 23 }} />
         </View>
-        <View
-          style={styles.title}
-          onTouchEndCapture={() => {
-            if (goBackFunction === undefined) navigation.goBack();
-            else goBackFunction();
-          }}
-        >
+        <View style={styles.title}>
           {folderColor !== undefined ? (
             <SmallFolder
               color={folderColor}
@@ -133,6 +128,7 @@ const styles = StyleSheet.create({
     height: 24,
     position: "absolute",
     left: 0,
+    zIndex: 10000,
   },
   title: {
     width: 280,
