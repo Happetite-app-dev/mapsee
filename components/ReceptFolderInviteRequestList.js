@@ -103,10 +103,10 @@ const styles = StyleSheet.create({
     fontFamily: "NotoSansKR-Bold",
     fontSize: 12,
     color: "#545766",
-    left: 20,
+    left: 5,
     bottom: 0,
     height: 16,
-    position: "absolute",
+    position: "relative",
     fontWeight: "700",
   },
 });
