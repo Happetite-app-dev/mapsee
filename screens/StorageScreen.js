@@ -10,7 +10,7 @@ import {
 import { useQueryClient } from "react-query";
 import AddFolder from "../assets/icons/Addfolder.svg";
 import { useIsFocused } from "@react-navigation/native";
-import { useUserQuery, useAllRecordQuery } from "../queries";
+import { useUserQuery, useAllRecordQuery, useAllUserQuery } from "../queries";
 
 import AppContext from "../components/AppContext";
 import { CreateNote } from "../components/MapScreen/CreateNote";
@@ -19,6 +19,10 @@ import RecordFlatList from "../components/StorageScreen/RecordFlatList";
 import SnackBar from "../components/SnackBar";
 import FolderList from "../components/StorageScreen/FolderList";
 import { database } from "../firebase";
+import AddFriend from "../assets/icons/AddFriend.svg";
+
+import AddFriendModal from "./AddFriendModal";
+
 const db = database;
 
 const exitFolder = async ({ myUID, folderID, navigation, queryClient }) => {
@@ -122,8 +126,16 @@ const StorageScreen = ({ navigation, route }) => {
   const allRecordQuery = useAllRecordQuery();
   const queryClient = useQueryClient();
 
+  const [visibleF, setVisibleF] = useState(false); // Snackbar
+  const onToggleSnackBarF = () => {
+    setVisibleF(!visibleF);
+  }; // SnackbarButton -> 나중에는 없애기
+  const onDismissSnackBarF = () => setVisibleF(false); // Snackbar
+
   const [visible, setVisible] = useState(false); // Snackbar
-  const onToggleSnackBar = () => setVisible(!visible); // SnackbarButton -> 나중에는 없애기
+  const onToggleSnackBar = () => {
+    setVisible(!visible);
+  }; // SnackbarButton -> 나중에는 없애기
   const onDismissSnackBar = () => setVisible(false); // Snackbar
   const isFocused = useIsFocused();
 
@@ -141,6 +153,32 @@ const StorageScreen = ({ navigation, route }) => {
     folderFixedDate: undefined,
   });
 
+  const allUserQuery = useAllUserQuery();
+  const [refreshing, setRefreshing] = useState(false);
+  const [requestSent, setRequestSent] = useState(false);
+  const [requestInfo, setRequestInfo] = useState([]);
+
+  const [addModalVisible, setAddModalVisible] = useState(false);
+  const [friendIDNameList, setFriendIDNameList] = useState({});
+  useEffect(() => {
+    if (isFocused || !refreshing) {
+      setRefreshing(true);
+      if (userQuery.data && allUserQuery.data) {
+        console.log("changing");
+        setFriendIDNameList({});
+        for (const friendUID in userQuery.data.friendUIDs) {
+          const friendData = allUserQuery.data[friendUID];
+          setFriendIDNameList((prev) => ({
+            ...prev,
+            [friendUID]: {
+              id: friendData.id,
+              name: friendData.lastName + friendData.firstName,
+            },
+          }));
+        }
+      }
+    }
+  }, [isFocused, userQuery.isLoading, allUserQuery.isLoading, refreshing]);
   useEffect(() => {
     if (selectedFolderIDNameColorUserIDs !== undefined) {
       filterFunction({
@@ -156,13 +194,22 @@ const StorageScreen = ({ navigation, route }) => {
         <Text style={styles.screenTitle}>보관함</Text>
         <View style={styles.twoRightButtons}>
           <TouchableOpacity
+            style={styles.firstButton}
+            onPress={() => {
+              setAddModalVisible(true);
+            }}
+          >
+            <AddFriend />
+          </TouchableOpacity>
+
+          <TouchableOpacity
             style={styles.secondButton}
             onPress={() => {
               if (
                 userQuery.data?.folderIDs &&
                 userQuery.data?.folderIDs.length >= 16
               )
-                onToggleSnackBar();
+                onToggleSnackBarF();
               else {
                 gotoMakeFolderBottomSheetScreen({
                   navigation,
@@ -204,6 +251,13 @@ const StorageScreen = ({ navigation, route }) => {
             />
           </View>
         }
+        storageScreen={true}
+        setSelectedFolderIDNameColorUserIDs={
+          setSelectedFolderIDNameColorUserIDs
+        }
+        setLongPressedFolder={setLongPressedFolder}
+        setModalVisible={setModalVisible}
+        userQuery={userQuery}
         style={{
           height: "85%",
           marginBottom: "13%",
@@ -213,6 +267,14 @@ const StorageScreen = ({ navigation, route }) => {
           queryClient.invalidateQueries(["folders"]); // 임시로!!!! 고쳐야해!!!!!!!!!!!!!!!!!!!!!!!!!
         }} // fetch로 데이터 호출
         refreshing={allRecordQuery.isLoading} // state
+      />
+      <AddFriendModal
+        modalVisible={addModalVisible}
+        modalHandler={setAddModalVisible}
+        friendList={friendIDNameList}
+        onToggleSnackBar={onToggleSnackBar}
+        setRequestSent={(bool) => setRequestSent(bool)}
+        setRequestInfo={(info) => setRequestInfo(info)}
       />
       <PopUpType4
         modalVisible={modalVisible}
@@ -268,9 +330,23 @@ const StorageScreen = ({ navigation, route }) => {
       />
 
       <SnackBar
-        visible={visible}
-        onDismissSnackBar={onDismissSnackBar}
+        visible={visibleF}
+        onDismissSnackBar={onDismissSnackBarF}
         text="최대 16개까지 폴더를 만들 수 있습니다."
+        style={{ marginBottom: 70 }}
+      />
+      <SnackBar
+        onDismissSnackBar={onDismissSnackBar}
+        text={
+          requestSent
+            ? requestInfo[1] +
+              "(@" +
+              requestInfo[0] +
+              ")님께 친구 요청을 전달했습니다!"
+            : "이미 추가된 친구입니다."
+        }
+        visible={visible}
+        style={{ marginBottom: 70 }}
       />
     </SafeAreaView>
   );
@@ -320,6 +396,11 @@ const styles = StyleSheet.create({
   secondButton: {
     width: 24,
     height: 24,
+  },
+  firstButton: {
+    width: 24,
+    height: 24,
+    right: 16,
   },
   createNote: {
     position: "absolute",

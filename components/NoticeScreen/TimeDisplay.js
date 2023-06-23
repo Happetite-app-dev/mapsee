@@ -11,25 +11,25 @@ const TimeDisplay = ({ time }) => {
     if (timeNow.getHours() == timePast.getHours()) {
       if (timeNow.getMinutes() == timePast.getMinutes()) {
         return (
-          <Text style={styles.text}>{Math.floor(timeDiff / 1000)}sec</Text>
+          <Text style={styles.text}>{Math.floor(timeDiff / 1000)}초 전</Text>
         );
       } else {
         return (
           <Text style={styles.text}>
-            {Math.ceil(timeDiff / (1000 * 60))}min
+            {Math.ceil(timeDiff / (1000 * 60))}분 전
           </Text>
         );
       }
     }
     return (
       <Text style={styles.text}>
-        {Math.ceil(timeDiff / (1000 * 60 * 60))}hr
+        {Math.ceil(timeDiff / (1000 * 60 * 60))}시간 전
       </Text>
     );
   } else {
     return (
       <Text style={styles.text}>
-        {Math.ceil(timeDiff / (1000 * 60 * 60 * 24))}days
+        {Math.ceil(timeDiff / (1000 * 60 * 60 * 24))}일 전
       </Text>
     );
   }
@@ -39,7 +39,8 @@ export default TimeDisplay;
 
 const styles = StyleSheet.create({
   text: {
-    fontFamily: "NotoSansKR-Regular",
+    fontFamily: "NotoSansKR-Bold",
     color: "#ADB1C5",
+    fontWeight: "700",
   },
 });

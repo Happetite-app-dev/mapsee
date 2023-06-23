@@ -105,7 +105,7 @@ const SingleFolderScreen = ({ navigation, route }) => {
         <GoBackHeader
           navigation={navigation}
           text={query?.data?.folderName[myUID]}
-          folderColor={query?.data?.folderColor[myUID]}
+          folderColor={query?.data?.folderColor[myUID] || "#000000"}
           isShareFolder={
             query.data.userIDs !== undefined
               ? Object.entries(query.data.userIDs).length >= 2
@@ -132,6 +132,8 @@ const SingleFolderScreen = ({ navigation, route }) => {
         action={() => exitFolder({ myUID, folderID, navigation, queryClient })}
         askValue="정말 폴더에서 나가시겠어요?"
         actionValue="나가기"
+        exit
+        exitAskValue={"폴더와 폴더 내 모든 항목은 복구할 수 없습니다."}
       />
     </View>
   );

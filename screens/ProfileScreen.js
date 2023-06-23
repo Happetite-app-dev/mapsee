@@ -82,7 +82,6 @@ const ProfileScreen = ({ navigation }) => {
 
             queryClient.invalidateQueries(["users", myContext.myUID]);
             setEditable(false);
-
           }
         }}
       >
@@ -112,7 +111,7 @@ const ProfileScreen = ({ navigation }) => {
             flexDirection: "row",
             top: 16,
             height: 48,
-            left: 23,
+            left: "100%",
             width: 344,
           }}
         >
@@ -128,7 +127,7 @@ const ProfileScreen = ({ navigation }) => {
               style={{
                 ...styles.TextInput,
                 height: 48,
-                color: !editable ? "#000000" : "#ADB1C5",
+                color: "#000000",
               }}
               defaultValue={myContext.myLastName}
               onChangeText={(text) => {
@@ -149,7 +148,7 @@ const ProfileScreen = ({ navigation }) => {
               style={{
                 ...styles.TextInput,
                 height: 48,
-                color: !editable ? "#000000" : "#ADB1C5",
+                color: "#000000",
               }}
               defaultValue={myContext.myFirstName}
               onChangeText={(text) => {
@@ -186,19 +185,21 @@ const ProfileScreen = ({ navigation }) => {
             fontFamily: "NotoSansKR-Regular",
           }}
         >
-          <TextInput
+          <Text
             style={{
               ...styles.TextInput,
               height: 24,
               marginLeft: 24,
-              color: !editable ? "#000000" : "#ADB1C5",
+              color: "#000000",
             }}
             underlineColor="rgba(0,0,0,0)"
             defaultValue={myID}
             onChangeText={(text) => {
               setID(text);
             }}
-          />
+          >
+            {myID}
+          </Text>
           <TouchableOpacity
             onPress={() => {
               copyToClipboard(myID);
@@ -229,18 +230,20 @@ const ProfileScreen = ({ navigation }) => {
         >
           이메일
         </Text>
-        <TextInput
+        <Text
           style={{
             ...styles.TextInput,
             height: 24,
             marginLeft: 24,
-            color: !editable ? "#000000" : "#ADB1C5",
+            color: "#000000",
           }}
           defaultValue={myEmail}
           onChangeText={(text) => {
             setEmail(text);
           }}
-        />
+        >
+          {myEmail}
+        </Text>
       </View>
 
       <SnackBar

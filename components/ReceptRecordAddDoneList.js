@@ -68,7 +68,7 @@ const ReceptRecordAddDoneList = ({
           님이
           <Text style={{ fontFamily: "NotoSansKR-Bold", fontWeight: "700" }}>
             {" "}
-            폴더[{folderName}]
+            {folderName}
           </Text>
           에 기록을 남겼습니다.
         </Text>
@@ -101,10 +101,7 @@ const ReceptRecordAddDoneList = ({
               {performerFirstName}(@{performerID})
             </Text>
             님이
-            <Text style={{ fontFamily: "NotoSansKR-Bold" }}>
-              {" "}
-              폴더[{folderName}]
-            </Text>
+            <Text style={{ fontFamily: "NotoSansKR-Bold" }}> {folderName}</Text>
             {"에 기록을 남겼습니다.   "}
             <Text style={styles.time}>
               <TimeDisplay time={time} />
@@ -134,10 +131,7 @@ const ReceptRecordAddDoneList = ({
               {performerFirstName}(@{performerID})
             </Text>
             님이
-            <Text style={{ fontFamily: "NotoSansKR-Bold" }}>
-              {" "}
-              폴더[{folderName}]
-            </Text>
+            <Text style={{ fontFamily: "NotoSansKR-Bold" }}> {folderName}</Text>
             {"에 기록을 남겼습니다.   "}
             <Text style={styles.time}>
               <TimeDisplay time={time} />
@@ -196,5 +190,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#545766",
     left: 5,
+    fontWeight: "700",
   },
 });

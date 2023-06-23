@@ -14,6 +14,8 @@ import AppContext from "../components/AppContext";
 import NoticeRenderer from "../components/NoticeRenderer";
 import { useAllNoticeQuery, useUserQuery } from "../queries";
 
+import Monotone from "../assets/image/Monotone.svg";
+
 const NoticeScreen = ({ navigation }) => {
   const myContext = useContext(AppContext);
   const myUID = myContext.myUID;
@@ -35,70 +37,77 @@ const NoticeScreen = ({ navigation }) => {
     />
   );
   //set(ref(database, "/users/dIo8sCXlQ3YcXooeB53WmTKEDtc2/firstName"), "동욱")
-
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.screenTitleView}>
         <Text style={styles.screenTitle}>알림</Text>
       </View>
-      <View style={{ alignItems: "center" }}>
-        <ScrollView
-          style={{ height: "100%" }}
-          contentContainerStyle={{
-            flexDirection: "row",
-            alignSelf: "flex-end",
+      {query?.data == undefined || query?.data.length == 0 ? (
+        <View
+          style={{
+            position: "absolute",
+
+            justifyContent: "center",
+            flexDirection: "column",
+            top: 375,
+            flex: 1,
+            alignItems: "center",
+            alignSelf: "center",
           }}
-          refreshControl={
-            <RefreshControl
-              refreshing={query.isLoading}
-              onRefresh={() => {
-                queryClient.invalidateQueries(["all-notices"]);
-                queryClient.invalidateQueries(["users"]);
-                queryClient.invalidateQueries(["folders"]);
-              }}
-            />
-          }
         >
-          <FlatList
-            inverted
-            invertStickyHeaders
-            /*onRefresh={() => {
+          <Monotone />
+          <Text
+            color="#545766"
+            style={{
+              fontFamily: "NotoSansKR-Regular",
+              fontSize: 14,
+              top: 19,
+            }}
+          >
+            아직 알림이 없습니다.
+          </Text>
+        </View>
+      ) : (
+        <></>
+      )}
+      <ScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={{
+          flexDirection: "row",
+          alignSelf: "flex-end",
+          marginTop: 20,
+        }}
+        refreshControl={
+          <RefreshControl
+            refreshing={query.isLoading}
+            onRefresh={() => {
+              queryClient.invalidateQueries(["all-notices"]);
+              queryClient.invalidateQueries(["users"]);
+              queryClient.invalidateQueries(["folders"]);
+            }}
+          />
+        }
+      >
+        <FlatList
+          inverted
+          invertStickyHeaders
+          /*onRefresh={() => {
               queryClient.invalidateQueries(["all-notices"]);
               queryClient.invalidateQueries(["users"]);
               queryClient.invalidateQueries(["folders"]);
             }} // fetch로 데이터 호출
             refreshing={query.isLoading} // state*/
-            data={query_modified}
-            renderItem={renderNotice}
-            numColumns={1}
-            initialNumToRender={15}
-            windowSize={5}
-            style={{
-              width: "100%",
-              height: "100%",
-            }}
-          />
-        </ScrollView>
-        <Snackbar
-          visible={visible}
-          onDismiss={onDismissSnackBar}
-          action={{
-            label: "Undo", // 옆에 취소표시
-            onPress: () => {
-              onDismissSnackBar;
-            },
-          }}
+          data={query_modified}
+          renderItem={renderNotice}
+          numColumns={1}
+          initialNumToRender={15}
+          windowSize={5}
           style={{
-            backgroundColor: "#545766",
-            borderRadius: 8,
-            fontSize: 12,
-            lineHeight: 16,
-            letterSpacing: -0.5,
+            width: "100%",
+            height: "100%",
           }}
-        >
-          Hi there! I'm Snackbar.
-        </Snackbar>
-      </View>
+        />
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -115,7 +124,7 @@ const styles = StyleSheet.create({
   screenTitleView: {
     flexDirection: "row",
     height: 48,
-    marginBottom: 20,
+    marginBottom: 0,
     alignItems: "center",
     position: "relative",
     width: "100%",

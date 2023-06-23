@@ -593,7 +593,8 @@ const EditScreen = ({ navigation, route }) => {
               onPress={() => {
                 console.log("pressed");
                 console.log(placeID_);
-                if (placeID_ == undefined) onToggleSnackBarUpload();
+                if (placeID_ == undefined)
+                  Alert.alert("알림", "장소를 선택해주세요");
                 else
                   storeRecord({
                     navigation,

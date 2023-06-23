@@ -79,6 +79,7 @@ const AddFriendModal = ({
     if (friendUID !== undefined) {
       if (containsUID(friendUID)) {
         setRequestSent(false);
+        console.log("toggle snackbar");
         onToggleSnackBar();
       } else {
         callFriendRequest(friendUID, myUID, myName, myID);

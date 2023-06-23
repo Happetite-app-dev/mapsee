@@ -25,12 +25,13 @@ const FolderList = ({
     />
   );
 
-
-  const folderQueries = useFolderQueries(folderIDs)
-  const { isLoading, error } = folderQueries[folderIDs.length - 1] ? folderQueries[folderIDs.length - 1] : { isLoading: false, error: false }
+  const folderQueries = useFolderQueries(folderIDs);
+  const { isLoading, error } = folderQueries[folderIDs.length - 1]
+    ? folderQueries[folderIDs.length - 1]
+    : { isLoading: false, error: false };
   const data = Object.entries(folderIDs).map(([i, folderID]) => {
-    return [folderID, folderQueries[i].data]
-  })
+    return [folderID, folderQueries[i].data];
+  });
 
   if (isLoading) return <Text>로딩중</Text>;
   else if (error) return <Text>에러 발생</Text>;

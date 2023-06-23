@@ -70,6 +70,7 @@ const DatePicker = ({ date1, setDate1, show, setShow, IsEditable }) => {
           value={date}
           mode="date"
           onChange={onChange}
+          locale="ko"
         />
       )}
     </View>

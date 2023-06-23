@@ -1,7 +1,14 @@
 import { set, ref, onValue, push } from "firebase/database";
 import { useFolderQueries, useUserQuery } from "../../queries";
 import React, { useEffect, useRef, useState, useContext } from "react";
-import { Animated, Text, View, TouchableOpacity, Button } from "react-native";
+import {
+  Animated,
+  Text,
+  View,
+  TouchableOpacity,
+  Button,
+  Alert,
+} from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import AppContext from "../AppContext";
 import AddFolderBottomSheet from "./AddFolderBottomSheet";
@@ -181,7 +188,7 @@ const FolderBottomSheet = ({
           <BottomButton
             onPressFunction={() => {
               if (Object.values(folderIDNameList).length >= 16)
-                onToggleSnackBar();
+                Alert.alert("알림", "폴더는 최대 16개까지 만들 수 있습니다.");
               else {
                 setIsSelectingFolder(false);
               }

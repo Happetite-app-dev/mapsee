@@ -1,7 +1,7 @@
 import { ref, onValue, set, push } from "firebase/database";
 import { database } from "../../firebase";
 import React, { useEffect, useRef, useState, useContext } from "react";
-import { View } from "react-native";
+import { View, Alert } from "react-native";
 import { useQueryClient } from "react-query";
 import AppContext from "../AppContext";
 import SendPushNotification from "../../modules/SendPushNotification";
@@ -144,20 +144,23 @@ const AddFolderBottomSheet = ({
     });
   }, [newFolderUserIDs]);
   const onPressFunction = () => {
-    addNewFolder({
-      myUID,
-      myID,
-      myFirstName,
-      myLastName,
-      setFolderIDNameList,
-      setFolderID,
-      setFolderName,
-      folderName: newFolderName,
-      folderColor: newFolderColor,
-      folderUserIDs: newFolderUserIDs,
-      queryClient: queryClient,
-      setFolderColor: setFolderColor,
-    });
+    if (newFolderName.length > 5)
+      Alert.alert("알림", "폴더 이름은 5자 이내여야 합니다.");
+    else
+      addNewFolder({
+        myUID,
+        myID,
+        myFirstName,
+        myLastName,
+        setFolderIDNameList,
+        setFolderID,
+        setFolderName,
+        folderName: newFolderName,
+        folderColor: newFolderColor,
+        folderUserIDs: newFolderUserIDs,
+        queryClient: queryClient,
+        setFolderColor: setFolderColor,
+      });
     setShow(true);
     setIsSelectingFolder(true);
   };

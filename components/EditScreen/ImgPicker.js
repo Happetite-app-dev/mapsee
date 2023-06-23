@@ -111,7 +111,11 @@ const ImgPicker = ({
               >
                 <TouchableOpacity
                   onPress={() => {
-                    if (pickedImages.length >= 10) onToggleSnackBar();
+                    if (pickedImages.length >= 10)
+                      Alert.alert(
+                        "알림",
+                        "사진은 10장까지만 첨부할 수 있습니다."
+                      );
                     else takeImageHandlerLib(setPickedImages, onImageTaken);
                   }}
                   style={styles.imagePreview}
@@ -161,7 +165,8 @@ const ImgPicker = ({
           <View style={{ width: "100%" }}>
             <View
               onTouchEndCapture={() => {
-                if (pickedImages.length >= 10) onToggleSnackBar();
+                if (pickedImages.length >= 10)
+                  Alert.alert("알림", "사진은 10장까지만 첨부할 수 있습니다.");
                 else takeImageHandlerLib(setPickedImages, onImageTaken);
               }}
               style={styles.imagePreviewCenter}

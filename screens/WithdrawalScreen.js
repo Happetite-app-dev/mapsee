@@ -1,13 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import { useState, useContext } from "react";
-import {
-  Image,
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View, Alert } from "react-native";
 import SnackBar from "../components/SnackBar";
 import * as Clipboard from "expo-clipboard";
 import * as Linking from "expo-linking";
@@ -182,7 +175,6 @@ const WithdrawalScreen = ({ navigation }) => {
             .catch((err) => {
               console.log(err);
             });
-
         }}
       >
         <SuggestBox style={{ position: "absolute" }} />
@@ -193,9 +185,8 @@ const WithdrawalScreen = ({ navigation }) => {
         text="탈퇴하기"
         onPressFunction={() => {
           if (valid) setGoBackModalVisible(true);
-          else setVisible(true);
+          else Alert.alert("알림", "탈퇴 사유를 입력해 주세요.");
         }}
-
         style={{
           backgroundcolor: valid ? "#5ED3CC" : "#F4F5F9",
           bottom: 40,
@@ -214,7 +205,8 @@ const WithdrawalScreen = ({ navigation }) => {
           })
         }
         askValue="정말 탈퇴하시겠어요?"
-        actionValue="탈퇴하기"
+        actionValue="탈퇴"
+        exit={true}
       />
       <SnackBar
         visible={visible}
@@ -223,7 +215,6 @@ const WithdrawalScreen = ({ navigation }) => {
         }}
         text="탈퇴 사유를 입력해 주세요."
       />
-
     </View>
   );
 };
