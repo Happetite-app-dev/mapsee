@@ -371,7 +371,7 @@ PODS:
     - React-Core
   - RNCClipboard (1.11.2):
     - React-Core
-  - RNDateTimePicker (7.1.0):
+  - RNDateTimePicker (7.0.1):
     - React-Core
   - RNGestureHandler (2.6.0):
     - React-Core
@@ -668,7 +668,7 @@ SPEC CHECKSUMS:
   React: b6bb382534be4de9d367ef3d04f92108c1768160
   React-bridging: 0fca0337cef9305026814907dd29254a833a2db7
   React-callinvoker: 700e6eb96b5f7f2fdd96d7263cd4627d2fa080ed
-  React-Codegen: 91180f128714b17500f8c18d5be843a60ec6d81f
+  React-Codegen: fd21633c4b9f47d0681bbb54b173a203963a5e4d
   React-Core: 8ec15c9727c8c01b1e4f14cad5bd21f7c1d56d49
   React-CoreModules: 79486447bf901292a83df52d4f7acbecda296723
   React-cxxreact: 9022135650dd9960a60a1361e9add424c6c37ab9
@@ -696,7 +696,7 @@ SPEC CHECKSUMS:
   ReactCommon: fe7580b9d10f00249facf25659e0ec051320cc8a
   RNCAsyncStorage: 8616bd5a58af409453ea4e1b246521bb76578d60
   RNCClipboard: 3f0451a8100393908bea5c5c5b16f96d45f30bfc
-  RNDateTimePicker: 7ecd54a97fc3749f38c3c89a171f6cbd52f3c142
+  RNDateTimePicker: e073697ac3e8a378968d68ab0581fef542b8af8a
   RNGestureHandler: 920eb17f5b1e15dae6e5ed1904045f8f90e0b11e
   RNHoleView: c3453e318b03be013cf21726063a19bcaa3f8d2d
   RNRate: ef3bcff84f39bb1d1e41c5593d3eea4aab2bd73a
