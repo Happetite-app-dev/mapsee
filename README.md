@@ -18,7 +18,7 @@ Separate your records with multiple folders, invite your friends to make them a 
 
 ## How to run this on your device?
 
-```
+```bash
 yarn install    # To add necessary packages
 npm start       # Run application!
 ```
