@@ -60,3 +60,5 @@ web-build/
 dist/
 
 # @end expo-cli
+
+.env
