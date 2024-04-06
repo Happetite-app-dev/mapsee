@@ -1,6 +1,6 @@
 # mapsee - 지도 일기
 
-# What is this application?
+## What is this application?
 
 🩵 Map diary app, mapsee🩵
 Write a diary on a map, and record your memories with your friends in a shared folder!
@@ -16,9 +16,9 @@ You can collect meaningful places such as restaurants and travel destinations I 
 👨👩👧👦 Shared folders
 Separate your records with multiple folders, invite your friends to make them a shared folder!
 
-# How to run this on your device?
+## How to run this on your device?
 
-```
+```bash
 yarn install    # To add necessary packages
 npm start       # Run application!
 ```
@@ -28,7 +28,7 @@ If you want to run it on your notebook, press '-i' to open iOS simulator(Only av
 
 Unfortunately, only Korean is available for now. We have plans for English version, too. Please wait!
 
-# About our team, Happetite
+## About our team, Happetite
 
 Hello, we're Seoul National University's app development club, Happetite. Happetite first came together with the goal of creating an app for people's happiness. We are made up of undergraduate students interested in start-ups and start-up scenes, and we currently move into the startup lounge, Spring Lounge.
 
