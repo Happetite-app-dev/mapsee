@@ -2,6 +2,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React, { useState } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import AppContext from "./components/AppContext";
 import Tabs from "./navigation/tabs";
@@ -71,150 +72,155 @@ const App = () => {
     <AppContext.Provider value={userSettings}>
       <QueryClientProvider client={queryClient}>
         <NavigationContainer>
-          <Stack.Navigator initialRouteName="BeforeLoginScreen">
-            <Stack.Screen
-              options={{ headerShown: false }}
-              name="BeforeLoginScreen"
-              component={BeforeLoginScreen}
-            />
-            <Stack.Screen
-              options={{ headerShown: false }}
-              name="RegisterScreen1"
-              component={RegisterScreen1}
-            />
-            <Stack.Screen
-              options={{ headerShown: false }}
-              name="RegisterScreen2"
-              component={RegisterScreen2}
-            />
-            <Stack.Screen
-              options={{ headerShown: false }}
-              name="RegisterScreen3"
-              component={RegisterScreen3}
-            />
-            <Stack.Screen
-              options={{ headerShown: false }}
-              name="LoginScreen"
-              component={LoginScreen}
-            />
-            <Stack.Screen
-              options={{ headerShown: false }}
-              name="AfterLoginScreen"
-              component={AfterLoginScreen}
-            />
-            <Stack.Screen
-              name="Tabs"
-              component={Tabs}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              options={{ headerShown: false, presentation: "transparentModal" }}
-              name="TutorialScreen"
-              component={TutorialScreen}
-            />
-            <Stack.Screen
-              name="MapSearchScreen1"
-              component={MapSearchScreen1}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="MapSearchScreen2"
-              component={MapSearchScreen2}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="MapSearchScreen3"
-              component={MapSearchScreen3}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="MapSearchScreen4"
-              component={MapSearchScreen4}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="SingleFolderScreen"
-              component={SingleFolderScreen}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="MakeFolderBottomSheetScreen"
-              component={MakeFolderBottomSheetScreen}
-              options={{
-                headerShown: false,
-                presentation: "transparentModal",
-                gestureDirection: "vertical",
-                contentStyle: { backgroundColor: "transparent" },
-              }}
-            />
-            <Stack.Screen
-              name="EditScreen"
-              component={EditScreen}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="PlaceInfoBottomSheetScreen"
-              component={PlaceInfoBottomSheetScreen}
-              options={{
-                headerShown: false,
-                presentation: "transparentModal",
-                gestureDirection: "vertical",
-                contentStyle: { backgroundColor: "transparent" },
-              }}
-            />
+          <GestureHandlerRootView style={{ flex: 1 }}>
+            <Stack.Navigator initialRouteName="BeforeLoginScreen">
+              <Stack.Screen
+                options={{ headerShown: false }}
+                name="BeforeLoginScreen"
+                component={BeforeLoginScreen}
+              />
+              <Stack.Screen
+                options={{ headerShown: false }}
+                name="RegisterScreen1"
+                component={RegisterScreen1}
+              />
+              <Stack.Screen
+                options={{ headerShown: false }}
+                name="RegisterScreen2"
+                component={RegisterScreen2}
+              />
+              <Stack.Screen
+                options={{ headerShown: false }}
+                name="RegisterScreen3"
+                component={RegisterScreen3}
+              />
+              <Stack.Screen
+                options={{ headerShown: false }}
+                name="LoginScreen"
+                component={LoginScreen}
+              />
+              <Stack.Screen
+                options={{ headerShown: false }}
+                name="AfterLoginScreen"
+                component={AfterLoginScreen}
+              />
+              <Stack.Screen
+                name="Tabs"
+                component={Tabs}
+                options={{ headerShown: false, gestureEnabled: false }}
+              />
+              <Stack.Screen
+                options={{
+                  headerShown: false,
+                  presentation: "transparentModal",
+                }}
+                name="TutorialScreen"
+                component={TutorialScreen}
+              />
+              <Stack.Screen
+                name="MapSearchScreen1"
+                component={MapSearchScreen1}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="MapSearchScreen2"
+                component={MapSearchScreen2}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="MapSearchScreen3"
+                component={MapSearchScreen3}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="MapSearchScreen4"
+                component={MapSearchScreen4}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="SingleFolderScreen"
+                component={SingleFolderScreen}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="MakeFolderBottomSheetScreen"
+                component={MakeFolderBottomSheetScreen}
+                options={{
+                  headerShown: false,
+                  presentation: "transparentModal",
+                  gestureDirection: "vertical",
+                  contentStyle: { backgroundColor: "transparent" },
+                }}
+              />
+              <Stack.Screen
+                name="EditScreen"
+                component={EditScreen}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="PlaceInfoBottomSheetScreen"
+                component={PlaceInfoBottomSheetScreen}
+                options={{
+                  headerShown: false,
+                  presentation: "transparentModal",
+                  gestureDirection: "vertical",
+                  contentStyle: { backgroundColor: "transparent" },
+                }}
+              />
 
-            <Stack.Screen
-              name="SubSearchScreen1"
-              component={SubSearchScreen1}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="SubSearchScreen2"
-              component={SubSearchScreen2}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="SubSearchScreen3"
-              component={SubSearchScreen3}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="ImageView"
-              component={ImageView}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="ProfileScreen"
-              component={ProfileScreen}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="FriendListScreen"
-              component={FriendListScreen}
-              options={{
-                headerShown: false,
-                presentation: "containedModal",
-              }}
-            />
-            <Stack.Screen
-              name="InviteFriendScreen"
-              component={InviteFriendScreen}
-              options={{
-                headerShown: false,
-                presentation: "fullScreenModal",
-              }}
-            />
-            <Stack.Screen
-              name="SuggestScreen"
-              component={SuggestScreen}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="WithdrawalScreen"
-              component={WithdrawalScreen}
-              options={{ headerShown: false }}
-            />
-          </Stack.Navigator>
+              <Stack.Screen
+                name="SubSearchScreen1"
+                component={SubSearchScreen1}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="SubSearchScreen2"
+                component={SubSearchScreen2}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="SubSearchScreen3"
+                component={SubSearchScreen3}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="ImageView"
+                component={ImageView}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="ProfileScreen"
+                component={ProfileScreen}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="FriendListScreen"
+                component={FriendListScreen}
+                options={{
+                  headerShown: false,
+                  presentation: "containedModal",
+                }}
+              />
+              <Stack.Screen
+                name="InviteFriendScreen"
+                component={InviteFriendScreen}
+                options={{
+                  headerShown: false,
+                  presentation: "fullScreenModal",
+                }}
+              />
+              <Stack.Screen
+                name="SuggestScreen"
+                component={SuggestScreen}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="WithdrawalScreen"
+                component={WithdrawalScreen}
+                options={{ headerShown: false }}
+              />
+            </Stack.Navigator>
+          </GestureHandlerRootView>
         </NavigationContainer>
       </QueryClientProvider>
     </AppContext.Provider>

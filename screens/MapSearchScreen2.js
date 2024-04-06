@@ -13,9 +13,19 @@ import {
   TouchableHighlight,
   Button,
   Image,
+  Dimensions,
 } from "react-native";
 import Geocoder from "react-native-geocoding";
 import MapView, { Marker } from "react-native-maps";
+
+const screenHeight = Dimensions.get("window").height;
+
+function toDPHeight(x) {
+  const heightPixels = (screenHeight * x) / 844;
+  console.log(screenHeight);
+  console.log(heightPixels);
+  return heightPixels;
+}
 
 import { useUserQuery, useRecordQueries, useAllRecordQuery } from "../queries";
 
@@ -254,7 +264,7 @@ const BottomSheet = ({
       <Animated.View
         style={{
           width: "100%",
-          height: 884,
+          height: toDPHeight(884),
           backgroundColor: "white",
           borderTopLeftRadius: 30,
           borderTopRightRadius: 30,

@@ -13,6 +13,7 @@ import {
   TouchableHighlight,
   Button,
   Image,
+  Dimensions,
 } from "react-native";
 import Geocoder from "react-native-geocoding";
 import MapView, { Marker } from "react-native-maps";
@@ -27,6 +28,15 @@ import BottomButton from "../components/BottomButton";
 
 const bottomSheetImage = require("../assets/image/bottomSheetScroll.png");
 const mapStyle = require("../assets/mapDesign.json");
+
+const screenHeight = Dimensions.get("window").height;
+
+function toDPHeight(x) {
+  const heightPixels = (screenHeight * x) / 844;
+  console.log(screenHeight);
+  console.log(heightPixels);
+  return heightPixels;
+}
 
 const toggleAnimation1 = (showAnimation, setAnimationValue) => {
   const val = -1000;
@@ -184,11 +194,11 @@ const BottomSheet = ({
   fromThree,
 }) => {
   return (
-    <View>
+    <View style={{ flex: 1, height: "100%" }}>
       <Animated.View
         style={{
           width: "100%",
-          height: 884,
+          height: toDPHeight(884), // 884
           backgroundColor: "white",
           borderTopLeftRadius: 30,
           borderTopRightRadius: 30,
@@ -296,7 +306,7 @@ const SubSearchScreen2 = ({ navigation, route }) => {
   };
 
   return (
-    <View>
+    <View style={{ flex: 1 }}>
       <GoBackHeader
         navigation={navigation}
         text={target.name}

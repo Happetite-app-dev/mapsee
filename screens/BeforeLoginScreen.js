@@ -86,7 +86,7 @@ const BeforeLoginScreen = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView
+    <View
       style={{
         flex: 1,
         alignItems: "center",
@@ -97,8 +97,7 @@ const BeforeLoginScreen = ({ navigation }) => {
       <Mapsee
         style={{
           position: "absolute",
-          top: height * 0.5 - 70,
-          left: width * 0.5 - 97,
+          alignSelf: "center",
         }}
       />
       <TouchableOpacity
@@ -120,7 +119,7 @@ const BeforeLoginScreen = ({ navigation }) => {
           {" 로그인"}
         </Text>
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 

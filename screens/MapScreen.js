@@ -28,6 +28,8 @@ import GoBackHeader from "../components/GoBackHeader";
 import RecordFlatList from "../components/StorageScreen/RecordFlatList";
 const bottomSheetImage = require("../assets/image/bottomSheetScroll.png");
 
+//import { requestNotificationPermission } from "../modules/FirebasePushNotification";
+
 const SearchView = ({ navigation, origin }) => {
   return (
     <View
@@ -187,6 +189,7 @@ const MapScreen = ({ navigation }) => {
         language: "kor",
       });
       GeneratePushToken(myUID);
+      //requestNotificationPermission(myUID);
       getLocationPermission({ setCurrent, setOrigin });
     }
   }, [getPermissions]);

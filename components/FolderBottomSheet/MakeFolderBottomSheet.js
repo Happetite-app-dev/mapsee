@@ -8,6 +8,7 @@ import {
   Button,
   SafeAreaView,
   FlatList,
+  Alert,
 } from "react-native";
 import { ScrollView, Switch, TextInput } from "react-native-gesture-handler";
 import { useQueryClient } from "react-query";
@@ -156,7 +157,9 @@ const MakeFolderBottomSheet = ({ stackNavigation, folderID }) => {
   const myLastName = myContext.myLastName;
   const IsNewRecord = folderID === null;
   const [newFolderName, setNewFolderName] = useState(folderName_ || "");
-  const [newFolderColor, setNewFolderColor] = useState(folderColor_ || null);
+  const [newFolderColor, setNewFolderColor] = useState(
+    folderColor_ || "#EB7A7C"
+  );
   const [newFolderUserIDs, setNewFolderUserIDs] = useState(
     folderUserIDs_ || [myUID]
   );
@@ -167,22 +170,27 @@ const MakeFolderBottomSheet = ({ stackNavigation, folderID }) => {
 
   //폴더에 속한 친구이름 목록을 바텀쉬트에 띄우는 함수
   const onPressFunction = async () => {
-    await addNewFolder({
-      folderID,
-      folderName: newFolderName,
-      folderColor: newFolderColor,
-      folderUserIDs: newFolderUserIDs,
-      originalFolderUserIDs: folderUserIDs_,
-      IsNewRecord,
-      myUID,
-      myID,
-      myFirstName,
-      myLastName,
-      queryClient,
-    }).then(() => {
-      queryClient.invalidateQueries(["users", myUID]);
-      stackNavigation.goBack();
-    });
+    console.log("newFolderName.length", newFolderName.length);
+    if (newFolderName.length > 5)
+      Alert.alert("알림", "폴더 이름은 5자 이하로 해주세요.");
+    else {
+      await addNewFolder({
+        folderID,
+        folderName: newFolderName,
+        folderColor: newFolderColor,
+        folderUserIDs: newFolderUserIDs,
+        originalFolderUserIDs: folderUserIDs_,
+        IsNewRecord,
+        myUID,
+        myID,
+        myFirstName,
+        myLastName,
+        queryClient,
+      }).then(() => {
+        queryClient.invalidateQueries(["users", myUID]);
+        stackNavigation.goBack();
+      });
+    }
   };
 
   useEffect(() => {

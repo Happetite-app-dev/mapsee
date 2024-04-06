@@ -1,3 +1,4 @@
+#import <Firebase.h>
 #import "AppDelegate.h"
 
 #import <React/RCTBridge.h>
@@ -34,6 +35,9 @@ static NSString *const kRNConcurrentRoot = @"concurrentRoot";
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+  if ([FIRApp defaultApp] == nil) {
+      [FIRApp configure];
+    }
   [GMSServices provideAPIKey:@"AIzaSyDBq4tZ1QLm1R7iPH8O4dTvebVGWgkRPks"];
   RCTAppSetupPrepareApp(application);
 

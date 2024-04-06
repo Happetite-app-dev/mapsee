@@ -84,7 +84,13 @@ const BottomSheetName = ({ newFolderName, setNewFolderName }) => {
 const BottomSheetColor = ({ newFolderColor, setNewFolderColor }) => {
   return (
     <View
-      style={{ top: 24, width: 390, height: 128, left: 23, marginBottom: 24 }}
+      style={{
+        top: 24,
+        width: 390,
+        height: 128,
+        left: 23,
+        marginBottom: 24,
+      }}
     >
       <Text
         style={{

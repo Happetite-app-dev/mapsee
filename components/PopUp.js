@@ -7,6 +7,8 @@ export const PopUpType1 = ({
   action,
   askValue,
   actionValue,
+  exit,
+  exitAskValue,
 }) => {
   return modalVisible ? (
     <View style={{ flex: 1 }}>
@@ -22,6 +24,11 @@ export const PopUpType1 = ({
           <View style={styles.modalView}>
             <View style={styles.askView}>
               <Text style={styles.askText}>{askValue}</Text>
+              {!exit ? (
+                <></>
+              ) : (
+                <Text style={styles.askTextExit}>{exitAskValue}</Text>
+              )}
             </View>
             <View style={styles.buttonView}>
               <Pressable
@@ -54,7 +61,11 @@ export const PopUpType1 = ({
                   action();
                 }}
               >
-                <Text style={styles.modalText}>{actionValue} </Text>
+                {!exit ? (
+                  <Text style={styles.modalText}>{actionValue} </Text>
+                ) : (
+                  <Text style={styles.modalTextExit}>{actionValue} </Text>
+                )}
               </Pressable>
             </View>
           </View>
@@ -276,6 +287,17 @@ const styles = StyleSheet.create({
     fontFamily: "NotoSansKR-Medium",
     marginTop: 8,
   },
+  askTextExit: {
+    width: 312,
+    fontSize: 12,
+    lineHeight: 0,
+    letterSpacing: -0.5,
+    textAlign: "center",
+    fontFamily: "NotoSansKR-Medium",
+    marginTop: 4,
+    color: "#ADB1C5",
+    marginBottom: 8,
+  },
   modalText: {
     flex: 1,
     fontSize: 14,
@@ -284,6 +306,16 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     fontWeight: "700",
     fontFamily: "NotoSansKR-Bold",
+  },
+  modalTextExit: {
+    flex: 1,
+    fontSize: 14,
+    lineHeight: 24,
+    letterSpacing: 1.2,
+    alignSelf: "center",
+    fontWeight: "700",
+    fontFamily: "NotoSansKR-Bold",
+    color: "#EE2B5A",
   },
   popup4Text: {
     flex: 1,

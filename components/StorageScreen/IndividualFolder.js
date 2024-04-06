@@ -43,10 +43,10 @@ const IndividualFolder = ({
         });
         setModalVisible(true);
       }}
-      style={{ height: 65 }}
+      style={{ height: 65, alignItems: "center" }}
       activeOpacity={0.2}
     >
-      <View style={{ marginLeft: 20, marginRight: 20 }}>
+      <View style={{ marginLeft: 16, marginRight: 16, alignItems: "center" }}>
         <View style={{ position: "relative" }}>
           <SingleFolder
             color={query.data?.folderColor[myUID] || query.data.initFolderColor}

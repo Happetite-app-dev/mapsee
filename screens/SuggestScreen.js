@@ -1,10 +1,9 @@
-import { View, TextInput, Text, Linking } from "react-native";
+import { View, TextInput, Text, Linking, Alert } from "react-native";
 import BottomButton from "../components/BottomButton";
 import qs from "qs";
 import GoBackHeader from "../components/GoBackHeader";
 import { useState } from "react";
 import SnackBar from "../components/SnackBar";
-
 
 async function sendEmail(to, subject, body, options = {}) {
   const { cc, bcc } = options;
@@ -86,7 +85,7 @@ const SuggestScreen = ({ navigation }) => {
         style={{ top: 592, backgroundColor: valid ? "#5ED3CC" : "#F4F5F9" }}
         onPressFunction={() => {
           if (valid) sendEmail("happetite23@gmail.com", "mapsee", text).then();
-          else setVisible(true);
+          else Alert.alert("알림", "의견을 작성해주세요.");
         }}
         fontColor={valid ? "white" : "#ADB1C5"}
       />
@@ -95,7 +94,6 @@ const SuggestScreen = ({ navigation }) => {
         visible={visible}
         onDismissSnackBar={() => {
           setVisible(false);
-
         }}
       />
     </View>

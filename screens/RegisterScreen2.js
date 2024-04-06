@@ -43,40 +43,24 @@ const handleSignUp = ({
       // 사전 유효성 검증 여부 등을 고려해 발생 빈도 순으로 분기처리하는게 좋다.
       switch (error.code) {
         case "auth/user-not-found" || "auth/wrong-password":
-          setSnackbarText("이메일 혹은 비밀번호가 일치하지 않습니다.");
-          setVisible(true);
-          return "이메일 혹은 비밀번호가 일치하지 않습니다.";
+          Alert.alert("알림", "이메일 또는 비밀번호가 일치하지 않습니다.");
         case "auth/email-already-in-use":
-          setSnackbarText("이미 사용 중인 이메일입니다.");
-          setVisible(true);
-          return "이미 사용 중인 이메일입니다.";
+          Alert.alert("알림", "이미 사용중인 이메일입니다.");
         case "auth/weak-password":
-          setSnackbarText("비밀번호를 6글자 이상 설정해 주세요.");
-          setVisible(true);
-          return "비밀번호는 6글자 이상이어야 합니다.";
+          Alert.alert("알림", "비밀번호는 6자리 이상이어야 합니다.");
         case "auth/invalid-email":
-          setSnackbarText("잘못된 이메일 형식입니다.");
-          setVisible(true);
-          return "잘못된 이메일 형식입니다.";
-
+          Alert.alert("알림", "잘못된 이메일 형식입니다.");
         case "auth/network-request-failed":
-          setSnackbarText("네트워크 연결에 실패하였습니다.");
-          setVisible(true);
-          return "네트워크 연결에 실패하였습니다.";
+          Alert.alert("알림", "네트워크 연결에 실패하였습니다.");
         case "auth/internal-error":
-          setSnackbarText("잘못된 요청입니다.");
-          setVisible(true);
-          return "잘못된 요청입니다.";
+          Alert.alert("알림", "서버 오류입니다. 잠시 후 다시 시도해주세요.");
         case "auth/too-many-requests":
-          setSnackbarText(
+          Alert.alert(
+            "알림",
             "너무 많은 로그인 시도로 인해이 계정이 비활성화되었습니다. 나중에 다시 시도하세요."
           );
-          setVisible(true);
-          return "너무 많은 로그인 시도로 인해이 계정이 비활성화되었습니다. 나중에 다시 시도하십시오.";
         default:
-          setSnackbarText("로그인에 실패하였습니다.");
-          setVisible(true);
-          return "로그인에 실패 하였습니다.";
+          Alert.alert("알림", "로그인에 실패하였습니다.");
       }
       // Alert.alert("경고", errorCode());
     });
@@ -131,7 +115,7 @@ const RegisterScreen2 = ({ navigation, route }) => {
             else setSecureTextEntry1(true);
           }}
         >
-          표시
+          {!secureTextEntry1 ? "표시" : "숨김"}
         </Text>
       </View>
 
@@ -158,7 +142,7 @@ const RegisterScreen2 = ({ navigation, route }) => {
             else setSecureTextEntry2(true);
           }}
         >
-          표시
+          {!secureTextEntry2 ? "표시" : "숨김"}
         </Text>
       </View>
       <BottomButton

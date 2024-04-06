@@ -166,7 +166,7 @@ const LoginScreen = ({ navigation }) => {
               else setSecureTextEntry2(true);
             }}
           >
-            표시
+            {secureTextEntry2 ? "표시" : "숨김"}
           </Text>
         </View>
         <BottomButton

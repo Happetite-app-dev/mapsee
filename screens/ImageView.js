@@ -29,7 +29,12 @@ const ImageView = ({ navigation, route }) => {
       </View>
       <Image
         source={{ uri: route.params }}
-        style={{ width: 344, height: 344, borderRadius: 8, top: 164.5 }}
+        style={{
+          width: 344,
+          height: 344,
+          borderRadius: 8,
+          top: 164.5,
+        }}
       />
     </SafeAreaView>
   );

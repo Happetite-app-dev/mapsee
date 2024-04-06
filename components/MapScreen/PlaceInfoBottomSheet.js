@@ -8,8 +8,14 @@ import {
   View,
   TouchableHighlight,
   Image,
+  Dimensions,
 } from "react-native";
 import { useAllRecordQuery, useUserQuery } from "../../queries";
+const screenWidth = Dimensions.get("window").width;
+const screenHeight = Dimensions.get("window").height;
+
+console.log("screenWidth", screenWidth);
+console.log("screenHeight", screenHeight);
 
 //import CreateNote from "../../assets/icons/createNote.svg";
 import { CreateNote } from "./CreateNote";
@@ -252,7 +258,7 @@ const BottomSheet = ({
       <Animated.View
         style={{
           width: "100%",
-          height: 884, //조정 필요,
+          height: "104.73%", //조정 필요,
           backgroundColor: "white",
           borderTopLeftRadius: 30,
           borderTopRightRadius: 30,
