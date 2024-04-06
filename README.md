@@ -3,17 +3,21 @@
 ## What is this application?
 
 🩵 Map diary app, mapsee🩵
+
 Write a diary on a map, and record your memories with your friends in a shared folder!
 
 What does a place mean to you? Your favorite places and neighborhoods have special memories of your own, and your favorite places to hang out with friends have precious memories with others. MPSY is a service that allows you to gather meaningful places for each individual on a map, record memories with others, and share those records with your friends.
 
-🖋 Write a ️ diary
+🖋 Write a ️diary
+
 Choose a place to write down what happened today, and post a picture!
 
 📍 Good restaurants, travel
+
 You can collect meaningful places such as restaurants and travel destinations I recorded in my daily life on the map.
 
 👨👩👧👦 Shared folders
+
 Separate your records with multiple folders, invite your friends to make them a shared folder!
 
 ## How to run this on your device?

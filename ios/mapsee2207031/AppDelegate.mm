@@ -7,7 +7,7 @@
 #import <React/RCTLinkingManager.h>
 #import <React/RCTConvert.h>
 
-#import <React/RCTAppSetupUtils.h>
+//#import <React/RCTAppSetupUtils.h>
 
 #if RCT_NEW_ARCH_ENABLED
 #import <React/CoreModulesPlugins.h>
@@ -39,7 +39,7 @@ static NSString *const kRNConcurrentRoot = @"concurrentRoot";
       [FIRApp configure];
     }
   [GMSServices provideAPIKey:@"AIzaSyDBq4tZ1QLm1R7iPH8O4dTvebVGWgkRPks"];
-  RCTAppSetupPrepareApp(application);
+//  RCTAppSetupPrepareApp(application);
 
   RCTBridge *bridge = [self.reactDelegate createBridgeWithDelegate:self launchOptions:launchOptions];
 
