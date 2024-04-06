@@ -60,4 +60,9 @@ web-build/
 dist/
 
 # @end expo-cli
+
+# env files
 .env
+
+# eas.json
+eas.json
