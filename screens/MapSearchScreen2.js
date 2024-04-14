@@ -22,8 +22,6 @@ const screenHeight = Dimensions.get("window").height;
 
 function toDPHeight(x) {
   const heightPixels = (screenHeight * x) / 844;
-  console.log(screenHeight);
-  console.log(heightPixels);
   return heightPixels;
 }
 
@@ -295,7 +293,6 @@ const BottomSheet = ({
 };
 
 const MapSearchScreen2 = ({ navigation, route }) => {
-  console.log("MapSearchScreen2", route.params);
   const [animationValue, setAnimationValue] = useState(0);
 
   const showAnimation = useRef(new Animated.Value(animationValue)).current;

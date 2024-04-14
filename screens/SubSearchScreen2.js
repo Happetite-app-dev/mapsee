@@ -234,9 +234,8 @@ const BottomSheet = ({
 };
 
 const SubSearchScreen2 = ({ navigation, route }) => {
-  console.log("SubSearchScreen2", route.params);
+  console.log(route.params)
   const [animationValue, setAnimationValue] = useState(0);
-  //console.log(route.params.details);
   const showAnimation = useRef(new Animated.Value(animationValue)).current;
 
   const mapRef = React.createRef();
@@ -244,20 +243,17 @@ const SubSearchScreen2 = ({ navigation, route }) => {
   const [target, setTarget] = useState({
     lctn: {
       latitude:
-        //route.params.geometry.location?.lat ||
-        route.params.details.geometry.location.lat,
+        route.params.geometry?.location?.lat ||
+        route.params.details?.geometry.location.lat,
       longitude:
-        //route.params.geometry.location?.lng ||
-        route.params.details.geometry.location.lng,
+        route.params.geometry?.location?.lng ||
+        route.params.details?.geometry.location.lng,
     },
     latitudeDelta: 0.0016,
     longitudeDelta: 0.0012,
-    //route.params.name ||
-    name: route.params.details.name,
-    //route.params.address ||
-    address: route.params.details.formatted_address,
-    //route.params.id ||
-    id: route.params.details.place_id,
+    name: route.params.name || route.params.details.name,
+    address: route.params.address || route.params.formatted_address || route.params.details.formatted_address,
+    id: route.params.id || route.params.place_id || route.params.details.place_id,
   });
   const [targetShown, setTargetShown] = useState(true);
   const [region, setRegion] = useState({

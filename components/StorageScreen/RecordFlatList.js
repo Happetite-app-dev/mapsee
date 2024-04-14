@@ -146,7 +146,15 @@ const IndividualRecord = ({ item, stackNavigation, myUID }) => {
           </View>
           <Text style={styles.title}>
             {item[1].title}
-            {IsNewRecord ? <N style={{ marginLeft: 5 }} /> : <></>}
+            {IsNewRecord ? (
+              <View
+                style={{width: 10, height: 10, }}
+              >
+                <N style={{ marginLeft: 5, }} />
+              </View>
+            ) : (
+              <></>
+            )}
           </Text>
           <Text style={styles.placeName}>{item[1].placeName}</Text>
           <Text
@@ -267,6 +275,7 @@ const styles = StyleSheet.create({
     fontFamily: "NotoSansKR-Medium",
     justifyContent: "center",
     flexDirection: "row",
+    alignItems: "center",
   },
   placeName: {
     width: 136,

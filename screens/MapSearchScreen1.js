@@ -8,6 +8,7 @@ import GoBack from "../assets/icons/BackArrow.svg";
 import InbetweenCompo from "../components/MapSearchScreen/InbetweenCompo";
 import renderDescription from "../components/MapSearchScreen/RenderDescription";
 import * as Location from "expo-location";
+import Qs from "qs";
 
 const gotoSearch2Screen = ({ navigation, data }) => {
   navigation.navigate("MapSearchScreen2", data);
@@ -35,6 +36,7 @@ const SearchBox = ({
 }) => {
   return (
     <GooglePlacesAutocomplete
+      debounce={300}
       inbetweenCompo={
         <InbetweenCompo
           name={name}
@@ -60,37 +62,60 @@ const SearchBox = ({
       placeholder="검색어를 입력하세요"
       enablePoweredByContainer={false}
       query={{
-        key: "AIzaSyDBq4tZ1QLm1R7iPH8O4dTvebVGWgkRPks",
+        key: process.env.GOOGLE_API_KEY,
         language: "kor",
         location: location[0] + ", " + location[1],
         radius: "1500",
         rankby: "distance",
       }}
-      fetchDetails
+      // fetchDetails
       renderDescription={(data) => renderDescription(data)} // custom description render
-      onPress={async (data, details) => {
-        const newPlace = {
-          geometry: {
-            location: {
-              lat: details.geometry.location.lat,
-              lng: details.geometry.location.lng,
-            },
-          },
-          name: details.name,
-          formatted_address: details.formatted_address,
-          place_id: details.place_id,
-          structured_formatting: { main_text: details.name },
+      onPress={async (data) => {
+        const request = new XMLHttpRequest();
+        request.onreadystatechange = async () => {
+          if (request.readyState !== 4) {
+            return;
+          }
+
+          if (request.status === 200) {
+            console.log("success");
+            const response = JSON.parse(request.responseText);
+            const details = response.result;
+            const newPlace = {
+              geometry: {
+                location: {
+                  lat: details.geometry.location.lat,
+                  lng: details.geometry.location.lng,
+                },
+              },
+              name: details.name,
+              formatted_address: details.formatted_address,
+              place_id: details.place_id,
+              structured_formatting: { main_text: details.name },
+            };
+
+            setHistory((prevList) => [...prevList, newPlace]);
+
+            const newArray =
+              JSON.parse(await AsyncStorage.getItem("search")) === null
+                ? []
+                : JSON.parse(await AsyncStorage.getItem("search"));
+            storeData([...newArray, newPlace]);
+            gotoSearch2Screen({ navigation, data: details });
+          } else {
+            console.warn("error");
+          }
         };
-
-        setHistory((prevList) => [...prevList, newPlace]);
-
-        const newArray =
-          JSON.parse(await AsyncStorage.getItem("search")) === null
-            ? []
-            : JSON.parse(await AsyncStorage.getItem("search"));
-        storeData([...newArray, newPlace]);
-
-        gotoSearch2Screen({ navigation, data: details });
+        request.open(
+          "GET",
+          `https://maps.googleapis.com/maps/api/place/details/json?` +
+            Qs.stringify({
+              key: process.env.GOOGLE_API_KEY,
+              placeid: data.place_id,
+              language: "ko",
+            })
+        );
+        request.send();
       }}
       styles={styles.GooglePlacesAutocomplete}
     />
