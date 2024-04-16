@@ -17,6 +17,7 @@ import {
 } from "react-native";
 import Geocoder from "react-native-geocoding";
 import MapView, { Marker } from "react-native-maps";
+import DeviceInfo from 'react-native-device-info';
 
 import { useUserQuery, useAllRecordQuery } from "../queries";
 
@@ -30,16 +31,16 @@ const bottomSheetImage = require("../assets/image/bottomSheetScroll.png");
 const mapStyle = require("../assets/mapDesign.json");
 
 const screenHeight = Dimensions.get("window").height;
+const isTablet = DeviceInfo.isTablet();
 
 function toDPHeight(x) {
   const heightPixels = (screenHeight * x) / 844;
-  console.log(screenHeight);
-  console.log(heightPixels);
+  console.log(heightPixels)
   return heightPixels;
 }
 
 const toggleAnimation1 = (showAnimation, setAnimationValue) => {
-  const val = -1000;
+  const val = -toDPHeight(1000);
   Animated.timing(showAnimation, {
     useNativeDriver: false,
     toValue: val,
@@ -48,7 +49,7 @@ const toggleAnimation1 = (showAnimation, setAnimationValue) => {
   setAnimationValue(val);
 };
 const toggleAnimation2 = (showAnimation, setAnimationValue) => {
-  const val2 = -660;
+  const val2 = -toDPHeight(588);
   Animated.timing(showAnimation, {
     useNativeDriver: false,
     toValue: val2,
@@ -57,7 +58,7 @@ const toggleAnimation2 = (showAnimation, setAnimationValue) => {
   setAnimationValue(val2);
 };
 const toggleAnimation3 = (showAnimation, setAnimationValue) => {
-  const val3 = -660;
+  const val3 = -toDPHeight(588);
   Animated.timing(showAnimation, {
     useNativeDriver: false,
     toValue: val3,
@@ -172,7 +173,7 @@ const BottomSheetScreen = ({
           navigation.pop(fromThree ? 3 : 2);
         }}
         text="장소 선택"
-        style={{ top: 136 }}
+        style={{ top: toDPHeight(168) }}
       />
     </View>
   );
@@ -198,7 +199,7 @@ const BottomSheet = ({
       <Animated.View
         style={{
           width: "100%",
-          height: toDPHeight(884), // 884
+          height: Dimensions.get('window').height,
           backgroundColor: "white",
           borderTopLeftRadius: 30,
           borderTopRightRadius: 30,
@@ -342,23 +343,25 @@ const SubSearchScreen2 = ({ navigation, route }) => {
           <TargetMarker />
         </Marker>
       </MapView>
-
-      <BottomSheet
-        showAnimation={showAnimation}
-        animationVal={animationValue}
-        setAnimationValue={(val) => setAnimationValue(val)}
-        targetName={target.name}
-        targetAddress={target.address}
-        targetId={target.id}
-        targetLctn={target.lctn}
-        navigation={navigation}
-        setPlaceID={(f) => route.params.setPlaceID(f)}
-        setPlaceName={(f) => route.params.setPlaceName(f)}
-        setAddress={(f) => route.params.setAddress(f)}
-        setLctn={(f) => route.params.setLctn(f)}
-        fromThree={route.params.fromThree}
-      />
+      <View style={isTablet ? {position: 'absolute', width: '100%', height: '100%'} : {}}>
+        <BottomSheet
+          showAnimation={showAnimation}
+          animationVal={animationValue}
+          setAnimationValue={(val) => setAnimationValue(val)}
+          targetName={target.name}
+          targetAddress={target.address}
+          targetId={target.id}
+          targetLctn={target.lctn}
+          navigation={navigation}
+          setPlaceID={(f) => route.params.setPlaceID(f)}
+          setPlaceName={(f) => route.params.setPlaceName(f)}
+          setAddress={(f) => route.params.setAddress(f)}
+          setLctn={(f) => route.params.setLctn(f)}
+          fromThree={route.params.fromThree}
+        />
+      </View>    
     </View>
+
   );
 };
 
@@ -375,6 +378,7 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 756,
     marginTop: 0,
+    zIndex:0,
   },
 });
 

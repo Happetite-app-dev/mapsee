@@ -514,6 +514,8 @@ PODS:
     - React-Core
   - RNDateTimePicker (7.2.0):
     - React-Core
+  - RNDeviceInfo (10.13.1):
+    - React-Core
   - RNGestureHandler (2.12.1):
     - React-Core
   - RNHoleView (2.2.1):
@@ -629,6 +631,7 @@ DEPENDENCIES:
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
   - "RNCClipboard (from `../node_modules/@react-native-clipboard/clipboard`)"
   - "RNDateTimePicker (from `../node_modules/@react-native-community/datetimepicker`)"
+  - RNDeviceInfo (from `../node_modules/react-native-device-info`)
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNHoleView (from `../node_modules/react-native-hole-view`)
   - RNRate (from `../node_modules/react-native-rate`)
@@ -778,6 +781,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-clipboard/clipboard"
   RNDateTimePicker:
     :path: "../node_modules/@react-native-community/datetimepicker"
+  RNDeviceInfo:
+    :path: "../node_modules/react-native-device-info"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
   RNHoleView:
@@ -803,7 +808,7 @@ CHECKOUT OPTIONS:
     :git: https://github.com/Simon-TechForm/google-maps-ios-utils.git
 
 SPEC CHECKSUMS:
-  boost: 57d2868c099736d80fcd648bf211b4431e51a558
+  boost: 7dcd2de282d72e344012f7d6564d024930a6a440
   DoubleConversion: 5189b271737e1565bdce30deb4a08d647e3f5f54
   EXApplication: 02655a251434d564bb0e73291f5a490c74b5b76f
   EXConstants: ce5bbea779da8031ac818c36bea41b10e14d04e1
@@ -871,6 +876,7 @@ SPEC CHECKSUMS:
   RNCAsyncStorage: ddc4ee162bfd41b0d2c68bf2d95acd81dd7f1f93
   RNCClipboard: 3f0451a8100393908bea5c5c5b16f96d45f30bfc
   RNDateTimePicker: 3942382593f104af226ad9c56e16166960c7ae30
+  RNDeviceInfo: 4f9c7cfd6b9db1b05eb919620a001cf35b536423
   RNGestureHandler: c0d04458598fcb26052494ae23dda8f8f5162b13
   RNHoleView: 2a1929191141775058fc0a9fd79836edc200640a
   RNRate: ef3bcff84f39bb1d1e41c5593d3eea4aab2bd73a

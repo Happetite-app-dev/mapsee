@@ -17,13 +17,14 @@ import {
 } from "react-native";
 import Geocoder from "react-native-geocoding";
 import MapView, { Marker } from "react-native-maps";
+import DeviceInfo from 'react-native-device-info';
 
 const screenHeight = Dimensions.get("window").height;
-
 function toDPHeight(x) {
   const heightPixels = (screenHeight * x) / 844;
   return heightPixels;
 }
+const isTablet = DeviceInfo.isTablet();
 
 import { useUserQuery, useRecordQueries, useAllRecordQuery } from "../queries";
 
@@ -41,7 +42,7 @@ const bottomSheetImage = require("../assets/image/bottomSheetScroll.png");
 const mapStyle = require("../assets/mapDesign.json");
 
 const toggleAnimation1 = (showAnimation, setAnimationValue) => {
-  const val = -1000;
+  const val = -toDPHeight(1000);
   Animated.timing(showAnimation, {
     useNativeDriver: false,
     toValue: val,
@@ -59,7 +60,7 @@ const toggleAnimation2 = (showAnimation, setAnimationValue) => {
   setAnimationValue(val2);
 };
 const toggleAnimation3 = (showAnimation, setAnimationValue) => {
-  const val3 = -724;
+  const val3 = -toDPHeight(675);
   Animated.timing(showAnimation, {
     useNativeDriver: false,
     toValue: val3,
@@ -262,7 +263,7 @@ const BottomSheet = ({
       <Animated.View
         style={{
           width: "100%",
-          height: toDPHeight(884),
+          height: toDPHeight(844),
           backgroundColor: "white",
           borderTopLeftRadius: 30,
           borderTopRightRadius: 30,
@@ -396,17 +397,18 @@ const MapSearchScreen2 = ({ navigation, route }) => {
           <TargetMarker />
         </Marker>
       </MapView>
-
-      <BottomSheet
-        showAnimation={showAnimation}
-        animationVal={animationValue}
-        setAnimationValue={(val) => setAnimationValue(val)}
-        targetName={target.name}
-        targetAddress={target.address}
-        targetId={target.id}
-        targetLctn={target.lctn}
-        navigation={navigation}
-      />
+      <View style={isTablet ? {position: 'absolute', width: '100%', height: '100%'} : {}}>
+        <BottomSheet
+          showAnimation={showAnimation}
+          animationVal={animationValue}
+          setAnimationValue={(val) => setAnimationValue(val)}
+          targetName={target.name}
+          targetAddress={target.address}
+          targetId={target.id}
+          targetLctn={target.lctn}
+          navigation={navigation}
+        />
+      </View>
     </View>
   );
 };

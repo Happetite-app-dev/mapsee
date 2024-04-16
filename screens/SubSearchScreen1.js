@@ -159,7 +159,7 @@ const SearchBox = ({
       // fetchDetails
       renderDescription={(data) => renderDescription(data)} // custom description render
       onPress={async (data) => {
-        console.log("onpress")
+        console.log("onpress");
         const request = new XMLHttpRequest();
         request.onreadystatechange = async () => {
           if (request.readyState !== 4) {
