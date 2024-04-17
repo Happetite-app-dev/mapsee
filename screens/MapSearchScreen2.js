@@ -14,19 +14,24 @@ import {
   Button,
   Image,
   Dimensions,
+  Platform
 } from "react-native";
 import Geocoder from "react-native-geocoding";
 import MapView, { Marker } from "react-native-maps";
+import DeviceInfo from 'react-native-device-info';
 
 const screenHeight = Dimensions.get("window").height;
+const {height, width} = Dimensions.get('window'); 
+const aspectRatio = height/width;
 
 function toDPHeight(x) {
   const heightPixels = (screenHeight * x) / 844;
-  console.log(screenHeight);
-  console.log(heightPixels);
   return heightPixels;
 }
-
+console.log(Platform.isPad);
+// const isTablet = DeviceInfo.isTablet();
+// console.log("isTablet?", isTablet)
+// DeviceInfo.isEmulator().then((isEmulator) => console.log("isEmulator?", isEmulator))
 import { useUserQuery, useRecordQueries, useAllRecordQuery } from "../queries";
 
 import { CreateNote } from "../components/MapScreen/CreateNote";
@@ -43,7 +48,7 @@ const bottomSheetImage = require("../assets/image/bottomSheetScroll.png");
 const mapStyle = require("../assets/mapDesign.json");
 
 const toggleAnimation1 = (showAnimation, setAnimationValue) => {
-  const val = -1000;
+  const val = -toDPHeight(1000);
   Animated.timing(showAnimation, {
     useNativeDriver: false,
     toValue: val,
@@ -61,7 +66,7 @@ const toggleAnimation2 = (showAnimation, setAnimationValue) => {
   setAnimationValue(val2);
 };
 const toggleAnimation3 = (showAnimation, setAnimationValue) => {
-  const val3 = -724;
+  const val3 = screenHeight < 670? -toDPHeight(400) : -toDPHeight(675);
   Animated.timing(showAnimation, {
     useNativeDriver: false,
     toValue: val3,
@@ -264,7 +269,7 @@ const BottomSheet = ({
       <Animated.View
         style={{
           width: "100%",
-          height: toDPHeight(884),
+          height: toDPHeight(844),
           backgroundColor: "white",
           borderTopLeftRadius: 30,
           borderTopRightRadius: 30,
@@ -295,7 +300,6 @@ const BottomSheet = ({
 };
 
 const MapSearchScreen2 = ({ navigation, route }) => {
-  console.log("MapSearchScreen2", route.params);
   const [animationValue, setAnimationValue] = useState(0);
 
   const showAnimation = useRef(new Animated.Value(animationValue)).current;
@@ -399,17 +403,18 @@ const MapSearchScreen2 = ({ navigation, route }) => {
           <TargetMarker />
         </Marker>
       </MapView>
-
-      <BottomSheet
-        showAnimation={showAnimation}
-        animationVal={animationValue}
-        setAnimationValue={(val) => setAnimationValue(val)}
-        targetName={target.name}
-        targetAddress={target.address}
-        targetId={target.id}
-        targetLctn={target.lctn}
-        navigation={navigation}
-      />
+      {/* <View style={ {position: 'absolute', width: '100%', height: '100%'}}> */}
+        <BottomSheet
+          showAnimation={showAnimation}
+          animationVal={animationValue}
+          setAnimationValue={(val) => setAnimationValue(val)}
+          targetName={target.name}
+          targetAddress={target.address}
+          targetId={target.id}
+          targetLctn={target.lctn}
+          navigation={navigation}
+        />
+      {/* </View> */}
     </View>
   );
 };

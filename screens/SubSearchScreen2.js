@@ -14,9 +14,11 @@ import {
   Button,
   Image,
   Dimensions,
+  Platform
 } from "react-native";
 import Geocoder from "react-native-geocoding";
 import MapView, { Marker } from "react-native-maps";
+import DeviceInfo from 'react-native-device-info';
 
 import { useUserQuery, useAllRecordQuery } from "../queries";
 
@@ -31,15 +33,17 @@ const mapStyle = require("../assets/mapDesign.json");
 
 const screenHeight = Dimensions.get("window").height;
 
+// const isTablet = DeviceInfo.isTablet();
+// console.log(isTablet);
 function toDPHeight(x) {
   const heightPixels = (screenHeight * x) / 844;
-  console.log(screenHeight);
   console.log(heightPixels);
+  // console.log(isTablet);
   return heightPixels;
 }
 
 const toggleAnimation1 = (showAnimation, setAnimationValue) => {
-  const val = -1000;
+  const val = -toDPHeight(1000);
   Animated.timing(showAnimation, {
     useNativeDriver: false,
     toValue: val,
@@ -48,7 +52,7 @@ const toggleAnimation1 = (showAnimation, setAnimationValue) => {
   setAnimationValue(val);
 };
 const toggleAnimation2 = (showAnimation, setAnimationValue) => {
-  const val2 = -660;
+  const val2 = -toDPHeight(588);
   Animated.timing(showAnimation, {
     useNativeDriver: false,
     toValue: val2,
@@ -57,7 +61,7 @@ const toggleAnimation2 = (showAnimation, setAnimationValue) => {
   setAnimationValue(val2);
 };
 const toggleAnimation3 = (showAnimation, setAnimationValue) => {
-  const val3 = -660;
+  const val3 = screenHeight < 670? -toDPHeight(350) : -toDPHeight(588);
   Animated.timing(showAnimation, {
     useNativeDriver: false,
     toValue: val3,
@@ -172,7 +176,7 @@ const BottomSheetScreen = ({
           navigation.pop(fromThree ? 3 : 2);
         }}
         text="장소 선택"
-        style={{ top: 136 }}
+        style={{ top: toDPHeight(168) }}
       />
     </View>
   );
@@ -198,7 +202,7 @@ const BottomSheet = ({
       <Animated.View
         style={{
           width: "100%",
-          height: toDPHeight(884), // 884
+          height: Dimensions.get('window').height,
           backgroundColor: "white",
           borderTopLeftRadius: 30,
           borderTopRightRadius: 30,
@@ -234,9 +238,8 @@ const BottomSheet = ({
 };
 
 const SubSearchScreen2 = ({ navigation, route }) => {
-  console.log("SubSearchScreen2", route.params);
+  console.log(route.params)
   const [animationValue, setAnimationValue] = useState(0);
-  //console.log(route.params.details);
   const showAnimation = useRef(new Animated.Value(animationValue)).current;
 
   const mapRef = React.createRef();
@@ -244,20 +247,17 @@ const SubSearchScreen2 = ({ navigation, route }) => {
   const [target, setTarget] = useState({
     lctn: {
       latitude:
-        //route.params.geometry.location?.lat ||
-        route.params.details.geometry.location.lat,
+        route.params.geometry?.location?.lat ||
+        route.params.details?.geometry.location.lat,
       longitude:
-        //route.params.geometry.location?.lng ||
-        route.params.details.geometry.location.lng,
+        route.params.geometry?.location?.lng ||
+        route.params.details?.geometry.location.lng,
     },
     latitudeDelta: 0.0016,
     longitudeDelta: 0.0012,
-    //route.params.name ||
-    name: route.params.details.name,
-    //route.params.address ||
-    address: route.params.details.formatted_address,
-    //route.params.id ||
-    id: route.params.details.place_id,
+    name: route.params.name || route.params.details.name,
+    address: route.params.address || route.params.formatted_address || route.params.details.formatted_address,
+    id: route.params.id || route.params.place_id || route.params.details.place_id,
   });
   const [targetShown, setTargetShown] = useState(true);
   const [region, setRegion] = useState({
@@ -346,23 +346,25 @@ const SubSearchScreen2 = ({ navigation, route }) => {
           <TargetMarker />
         </Marker>
       </MapView>
-
-      <BottomSheet
-        showAnimation={showAnimation}
-        animationVal={animationValue}
-        setAnimationValue={(val) => setAnimationValue(val)}
-        targetName={target.name}
-        targetAddress={target.address}
-        targetId={target.id}
-        targetLctn={target.lctn}
-        navigation={navigation}
-        setPlaceID={(f) => route.params.setPlaceID(f)}
-        setPlaceName={(f) => route.params.setPlaceName(f)}
-        setAddress={(f) => route.params.setAddress(f)}
-        setLctn={(f) => route.params.setLctn(f)}
-        fromThree={route.params.fromThree}
-      />
+      <View style={Platform.isPad ? {position: 'absolute', width: '100%', height: '100%'} : {}}>
+        <BottomSheet
+          showAnimation={showAnimation}
+          animationVal={animationValue}
+          setAnimationValue={(val) => setAnimationValue(val)}
+          targetName={target.name}
+          targetAddress={target.address}
+          targetId={target.id}
+          targetLctn={target.lctn}
+          navigation={navigation}
+          setPlaceID={(f) => route.params.setPlaceID(f)}
+          setPlaceName={(f) => route.params.setPlaceName(f)}
+          setAddress={(f) => route.params.setAddress(f)}
+          setLctn={(f) => route.params.setLctn(f)}
+          fromThree={route.params.fromThree}
+        />
+      </View>    
     </View>
+
   );
 };
 
@@ -379,6 +381,7 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 756,
     marginTop: 0,
+    zIndex:0,
   },
 });
 

@@ -11,12 +11,16 @@ import {
 } from "react-native";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import * as Location from "expo-location";
+import Qs from "qs";
 
 import Close from "../assets/icons/Close.svg";
 import GoBack from "../assets/icons/BackArrow.svg";
 import SearchHistory from "../assets/icons/Location/Location.svg";
 import renderDescription from "../components/MapSearchScreen/RenderDescription";
 
+const gotoSearch2Screen = ({ navigation, data }) => {
+  navigation.navigate("SubSearchScreen2", data);
+};
 const gotoSearch3Screen = ({ navigation, data }) => {
   navigation.navigate("SubSearchScreen3", data);
 };
@@ -120,42 +124,21 @@ const SearchBox = ({
 }) => {
   return (
     <GooglePlacesAutocomplete
+      debounce={300}
       inbetweenCompo={
         <InbetweenCompo
           name={name}
           history={history}
           setHistory={setHistory}
           navigation={navigation}
-          setPlaceID={setPlaceID}
-          setPlaceName={setPlaceName}
-          setAddress={setAddress}
-          setLctn={setLctn}
         />
       }
-      getResultArray={(dataSource) => {
-        navigation.navigate("SubSearchScreen3", {
-          name,
-          dataSource,
-          setPlaceID: (f) => setPlaceID(f),
-          setPlaceName: (f) => setPlaceName(f),
-          setAddress: (f) => setAddress(f),
-          setLctn: (f) => setLctn(f),
-        });
-        /*gotoSearch3Screen({
-          navigation,
-          data: [
-            name,
-            dataSource,
-            setPlaceID: (f) => setPlaceID(f),
-            setPlaceName: (f) => setPlaceName(f),
-            setAddress: (f) => setAddress(f),
-            setLctn: (f) => setLctn(f),
-          ],
-        });*/
-        //onClick(navigation, name, dataSource);
-      }}
       getSearchWord={(text) => {
         setName(text);
+      }}
+      getResultArray={(dataSource) => {
+        gotoSearch3Screen({ navigation, data: [name, dataSource] });
+        //onClick(navigation, name, dataSource);
       }}
       textInputProps={{
         autoFocus: true, // 커서 바로 이동
@@ -167,42 +150,69 @@ const SearchBox = ({
       placeholder="검색어를 입력하세요"
       enablePoweredByContainer={false}
       query={{
-        key: "AIzaSyA2FBudItIm0cVgwNOsuc8D9BKk0HUeUTs",
+        key: process.env.GOOGLE_API_KEY,
         language: "kor",
         location: location[0] + ", " + location[1],
         radius: "1500",
         rankby: "distance",
       }}
-      fetchDetails
+      // fetchDetails
       renderDescription={(data) => renderDescription(data)} // custom description render
-      onPress={async (data, details) => {
-        const newPlace = {
-          geometry: {
-            location: {
-              lat: details.geometry.location.lat,
-              lng: details.geometry.location.lng,
-            },
-          },
-          name: details.name,
-          formatted_address: details.formatted_address,
-          place_id: details.place_id,
-          structured_formatting: { main_text: details.name },
+      onPress={async (data) => {
+        console.log("onpress");
+        const request = new XMLHttpRequest();
+        request.onreadystatechange = async () => {
+          if (request.readyState !== 4) {
+            return;
+          }
+
+          if (request.status === 200) {
+            console.log("success");
+            const response = JSON.parse(request.responseText);
+            const details = response.result;
+            const newPlace = {
+              geometry: {
+                location: {
+                  lat: details.geometry.location.lat,
+                  lng: details.geometry.location.lng,
+                },
+              },
+              name: details.name,
+              formatted_address: details.formatted_address,
+              place_id: details.place_id,
+              structured_formatting: { main_text: details.name },
+            };
+
+            setHistory((prevList) => [...prevList, newPlace]);
+
+            const newArray =
+              JSON.parse(await AsyncStorage.getItem("search")) === null
+                ? []
+                : JSON.parse(await AsyncStorage.getItem("search"));
+            storeData([...newArray, newPlace]);
+
+          navigation.navigate("SubSearchScreen2", {
+            details,
+            setPlaceID: (f) => setPlaceID(f),
+            setPlaceName: (f) => setPlaceName(f),
+            setAddress: (f) => setAddress(f),
+            setLctn: (f) => setLctn(f),
+          });
+  
+          } else {
+            console.warn("error");
+          }
         };
-
-        setHistory((prevList) => [...prevList, newPlace]);
-
-        const newArray =
-          JSON.parse(await AsyncStorage.getItem("search")) === null
-            ? []
-            : JSON.parse(await AsyncStorage.getItem("search"));
-        storeData([...newArray, newPlace]);
-        navigation.navigate("SubSearchScreen2", {
-          details,
-          setPlaceID: (f) => setPlaceID(f),
-          setPlaceName: (f) => setPlaceName(f),
-          setAddress: (f) => setAddress(f),
-          setLctn: (f) => setLctn(f),
-        });
+        request.open(
+          "GET",
+          `https://maps.googleapis.com/maps/api/place/details/json?` +
+            Qs.stringify({
+              key: process.env.GOOGLE_API_KEY,
+              placeid: data.place_id,
+              language: "ko",
+            })
+        );
+        request.send();
       }}
       styles={styles.GooglePlacesAutocomplete}
     />
