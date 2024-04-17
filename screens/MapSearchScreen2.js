@@ -14,18 +14,24 @@ import {
   Button,
   Image,
   Dimensions,
+  Platform
 } from "react-native";
 import Geocoder from "react-native-geocoding";
 import MapView, { Marker } from "react-native-maps";
 import DeviceInfo from 'react-native-device-info';
 
 const screenHeight = Dimensions.get("window").height;
+const {height, width} = Dimensions.get('window'); 
+const aspectRatio = height/width;
+
 function toDPHeight(x) {
   const heightPixels = (screenHeight * x) / 844;
   return heightPixels;
 }
-const isTablet = DeviceInfo.isTablet();
-
+console.log(Platform.isPad);
+// const isTablet = DeviceInfo.isTablet();
+// console.log("isTablet?", isTablet)
+// DeviceInfo.isEmulator().then((isEmulator) => console.log("isEmulator?", isEmulator))
 import { useUserQuery, useRecordQueries, useAllRecordQuery } from "../queries";
 
 import { CreateNote } from "../components/MapScreen/CreateNote";
@@ -60,7 +66,7 @@ const toggleAnimation2 = (showAnimation, setAnimationValue) => {
   setAnimationValue(val2);
 };
 const toggleAnimation3 = (showAnimation, setAnimationValue) => {
-  const val3 = -toDPHeight(675);
+  const val3 = screenHeight < 670? -toDPHeight(400) : -toDPHeight(675);
   Animated.timing(showAnimation, {
     useNativeDriver: false,
     toValue: val3,
@@ -397,7 +403,7 @@ const MapSearchScreen2 = ({ navigation, route }) => {
           <TargetMarker />
         </Marker>
       </MapView>
-      <View style={isTablet ? {position: 'absolute', width: '100%', height: '100%'} : {}}>
+      {/* <View style={ {position: 'absolute', width: '100%', height: '100%'}}> */}
         <BottomSheet
           showAnimation={showAnimation}
           animationVal={animationValue}
@@ -408,7 +414,7 @@ const MapSearchScreen2 = ({ navigation, route }) => {
           targetLctn={target.lctn}
           navigation={navigation}
         />
-      </View>
+      {/* </View> */}
     </View>
   );
 };

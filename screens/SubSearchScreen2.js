@@ -14,6 +14,7 @@ import {
   Button,
   Image,
   Dimensions,
+  Platform
 } from "react-native";
 import Geocoder from "react-native-geocoding";
 import MapView, { Marker } from "react-native-maps";
@@ -31,11 +32,13 @@ const bottomSheetImage = require("../assets/image/bottomSheetScroll.png");
 const mapStyle = require("../assets/mapDesign.json");
 
 const screenHeight = Dimensions.get("window").height;
-const isTablet = DeviceInfo.isTablet();
 
+// const isTablet = DeviceInfo.isTablet();
+// console.log(isTablet);
 function toDPHeight(x) {
   const heightPixels = (screenHeight * x) / 844;
-  console.log(heightPixels)
+  console.log(heightPixels);
+  // console.log(isTablet);
   return heightPixels;
 }
 
@@ -58,7 +61,7 @@ const toggleAnimation2 = (showAnimation, setAnimationValue) => {
   setAnimationValue(val2);
 };
 const toggleAnimation3 = (showAnimation, setAnimationValue) => {
-  const val3 = -toDPHeight(588);
+  const val3 = screenHeight < 670? -toDPHeight(350) : -toDPHeight(588);
   Animated.timing(showAnimation, {
     useNativeDriver: false,
     toValue: val3,
@@ -343,7 +346,7 @@ const SubSearchScreen2 = ({ navigation, route }) => {
           <TargetMarker />
         </Marker>
       </MapView>
-      <View style={isTablet ? {position: 'absolute', width: '100%', height: '100%'} : {}}>
+      <View style={Platform.isPad ? {position: 'absolute', width: '100%', height: '100%'} : {}}>
         <BottomSheet
           showAnimation={showAnimation}
           animationVal={animationValue}
